@@ -168,6 +168,7 @@ cython_debug/
 tempCodeRunnerFile.py
 # Ruff stuff:
 .ruff_cache/
+.data/
 # PyPI configuration file
 .pypirc
 # Marimo

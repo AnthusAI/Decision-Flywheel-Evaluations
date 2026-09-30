@@ -16,11 +16,15 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 data = ["datasets>=2.0"]
+jev-live = ["typesafe-sdk>=0.7,<0.8", "python-dotenv>=1,<2"]
 tools = [
     "build>=1.2",
     "kanbus==0.33.0",
     "python-semantic-release>=10,<11",
 ]
+
+[project.scripts]
+decision-flywheel-evaluations = "decision_flywheel_evaluations.cli:main"
 
 [tool.semantic_release]
 branch = "main"

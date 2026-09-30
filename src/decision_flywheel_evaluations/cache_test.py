@@ -1,4 +1,7 @@
 from decision_flywheel.models import DecisionTask
+from decision_flywheel.adapters.jev import JevAdapter, JevConfiguration
+from decision_flywheel.adapters.kev import KevAdapter, KevConfiguration
+import asyncio
 import pytest
 
 from .cache import ApprovedRequest, CacheStore, LogicalCell
@@ -114,7 +117,7 @@ def test_payload_never_persists_provider_text_or_an_unapproved_model_identifier(
         "model": "fake:1",
     })
 
-    assert result == {"status": "success", "choice": "yes", "model": "fake:1", "usage": {"tokens": 2.0}}
+    assert result == {"status": "success", "choice": "yes", "model": "fake:1", "reported_model": "fake:1", "usage": {"tokens": 2.0}}
     serialized = (tmp_path / "ledger.sqlite").read_bytes()
     assert b"TOP-SECRET" not in serialized
 
@@ -134,3 +137,41 @@ def test_approved_requests_validate_all_physical_provenance_fields(tmp_path):
     with pytest.raises(ValueError, match="dataset revision"):
         CacheStore(str(tmp_path / "ledger.sqlite"), task=task, preflight_fingerprint="d" * 64,
                    approved_requests=(ApprovedRequest("a" * 64, task.fingerprint, "b" * 64, "bad", "fake:1"),), ceiling=1)
+
+
+def test_snapshot_exports_physical_status_attempts_and_safe_failure_payload_for_collection(tmp_path):
+    cache = _cache(tmp_path, ceiling=2)
+    token = cache.reserve("a" * 64, _cell())
+    cache.fail(token, "model-failure")
+
+    snapshot = cache.snapshot()
+
+    assert snapshot.physical_status == {"a" * 64: "failed"}
+    assert snapshot.physical_attempts == {"a" * 64: 1}
+    assert snapshot.physical_payloads == {"a" * 64: {"status": "failed", "category": "model-failure"}}
+
+
+def test_cache_accepts_exact_provider_model_names_from_jev_and_kev_adapters(tmp_path):
+    class JevResponse:
+        model = "jev-1.13.0"
+        usage = {"tokens": 2}
+        answers = {"sentiment": {"choice": "yes"}}
+    class JevClient:
+        def system_one(self, **_kwargs): return JevResponse()
+    class Response:
+        status_code = 200
+        def json(self): return {"answers": {"sentiment": {"choice": "yes"}}, "model": "kev-4b"}
+    class Transport:
+        async def post(self, *_args, **_kwargs): return Response()
+    task = _task()
+    for request_id, model, result in (
+        ("a" * 64, "jev:jev-1.13.0", asyncio.run(JevAdapter(JevClient(), configuration=JevConfiguration(model="jev-1.13.0")).decide(task, __import__("decision_flywheel.models", fromlist=["Item"]).Item("x", {"text": "x"}), []))),
+        ("e" * 64, "kev:kev-4b@abc", asyncio.run(KevAdapter(transport=Transport(), configuration=KevConfiguration(model="kev-4b", revision="abc")).decide(task, __import__("decision_flywheel.models", fromlist=["Item"]).Item("x", {"text": "x"}), []))),
+    ):
+        cache = CacheStore(str(tmp_path / f"{request_id}.sqlite"), task=task, preflight_fingerprint="d" * 64,
+                           approved_requests=(ApprovedRequest(request_id, task.fingerprint, "b" * 64, "c" * 40, model),), ceiling=1)
+        token = cache.reserve(request_id, _cell())
+        payload = {"choice": result.label, "model": result.model}
+        if result.usage is not None: payload["usage"] = result.usage
+        saved = cache.complete(token, payload)
+        assert saved["status"] == "success"

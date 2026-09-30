@@ -26,10 +26,28 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "1c2b8fe8-76c4-4e60-b9ea-23786820827e",
+      "author": "home",
+      "text": "Review finding: current native cell identity binds model/version and generic context-plan state/question hash, but transport-relevant configuration is not yet bound. Jev base_url and Kev endpoint changes must invalidate approved requests before claiming complete physical-request cache identity or running live collection. Keep this story in progress; no DSPy integration is authorized.",
+      "created_at": "2026-09-30T20:33:02.507476Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    },
+    {
+      "id": "e8250d9d-2236-467f-bd8e-8d9d3760e5fd",
+      "author": "home",
+      "text": "Native Jev workflow now binds explicit public transport fingerprints into protocol/model/cache identity, reserves attempts before factory construction, supports opt-in bounded retry/recovery, and verifies mixed cached/new provenance. Full offline suite passed 125 tests against the pinned core dependency, including complete development collection -> native cache-only optimizer replay -> scoreboard -> report. No DSPy, provider credentials, or live calls. Keep cross-provider collection/compatibility claims pending their separate adapter pilots and matrix work.",
+      "created_at": "2026-09-30T21:05:07.970574Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
     }
   ],
   "created_at": "2026-09-30T18:08:15.928596Z",
-  "updated_at": "2026-09-30T19:46:01.046980Z",
+  "updated_at": "2026-09-30T21:05:07.970647Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

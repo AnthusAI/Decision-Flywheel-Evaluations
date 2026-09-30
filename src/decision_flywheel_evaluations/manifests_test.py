@@ -167,7 +167,7 @@ def test_a_manifest_load_rejects_boolean_counts_and_an_exclusion_without_a_match
     with pytest.raises(ValueError, match="counts"):
         read_manifest(destination)
     payload["counts"]["candidate"] = manifest.counts["candidate"]
-    payload["exclusions"] = [{"id": "excluded", "source_split": "train", "source_index": 0, "label": "sadness",
+    payload["exclusions"] = [{"id": "excluded", "source_split": "train", "source_index": 999_999, "label": "sadness",
                               "normalized_text_sha256": "0" * 64, "duplicate_of_id": "absent",
                               "reason": "duplicate_normalized_text"}]
     destination.write_text(json.dumps(payload))
@@ -199,4 +199,17 @@ def test_manifest_load_rejects_malformed_hash_and_duplicate_hash_inside_one_role
     payload["records"][0]["normalized_text_sha256"] = payload["records"][1]["normalized_text_sha256"]
     destination.write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="normalized text hashes"):
+        read_manifest(destination)
+
+
+def test_a_manifest_rejects_two_distinct_ids_for_one_source_split_index(tmp_path):
+    manifest = prepare_split(_rows(), EMOTION, seed=8, development_per_label=1, scoreboard_per_label=1,
+                             exposure_status=ExposureStatus.EXPLORATORY)
+    destination = tmp_path / "ambiguous-source.json"
+    write_manifest(destination, manifest)
+    payload = json.loads(destination.read_text())
+    payload["records"][1]["source_split"] = payload["records"][0]["source_split"]
+    payload["records"][1]["source_index"] = payload["records"][0]["source_index"]
+    destination.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="source split/index"):
         read_manifest(destination)

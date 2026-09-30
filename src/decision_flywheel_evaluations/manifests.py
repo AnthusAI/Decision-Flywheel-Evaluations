@@ -14,6 +14,15 @@ from .datasets import DatasetRow, DatasetSpec, normalized_text_hash
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REVISION = re.compile(r"^[0-9a-f]{40}$")
+HISTORICAL_AG_NEWS_COMMIT = "59548114ecf45e817613c946af2cab6ceb675804"
+_PREPARATION_CONFIGURATION_FIELDS = {
+    "candidate_per_label", "development_per_label", "scoreboard_per_label",
+    "natural_official_scoreboard", "ladder_per_label", "historical_source_commit",
+}
+_PREPARATION_COUNT_FIELDS = {
+    "candidate", "development", "scoreboard", "official_history_excluded",
+    "dedup_excluded", "leakage_excluded",
+}
 
 
 class ExposureStatus(str, Enum):
@@ -46,6 +55,15 @@ class DuplicateExclusion:
 
 
 @dataclass(frozen=True)
+class PreparationMetadata:
+    """Text-free, deterministic selection and exposure provenance."""
+
+    configuration: dict[str, object]
+    sample_counts: dict[str, int]
+    exposure_history_fingerprint: str | None
+
+
+@dataclass(frozen=True)
 class DatasetManifest:
     dataset: str
     revision: str
@@ -54,6 +72,7 @@ class DatasetManifest:
     exposure_status: ExposureStatus
     records: tuple[ManifestRecord, ...]
     exclusions: tuple[DuplicateExclusion, ...]
+    preparation: PreparationMetadata | None = None
 
     def for_role(self, role: str) -> tuple[ManifestRecord, ...]:
         return tuple(record for record in self.records if record.role == role)
@@ -79,6 +98,38 @@ class DatasetManifest:
             raise ValueError("manifest counts must be nonnegative integers")
         if not isinstance(self.exposure_status, ExposureStatus):
             raise ValueError("manifest needs an explicit valid exposure status")
+        if self.preparation is not None:
+            configuration = self.preparation.configuration if isinstance(self.preparation, PreparationMetadata) else None
+            sample_counts = self.preparation.sample_counts if isinstance(self.preparation, PreparationMetadata) else None
+            if (not isinstance(self.preparation, PreparationMetadata)
+                    or not isinstance(configuration, dict) or set(configuration) != _PREPARATION_CONFIGURATION_FIELDS
+                    or not isinstance(sample_counts, dict) or set(sample_counts) != _PREPARATION_COUNT_FIELDS
+                    or any(not isinstance(value, int) or isinstance(value, bool) or value < 0
+                           for value in sample_counts.values())
+                    or sample_counts["candidate"] != self.counts["candidate"]
+                    or sample_counts["development"] != self.counts["development"]
+                    or sample_counts["scoreboard"] != self.counts["scoreboard"]
+                    or any(not isinstance(configuration[field], int) or isinstance(configuration[field], bool)
+                           or configuration[field] < 0
+                           for field in ("candidate_per_label", "development_per_label", "ladder_per_label"))
+                    or (configuration["scoreboard_per_label"] is not None
+                        and (not isinstance(configuration["scoreboard_per_label"], int)
+                             or isinstance(configuration["scoreboard_per_label"], bool)
+                             or configuration["scoreboard_per_label"] < 1))
+                    or not isinstance(configuration["natural_official_scoreboard"], bool)
+                    or configuration["ladder_per_label"] != 64
+                    or (configuration["historical_source_commit"] is not None
+                        and (not isinstance(configuration["historical_source_commit"], str)
+                             or not _REVISION.fullmatch(configuration["historical_source_commit"])))
+                    or ((configuration["historical_source_commit"] is None)
+                        != (self.preparation.exposure_history_fingerprint is None))
+                    or (self.preparation.exposure_history_fingerprint is not None
+                        and not _SHA256.fullmatch(self.preparation.exposure_history_fingerprint))
+                    or (self.dataset == "fancyzhx/ag_news"
+                        and configuration["historical_source_commit"] != HISTORICAL_AG_NEWS_COMMIT)
+                    or (self.dataset == "dair-ai/emotion"
+                        and configuration["historical_source_commit"] is not None)):
+                raise ValueError("manifest preparation metadata must be text-free and valid")
         if any(not isinstance(record, ManifestRecord) for record in self.records):
             raise ValueError("manifest records have invalid types")
         if any(not isinstance(item, DuplicateExclusion) for item in self.exclusions):
@@ -99,6 +150,9 @@ class DatasetManifest:
         ids = [record.id for record in self.records]
         if len(ids) != len(set(ids)):
             raise ValueError("split IDs must be disjoint")
+        identities = [(record.source_split, record.source_index) for record in self.records]
+        if len(identities) != len(set(identities)):
+            raise ValueError("manifest records must have unique source split/index identities")
         by_role = {role: {record.normalized_text_sha256 for record in self.for_role(role)} for role in roles}
         if any(len(by_role[role]) != len(self.for_role(role)) for role in roles):
             raise ValueError("normalized text hashes must be unique within each split role")
@@ -107,7 +161,7 @@ class DatasetManifest:
         excluded_ids = {record.id for record in self.exclusions}
         if excluded_ids & set(ids) or len(excluded_ids) != len(self.exclusions):
             raise ValueError("duplicate exclusions must not overlap manifest records")
-        allowed_exclusion_reasons = {"duplicate_normalized_text", "overlaps_scoreboard_text"}
+        allowed_exclusion_reasons = {"duplicate_normalized_text", "overlaps_scoreboard_text", "ambiguous_normalized_text"}
         if any(not isinstance(item.id, str) or not item.id or not isinstance(item.source_split, str) or not item.source_split
                or not isinstance(item.source_index, int) or isinstance(item.source_index, bool) or item.source_index < 0
                or not isinstance(item.label, str) or not item.label or not isinstance(item.duplicate_of_id, str)
@@ -115,9 +169,14 @@ class DatasetManifest:
                or not isinstance(item.normalized_text_sha256, str) or not _SHA256.fullmatch(item.normalized_text_sha256)
                for item in self.exclusions):
             raise ValueError("duplicate exclusions must have text-free duplicate provenance")
+        all_identities = identities + [(item.source_split, item.source_index) for item in self.exclusions]
+        if len(all_identities) != len(set(all_identities)):
+            raise ValueError("manifest records and exclusions must have unique source split/index identities")
         records_by_id = {record.id: record for record in self.records}
         for item in self.exclusions:
             reference = records_by_id.get(item.duplicate_of_id)
+            if item.reason == "ambiguous_normalized_text":
+                continue
             if reference is None or reference.normalized_text_sha256 != item.normalized_text_sha256 \
                     or (item.reason == "duplicate_normalized_text" and reference.label != item.label):
                 raise ValueError("duplicate exclusion must reference a matching manifest record")
@@ -141,7 +200,9 @@ def _deduplicate(rows: Iterable[DatasetRow]) -> tuple[tuple[DatasetRow, ...], tu
     for text_hash, group in sorted(by_hash.items()):
         ordered = sorted(group, key=lambda row: (row.source_split, row.source_index, row.id))
         if len({row.label for row in ordered}) != 1:
-            raise ValueError("duplicate normalized text has conflicting labels")
+            exclusions.extend(DuplicateExclusion(row.id, row.source_split, row.source_index, row.label, text_hash,
+                                                 ordered[0].id, "ambiguous_normalized_text") for row in ordered)
+            continue
         retained.append(ordered[0])
         exclusions.extend(DuplicateExclusion(row.id, row.source_split, row.source_index, row.label, text_hash,
                                              ordered[0].id) for row in ordered[1:])
@@ -157,6 +218,8 @@ def _validate_rows(rows: Iterable[DatasetRow], spec: DatasetSpec) -> tuple[Datas
         raise ValueError("rows need valid nonnegative source identity and canonical labels")
     if len({row.id for row in source}) != len(source):
         raise ValueError("source rows must have unique IDs")
+    if len({(row.source_split, row.source_index) for row in source}) != len(source):
+        raise ValueError("source rows must have unique source split/index identities")
     return tuple(sorted(source, key=lambda row: (row.source_split, row.source_index, row.id)))
 
 
@@ -295,15 +358,17 @@ def prepare_official_split(
 
 def _payload(manifest: DatasetManifest) -> dict:
     manifest.validate()
-    return {"dataset": manifest.dataset, "revision": manifest.revision, "seed": manifest.seed,
+    payload = {"dataset": manifest.dataset, "revision": manifest.revision, "seed": manifest.seed,
             "counts": manifest.counts, "exposure_status": manifest.exposure_status.value,
-            "records": [asdict(record) for record in manifest.records],
-            "exclusions": [asdict(record) for record in manifest.exclusions]}
+            "records": [asdict(record) for record in manifest.records], "exclusions": [asdict(record) for record in manifest.exclusions]}
+    if manifest.preparation is not None:
+        payload["preparation"] = asdict(manifest.preparation)
+    return payload
 
 
 def write_manifest(path: str | Path, manifest: DatasetManifest) -> None:
     """Write the whitelisted, text-free manifest representation."""
-    Path(path).write_text(json.dumps(_payload(manifest), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    Path(path).write_text(json.dumps(_payload(manifest), sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
 
 
 def read_manifest(path: str | Path) -> DatasetManifest:
@@ -311,7 +376,8 @@ def read_manifest(path: str | Path) -> DatasetManifest:
     payload = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError("manifest must be a JSON object")
-    if set(payload) != {"dataset", "revision", "seed", "counts", "exposure_status", "records", "exclusions"}:
+    if set(payload) not in ({"dataset", "revision", "seed", "counts", "exposure_status", "records", "exclusions"},
+                            {"dataset", "revision", "seed", "counts", "exposure_status", "records", "exclusions", "preparation"}):
         raise ValueError("manifest has unsupported fields")
     allowed_record = {"id", "source_split", "source_index", "label", "normalized_text_sha256", "role"}
     if not isinstance(payload["records"], list) or any(not isinstance(record, dict) or set(record) != allowed_record
@@ -321,9 +387,14 @@ def read_manifest(path: str | Path) -> DatasetManifest:
     if not isinstance(payload["exclusions"], list) or any(not isinstance(item, dict) or set(item) != allowed_exclusion
                                                            for item in payload["exclusions"]):
         raise ValueError("manifest exclusion has unsupported fields")
+    preparation = payload.get("preparation")
+    if preparation is not None and (not isinstance(preparation, dict)
+                                    or set(preparation) != {"configuration", "sample_counts", "exposure_history_fingerprint"}):
+        raise ValueError("manifest preparation has unsupported fields")
     manifest = DatasetManifest(payload["dataset"], payload["revision"], payload["seed"], payload["counts"],
                                ExposureStatus(payload["exposure_status"]),
                                tuple(ManifestRecord(**record) for record in payload["records"]),
-                               tuple(DuplicateExclusion(**item) for item in payload["exclusions"]))
+                               tuple(DuplicateExclusion(**item) for item in payload["exclusions"]),
+                               PreparationMetadata(**preparation) if preparation is not None else None)
     manifest.validate()
     return manifest

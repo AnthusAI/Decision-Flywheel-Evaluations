@@ -22,8 +22,8 @@ from decision_flywheel.models import DecisionResult, DecisionTask
 
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REVISION = re.compile(r"^[0-9a-f]{40}$")
-_SAFE_MODEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,199}$")
-_SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$")
+_SAFE_MODEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$")
+_SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,511}$")
 _FAILURE_CATEGORIES = frozenset({"model-failure", "malformed-response", "uncertain"})
 _USAGE_FIELDS = frozenset({"input_tokens", "output_tokens", "total_tokens", "tokens"})
 _MAX_LATENCY_MS = 3_600_000.0
@@ -38,6 +38,7 @@ class ApprovedRequest:
     state_fingerprint: str
     dataset_revision: str
     model_identity: str
+    provider_model_identity: str | None = None
 
     @property
     def request_key(self) -> str:
@@ -55,16 +56,22 @@ class ApprovedRequest:
             raise ValueError("approved request dataset revision must be a 40-character SHA-1")
         if not _SAFE_MODEL.fullmatch(self.model_identity) or ":" not in self.model_identity:
             raise ValueError("approved request needs a safe semantic model identity")
+        if self.provider_model_identity is not None and (not isinstance(self.provider_model_identity, str)
+                                                         or not _SAFE_MODEL.fullmatch(self.provider_model_identity)):
+            raise ValueError("approved request provider identity must be safe")
 
     def as_manifest_entry(self) -> dict[str, str]:
         self.validate()
-        return {
+        entry = {
             "request_id": self.request_id,
             "task_fingerprint": self.task_fingerprint,
             "state_fingerprint": self.state_fingerprint,
             "dataset_revision": self.dataset_revision,
             "model_identity": self.model_identity,
         }
+        if self.provider_model_identity is not None:
+            entry["provider_model_identity"] = self.provider_model_identity
+        return entry
 
 
 @dataclass(frozen=True)
@@ -92,6 +99,9 @@ class CacheSnapshot:
     physical_responses: Mapping[str, Mapping[str, Any]]
     physical_usage: Mapping[str, Mapping[str, float]]
     logical_mapping: Mapping[str, str]
+    physical_status: Mapping[str, str]
+    physical_attempts: Mapping[str, int]
+    physical_payloads: Mapping[str, Mapping[str, Any]]
 
     @property
     def logical_requests(self) -> Mapping[str, str]:
@@ -154,6 +164,15 @@ class CacheStore:
         row = self.db.execute("SELECT COALESCE(SUM(attempts), 0) FROM requests").fetchone()
         return int(row[0])
 
+    @property
+    def frozen_configuration(self) -> Mapping[str, Any]:
+        """Read-only stored approval metadata, for collectors to verify before calls."""
+        self._require_open()
+        row = self.db.execute("SELECT value FROM meta WHERE key = 'frozen_configuration'").fetchone()
+        if row is None:
+            raise ValueError("cache has no frozen configuration")
+        return _freeze_mapping(_load_payload(row[0]))
+
     def reserve(self, request_id: str, cell: LogicalCell) -> Mapping[str, Any] | str:
         """Replay success or atomically consume one approved physical attempt."""
         approved = self._approved(request_id)
@@ -204,7 +223,7 @@ class CacheStore:
         request_id, token, response = self._complete_arguments(args, request_id)
         request_id = self._request_for_token_argument(token, request_id)
         approved = self._approved(request_id)
-        payload = _sanitize(response, self.task, approved.model_identity)
+        payload = _sanitize(response, self.task, approved.model_identity, approved.provider_model_identity)
         if payload["status"] != "success":
             self._transition_failure(request_id, token, "malformed-response")
             return payload
@@ -239,20 +258,40 @@ class CacheStore:
             if changed != 1:
                 raise ValueError("active reservation token required")
 
+    def recover_abandoned(self, request_id: str) -> None:
+        """Explicitly recover a prior-process reservation without exposing its token."""
+        self._approved(request_id)
+        with self._write_transaction():
+            changed = self.db.execute(
+                """UPDATE requests SET status = 'retryable', payload = ?, token = NULL
+                   WHERE request_id = ? AND status = 'reserved'""",
+                (_dump({"status": "failed", "category": "uncertain"}), request_id),
+            ).rowcount
+            if changed != 1:
+                raise ValueError("reserved physical request required for recovery")
+
     def snapshot(self) -> CacheSnapshot:
         """Return an immutable, text-free view without multiplying shared physical usage."""
         self._require_open()
         physical_responses: dict[str, Mapping[str, Any]] = {}
         physical_usage: dict[str, Mapping[str, float]] = {}
-        for request_id, payload_text in self.db.execute(
-            "SELECT request_id, payload FROM requests WHERE status = 'success' ORDER BY request_id"
+        physical_status: dict[str, str] = {}
+        physical_attempts: dict[str, int] = {}
+        physical_payloads: dict[str, Mapping[str, Any]] = {}
+        for request_id, status, attempts, payload_text in self.db.execute(
+            "SELECT request_id, status, attempts, payload FROM requests ORDER BY request_id"
         ):
-            payload = _load_payload(payload_text)
-            frozen_payload = _freeze_mapping(payload)
-            physical_responses[request_id] = frozen_payload
-            usage = payload.get("usage")
-            if isinstance(usage, Mapping):
-                physical_usage[request_id] = _freeze_mapping(usage)
+            physical_status[request_id] = status
+            physical_attempts[request_id] = attempts
+            if payload_text is not None:
+                payload = _load_payload(payload_text)
+                frozen_payload = _freeze_mapping(payload)
+                physical_payloads[request_id] = frozen_payload
+                if status == "success":
+                    physical_responses[request_id] = frozen_payload
+                    usage = payload.get("usage")
+                    if isinstance(usage, Mapping):
+                        physical_usage[request_id] = _freeze_mapping(usage)
         logical_mapping = {
             cell_id: request_id
             for cell_id, request_id in self.db.execute("SELECT cell_id, request_id FROM cells ORDER BY cell_id")
@@ -261,6 +300,9 @@ class CacheStore:
             MappingProxyType(physical_responses),
             MappingProxyType(physical_usage),
             MappingProxyType(logical_mapping),
+            MappingProxyType(physical_status),
+            MappingProxyType(physical_attempts),
+            MappingProxyType(physical_payloads),
         )
 
     def _transition_failure(self, request_id: str, token: str, category: str) -> None:
@@ -421,7 +463,7 @@ class CacheStore:
             raise ValueError("cache is closed")
 
 
-def _sanitize(value: Mapping[str, Any], task: DecisionTask, expected_model: str) -> dict[str, Any]:
+def _sanitize(value: Mapping[str, Any], task: DecisionTask, expected_model: str, approved_provider_model: str | None = None) -> dict[str, Any]:
     """Canonicalize a provider-shaped result without retaining provider payloads."""
     if not isinstance(value, Mapping):
         return _malformed()
@@ -450,8 +492,10 @@ def _sanitize(value: Mapping[str, Any], task: DecisionTask, expected_model: str)
         payload["latency_ms"] = float(latency)
 
     model = _field(value, answer, "model")
-    if model is not _MISSING and (not isinstance(model, str) or model != expected_model or not _SAFE_MODEL.fullmatch(model)):
+    if model is not _MISSING and (not isinstance(model, str) or not _allowed_provider_model(model, expected_model, approved_provider_model)):
         return _malformed()
+    if model is not _MISSING:
+        payload["reported_model"] = model
     usage = _field(value, answer, "usage")
     if usage is not _MISSING:
         if not isinstance(usage, Mapping):
@@ -482,6 +526,17 @@ def _bounded_number(value: object, lower: float, upper: float) -> bool:
 
 def _malformed() -> dict[str, str]:
     return {"status": "failed", "category": "malformed-response"}
+
+
+def _allowed_provider_model(reported: str, expected: str, approved_provider: str | None = None) -> bool:
+    """Keep semantic ledger identity distinct from exact adapter provider identity."""
+    if not _SAFE_MODEL.fullmatch(reported) or ":" not in expected:
+        return False
+    engine, configured = expected.split(":", 1)
+    provider_name = configured.split("@", 1)[0]
+    if reported in {expected, configured, provider_name, approved_provider}:
+        return True
+    return False
 
 
 def _dump(value: Mapping[str, Any]) -> str:
