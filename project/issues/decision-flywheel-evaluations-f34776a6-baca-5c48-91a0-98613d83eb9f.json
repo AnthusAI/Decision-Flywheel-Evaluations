@@ -3,7 +3,7 @@
   "title": "Verify model capabilities with a bounded development-only pilot",
   "description": "## Scope\n\nUse a small fixed development fixture to check Jev, Kev, and Laya loading, label parsing, context serialization, maximum useful context, latency, and probability availability. Record versions/hardware and separate installation/download/model-call steps. Freeze a small preflight and ceiling before explicitly approved live calls; never involve scoreboard rows.\n\n## Definition of done\n\nA compatibility report records successful zero-shot/few-shot paths or precise exclusions, observed context limits, and real usage; adapter defects are linked back to core issues.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-d556540e-71b5-55cc-9323-143d674bba3d`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-f64b3f0f-7440-53d9-81a8-d7e322c35a34`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-a56306ec-1922-5343-ba9f-f3ee47f4742a`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -21,9 +21,38 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "dd0c899b-f349-466a-bb82-6eace4ae7a7c",
+      "author": "home",
+      "text": "Native Jev development-only pilot implemented with Terra subagents, without DSPy or live calls. Actual pinned-cache plans enumerate 21 logical and 21 distinct physical requests per dataset (42 total): zero-shot plus the maximum local-estimate request for each of four sizes and five seeds, canonical ordering. Frozen text-free plans and pilot preregistration are being verified. Paid collection remains unapproved. No accuracy finding, no scoreboard source rows, no retries/recovery, no full-study approval. Compatibility report and Kev/Laya follow-up remain incomplete, so this issue stays in progress.",
+      "created_at": "2026-09-30T22:42:28.197782Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "3e12d6a4-7302-4d9d-90d0-626926cca267",
+      "author": "home",
+      "text": "Verification complete for pilot infrastructure: 232 specs pass locally and 232 pass from a source archive in an isolated minimal environment without datasets, pyarrow, typesafe, dataset caches, or Git history. Read-only Terra review found preregistration-before-ledger and output-overwrite defects; failing specs were written first and both are fixed. Wrapper and collection enforce the exact unique-request ceiling, historical retries reject, resume does not construct a second provider, and compatibility reports exclude benchmark metrics. Pilot plans/preregistration remain unapproved; human approval requested for at most 42 paid attempts total, without authorizing the full study.",
+      "created_at": "2026-09-30T22:45:30.271579Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:25.079394Z",
-  "updated_at": "2026-09-30T18:09:08.408417Z",
+  "updated_at": "2026-09-30T22:45:30.271649Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

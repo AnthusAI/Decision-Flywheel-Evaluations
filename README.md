@@ -2,8 +2,8 @@
 
 Reproducible evaluation scaffolding for Decision Flywheel context policies
 across decision models and labelled datasets. It is not yet a completed live
-study or a preregistration: the model/policy matrix and collection harness are
-still being filled in.
+study: the model/policy matrix is still being filled in. A bounded Jev pilot
+has a frozen design and exact request plans, but live approval remains pending.
 
 Optimization scope is native to Decision Flywheel and provider-neutral; this
 repository does not include DSPy integration. This is a scope boundary, not a
@@ -17,9 +17,9 @@ designs, split manifests, response-cache metadata, and aggregate findings.
 ## Current status
 
 The repository currently provides frozen protocol and split-manifest contracts,
-offline preflight checks, text-free observation/metric/reporting utilities, and
-synthetic tests. Live collection, complete matrix results, and any confirmatory
-claims remain planned work.
+offline preflight checks, gated Jev collection, text-free observation/metric/reporting
+utilities, and synthetic tests. No new live results have been collected with
+this harness. Complete matrix results remain planned work.
 
 ## Native command-line workflow
 
@@ -183,6 +183,67 @@ available solely for synthetic local specs, not for exporting a dataset.
 Explicit provider confidence is preserved through adapters, the cache, and
 observation JSON independently of probabilities; older observation JSON without
 that field remains readable with confidence unavailable.
+
+## Bounded Jev compatibility pilot
+
+The [pilot preregistration](studies/INITIAL_JEV_PILOT.md) freezes 21 distinct
+development-only requests for each dataset: zero-shot and the largest local
+request estimate for each size/seed combination. It does not use scoreboard
+source rows or measure ground-truth performance. The two committed text-free
+plans bind the exact initial protocols and optimization preflights.
+
+After regenerating the proposed source protocol/preflight above, independently
+reproduce the AG News pilot without credentials or model calls:
+
+```bash
+make PYTHON=.venv/bin/python pilot-preflight \
+  PROTOCOL=.data/proposals/ag_news.protocol.json \
+  MANIFEST=studies/manifests/ag_news.json \
+  PREFLIGHT=.data/proposals/ag_news.preflight.json \
+  DATASET_CACHE=.data/huggingface OUTPUT=.data/proposals/ag_news.pilot.json
+cmp studies/pilots/ag_news.plan.json .data/proposals/ag_news.pilot.json
+```
+
+Replace `ag_news` with `emotion` for the other pilot. All three pilot commands
+require explicit `OVERWRITE=--overwrite` to replace an existing output file.
+These preflight commands only enumerate requests.
+
+Only after explicit human approval, with the preregistration committed and the
+live dependencies installed, the bounded AG News invocation is:
+
+```bash
+make PYTHON=.venv/bin/python pilot \
+  PROTOCOL=.data/proposals/ag_news.protocol.json \
+  MANIFEST=studies/manifests/ag_news.json \
+  PREFLIGHT=.data/proposals/ag_news.preflight.json \
+  PILOT=studies/pilots/ag_news.plan.json DATASET_CACHE=.data/huggingface \
+  LEDGER=.data/proposals/ag_news.pilot.sqlite \
+  PREREGISTRATION=studies/INITIAL_JEV_PILOT.md \
+  OUTPUT=.data/proposals/ag_news.pilot.observations.json \
+  PROVIDER_MODEL=jev-1.13.0 BASE_URL=https://api.typesafe.ai TIMEOUT_SECONDS=30 \
+  ADAPTER_REVISION=6137fa185a1a98afa84b5e6d5948d1780df5d56d \
+  PACKAGE_REVISION=typesafe-sdk-0.7.1 ATTEMPT_CEILING=21 MAX_NEW=21 CONFIRM=--confirm
+```
+
+Emotion requires its own approved 21-attempt ceiling and separate ledger. Both
+pilots together propose at most 42 paid attempts, not approval for the full
+study. There are no pilot retries or uncertain-attempt recovery. On resume,
+`MAX_NEW` must fit the unspent ledger ceiling; completed requests replay without
+constructing a provider. Pilot ledgers cannot authorize full-study collection.
+
+An offline compatibility summary uses no source dataset text or provider:
+
+```bash
+make PYTHON=.venv/bin/python pilot-report \
+  PROTOCOL=.data/proposals/ag_news.protocol.json PILOT=studies/pilots/ag_news.plan.json \
+  OBSERVATIONS=.data/proposals/ag_news.pilot.observations.json \
+  OUTPUT=.data/proposals/ag_news.pilot.compatibility.json
+```
+
+The summary describes response fields, failures, actual returned usage, latency,
+and successful observed contexts. It deliberately reports no accuracy or other
+benchmark metrics. A successful pilot does not establish a context limit or
+authorize the development optimization, ordering, or cross-model studies.
 
 Development optimization is a separate native-core step: before scoreboard
 preflight, it must produce a complete, validated `SelectedGlobalArtifact` from

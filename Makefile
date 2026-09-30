@@ -1,4 +1,4 @@
-.PHONY: test download preflight select run report install-tools release
+.PHONY: test download preflight select run report pilot-preflight pilot pilot-report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
@@ -43,6 +43,24 @@ report:
 		echo "Usage: make report PROTOCOL=... MANIFEST=... PREFLIGHT=... OBSERVATIONS=... OUTPUT=..."; exit 2; \
 	fi
 	$(PYTHON) -m decision_flywheel_evaluations.cli report --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --preflight "$(PREFLIGHT)" --observations "$(OBSERVATIONS)" --output "$(OUTPUT)"
+
+pilot-preflight:
+	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(PREFLIGHT)" || test -z "$(OUTPUT)" || { test -z "$(ROWS)" && test -z "$(DATASET_CACHE)"; } || { test -n "$(ROWS)" && test -n "$(DATASET_CACHE)"; }; then \
+		echo "Usage: make pilot-preflight PROTOCOL=... MANIFEST=... PREFLIGHT=... (ROWS=fixture.json | DATASET_CACHE=.data/huggingface) OUTPUT=... [OVERWRITE=--overwrite]"; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.pilot_cli preflight --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --source-preflight "$(PREFLIGHT)" $(SOURCE_ARGS) --output "$(OUTPUT)" $(OVERWRITE)
+
+pilot:
+	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(PREFLIGHT)" || test -z "$(PILOT)" || test -z "$(LEDGER)" || test -z "$(PREREGISTRATION)" || test -z "$(OUTPUT)" || test -z "$(PROVIDER_MODEL)" || test -z "$(BASE_URL)" || test -z "$(TIMEOUT_SECONDS)" || test -z "$(ADAPTER_REVISION)" || test -z "$(PACKAGE_REVISION)" || test -z "$(ATTEMPT_CEILING)" || test -z "$(MAX_NEW)" || { test -z "$(ROWS)" && test -z "$(DATASET_CACHE)"; } || { test -n "$(ROWS)" && test -n "$(DATASET_CACHE)"; }; then \
+		echo "Usage: make pilot PROTOCOL=... MANIFEST=... PREFLIGHT=... PILOT=... (ROWS=fixture.json | DATASET_CACHE=.data/huggingface) LEDGER=... PREREGISTRATION=... OUTPUT=... PROVIDER_MODEL=... BASE_URL=https://... TIMEOUT_SECONDS=... ADAPTER_REVISION=... PACKAGE_REVISION=typesafe-sdk-0.7.1 ATTEMPT_CEILING=... MAX_NEW=... CONFIRM=--confirm"; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.pilot_cli run --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --source-preflight "$(PREFLIGHT)" --pilot "$(PILOT)" $(SOURCE_ARGS) --ledger "$(LEDGER)" --preregistration "$(PREREGISTRATION)" --output "$(OUTPUT)" --provider-model "$(PROVIDER_MODEL)" --base-url "$(BASE_URL)" --timeout-seconds "$(TIMEOUT_SECONDS)" --adapter-revision "$(ADAPTER_REVISION)" --package-revision "$(PACKAGE_REVISION)" --attempt-ceiling "$(ATTEMPT_CEILING)" --max-new "$(MAX_NEW)" $(CONFIRM) $(OVERWRITE)
+
+pilot-report:
+	@if test -z "$(PROTOCOL)" || test -z "$(PILOT)" || test -z "$(OBSERVATIONS)" || test -z "$(OUTPUT)"; then \
+		echo "Usage: make pilot-report PROTOCOL=... PILOT=... OBSERVATIONS=... OUTPUT=..."; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.pilot_cli report --protocol "$(PROTOCOL)" --pilot "$(PILOT)" --observations "$(OBSERVATIONS)" --output "$(OUTPUT)" $(OVERWRITE)
 
 install-tools:
 	$(PYTHON) -m pip install -e '.[tools]'

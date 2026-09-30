@@ -95,6 +95,18 @@ async def collect(
     checker = committed_checker or git_preregistration_is_committed
     options.validate()
     execution = _validate_gates(protocol, manifest, rows, frozen_preflight, cache, approval, checker)
+    return await _collect_execution(protocol, manifest, execution, cache, engine_factory, options)
+
+
+async def _collect_execution(
+    protocol: FrozenProtocol,
+    manifest: DatasetManifest,
+    execution: Sequence[tuple[RequestCell, Item, object]],
+    cache: CacheStore,
+    engine_factory: EngineFactory,
+    options: CollectionOptions,
+) -> CollectionResult:
+    """Execute an already gate-validated physical plan without widening it."""
     initial_successes = cache.successful_request_ids()
     new_attempts = 0
     models: dict[str, DecisionModel] = {}
@@ -239,15 +251,19 @@ def _validate_gates(
 def _execution_plans(
     protocol: FrozenProtocol, manifest: DatasetManifest, rows: Sequence[DatasetRow], cells: Sequence[RequestCell],
 ) -> tuple[tuple[RequestCell, Item, object], ...]:
-    stage = "optimization" if cells and cells[0].phase == "optimization" else "scoreboard"
+    phases = {cell.phase for cell in cells}
+    if phases - {"optimization", "pilot", "scoreboard"} or len(phases) > 1:
+        raise ValueError("execution cells must have one supported frozen phase")
+    development_phase = phases <= {"optimization", "pilot"}
+    stage = "optimization" if development_phase else "scoreboard"
     candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol, stage=stage)
-    targets = {row.item.id: row.item for row in (development if cells and cells[0].phase == "optimization" else scoreboard)}
+    targets = {row.item.id: row.item for row in (development if development_phase else scoreboard)}
     artifact = protocol.selector_search_artifact
     plans = []
     for cell in cells:
         target = targets.get(cell.target_id)
         if target is None:
-            raise ValueError("scoreboard cell target is not in the validated manifest")
+            raise ValueError("execution cell target is not in the validated manifest")
         selector = Selector(cell.selector)
         if selector is Selector.ZERO:
             policy, size = RandomBalanced(0), 0
@@ -299,7 +315,7 @@ def _observation(cell: RequestCell, manifest: DatasetManifest, snapshot: object,
     status = snapshot.physical_status.get(cell.fingerprint)  # type: ignore[attr-defined]
     attempts = snapshot.physical_attempts.get(cell.fingerprint, 0)  # type: ignore[attr-defined]
     payload = snapshot.physical_payloads.get(cell.fingerprint, {})  # type: ignore[attr-defined]
-    records = manifest.development if cell.phase == "optimization" else manifest.scoreboard
+    records = manifest.development if cell.phase in {"optimization", "pilot"} else manifest.scoreboard
     record = next(record for record in records if record.id == cell.target_id)
     if status == "success":
         observation_status, prediction = "completed", payload.get("choice")
