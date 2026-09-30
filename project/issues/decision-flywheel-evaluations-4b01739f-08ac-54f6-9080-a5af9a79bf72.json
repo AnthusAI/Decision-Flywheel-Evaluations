@@ -3,7 +3,7 @@
   "title": "Freeze candidate, development, and scoreboard manifests",
   "description": "## Scope\n\nDeterministically create disjoint partition manifests with documented seeds, class counts, sampling rationale, source-use history, and exact normalized-text duplicate exclusions across partitions. Scoreboard labels are only available to final scoring. Commit manifests before optimization or collection.\n\n## Definition of done\n\nSpecs reject ID and text-hash leakage, preserve partitions across reruns, report class counts, and prevent policy-selection code from loading scoreboard labels. Historical holdouts are explicitly identified as previously used.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Freeze candidate, development, and scoreboard manifests\n  Scenario: Required observable behavior\n    Given candidate, development, and scoreboard rows share an exact normalized-text duplicate\n    When manifests are prepared\n    Then the duplicate is excluded or preparation fails before any model call\n```",
   "type": "story",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -17,9 +17,24 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "dab075e2-0d96-4db8-8aaa-ba002068ef14",
+      "author": "home",
+      "text": "Terra delivered deterministic text-free manifest construction and round-trip validation, official-test scoreboard selection with train-only candidate/development roles, duplicate exclusions, and prior-exposure guards. Independent foundation specs passed 28 tests. This story remains in progress: actual dataset-specific manifests and source rehydration must be frozen and audited before live collection. Typed fixtures are not a new benchmark or fresh holdout.",
+      "created_at": "2026-09-30T19:22:25.405593Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-6",
+        "name": "Flywheel Integration",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:07:55.315211Z",
-  "updated_at": "2026-09-30T18:08:42.021714Z",
+  "updated_at": "2026-09-30T19:22:25.405675Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

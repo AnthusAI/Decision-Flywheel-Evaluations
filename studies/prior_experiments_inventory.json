@@ -1,0 +1,28 @@
+{
+  "inventory_version": 1,
+  "audited_at": "2026-09-30",
+  "source_repository": "AnthusAI/Few-Shot-Jev",
+  "source_commit": "59548114ecf45e817613c946af2cab6ceb675804",
+  "datasets": {
+    "ag_news": {
+      "revision": "eb185aade064a813bc0b7f42de02595523103ca4",
+      "recorded_scoreboard": {"split": "test", "n": 2000, "status": "exposed"},
+      "prospective_unregistered_rows": {"split": "test", "status": "requires_manifest_and_exposure_audit"}
+    },
+    "emotion": {
+      "revision": "cab853a1dbdf4c42c2b3ef2173804746df8825fe",
+      "official_test": {"n": 2000, "status": "exposed_small_context_scoreboard"},
+      "official_validation": {"n": 2000, "status": "exposed_large_context_scoreboard"},
+      "selection_train_scoreboard": {"n": 2000, "status": "exposed"},
+      "selection_development": {"n": 600, "status": "tuning_exposed"},
+      "selection_candidate_pool": {"status": "selection_used"}
+    }
+  },
+  "studies": [
+    {"id": "ag_news_few_shot", "protocol_commit": "798bafb3afd19df2c735ea94d89269eb952e3d13", "result_commit": "34d1b69f8b0421777257f28386a4efe5edeca183", "scoreboard_n": 2000, "analysis_records": 32000, "primary_metric": "accuracy", "status": "historical_exposed"},
+    {"id": "emotion_small_context", "protocol_commit": "b7e160a251da82adc9c34657183088fb33356368", "result_commit": "067cfa786ba3ce59b7a617cf0872e5114d2b9bd2", "scoreboard_n": 2000, "analysis_records": 32000, "primary_metric": "accuracy", "status": "historical_exposed"},
+    {"id": "emotion_large_context", "protocol_commit": "34cd9868cf41e1006edfb97f0eee07ac5fd67f5c", "result_commit": "1a395aa90baa577e827e99cf811a2e0caf24de9a", "scoreboard_n": 2000, "analysis_records": 42000, "unique_model_states": 41958, "primary_metric": "macro_f1", "status": "historical_exposed"},
+    {"id": "emotion_selection", "protocol_commit": "552af1e9bbdfcbfa0fd5dfa0c60eaf77813468f1", "result_commit": "59548114ecf45e817613c946af2cab6ceb675804", "scoreboard_n": 2000, "development_n": 600, "analysis_records": 19000, "unique_model_states": 18992, "primary_metric": "macro_f1", "status": "historical_exposed"}
+  ],
+  "next_confirmatory_requirement": "reserve_additional_disjoint_data_and_freeze_a_manifest_before_development"
+}

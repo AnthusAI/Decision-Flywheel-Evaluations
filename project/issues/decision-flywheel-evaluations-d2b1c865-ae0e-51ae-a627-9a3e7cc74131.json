@@ -3,7 +3,7 @@
   "title": "Inventory prior experiments and already-used dataset splits",
   "description": "## Scope\n\nAudit the checked-in AG News, Emotion small/large-context, and Emotion selection protocols and results in Few-Shot-Jev. Record dataset revisions, IDs/splits, task wording, ordering, selection decisions, and prior exposure. Cite historical results directly; do not merge their scores into a new confirmatory result.\n\n## Definition of done\n\nA study inventory names which candidate/development/scoreboard resources can be reused for reproducibility and which are already exposed. If a fresh holdout is unavailable, label the planned analysis as replication/exploratory or choose additional data.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-731c3e14-b2bb-5b69-bdc4-3ab8bba7cca6`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -12,13 +12,31 @@
     "roadmap"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "2d40e2c5-d5db-4f3e-b0cd-930d94955dbe",
+      "author": "home",
+      "text": "Terra completed the historical source audit in studies/PRIOR_EXPERIMENTS.md and the text-free JSON inventory. Revision/split/seed/count/metric/result provenance is linked to exact Few-Shot-Jev commits. Emotion official test/validation and selection train scoreboard are exposed; unused AG News test targets require a new manifest and exposure check before being called a fresh holdout. Local artifact checks and existing offline suite passed; no live calls.",
+      "created_at": "2026-09-30T18:44:51.700194Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-6",
+        "name": "Flywheel Integration",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:06:30.657616Z",
-  "updated_at": "2026-09-30T18:06:30.657737Z",
-  "closed_at": null,
+  "updated_at": "2026-09-30T18:44:54.836651Z",
+  "closed_at": "2026-09-30T18:44:54.836481Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
-  "custom": {},
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
