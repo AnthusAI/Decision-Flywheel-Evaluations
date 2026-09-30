@@ -1,6 +1,8 @@
 import pytest
+import sys
+import types
 
-from .datasets import AG_NEWS, EMOTION, DatasetRow, DatasetSpec, dataset_spec, normalized_text_hash, rows_from_records
+from .datasets import AG_NEWS, EMOTION, DatasetRow, DatasetSpec, dataset_spec, load_huggingface_split, normalized_text_hash, rows_from_records
 
 
 def test_the_supported_datasets_use_the_recorded_immutable_revisions():
@@ -49,3 +51,11 @@ def test_a_normalized_hash_uses_core_nfkc_casefold_whitespace_rules():
 def test_a_dataset_spec_rejects_empty_or_duplicate_identity_fields(name, labels):
     with pytest.raises(ValueError):
         DatasetSpec(name, "a" * 40, labels)
+
+
+def test_the_on_demand_loader_forwards_pinned_revision_config_and_one_split(monkeypatch):
+    calls = []
+    module = types.SimpleNamespace(load_dataset=lambda *args, **kwargs: calls.append((args, kwargs)) or [{"text": "x", "label": 0}])
+    monkeypatch.setitem(sys.modules, "datasets", module)
+    load_huggingface_split(EMOTION, "test", cache_dir="cache")
+    assert calls == [(("dair-ai/emotion",), {"name": "split", "split": "test", "revision": EMOTION.revision, "cache_dir": "cache"})]

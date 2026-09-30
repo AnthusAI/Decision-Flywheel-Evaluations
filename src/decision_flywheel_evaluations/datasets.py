@@ -16,6 +16,7 @@ class DatasetSpec:
     name: str
     revision: str
     labels: tuple[str, ...]
+    config: str = "default"
 
     def __post_init__(self) -> None:
         if not isinstance(self.name, str) or not self.name or not isinstance(self.revision, str) or not _REVISION.fullmatch(self.revision):
@@ -31,7 +32,7 @@ AG_NEWS = DatasetSpec(
 )
 EMOTION = DatasetSpec(
     "dair-ai/emotion", "cab853a1dbdf4c42c2b3ef2173804746df8825fe",
-    ("sadness", "joy", "love", "anger", "fear", "surprise"),
+    ("sadness", "joy", "love", "anger", "fear", "surprise"), "split",
 )
 _SPECS = {"ag_news": AG_NEWS, "emotion": EMOTION}
 
@@ -102,5 +103,5 @@ def load_huggingface_split(spec: DatasetSpec, source_split: str, *, cache_dir: s
         from datasets import load_dataset
     except ImportError as error:  # pragma: no cover - optional runtime integration
         raise RuntimeError("install the data extra to load upstream datasets") from error
-    dataset = load_dataset(spec.name, revision=spec.revision, cache_dir=cache_dir)
-    return rows_from_records(spec, source_split, dataset[source_split])
+    records = load_dataset(spec.name, name=spec.config, split=source_split, revision=spec.revision, cache_dir=cache_dir)
+    return rows_from_records(spec, source_split, records)
