@@ -1,8 +1,10 @@
 # Initial Jev capability pilot
 
-Status: frozen pilot design; live approval pending. This is not a completed
-experiment or permission to start the full development or scoreboard run.
-No live observations or performance findings are reported here.
+Status: frozen pilot design; live approval granted by the human owner on
+2026-09-30 for at most 21 physical attempts per dataset (42 total), no retries.
+This is not a completed experiment or permission to start the full development
+or scoreboard run. No live observations or performance findings are reported
+here.
 
 ## Question and scope
 
