@@ -1,0 +1,108 @@
+{
+  "inference": "none; descriptive paired 95% intervals",
+  "live_results_status": "none",
+  "permission_status": "not_requested",
+  "public_transport": {
+    "base_url": "https://api.typesafe.ai",
+    "core_revision": "6137fa185a1a98afa84b5e6d5948d1780df5d56d",
+    "max_per_label": 64,
+    "sdk_retries": 0,
+    "sdk_revision": "typesafe-sdk-0.7.1",
+    "timeout_seconds": 30,
+    "transport_fingerprint": "109e9d3978f49efd37d4d10beff240396895059a4e4cb7b72ce2bef1a7c06746",
+    "version": "jev-1.13.0"
+  },
+  "request_enumerations": "not stored; regenerate from the committed manifest and frozen protocol",
+  "schema": "decision-flywheel-evaluations/initial-jev-preflight/v1",
+  "status": "unapproved",
+  "studies": {
+    "ag_news": {
+      "estimated_request_tokens": {
+        "max": 9828,
+        "total": 25401540
+      },
+      "logical_request_count": 8000,
+      "outer_proposed_model_call_ceiling": 8400,
+      "physical_request_count": 8000,
+      "preflight_checksum": "8fdd7cb6613c0cf29db31dddf4f5fe70bc07bc7c6e99e7476d0175743f262432",
+      "preflight_stage": "optimization",
+      "proposed_protocol_identity": "914b7e251379553f00b2040c1d6b63c68dd8c41424041f9ed7eddeb070006d63",
+      "levels": {
+        "1": {
+          "estimated_request_tokens": {
+            "max": 320,
+            "total": 415485
+          },
+          "logical_request_count": 2000
+        },
+        "4": {
+          "estimated_request_tokens": {
+            "max": 755,
+            "total": 1264685
+          },
+          "logical_request_count": 2000
+        },
+        "16": {
+          "estimated_request_tokens": {
+            "max": 2534,
+            "total": 4741885
+          },
+          "logical_request_count": 2000
+        },
+        "64": {
+          "estimated_request_tokens": {
+            "max": 9828,
+            "total": 18979485
+          },
+          "logical_request_count": 2000
+        }
+      }
+    },
+    "emotion": {
+      "estimated_request_tokens": {
+        "max": 7185,
+        "total": 28473340
+      },
+      "logical_request_count": 12000,
+      "outer_proposed_model_call_ceiling": 12600,
+      "physical_request_count": 12000,
+      "preflight_checksum": "e3d09d8089264ef8e3644ec9a03bc4a6512d5f2e9545a9145e87d2e96c69d052",
+      "preflight_stage": "optimization",
+      "proposed_protocol_identity": "af1d49119eda713c08ecfa72c7d45134f219e3c6ff81c728217c606d3267297e",
+      "levels": {
+        "1": {
+          "estimated_request_tokens": {
+            "max": 244,
+            "total": 526285
+          },
+          "logical_request_count": 3000
+        },
+        "4": {
+          "estimated_request_tokens": {
+            "max": 551,
+            "total": 1444285
+          },
+          "logical_request_count": 3000
+        },
+        "16": {
+          "estimated_request_tokens": {
+            "max": 2035,
+            "total": 5536885
+          },
+          "logical_request_count": 3000
+        },
+        "64": {
+          "estimated_request_tokens": {
+            "max": 7185,
+            "total": 20965885
+          },
+          "logical_request_count": 3000
+        }
+      }
+    }
+  },
+  "token_estimate": {
+    "counter_identity": "whitespace-request-estimate-v1",
+    "meaning": "Request estimates only; not actual provider token usage, pricing, or a token-fit approval."
+  }
+}

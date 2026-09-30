@@ -1,23 +1,78 @@
 import asyncio
 import hashlib
+import subprocess
 from dataclasses import replace
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from decision_flywheel.models import DecisionResult
 
-from .cli import report_document, run_collection, select_from_ledger
+from . import cli
+from .cli import _load_source_rows, report_document, run_collection, select_from_ledger
 from .manifests import read_manifest, write_manifest
 from .preflight import preflight
 from .preflight_test import _protocol, _rows
 from .serialization import (read_observations, read_preflight, read_protocol, read_rows_fixture,
                             write_observations, write_preflight, write_protocol, write_rows_fixture)
+from .protocol import transport_config_fingerprint
 
 
 class _FakeModel:
     async def decide(self, task, _target, _context):
         return DecisionResult(task.labels[0], probabilities={label: float(label == task.labels[0]) for label in task.labels},
                               usage={"tokens": 1}, model="jev-1.13.0")
+
+
+def test_live_runtime_provenance_failure_stops_before_provider_factory_or_ledger_reservation(tmp_path, monkeypatch):
+    manifest, rows = _rows()
+    base = _protocol(manifest, rows, artifact=False)
+    model = replace(base.models[0], transport_fingerprint=transport_config_fingerprint(
+        base_url="https://api.typesafe.ai", timeout_seconds=30, retries=0,
+        adapter_revision="6137fa185a1a98afa84b5e6d5948d1780df5d56d", package_revision="typesafe-sdk-0.7.1"))
+    protocol = replace(base, models=(model,))
+    plan = preflight(protocol, manifest=manifest, rows=rows, stage="optimization")
+    preregistration = tmp_path / "preregistration.md"
+    preregistration.write_text(f"{protocol.identity}\n{plan.checksum}\n", encoding="utf-8")
+    calls = []
+    monkeypatch.setattr(cli, "validate_jev_runtime", lambda *_: (_ for _ in ()).throw(ValueError("runtime provenance")))
+    monkeypatch.setattr(cli, "CacheStore", lambda *args, **kwargs: calls.append("reservation"))
+    monkeypatch.setattr(cli, "_live_jev_factory", lambda *args, **kwargs: calls.append("factory"))
+
+    with pytest.raises(ValueError, match="runtime provenance"):
+        asyncio.run(run_collection(protocol, manifest, rows, plan, str(tmp_path / "ledger.sqlite"),
+                                   str(preregistration), plan.new_request_count, 1, True,
+                                   provider_model="jev-1.13.0", base_url="https://api.typesafe.ai",
+                                   timeout_seconds=30, adapter_revision="6137fa185a1a98afa84b5e6d5948d1780df5d56d",
+                                   package_revision="typesafe-sdk-0.7.1"))
+    assert calls == []
+
+
+def test_make_run_dry_run_passes_an_explicit_package_revision_without_constructing_a_provider():
+    root = Path(__file__).parents[2]
+    completed = subprocess.run([
+        "make", "-n", "run", "PROTOCOL=protocol.json", "MANIFEST=manifest.json", "ROWS=fixture.json",
+        "PREFLIGHT=preflight.json", "LEDGER=ledger.sqlite", "PREREGISTRATION=preregistration.md",
+        "OUTPUT=observations.json", "PROVIDER_MODEL=jev-1.13.0", "BASE_URL=https://api.typesafe.ai",
+        "TIMEOUT_SECONDS=30", "ADAPTER_REVISION=6137fa185a1a98afa84b5e6d5948d1780df5d56d",
+        "PACKAGE_REVISION=typesafe-sdk-0.7.1", "ATTEMPT_CEILING=8400", "MAX_NEW=0", "CONFIRM=--confirm",
+    ], cwd=root, text=True, capture_output=True, check=False)
+
+    assert completed.returncode == 0
+    assert '--package-revision "typesafe-sdk-0.7.1"' in completed.stdout
+
+
+def test_optimization_dataset_cache_loads_only_candidate_and_development_roles(monkeypatch, tmp_path):
+    manifest, source_rows = _rows()
+    del source_rows
+    seen = []
+    monkeypatch.setattr(cli, "load_cached_manifest_rows", lambda manifest, **kwargs:
+                        (seen.append(kwargs["roles"]) or ()))
+    args = SimpleNamespace(rows=None, dataset_cache=str(tmp_path))
+
+    assert _load_source_rows(args, manifest, stage="optimization") == ()
+    assert seen == [("candidate", "development")]
 
 
 def test_run_refuses_an_unconfirmed_or_overbudget_request_before_the_factory(tmp_path):
@@ -162,8 +217,28 @@ def test_a_complete_native_development_selection_and_scoreboard_pipeline_never_c
         assert effect == {"available": True, "effect": 0.0, "lower": 0.0, "upper": 0.0,
                           "confidence_level": 0.95,
                           "interval_scope": "nominal per-contrast, not multiplicity adjusted"}
-    assert document["holm"]["available"] is False
-    assert "valid p-values" in document["holm"]["reason"]
+    assert document["inference"] == {
+        "family_correction": "none; descriptive paired 95% intervals",
+        "formal_test": "not performed",
+        "adjusted_significance_available": False,
+        "interval_scope": "nominal per-contrast, not multiplicity adjusted",
+    }
+    assert document["holm"] == {
+        "available": False,
+        "adjusted_p_values": {},
+        "reason": "familywise correction was not requested for descriptive paired intervals",
+    }
+    legacy_protocol = replace(derived, primary_family_correction="Holm across two primary contrasts")
+    legacy_plan = preflight(legacy_protocol, manifest=manifest, rows=rows)
+    legacy_document = report_document(legacy_protocol, manifest, legacy_plan, observations)
+    assert legacy_document["inference"] == {
+        "family_correction": "Holm across two primary contrasts",
+        "formal_test": "not available",
+        "adjusted_significance_available": False,
+        "interval_scope": "nominal per-contrast, not multiplicity adjusted",
+    }
+    assert legacy_document["holm"]["available"] is False
+    assert "valid p-values" in legacy_document["holm"]["reason"]
 
 
 def test_report_rejects_tampered_truth_condition_model_protocol_or_preflight_before_metrics(tmp_path):

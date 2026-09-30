@@ -24,9 +24,11 @@ _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REVISION = re.compile(r"^[0-9a-f]{40}$")
 _SAFE_MODEL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,199}$")
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,511}$")
+_NONNEGATIVE_INTEGER = re.compile(r"^(?:0|[1-9][0-9]*)$")
 _FAILURE_CATEGORIES = frozenset({"model-failure", "malformed-response", "uncertain"})
 _USAGE_FIELDS = frozenset({"input_tokens", "output_tokens", "total_tokens", "tokens"})
 _MAX_LATENCY_MS = 3_600_000.0
+_RUNTIME_ATTEMPTS_KEY = "runtime_attempts_used"
 
 
 @dataclass(frozen=True)
@@ -108,6 +110,14 @@ class CacheSnapshot:
         return self.logical_mapping
 
 
+@dataclass(frozen=True)
+class RequestState:
+    """Advisory point-in-time physical-request state for collection scheduling."""
+
+    status: str | None
+    attempts: int
+
+
 class CacheStore:
     """A safe physical-request ledger. Reserve before invoking an injected model."""
 
@@ -142,10 +152,15 @@ class CacheStore:
         self.ceiling = ceiling
         self.approved = {item.request_id: item for item in approved}
         self.db = sqlite3.connect(path, isolation_level=None, timeout=10.0)
-        self.db.execute("PRAGMA foreign_keys = ON")
-        self.db.execute("PRAGMA journal_mode = WAL")
-        self._create_schema()
-        self._bind_configuration(preflight_fingerprint, approved)
+        try:
+            self.db.execute("PRAGMA foreign_keys = ON")
+            self.db.execute("PRAGMA journal_mode = WAL")
+            self._create_schema()
+            self._bind_configuration(preflight_fingerprint, approved)
+            self._initialize_runtime_attempt_counter()
+        except BaseException:
+            self.close()
+            raise
 
     def __enter__(self) -> "CacheStore":
         return self
@@ -161,8 +176,7 @@ class CacheStore:
     @property
     def attempts_used(self) -> int:
         self._require_open()
-        row = self.db.execute("SELECT COALESCE(SUM(attempts), 0) FROM requests").fetchone()
-        return int(row[0])
+        return self._read_runtime_attempt_counter()
 
     @property
     def frozen_configuration(self) -> Mapping[str, Any]:
@@ -172,6 +186,29 @@ class CacheStore:
         if row is None:
             raise ValueError("cache has no frozen configuration")
         return _freeze_mapping(_load_payload(row[0]))
+
+    def request_state(self, request_id: str) -> RequestState:
+        """Read one approved request; ``reserve`` remains the atomic authority."""
+        self._approved(request_id)
+        self._require_open()
+        row = self.db.execute(
+            "SELECT status, attempts FROM requests WHERE request_id = ?", (request_id,)
+        ).fetchone()
+        if row is None:
+            return RequestState(None, 0)
+        status, attempts = row
+        if (status not in {"reserved", "retryable", "failed", "success"}
+                or not isinstance(attempts, int) or attempts < 1):
+            raise ValueError("stored physical request state is invalid")
+        return RequestState(str(status), attempts)
+
+    def successful_request_ids(self) -> frozenset[str]:
+        """Capture pre-existing successes once without loading payloads or cells."""
+        self._require_open()
+        return frozenset(
+            str(row[0])
+            for row in self.db.execute("SELECT request_id FROM requests WHERE status = 'success'")
+        )
 
     def reserve(self, request_id: str, cell: LogicalCell) -> Mapping[str, Any] | str:
         """Replay success or atomically consume one approved physical attempt."""
@@ -194,7 +231,8 @@ class CacheStore:
                 return _load_payload(row[1])
             if row is not None and row[0] == "reserved":
                 raise ValueError("physical request is already reserved; recover explicitly")
-            if self._attempts_used_in_transaction() >= self.ceiling:
+            attempts_used = self._read_runtime_attempt_counter()
+            if attempts_used >= self.ceiling:
                 raise ValueError("approved attempt ceiling exhausted")
 
             token = uuid.uuid4().hex
@@ -215,6 +253,7 @@ class CacheStore:
                 ).rowcount
                 if changed != 1:
                     raise ValueError("physical request is not retryable")
+            self._write_runtime_attempt_counter(attempts_used + 1)
             self._record_cell(cell, request_id)
             return token
 
@@ -392,6 +431,45 @@ class CacheStore:
     def _attempts_used_in_transaction(self) -> int:
         return int(self.db.execute("SELECT COALESCE(SUM(attempts), 0) FROM requests").fetchone()[0])
 
+    def _initialize_runtime_attempt_counter(self) -> None:
+        """Migrate or verify the mutable counter once, under the writer lock."""
+        with self._write_transaction():
+            actual = self._attempts_used_in_transaction()
+            row = self.db.execute(
+                "SELECT value FROM meta WHERE key = ?", (_RUNTIME_ATTEMPTS_KEY,)
+            ).fetchone()
+            if row is None:
+                self.db.execute(
+                    "INSERT INTO meta (key, value) VALUES (?, ?)",
+                    (_RUNTIME_ATTEMPTS_KEY, str(actual)),
+                )
+            else:
+                recorded = _parse_runtime_attempts(row[0])
+                if recorded != actual:
+                    raise ValueError("runtime attempt counter does not match ledger")
+            if actual > self.ceiling:
+                raise ValueError("runtime attempt counter exceeds approved ceiling")
+
+    def _read_runtime_attempt_counter(self) -> int:
+        row = self.db.execute(
+            "SELECT value FROM meta WHERE key = ?", (_RUNTIME_ATTEMPTS_KEY,)
+        ).fetchone()
+        if row is None:
+            raise ValueError("runtime attempt counter is unavailable")
+        value = _parse_runtime_attempts(row[0])
+        if value > self.ceiling:
+            raise ValueError("runtime attempt counter exceeds approved ceiling")
+        return value
+
+    def _write_runtime_attempt_counter(self, value: int) -> None:
+        if not isinstance(value, int) or value < 0 or value > self.ceiling:
+            raise ValueError("runtime attempt counter is invalid")
+        changed = self.db.execute(
+            "UPDATE meta SET value = ? WHERE key = ?", (str(value), _RUNTIME_ATTEMPTS_KEY)
+        ).rowcount
+        if changed != 1:
+            raise ValueError("runtime attempt counter is unavailable")
+
     def _create_schema(self) -> None:
         self._require_open()
         with self._write_transaction():
@@ -537,6 +615,12 @@ def _allowed_provider_model(reported: str, expected: str, approved_provider: str
     if reported in {expected, configured, provider_name, approved_provider}:
         return True
     return False
+
+
+def _parse_runtime_attempts(value: object) -> int:
+    if not isinstance(value, str) or not _NONNEGATIVE_INTEGER.fullmatch(value):
+        raise ValueError("runtime attempt counter is invalid")
+    return int(value)
 
 
 def _dump(value: Mapping[str, Any]) -> str:

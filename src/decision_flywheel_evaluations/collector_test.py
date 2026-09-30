@@ -10,6 +10,7 @@ from .collector import CollectionApproval, CollectionOptions, collect
 from .preflight import preflight
 from .preflight_test import _protocol, _rows
 from .reporting import report_study
+from .serialization import read_observations, write_observations
 
 
 class _CountingModel:
@@ -40,6 +41,25 @@ def _prepared(tmp_path, *, confirmed=True, ceiling=1):
     cache = CacheStore(str(tmp_path / "ledger.sqlite"), task=protocol.task,
                        preflight_fingerprint=plan.checksum,
                        approved_requests=tuple(approved.values()), ceiling=ceiling)
+    return manifest, rows, protocol, plan, approval, cache
+
+
+def _prepared_jev_only(tmp_path):
+    manifest, rows = _rows()
+    base = _protocol(manifest, rows)
+    protocol = replace(base, models=(base.models[0],))
+    plan = preflight(protocol, manifest=manifest, rows=rows)
+    preregistration = tmp_path / "preregistration.md"
+    preregistration.write_text(f"frozen plan {protocol.identity} {plan.checksum}", encoding="utf-8")
+    approval = CollectionApproval(
+        str(preregistration), hashlib.sha256(preregistration.read_bytes()).hexdigest(),
+        protocol.identity, plan.checksum, plan.new_request_count, True,
+    )
+    approved = {cell.fingerprint: ApprovedRequest(cell.fingerprint, cell.task_fingerprint,
+                cell.wire_fingerprint, cell.dataset_revision, cell.model) for cell in plan.cells}
+    cache = CacheStore(str(tmp_path / "ledger.sqlite"), task=protocol.task,
+                       preflight_fingerprint=plan.checksum,
+                       approved_requests=tuple(approved.values()), ceiling=plan.new_request_count)
     return manifest, rows, protocol, plan, approval, cache
 
 
@@ -79,6 +99,30 @@ def test_collector_uses_only_approved_bounded_requests_and_exports_missing_cells
     assert {row.physical_request_id for row in result.observations} <= {cell.fingerprint for cell in plan.cells}
 
 
+def test_optimization_collection_never_needs_heldout_source_rows(tmp_path):
+    manifest, rows = _rows()
+    protocol = _protocol(manifest, rows, artifact=False)
+    plan = preflight(protocol, manifest=manifest, rows=rows, stage="optimization")
+    source_rows = tuple(row for row in rows if row.id not in {record.id for record in manifest.scoreboard})
+    preregistration = tmp_path / "optimization-preregistration.md"
+    preregistration.write_text(f"{protocol.identity} {plan.checksum}", encoding="utf-8")
+    approval = CollectionApproval(
+        str(preregistration), hashlib.sha256(preregistration.read_bytes()).hexdigest(),
+        protocol.identity, plan.checksum, plan.new_request_count, True,
+    )
+    approved = {cell.fingerprint: ApprovedRequest(cell.fingerprint, cell.task_fingerprint,
+                cell.wire_fingerprint, cell.dataset_revision, cell.model) for cell in plan.cells}
+    cache = CacheStore(str(tmp_path / "optimization.sqlite"), task=protocol.task,
+                       preflight_fingerprint=plan.checksum,
+                       approved_requests=tuple(approved.values()), ceiling=plan.new_request_count)
+
+    result = asyncio.run(collect(protocol, manifest, source_rows, plan, cache, approval,
+                                 lambda _model: _CountingModel([]), committed_checker=lambda *_: True,
+                                 options=CollectionOptions(max_new_attempts=1)))
+
+    assert any(row.status == "completed" for row in result.observations)
+
+
 def test_collector_replays_success_without_building_an_engine_after_the_ceiling_is_spent(tmp_path):
     manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, confirmed=True)
     first_calls, second_calls = [], []
@@ -90,6 +134,23 @@ def test_collector_replays_success_without_building_an_engine_after_the_ceiling_
                                  committed_checker=lambda *_: True, options=CollectionOptions(max_new_attempts=1)))
     assert first_calls.count("decision") == 1 and second_calls == []
     assert replay.physical_attempts == 1
+
+
+def test_collector_uses_only_one_final_full_snapshot_while_scheduling_each_request(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, confirmed=True, ceiling=None)
+    original_snapshot = cache.snapshot
+    snapshots = []
+
+    def counted_snapshot():
+        snapshots.append("snapshot")
+        return original_snapshot()
+
+    cache.snapshot = counted_snapshot
+    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval,
+                                 lambda _model: _CountingModel([]), committed_checker=lambda *_: True))
+
+    assert result.complete
+    assert snapshots == ["snapshot"]
 
 
 def test_a_mixed_cached_and_new_collection_marks_only_the_preexisting_physical_request_as_a_cache_hit(tmp_path):
@@ -159,6 +220,63 @@ def test_collector_accepts_a_real_jev_adapter_provider_identity(tmp_path):
     result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, factory,
                                  committed_checker=lambda *_: True))
     assert any(row.model_id == "jev:jev-1.13.0" and row.status == "completed" for row in result.observations)
+
+
+def test_fake_jev_confidence_is_cached_exported_and_never_derived_from_probabilities(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared_jev_only(tmp_path)
+    class Response:
+        model = "jev-1.13.0"; usage = {"tokens": 3}
+        answers = {"ag-news": {"choice": "World", "confidence": .37,
+                                 "probabilities": {"World": .9, "Sports": .04,
+                                                   "Business": .03, "Sci/Tech": .03}}}
+    class Client:
+        calls = 0
+        def system_one(self, **_kwargs):
+            self.calls += 1
+            return Response()
+    client = Client()
+    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval,
+                                 lambda _model: JevAdapter(client, configuration=JevConfiguration(model="jev-1.13.0")),
+                                 committed_checker=lambda *_: True,
+                                 options=CollectionOptions(max_new_attempts=1)))
+    completed = next(row for row in result.observations if row.status == "completed")
+    assert client.calls == 1 and completed.confidence == .37
+    assert max(completed.probabilities.values()) == .9
+    assert all(row.confidence is None for row in result.observations if row.status == "missing")
+    path = tmp_path / "observations.json"
+    write_observations(path, result.observations)
+    restored = read_observations(path)
+    assert next(row for row in restored if row.status == "completed").confidence == .37
+
+
+def test_fake_jev_invalid_confidence_is_a_malformed_cached_response(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared_jev_only(tmp_path)
+    class Response:
+        model = "jev-1.13.0"; usage = {"tokens": 3}
+        answers = {"ag-news": {"choice": "World", "confidence": 1.1}}
+    class Client:
+        def system_one(self, **_kwargs): return Response()
+    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval,
+                                 lambda _model: JevAdapter(Client(), configuration=JevConfiguration(model="jev-1.13.0")),
+                                 committed_checker=lambda *_: True,
+                                 options=CollectionOptions(max_new_attempts=1)))
+    assert any(row.status == "malformed" for row in result.observations)
+    assert all(row.confidence is None for row in result.observations)
+
+
+def test_factory_value_error_is_a_safe_model_failure_not_a_malformed_provider_response(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared_jev_only(tmp_path)
+    factory_calls = []
+    def factory(model):
+        factory_calls.append(model)
+        raise ValueError("credential-like factory detail")
+    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, factory,
+                                 committed_checker=lambda *_: True,
+                                 options=CollectionOptions(max_new_attempts=1)))
+    assert len(factory_calls) == 1
+    assert any(row.status == "failed" for row in result.observations)
+    assert all(row.status != "malformed" for row in result.observations)
+    assert "credential-like factory detail" not in repr(cache.snapshot().physical_payloads)
 
 
 def test_baseexception_crash_persists_reservation_for_reopen_recovery_and_one_retry(tmp_path):

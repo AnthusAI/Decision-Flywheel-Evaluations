@@ -19,8 +19,13 @@ def cached_arrow_path(spec: DatasetSpec, source_split: str, cache_root: str | Pa
     return Path(cache_root) / spec.name.replace("/", "___") / spec.config / "0.0.0" / spec.revision / f"{dataset_name}-{source_split}.arrow"
 
 
-def load_cached_manifest_rows(manifest: DatasetManifest, *, cache_root: str | Path = ".data/huggingface",
-                              reader: ArrowReader | None = None) -> tuple[DatasetRow, ...]:
+def load_cached_manifest_rows(
+    manifest: DatasetManifest,
+    *,
+    cache_root: str | Path = ".data/huggingface",
+    reader: ArrowReader | None = None,
+    roles: tuple[str, ...] | None = None,
+) -> tuple[DatasetRow, ...]:
     """Rehydrate exactly manifest-selected rows from explicit pinned Arrow files.
 
     This is intentionally not a dataset loader: it never imports or calls
@@ -28,10 +33,16 @@ def load_cached_manifest_rows(manifest: DatasetManifest, *, cache_root: str | Pa
     downloading, globbing revisions, or selecting a newest artifact.
     """
     manifest.validate()
+    requested_roles = ("candidate", "development", "scoreboard") if roles is None else tuple(roles)
+    allowed_roles = {"candidate", "development", "scoreboard"}
+    if (not requested_roles or len(set(requested_roles)) != len(requested_roles)
+            or any(role not in allowed_roles for role in requested_roles)):
+        raise ValueError("roles must be unique manifest partition names")
     spec = dataset_spec(_short_name(manifest.dataset), manifest.revision)
     if spec.name != manifest.dataset:
         raise ValueError("manifest dataset is unsupported by the pinned cache reader")
-    source_splits = tuple(dict.fromkeys(record.source_split for record in manifest.records))
+    selected_records = tuple(record for record in manifest.records if record.role in requested_roles)
+    source_splits = tuple(dict.fromkeys(record.source_split for record in selected_records))
     if not source_splits:
         raise ValueError("manifest has no rows to rehydrate")
     read = reader or _datasets_arrow_reader
@@ -47,7 +58,7 @@ def load_cached_manifest_rows(manifest: DatasetManifest, *, cache_root: str | Pa
                 raise ValueError("pinned cached Arrow source contains duplicate row identities")
             by_id[row.id] = row
     selected = []
-    for record in manifest.records:
+    for record in selected_records:
         row = by_id.get(record.id)
         if row is None:
             raise ValueError("pinned cached Arrow source is missing a manifest row")

@@ -120,8 +120,21 @@ def _selected_global_anchor(task, candidates: Iterable[LabeledItem]) -> Item:
         index += 1
 
 
-def rehydrate_manifest(manifest: DatasetManifest, rows: Iterable[DatasetRow], protocol: FrozenProtocol):
-    """Return core Items only after source identity/label/hash exactly match manifest."""
+def rehydrate_manifest(
+    manifest: DatasetManifest,
+    rows: Iterable[DatasetRow],
+    protocol: FrozenProtocol,
+    *,
+    stage: str = "scoreboard",
+):
+    """Rehydrate source rows needed for one frozen stage.
+
+    Optimization admits full caller-owned fixtures for compatibility, but reads
+    labels and text only for candidate/development records.  Scoreboard source
+    rows remain required and fully verified for scoreboard collection.
+    """
+    if stage not in {"optimization", "scoreboard"}:
+        raise ValueError("stage must be optimization or scoreboard")
     manifest.validate()
     protocol.validate()
     if manifest_sha256(manifest) != protocol.dataset_manifest_sha256:
@@ -129,11 +142,27 @@ def rehydrate_manifest(manifest: DatasetManifest, rows: Iterable[DatasetRow], pr
     if manifest.dataset != protocol.dataset or manifest.counts != {"candidate": protocol.candidate_count, "development": protocol.development_count, "scoreboard": protocol.scoreboard_count}:
         raise ValueError("manifest dataset or declared counts do not match protocol")
     source_rows = tuple(rows)
-    supplied = {row.id: row for row in source_rows}
-    if len(supplied) != len(source_rows):
-        raise ValueError("rehydrated rows must have unique IDs")
-    records = {record.id: record for record in manifest.records}
-    if set(supplied) != set(records): raise ValueError("rehydrated rows must exactly match manifest IDs")
+    stage_records = (
+        manifest.candidate + manifest.development
+        if stage == "optimization" else manifest.records
+    )
+    records = {record.id: record for record in stage_records}
+    permitted_ids = set(records) | ({record.id for record in manifest.scoreboard}
+                                    if stage == "optimization" else set())
+    supplied = {}
+    for row in source_rows:
+        row_id = row.id
+        if row_id not in permitted_ids:
+            raise ValueError("rehydrated rows must exactly match manifest IDs")
+        if row_id not in records:
+            # A complete caller fixture may include a held-out row.  Do not
+            # inspect its source label or text in optimization mode.
+            continue
+        if row_id in supplied:
+            raise ValueError("rehydrated rows must have unique IDs")
+        supplied[row_id] = row
+    if set(supplied) != set(records):
+        raise ValueError("rehydrated rows must exactly match manifest IDs")
     for key, record in records.items():
         row = supplied[key]
         if (row.source_split, row.source_index, row.label, normalized_text_hash(row.text)) != (record.source_split, record.source_index, record.label, record.normalized_text_sha256):
@@ -142,14 +171,17 @@ def rehydrate_manifest(manifest: DatasetManifest, rows: Iterable[DatasetRow], pr
     item = lambda record: Item(record.id, {protocol.task.input_field: supplied[record.id].text})
     candidates = tuple(LabeledItem(item(record), record.label, "trusted") for record in manifest.candidate)
     development = tuple(LabeledItem(item(record), record.label, "trusted") for record in manifest.development)
-    scoreboard = tuple(LabeledItem(item(record), record.label, "trusted") for record in manifest.scoreboard)
+    scoreboard = (
+        tuple(LabeledItem(item(record), record.label, "trusted") for record in manifest.scoreboard)
+        if stage == "scoreboard" else ()
+    )
     return candidates, development, scoreboard
 
 
 def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, rows: Iterable[DatasetRow], *, stage: str = "scoreboard") -> tuple[RequestCell, ...]:
     """Build core ContextPlans offline; returned cells expose only IDs/fingerprints/estimates."""
     if stage not in {"optimization", "scoreboard"}: raise ValueError("stage must be optimization or scoreboard")
-    candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol)
+    candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol, stage=stage)
     pool = candidate_pool_fingerprint(protocol.task, candidates)
     artifact = protocol.selector_search_artifact
     if stage == "scoreboard":

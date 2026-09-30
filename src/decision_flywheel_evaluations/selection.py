@@ -53,7 +53,9 @@ async def optimize_from_cache(protocol: FrozenProtocol, manifest: DatasetManifes
     models = {item.semantic_identity for item in protocol.models}
     if model_identity not in models:
         raise ValueError("declared model identity is not frozen in protocol")
-    candidates, development, scoreboard = rehydrate_manifest(manifest, source, protocol)
+    candidates, development, scoreboard = rehydrate_manifest(
+        manifest, source, protocol, stage="optimization"
+    )
     cells = [cell for cell in frozen_preflight.cells if cell.model == model_identity]
     expected_trials = tuple(TrialSpec(RandomBalanced(seed), size)
                             for size in protocol.optimization.per_label_sizes

@@ -10,13 +10,13 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
-    "decision-flywheel @ git+https://github.com/AnthusAI/Decision-Flywheel.git@049f73201d40da1f4f4fbbca6f6c5192eac982c7",
+    "decision-flywheel @ git+https://github.com/AnthusAI/Decision-Flywheel.git@6137fa185a1a98afa84b5e6d5948d1780df5d56d",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 data = ["datasets>=2.0"]
-jev-live = ["typesafe-sdk>=0.7,<0.8", "python-dotenv>=1,<2"]
+jev-live = ["typesafe-sdk==0.7.1", "python-dotenv>=1,<2"]
 tools = [
     "build>=1.2",
     "kanbus==0.33.0",

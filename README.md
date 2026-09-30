@@ -44,8 +44,9 @@ Retries are disabled by default. A retry or recovery requires the explicit
 `--max-retries-per-request`; the approved cumulative ceiling includes those
 possible retries and remains immutable when a ledger is resumed.
 Reported paired intervals are reproducible nominal per-contrast 95% intervals.
-They are not multiplicity-adjusted, and no familywise confirmatory significance
-claim is made until a frozen inferential plan supplies valid prespecified p-values.
+New protocols explicitly use descriptive inference, not a formal significance
+test or multiplicity-adjusted intervals. Legacy Holm-labelled protocols remain
+readable, but correction is unavailable without valid prespecified p-values.
 
 For a prepared benchmark, use the ignored pinned Arrow cache directly instead
 of exporting a JSON copy of article text:
@@ -106,6 +107,54 @@ Dataset attribution and terms are separate from this repository's MIT license:
 
 ## Native selection and live collection
 
+The [initial Jev design](studies/INITIAL_JEV_STUDY.md) describes the proposed
+selection-by-size investigation, descriptive analysis, and unresolved approval gates.
+It is not a completed study or permission to collect.
+
+The [initial preflight record](studies/INITIAL_JEV_PREFLIGHT.json) records an
+actual cache-only enumeration: 8,000 AG News and 12,000 Emotion development
+requests, with no model calls. Its estimates are not provider token usage,
+pricing, or proof that every context fits. The compact record is committed;
+the large request enumerations are regenerated locally, not redistributed.
+
+After explicitly acquiring the pinned dataset cache, reproduce the proposed
+AG News protocol and enumeration without an API key:
+
+```bash
+mkdir -p .data/proposals
+.venv/bin/python scripts/freeze_jev_study.py \
+  --manifest studies/manifests/ag_news.json \
+  --output .data/proposals/ag_news.protocol.json \
+  --model-version jev-1.13.0 --base-url https://api.typesafe.ai \
+  --timeout-seconds 30 \
+  --adapter-revision 6137fa185a1a98afa84b5e6d5948d1780df5d56d \
+  --package-revision typesafe-sdk-0.7.1 \
+  --max-per-label 64 --max-model-calls 8400
+make PYTHON=.venv/bin/python preflight \
+  PROTOCOL=.data/proposals/ag_news.protocol.json \
+  MANIFEST=studies/manifests/ag_news.json \
+  DATASET_CACHE=.data/huggingface \
+  OUTPUT=.data/proposals/ag_news.preflight.json STAGE=optimization
+```
+
+For Emotion, replace `ag_news` with `emotion` and the proposed ceiling `8400`
+with `12600`. Compare protocol identities and preflight checksums with the
+compact record. Re-authoring an existing protocol requires explicit
+`--overwrite`; none of these commands approves collection. Tests validate the
+committed inputs and compact record without requiring the downloaded datasets
+or generated request enumerations.
+
+To author an unapproved development protocol offline, use
+`scripts/freeze_jev_study.py --help`. The script requires a byte-for-byte
+committed benchmark manifest, an exact `jev-N.N.N` version, public SDK **base**
+URL (not the `/v1/systemone` endpoint), timeout, adapter/package revisions,
+declared capability, and explicit call ceiling. It fixes the task templates,
+label order, native policies, seed/size ladder, and canonical initial display.
+It rejects secret-bearing URLs and refuses to overwrite an output without
+`--overwrite`. Authoring a protocol does not create a preregistration or approve
+calls. Optimization preflight/run/select use only candidate/development source
+rows; they do not open the official-test Arrow file.
+
 `select` has no provider path: it reopens the exact bounded optimization ledger,
 replays complete sanitized development decisions through the native optimizer,
 and writes both a derived protocol and a text-free link to the original
@@ -117,13 +166,23 @@ The initial live adapter is JEV-only and must use one exact frozen
 `jev:<model-version>@transport-<sha256>` identity. A live run requires an
 explicit endpoint, timeout, and adapter revision whose public, credential-free
 transport fingerprint exactly matches that identity. Install it explicitly with
-`pip install -e '.[jev-live]'`. The core plan fingerprint is auditable context provenance; it
+`pip install -e '.[jev-live]'` (the evaluation extra pins TypeSafe SDK 0.7.1).
+Pass `PACKAGE_REVISION=typesafe-sdk-0.7.1` to `make run`. Before opening a
+ledger or constructing a provider, the live path verifies the installed SDK
+version and the core's installed Git commit metadata. Core installs with
+unknown provenance or editable source are rejected for live collection; use
+the exact Git-pinned dependency declared in this repository. The evaluation
+harness itself may remain editable for development.
+The core plan fingerprint is auditable context provenance; it
 is not a promise of provider transport-byte identity, and this CLI does not yet
 offer Kev/Laya live collection or cross-provider cache reuse.
 
 Source row text is input-only. Benchmark artifacts (protocols, preflights,
 ledgers, observations, and reports) remain text-free. `rows-fixture` writing is
 available solely for synthetic local specs, not for exporting a dataset.
+Explicit provider confidence is preserved through adapters, the cache, and
+observation JSON independently of probabilities; older observation JSON without
+that field remains readable with confidence unavailable.
 
 Development optimization is a separate native-core step: before scoreboard
 preflight, it must produce a complete, validated `SelectedGlobalArtifact` from

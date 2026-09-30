@@ -24,6 +24,8 @@ from .study import Engine
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _ORDERS = {"canonical", "reversed", "interleaved", "shuffled"}
 _TRANSPORT_REVISION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$")
+_DESCRIPTIVE_INTERVALS = "none; descriptive paired 95% intervals"
+_LEGACY_HOLM = "Holm across two primary contrasts"
 
 
 def transport_config_fingerprint(*, base_url: str, timeout_seconds: float, retries: int,
@@ -540,7 +542,7 @@ class FrozenProtocol:
     optimization: OptimizationSpec
     selection_transfer_source: str | None = None
     metric: str = "macro_f1"
-    primary_family_correction: str = "Holm across two primary contrasts"
+    primary_family_correction: str = _DESCRIPTIVE_INTERVALS
 
     @property
     def identity(self) -> str:
@@ -606,7 +608,8 @@ class FrozenProtocol:
             raise ValueError("selection transfer source must be a non-empty model identity")
         expected = "macro_f1" if self.dataset == "dair-ai/emotion" else "accuracy"
         if self.metric != expected: raise ValueError(f"{self.dataset} requires primary metric {expected}")
-        if self.primary_family_correction != "Holm across two primary contrasts": raise ValueError("state the Holm correction across the two primary contrasts")
+        if self.primary_family_correction not in {_DESCRIPTIVE_INTERVALS, _LEGACY_HOLM}:
+            raise ValueError("primary family correction is not a declared analysis mode")
 
 
 @dataclass(frozen=True)

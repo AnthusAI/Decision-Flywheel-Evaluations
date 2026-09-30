@@ -123,6 +123,18 @@ def test_selection_refuses_a_changed_model_transport_before_replaying_evidence(t
                                          changed_jev.semantic_identity, "native-cache-selection"))
 
 
+def test_native_selection_never_needs_heldout_source_rows(tmp_path):
+    manifest, rows, protocol, plan, cache = _complete_cache(tmp_path)
+    development_rows = tuple(row for row in rows if row.id not in {record.id for record in manifest.scoreboard})
+
+    result = asyncio.run(optimize_from_cache(
+        protocol, manifest, development_rows, plan, cache,
+        "jev:jev-1.13.0", "native-cache-selection",
+    ))
+
+    assert result.optimization.model_calls_attempted == 0
+
+
 def test_selection_accepts_complete_cached_evidence_with_a_predeclared_retry_allowance(tmp_path):
     manifest, rows, protocol, plan, cache = _complete_cache(
         tmp_path, retry_first_request=True,

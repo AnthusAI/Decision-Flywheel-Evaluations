@@ -7,6 +7,7 @@ from decision_flywheel.models import DecisionTask
 from .protocol import (Capability, FrozenProtocol, ModelIdentity, OptimizationSpec, OrderAnchor, OrderProtocol,
                        OrderTreatment, SelectedGlobalArtifact, Selector, _core_search_fingerprint,
                        transport_config_fingerprint)
+from .serialization import read_protocol, write_protocol
 from .study import Engine
 
 
@@ -31,7 +32,18 @@ def test_a_frozen_protocol_binds_exact_wording_option_order_and_manifest_hash():
     protocol.validate()
     assert protocol.metric == "macro_f1"
     assert protocol.primary_contrasts == ((Selector.RETRIEVAL, Selector.RANDOM, 16), (Selector.RANDOM, Selector.RANDOM, (64, 1)))
-    assert protocol.primary_family_correction == "Holm across two primary contrasts"
+    assert protocol.primary_family_correction == "none; descriptive paired 95% intervals"
+
+
+def test_new_protocols_are_descriptive_while_legacy_holm_protocols_round_trip_unchanged(tmp_path):
+    legacy = replace(_protocol(), primary_family_correction="Holm across two primary contrasts")
+    path = tmp_path / "legacy-protocol.json"
+    write_protocol(path, legacy)
+
+    restored = read_protocol(path)
+    assert restored == legacy and restored.identity == legacy.identity
+    with pytest.raises(ValueError, match="primary family correction"):
+        replace(_protocol(), primary_family_correction="unjustified p-values").validate()
 
 
 def test_a_protocol_rejects_unanchored_selector_search_or_wrong_dataset_metric():

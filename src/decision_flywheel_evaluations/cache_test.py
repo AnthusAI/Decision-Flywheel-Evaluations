@@ -2,8 +2,10 @@ from decision_flywheel.models import DecisionTask
 from decision_flywheel.adapters.jev import JevAdapter, JevConfiguration
 from decision_flywheel.adapters.kev import KevAdapter, KevConfiguration
 import asyncio
+import sqlite3
 import pytest
 
+from . import cache as cache_module
 from .cache import ApprovedRequest, CacheStore, LogicalCell
 
 
@@ -87,6 +89,121 @@ def test_recovery_records_the_crashed_attempt_and_a_retry_spends_another(tmp_pat
 
     assert cache.attempts_used == 2
     assert cache.reserve("a" * 64, _cell())["choice"] == "yes"
+
+
+def test_point_state_reads_one_approved_request_without_materializing_a_snapshot(tmp_path):
+    cache = _cache(tmp_path, ceiling=2)
+    statements = []
+    cache.db.set_trace_callback(statements.append)
+
+    assert cache.request_state("a" * 64).status is None
+    token = cache.reserve("a" * 64, _cell())
+    state = cache.request_state("a" * 64)
+
+    assert isinstance(token, str)
+    assert (state.status, state.attempts) == ("reserved", 1)
+    assert any("WHERE request_id" in statement for statement in statements)
+    assert not any("ORDER BY request_id" in statement for statement in statements)
+    assert not any("SUM(attempts)" in statement for statement in statements)
+
+
+def test_transactional_attempt_counter_bounds_two_connections_and_a_retry(tmp_path):
+    task = _task()
+    second_request = _approved(task, "e" * 64, state="f" * 64)
+    first = _cache(tmp_path, ceiling=2, requests=(_approved(task), second_request))
+    second = CacheStore(str(tmp_path / "ledger.sqlite"), task=task,
+                        preflight_fingerprint="d" * 64,
+                        approved_requests=(_approved(task), second_request), ceiling=2)
+
+    first_token = first.reserve("a" * 64, _cell())
+    first.fail(first_token, "model-failure")
+    retry_token = second.reserve("a" * 64, _cell())
+
+    assert isinstance(retry_token, str)
+    assert second.attempts_used == 2
+    with pytest.raises(ValueError, match="ceiling"):
+        first.reserve("e" * 64, LogicalCell("scoreboard:fake:1:zero:target-2", "zero", 0, "canonical", "target-2"))
+
+
+def test_existing_ledger_migrates_a_missing_runtime_counter_once_under_lock(tmp_path):
+    cache = _cache(tmp_path, ceiling=2)
+    token = cache.reserve("a" * 64, _cell())
+    cache.complete(token, {"choice": "yes"})
+    cache.db.execute("DELETE FROM meta WHERE key = 'runtime_attempts_used'")
+    cache.close()
+
+    reopened = _cache(tmp_path, ceiling=2)
+
+    assert reopened.attempts_used == 1
+    assert reopened.db.execute("SELECT value FROM meta WHERE key = 'runtime_attempts_used'").fetchone() == ("1",)
+
+
+def test_corrupted_runtime_counter_refuses_reopen_before_it_can_overspend(tmp_path):
+    cache = _cache(tmp_path, ceiling=2)
+    token = cache.reserve("a" * 64, _cell())
+    cache.complete(token, {"choice": "yes"})
+    cache.db.execute("UPDATE meta SET value = '0' WHERE key = 'runtime_attempts_used'")
+    cache.close()
+
+    with pytest.raises(ValueError, match="attempt counter"):
+        _cache(tmp_path, ceiling=2)
+
+
+@pytest.mark.parametrize("failure", ("frozen_configuration", "runtime_counter"))
+def test_a_failed_cache_open_closes_its_connection_before_propagating_validation_error(
+        tmp_path, monkeypatch, failure):
+    cache = _cache(tmp_path, ceiling=2)
+    if failure == "runtime_counter":
+        token = cache.reserve("a" * 64, _cell())
+        cache.complete(token, {"choice": "yes"})
+        cache.db.execute("UPDATE meta SET value = '0' WHERE key = 'runtime_attempts_used'")
+    cache.close()
+
+    captured = []
+    real_connect = sqlite3.connect
+
+    def capture_connection(*args, **kwargs):
+        connection = real_connect(*args, **kwargs)
+        captured.append(connection)
+        return connection
+
+    monkeypatch.setattr(cache_module.sqlite3, "connect", capture_connection)
+    opening = _cache if failure == "runtime_counter" else (
+        lambda path, ceiling: CacheStore(
+            str(path / "ledger.sqlite"),
+            task=_task(),
+            preflight_fingerprint="e" * 64,
+            approved_requests=(_approved(_task()),),
+            ceiling=ceiling,
+        )
+    )
+
+    with pytest.raises(ValueError):
+        opening(tmp_path, ceiling=2)
+
+    assert len(captured) == 1
+    with pytest.raises(sqlite3.ProgrammingError, match="closed"):
+        captured[0].execute("SELECT 1")
+
+
+def test_a_cell_recording_failure_rolls_back_the_reserved_request_and_attempt_counter(tmp_path, monkeypatch):
+    cache = _cache(tmp_path, ceiling=1)
+    original_record_cell = cache._record_cell
+
+    def fail_to_record(*_args):
+        raise RuntimeError("cell storage failed")
+
+    monkeypatch.setattr(cache, "_record_cell", fail_to_record)
+    with pytest.raises(RuntimeError, match="cell storage failed"):
+        cache.reserve("a" * 64, _cell())
+
+    assert cache.request_state("a" * 64).status is None
+    assert cache.attempts_used == 0
+    assert cache.db.execute("SELECT COUNT(*) FROM requests").fetchone() == (0,)
+
+    monkeypatch.setattr(cache, "_record_cell", original_record_cell)
+    assert isinstance(cache.reserve("a" * 64, _cell()), str)
+    assert cache.attempts_used == 1
 
 
 @pytest.mark.parametrize("response", [

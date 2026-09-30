@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "82028d17-a676-4324-8dfd-af9415eebfee",
+  "issue_id": "decision-flywheel-evaluations-4b01739f-08ac-54f6-9080-a5af9a79bf72",
+  "event_type": "comment_added",
+  "occurred_at": "2026-09-30T21:25:10.906Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "b7b30649-7021-479d-b330-1669f84c2b96",
+    "comment_author": "home",
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Implementation"
+    }
+  }
+}

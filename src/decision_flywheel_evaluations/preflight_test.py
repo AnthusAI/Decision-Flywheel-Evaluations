@@ -213,6 +213,18 @@ def test_optimization_needs_no_selected_global_artifact_but_scoreboard_does():
         preflight(protocol, manifest=manifest, rows=rows)
 
 
+def test_optimization_preflight_rehydrates_only_candidate_and_development_source_rows():
+    manifest, rows = _rows()
+    protocol = _protocol(manifest, rows, artifact=False)
+    source_rows = tuple(row for row in rows if row.id not in {record.id for record in manifest.scoreboard})
+
+    result = preflight(protocol, manifest=manifest, rows=source_rows, stage="optimization")
+
+    assert result.optimization_count == 80
+    with pytest.raises(ValueError, match="exactly match manifest IDs"):
+        preflight(protocol, manifest=manifest, rows=source_rows, stage="scoreboard")
+
+
 def test_preflight_rejects_tampered_candidate_provenance_and_selected_global_membership_before_calls():
     manifest, rows = _rows()
     protocol = _protocol(manifest, rows)

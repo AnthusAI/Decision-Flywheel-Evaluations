@@ -1,11 +1,12 @@
 import json
 from dataclasses import replace
 
+from .metrics import Observation
 from .preflight import preflight
 from .preflight_test import _protocol, _rows
 from .protocol import transport_config_fingerprint
-from .serialization import (read_preflight, read_protocol, read_rows_fixture,
-                            write_preflight, write_protocol, write_rows_fixture)
+from .serialization import (read_observations, read_preflight, read_protocol, read_rows_fixture,
+                            write_observations, write_preflight, write_protocol, write_rows_fixture)
 
 
 def test_a_protocol_and_preflight_round_trip_without_dataset_text(tmp_path):
@@ -55,3 +56,40 @@ def test_protocol_serialization_preserves_the_public_transport_fingerprint(tmp_p
     write_protocol(path, protocol)
 
     assert read_protocol(path).models[0].transport_fingerprint == transport
+
+
+def test_observation_confidence_round_trips_and_legacy_rows_default_to_none(tmp_path):
+    path = tmp_path / "observations.json"
+    row = Observation("r", "t", "c", 0, "canonical", "yes", "yes", "completed",
+                      {"yes": .9, "no": .1}, confidence=.37)
+    write_observations(path, (row,))
+
+    assert read_observations(path) == (row,)
+    document = json.loads(path.read_text())
+    del document["observations"][0]["confidence"]
+    path.write_text(json.dumps(document), encoding="utf-8")
+    assert read_observations(path)[0].confidence is None
+
+
+def test_observation_reader_rejects_unknown_or_invalid_confidence_fields(tmp_path):
+    path = tmp_path / "observations.json"
+    row = Observation("r", "t", "c", 0, "canonical", "yes", "yes", "completed")
+    write_observations(path, (row,))
+    document = json.loads(path.read_text())
+    document["observations"][0]["confidence"] = True
+    path.write_text(json.dumps(document), encoding="utf-8")
+    try:
+        read_observations(path)
+    except ValueError as error:
+        assert "confidence" in str(error)
+    else:
+        raise AssertionError("boolean confidence was accepted")
+    document["observations"][0]["confidence"] = .37
+    document["observations"][0]["unexpected"] = "provider payload"
+    path.write_text(json.dumps(document), encoding="utf-8")
+    try:
+        read_observations(path)
+    except ValueError as error:
+        assert "fields" in str(error)
+    else:
+        raise AssertionError("unknown observation payload field was accepted")

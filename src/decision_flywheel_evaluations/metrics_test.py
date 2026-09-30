@@ -13,6 +13,13 @@ def test_observations_reject_invalid_status_usage_and_reliability_keeps_empty_bi
  bins=reliability_bins([Observation("r","t","c",0,"o","yes","yes","completed",{"yes":.5,"no":.5})],("yes","no"),bins=2)
  assert [(b.index,b.lower,b.upper,b.count) for b in bins]==[(0,0,.5,0),(1,.5,1.,1)]
 
+def test_explicit_provider_confidence_is_optional_and_never_substitutes_probability_confidence():
+ row=Observation("r","t","c",0,"o","yes","yes","completed",{"yes":.9,"no":.1},confidence=.37)
+ assert row.confidence==.37 and row.probabilities=={"yes":.9,"no":.1}
+ for invalid in (True,-.01,1.01,float("nan"),".37"):
+  with pytest.raises(ValueError,match="confidence"):
+   Observation("r","t","c",0,"o","yes","yes","completed",confidence=invalid)
+
 def test_unknown_or_missing_completed_labels_are_errors_not_silently_dropped():
  rows=[Observation("r","t","c",0,"o","yes","maybe","completed")]
  with pytest.raises(ValueError,match="predicted label"):

@@ -52,3 +52,24 @@ def test_cached_row_rehydration_rejects_missing_or_mismatched_manifest_provenanc
 def test_cached_arrow_paths_pin_the_exact_revision_without_globbing_or_latest_fallback(tmp_path):
     expected = tmp_path / "fancyzhx___ag_news" / "default" / "0.0.0" / AG_NEWS.revision / "ag_news-train.arrow"
     assert cached_arrow_path(AG_NEWS, "train", tmp_path) == expected
+
+
+def test_development_role_rehydration_never_opens_the_heldout_arrow_source(tmp_path):
+    manifest = _manifest()
+    paths = []
+
+    def reader(path):
+        paths.append(path)
+        if path.stem.endswith("test"):
+            raise AssertionError("optimization must not open the scoreboard source")
+        return [{"text": "world candidate", "label": 0}, {"text": "sports development", "label": 1}]
+
+    rows = load_cached_manifest_rows(
+        manifest, cache_root=tmp_path, reader=reader,
+        roles=("candidate", "development"),
+    )
+
+    assert tuple(row.id for row in rows) == ("train-0", "train-1")
+    assert paths == [cached_arrow_path(AG_NEWS, "train", tmp_path)]
+    with pytest.raises(ValueError, match="roles"):
+        load_cached_manifest_rows(manifest, cache_root=tmp_path, reader=reader, roles=("unknown",))

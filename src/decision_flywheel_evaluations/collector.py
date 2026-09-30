@@ -95,8 +95,7 @@ async def collect(
     checker = committed_checker or git_preregistration_is_committed
     options.validate()
     execution = _validate_gates(protocol, manifest, rows, frozen_preflight, cache, approval, checker)
-    initial = cache.snapshot()
-    initial_successes = {request_id for request_id, status in initial.physical_status.items() if status == "success"}
+    initial_successes = cache.successful_request_ids()
     new_attempts = 0
     models: dict[str, DecisionModel] = {}
     cells_by_physical: dict[str, list[tuple[RequestCell, Item, object]]] = {}
@@ -104,8 +103,8 @@ async def collect(
         cells_by_physical.setdefault(cell.fingerprint, []).append((cell, target, plan))
 
     for physical_id, planned in sorted(cells_by_physical.items()):
-        status = cache.snapshot().physical_status.get(physical_id)
-        attempts = cache.snapshot().physical_attempts.get(physical_id, 0)
+        state = cache.request_state(physical_id)
+        status, attempts = state.status, state.attempts
         if status == "success":
             # Replay every logical cell so the cache records its safe logical mapping.
             for cell, _target, _plan in planned:
@@ -138,22 +137,33 @@ async def collect(
             continue
         new_attempts += 1
         cell, target, plan = planned[0]
-        try:
-            model = models.get(cell.model)
-            if model is None:
+        model = models.get(cell.model)
+        if model is None:
+            try:
                 model = engine_factory(cell.model)
-                models[cell.model] = model
+            except Exception:
+                # Factory/configuration errors are not provider result shape
+                # errors; record only a safe operational failure category.
+                cache.fail(reserved, "model-failure")
+                continue
+            models[cell.model] = model
+        completed = False
+        try:
             result = await model.decide(protocol.task, target, plan.examples)
+        except ValueError:
+            # DecisionResult validation errors represent an invalid structured
+            # provider response; keep only the safe ledger category.
+            cache.fail(reserved, "malformed-response")
         except Exception:
             # Provider exception contents must never become result provenance.
             cache.fail(reserved, "model-failure")
         else:
             # Persistence/ledger errors are not model failures and must not try
             # to finalize an already-transitioned reservation a second time.
-            cache.complete(reserved, _result_payload(result))
+            completed = cache.complete(reserved, _result_payload(result)).get("status") == "success"
         # A success is replayed into the other logical cells; a failure still
         # exports every cell from physical ledger metadata below.
-        if cache.snapshot().physical_status.get(physical_id) == "success":
+        if completed:
             for other, _target, _plan in planned[1:]:
                 cache.reserve(physical_id, _logical_cell(other))
 
@@ -229,7 +239,8 @@ def _validate_gates(
 def _execution_plans(
     protocol: FrozenProtocol, manifest: DatasetManifest, rows: Sequence[DatasetRow], cells: Sequence[RequestCell],
 ) -> tuple[tuple[RequestCell, Item, object], ...]:
-    candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol)
+    stage = "optimization" if cells and cells[0].phase == "optimization" else "scoreboard"
+    candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol, stage=stage)
     targets = {row.item.id: row.item for row in (development if cells and cells[0].phase == "optimization" else scoreboard)}
     artifact = protocol.selector_search_artifact
     plans = []
@@ -279,6 +290,7 @@ def _result_payload(result: object) -> Mapping[str, object]:
     if result.usage is not None: payload["usage"] = result.usage
     if result.latency_ms is not None: payload["latency_ms"] = result.latency_ms
     if result.model is not None: payload["model"] = result.model
+    if result.confidence is not None: payload["confidence"] = result.confidence
     return payload
 
 
@@ -299,10 +311,12 @@ def _observation(cell: RequestCell, manifest: DatasetManifest, snapshot: object,
     probabilities = payload.get("probabilities") if observation_status == "completed" else None
     usage = payload.get("usage") if observation_status == "completed" else None
     latency = payload.get("latency_ms") if observation_status == "completed" else None
+    confidence = payload.get("confidence") if observation_status == "completed" else None
     return Observation(cell.id, cell.target_id, _condition(cell), cell.draw_seed or 0, cell.display_order,
                        record.label, prediction, observation_status, probabilities=probabilities,
                        model_id=cell.model, usage=usage, latency_ms=latency, attempt_count=attempts,
                        cache_hit=cache_hit, physical_request_id=cell.fingerprint,
                        physical_request_provenance={"model": cell.model, "dataset_revision": cell.dataset_revision,
                                                     "task_fingerprint": cell.task_fingerprint,
-                                                    "wire_fingerprint": cell.wire_fingerprint})
+                                                    "wire_fingerprint": cell.wire_fingerprint},
+                       confidence=confidence)

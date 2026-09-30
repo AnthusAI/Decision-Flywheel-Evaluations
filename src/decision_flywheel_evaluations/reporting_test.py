@@ -35,6 +35,14 @@ def test_shared_physical_request_is_counted_once_and_pooled_f1_is_not_mean_draw_
  assert pooled.metrics.macro_f1 != pooled.mean_draw_metrics.macro_f1
  assert report_study(rows,("yes","no")).physical.requests==4
 
+def test_shared_physical_request_rejects_conflicting_explicit_provider_confidence():
+ rows=[
+  Observation("first","a","c",0,"canonical","yes","yes","completed",{"yes":.9,"no":.1},confidence=.37,physical_request_id="shared"),
+  Observation("second","a","other",0,"canonical","yes","yes","completed",{"yes":.9,"no":.1},confidence=.9,physical_request_id="shared"),
+ ]
+ with __import__("pytest").raises(ValueError,match="physical request"):
+  report_study(rows,("yes","no"))
+
 def test_failed_physical_attempts_are_counted_while_unknown_usage_stays_unavailable():
  rows=[Observation("cell","target","c",0,"canonical","yes",None,"failed",physical_request_id="crashed",attempt_count=3)]
  physical=report_study(rows,("yes","no")).physical
@@ -46,3 +54,7 @@ def test_holm_correction_computes_only_valid_declared_p_values():
  assert corrected.available and corrected.adjusted_p_values=={"selection":.02,"size":.04}
  unavailable=holm_correction({"selection":None,"size":.04})
  assert not unavailable.available and unavailable.adjusted_p_values=={}
+
+def test_descriptive_primary_contrasts_never_acquire_holm_adjustment_without_p_values():
+ unavailable=holm_correction({"selection":None,"size":None})
+ assert not unavailable.available and unavailable.reason=="valid p-values are unavailable for every declared contrast"

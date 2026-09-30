@@ -44,10 +44,38 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "475b6a8d-777b-4e6f-9bb3-141a7facf79d",
+      "author": "home",
+      "text": "Native collector scalability audit found repeated full snapshots and SUM(attempts) scans inside the physical-request loop. Terra implemented point request-state reads, one final export snapshot, and a transactional runtime attempt counter with one locked migration/integrity scan on opening. Focused cache/collector suite passed30, including two-connection retry-ceiling, replay/recovery, malformed response, and secret-sentinel behavior. Root reviewed the changes; full clean-clone verification and runtime SDK/core provenance gating are next. No paid calls or DSPy.",
+      "created_at": "2026-09-30T21:59:59.948872Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "152dddda-5a65-4339-a9f2-1b0854fae2c0",
+      "author": "home",
+      "text": "Root final review and full161 offline specs passed. Collector performs one final ledger snapshot, point reads per request, and transactional scalar attempt accounting; rollback on logical-cell failure and constructor cleanup after invalid configuration/counter are covered. Live collection now requires installed SDK version and exact PEP610 Git core revision to match frozen metadata before ledger/provider construction. Explicit confidence remains separate from probabilities. Clean-clone verification follows; cross-provider/pilot collection remains pending.",
+      "created_at": "2026-09-30T22:07:39.153702Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-09-30T18:08:15.928596Z",
-  "updated_at": "2026-09-30T21:05:07.970647Z",
+  "updated_at": "2026-09-30T22:07:39.153776Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

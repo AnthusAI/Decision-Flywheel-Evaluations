@@ -264,7 +264,7 @@ def _physical_signature(row: Observation) -> tuple[object, ...]:
     """Fields that must be immutable for one physical call, independent of cell."""
     return (row.target_id, row.true_label, row.status, row.predicted_label, tuple(sorted(row.probabilities.items())) if row.probabilities else None,
             row.model_id, tuple(sorted(row.usage.items())) if row.usage is not None else None,
-            row.latency_ms, row.attempt_count, row.cache_hit,
+            row.latency_ms, row.confidence, row.attempt_count, row.cache_hit,
             tuple(sorted(row.physical_request_provenance.items())) if row.physical_request_provenance else None)
 
 

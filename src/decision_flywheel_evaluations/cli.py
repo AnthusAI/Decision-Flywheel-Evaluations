@@ -26,6 +26,7 @@ from .preflight import PreflightResult, preflight
 from .preflight import _physical_request_fingerprint, manifest_sha256
 from .protocol import FrozenProtocol, ModelIdentity, transport_config_fingerprint
 from .reporting import holm_correction, report_study
+from .runtime_identity import validate_jev_runtime
 from .selection import optimize_from_cache
 from .serialization import (jsonable, read_observations, read_preflight,
                             read_protocol, read_rows_fixture, write_observations,
@@ -144,6 +145,7 @@ def report_document(protocol: FrozenProtocol, manifest: DatasetManifest, plan: P
     study = report_study(rows, protocol.task.labels, expected_request_ids=expected)
     complete = bool(expected) and all(row.status == "completed" for row in rows) and len(rows) == len(expected)
     paired = _paired_effects(protocol, manifest, rows, complete, plan.stage)
+    inference, holm = _inference_metadata(protocol, paired)
     return {"schema": "decision-flywheel-evaluations/report/v1", "protocol_identity": protocol.identity,
             "preflight_checksum": plan.checksum, "complete": complete,
             "stage": plan.stage,
@@ -151,7 +153,24 @@ def report_document(protocol: FrozenProtocol, manifest: DatasetManifest, plan: P
                                else "incomplete: not a study finding" if not complete
                                else "development optimization observations: not a study finding"),
             "study": jsonable(study), "paired_effects": paired,
-            "holm": jsonable(holm_correction({name: None for name in paired}))}
+            "inference": inference, "holm": holm}
+
+
+def _inference_metadata(protocol: FrozenProtocol, paired: dict[str, object]) -> tuple[dict[str, object], dict[str, object]]:
+    """State only the correction frozen in the protocol; intervals remain descriptive."""
+    interval_scope = "nominal per-contrast, not multiplicity adjusted"
+    if protocol.primary_family_correction == "none; descriptive paired 95% intervals":
+        return (
+            {"family_correction": protocol.primary_family_correction, "formal_test": "not performed",
+             "adjusted_significance_available": False, "interval_scope": interval_scope},
+            {"available": False, "adjusted_p_values": {},
+             "reason": "familywise correction was not requested for descriptive paired intervals"},
+        )
+    return (
+        {"family_correction": protocol.primary_family_correction, "formal_test": "not available",
+         "adjusted_significance_available": False, "interval_scope": interval_scope},
+        jsonable(holm_correction({name: None for name in paired})),
+    )
 
 
 def _paired_effects(protocol: FrozenProtocol, manifest: DatasetManifest, rows: tuple[object, ...], complete: bool,
@@ -235,12 +254,13 @@ def _validate_live_transport(protocol: FrozenProtocol, semantic_identity: str, b
     model = next(model for model in protocol.models if model.semantic_identity == semantic_identity)
     if not model.transport_fingerprint:
         raise ValueError("live JEV collection requires a non-empty frozen transport fingerprint")
-    if base_url is None or timeout_seconds is None or adapter_revision is None:
-        raise ValueError("live JEV collection requires explicit base-url, timeout-seconds, and adapter-revision")
+    if base_url is None or timeout_seconds is None or adapter_revision is None or package_revision is None:
+        raise ValueError("live JEV collection requires explicit base-url, timeout-seconds, adapter-revision, and package-revision")
     actual = transport_config_fingerprint(base_url=base_url, timeout_seconds=timeout_seconds, retries=0,
                                           adapter_revision=adapter_revision, package_revision=package_revision)
     if actual != model.transport_fingerprint:
         raise ValueError("configured JEV transport does not match the frozen model transport fingerprint")
+    validate_jev_runtime(adapter_revision, package_revision)
     return model
 
 
@@ -260,7 +280,7 @@ def _live_jev_factory(provider_model: str, semantic_identity: str, base_url: str
 def _command_preflight(args: argparse.Namespace) -> int:
     protocol = read_protocol(args.protocol)
     manifest = read_manifest(args.manifest)
-    rows = _load_source_rows(args, manifest)
+    rows = _load_source_rows(args, manifest, stage=args.stage)
     result = preflight(protocol, manifest=manifest, rows=rows, stage=args.stage)
     write_preflight(args.output, result)
     print(f"wrote {len(result.cells)} logical cells / {result.new_request_count} new physical requests")
@@ -273,12 +293,13 @@ def _command_run(args: argparse.Namespace) -> int:
         raise ValueError("--confirm is required; no rows or provider were loaded")
     if args.max_new < 0 or args.attempt_ceiling < 0 or args.max_new > args.attempt_ceiling:
         raise ValueError("max-new must be non-negative and no greater than attempt-ceiling")
-    if args.base_url is None or args.timeout_seconds is None or args.adapter_revision is None:
-        raise ValueError("live JEV run requires --base-url, --timeout-seconds, and --adapter-revision before rows are loaded")
+    if (args.base_url is None or args.timeout_seconds is None or args.adapter_revision is None
+            or args.package_revision is None):
+        raise ValueError("live JEV run requires --base-url, --timeout-seconds, --adapter-revision, and --package-revision before rows are loaded")
     protocol = read_protocol(args.protocol)
     manifest = read_manifest(args.manifest)
     plan = read_preflight(args.preflight)
-    rows = _load_source_rows(args, manifest)
+    rows = _load_source_rows(args, manifest, stage=plan.stage)
     result = asyncio.run(run_collection(protocol, manifest, rows, plan, args.ledger, args.preregistration,
                                         args.attempt_ceiling, args.max_new, True,
                                         provider_model=args.provider_model, base_url=args.base_url,
@@ -295,7 +316,7 @@ def _command_select(args: argparse.Namespace) -> int:
     protocol = read_protocol(args.protocol)
     manifest = read_manifest(args.manifest)
     plan = read_preflight(args.preflight)
-    rows = _load_source_rows(args, manifest)
+    rows = _load_source_rows(args, manifest, stage=plan.stage)
     derived = asyncio.run(select_from_ledger(protocol, manifest, rows, plan, args.ledger, args.preregistration,
                                               args.attempt_ceiling,
                                               model_identity=args.model_identity, provider_model=args.provider_model,
@@ -326,12 +347,22 @@ def _command_report(args: argparse.Namespace) -> int:
     return 0
 
 
-def _load_source_rows(args: argparse.Namespace, manifest: DatasetManifest) -> tuple[DatasetRow, ...]:
+def _load_source_rows(
+    args: argparse.Namespace,
+    manifest: DatasetManifest,
+    *,
+    stage: str,
+) -> tuple[DatasetRow, ...]:
     """Load either caller-owned fixtures or the explicit local pinned Arrow cache."""
+    if stage not in {"optimization", "scoreboard"}:
+        raise ValueError("stage must be optimization or scoreboard")
     if args.rows is not None:
         return read_rows_fixture(args.rows)
     if args.dataset_cache is not None:
-        return load_cached_manifest_rows(manifest, cache_root=args.dataset_cache)
+        roles = ("candidate", "development") if stage == "optimization" else (
+            "candidate", "development", "scoreboard"
+        )
+        return load_cached_manifest_rows(manifest, cache_root=args.dataset_cache, roles=roles)
     raise ValueError("provide exactly one of --rows or --dataset-cache")
 
 

@@ -34,6 +34,7 @@ class Observation:
     cache_hit: bool = False
     physical_request_id: str | None = None
     physical_request_provenance: Mapping[str, str] | None = None
+    confidence: float | None = None
 
     def __post_init__(self) -> None:
         if not all(isinstance(v, str) and v for v in (
@@ -67,6 +68,11 @@ class Observation:
             or not math.isfinite(self.latency_ms) or self.latency_ms < 0
         ):
             raise ValueError("latency_ms must be finite and non-negative")
+        if self.confidence is not None and (
+            not isinstance(self.confidence, (int, float)) or isinstance(self.confidence, bool)
+            or not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0
+        ):
+            raise ValueError("confidence must be finite and within [0, 1]")
         if self.usage is not None and any(
             not isinstance(key, str) or not key or not isinstance(value, (int, float))
             or isinstance(value, bool) or not math.isfinite(value) or value < 0

@@ -17,9 +17,24 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "92fc7871-4216-4036-b799-462f12fb139b",
+      "author": "home",
+      "text": "Inference audit found that the forced Holm protocol field had no corresponding justified p-value procedure. User delegated the choice; preserve the original descriptive paired 95% target/draw bootstrap intervals and make no adjusted significance claim. New protocols will explicitly declare no family correction; previously frozen Holm-labelled protocols remain readable and must report correction unavailable. No p-values will be inferred from confidence interval endpoints. Implementation and refreshed exact preflight hashes are being verified offline; no live results.",
+      "created_at": "2026-09-30T21:59:56.069488Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:19.105766Z",
-  "updated_at": "2026-09-30T19:22:22.750704Z",
+  "updated_at": "2026-09-30T22:03:04.491537Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

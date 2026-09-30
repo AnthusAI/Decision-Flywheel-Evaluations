@@ -145,13 +145,15 @@ def write_selected_global_artifact(path: str | Path, artifact: SelectedGlobalArt
 
 def read_observations(path: str | Path) -> tuple[Observation, ...]:
     document = _read(path, _OBSERVATIONS_SCHEMA, {"schema", "observations"})
-    expected = {"request_id", "target_id", "condition", "draw", "order", "true_label", "predicted_label", "status",
-                "probabilities", "model_id", "usage", "latency_ms", "attempt_count", "cache_hit", "physical_request_id",
-                "physical_request_provenance"}
+    legacy_expected = {"request_id", "target_id", "condition", "draw", "order", "true_label", "predicted_label", "status",
+                       "probabilities", "model_id", "usage", "latency_ms", "attempt_count", "cache_hit", "physical_request_id",
+                       "physical_request_provenance"}
+    expected = legacy_expected | {"confidence"}
     rows = []
     for value in _sequence(document["observations"], "observations"):
         item = _mapping(value, "observation")
-        _keys(item, expected, "observation")
+        if set(item) not in {frozenset(legacy_expected), frozenset(expected)}:
+            raise ValueError("observation has unsupported fields")
         probabilities = item["probabilities"]
         usage = item["usage"]
         provenance = item["physical_request_provenance"]
@@ -163,7 +165,8 @@ def read_observations(path: str | Path) -> tuple[Observation, ...]:
                                 model_id=item["model_id"], usage=usage, latency_ms=item["latency_ms"],
                                 attempt_count=item["attempt_count"], cache_hit=item["cache_hit"],
                                 physical_request_id=item["physical_request_id"],
-                                physical_request_provenance=provenance))
+                                physical_request_provenance=provenance,
+                                confidence=item.get("confidence")))
     return tuple(rows)
 
 
