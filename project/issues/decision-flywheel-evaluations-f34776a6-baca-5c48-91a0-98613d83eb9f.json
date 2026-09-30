@@ -28,12 +28,10 @@
       "text": "Native Jev development-only pilot implemented with Terra subagents, without DSPy or live calls. Actual pinned-cache plans enumerate 21 logical and 21 distinct physical requests per dataset (42 total): zero-shot plus the maximum local-estimate request for each of four sizes and five seeds, canonical ordering. Frozen text-free plans and pilot preregistration are being verified. Paid collection remains unapproved. No accuracy finding, no scoreboard source rows, no retries/recovery, no full-study approval. Compatibility report and Kev/Laya follow-up remain incomplete, so this issue stays in progress.",
       "created_at": "2026-09-30T22:42:28.197782Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -42,12 +40,10 @@
       "text": "Verification complete for pilot infrastructure: 232 specs pass locally and 232 pass from a source archive in an isolated minimal environment without datasets, pyarrow, typesafe, dataset caches, or Git history. Read-only Terra review found preregistration-before-ledger and output-overwrite defects; failing specs were written first and both are fixed. Wrapper and collection enforce the exact unique-request ceiling, historical retries reject, resume does not construct a second provider, and compatibility reports exclude benchmark metrics. Pilot plans/preregistration remain unapproved; human approval requested for at most 42 paid attempts total, without authorizing the full study.",
       "created_at": "2026-09-30T22:45:30.271579Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -56,29 +52,32 @@
       "text": "HANDOFF: Published pilot infrastructure is commit 974aad38acbab3c22b8fc7fffb4b9f255a7adb69; GitHub test/release run 36787427555 succeeded and released v0.7.0. Committed studies/INITIAL_JEV_PILOT.md plus studies/pilots/ag_news.plan.json and emotion.plan.json freeze 21 physical requests each, total 42, no retries; development only. Human approval was requested but NOT received. Latest human instruction is STOP and hand off, not permission to collect. No live pilot/study calls or compatibility results were generated. Leave this task incomplete. If resumed by a new agent, obtain explicit approval before any of those 42 paid attempts; full development/scoreboard/order/model studies each need separate exact preflight and approval. Initial development proposed ceilings are NOT approval. Do not treat .env availability or delegated statistical choices as spend authority.",
       "created_at": "2026-09-30T23:19:36.354013Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
+    },
+    {
+      "id": "7daa99e5-dcd0-4912-9ece-1014cec9a63a",
+      "author": "home",
+      "text": "Claude Code: ran the approved AG News pilot (2026-09-30). All 21 reserved attempts failed before any network request because TYPESAFE_API_KEY was not visible to the adapter (the only .env with it is in Jev-Flywheel; not read or copied). No provider request was made and no cost incurred; ledger .data/proposals/ag_news.pilot.sqlite is at its 21-attempt ceiling and is an aborted run, not a Jev result. Fixed the harness defect that burned attempts on construction failure: provider is now built before any reservation and a failure aborts with only the exception type (spec first, 295 pass). Emotion pilot not started. Next: obtain the key in this repo's gitignored .env, rerun AG News on a fresh ledger with this note, then Emotion.",
+      "created_at": "2026-09-30T23:57:39.868169Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-09-30T18:08:25.079394Z",
-  "updated_at": "2026-09-30T23:19:36.354108Z",
+  "updated_at": "2026-09-30T23:57:39.868197Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

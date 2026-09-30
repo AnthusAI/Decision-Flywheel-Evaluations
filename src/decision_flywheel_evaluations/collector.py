@@ -135,8 +135,20 @@ async def _collect_execution(
             continue
         if options.max_new_attempts is not None and new_attempts >= options.max_new_attempts:
             continue
-        # Reserve atomically before constructing a client. A completed replay
-        # returned here is possible only with a concurrent collector.
+        # Construct the provider before spending any attempt: a missing
+        # credential or bad configuration must not burn the approved ceiling.
+        # Only the exception type is reported so detail can never leak.
+        if cache.attempts_used >= cache.ceiling:
+            continue
+        if planned[0][0].model not in models:
+            try:
+                models[planned[0][0].model] = engine_factory(planned[0][0].model)
+            except Exception as error:
+                raise RuntimeError(
+                    f"model construction failed before any attempt was reserved: {type(error).__name__}"
+                ) from None
+        # Reserve atomically. A completed replay returned here is possible
+        # only with a concurrent collector.
         try:
             reserved = cache.reserve(physical_id, _logical_cell(planned[0][0]))
         except ValueError as error:
@@ -149,16 +161,7 @@ async def _collect_execution(
             continue
         new_attempts += 1
         cell, target, plan = planned[0]
-        model = models.get(cell.model)
-        if model is None:
-            try:
-                model = engine_factory(cell.model)
-            except Exception:
-                # Factory/configuration errors are not provider result shape
-                # errors; record only a safe operational failure category.
-                cache.fail(reserved, "model-failure")
-                continue
-            models[cell.model] = model
+        model = models[cell.model]
         completed = False
         try:
             result = await model.decide(protocol.task, target, plan.examples)

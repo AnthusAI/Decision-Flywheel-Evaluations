@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import pytest
 from dataclasses import replace
 
 from decision_flywheel.models import DecisionResult
@@ -264,18 +265,20 @@ def test_fake_jev_invalid_confidence_is_a_malformed_cached_response(tmp_path):
     assert all(row.confidence is None for row in result.observations)
 
 
-def test_factory_value_error_is_a_safe_model_failure_not_a_malformed_provider_response(tmp_path):
+def test_a_provider_that_cannot_be_constructed_aborts_before_any_attempt_is_reserved(tmp_path):
     manifest, rows, protocol, plan, approval, cache = _prepared_jev_only(tmp_path)
     factory_calls = []
     def factory(model):
         factory_calls.append(model)
         raise ValueError("credential-like factory detail")
-    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, factory,
-                                 committed_checker=lambda *_: True,
-                                 options=CollectionOptions(max_new_attempts=1)))
+    with pytest.raises(RuntimeError) as error:
+        asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, factory,
+                            committed_checker=lambda *_: True,
+                            options=CollectionOptions(max_new_attempts=1)))
     assert len(factory_calls) == 1
-    assert any(row.status == "failed" for row in result.observations)
-    assert all(row.status != "malformed" for row in result.observations)
+    assert cache.attempts_used == 0
+    assert "ValueError" in str(error.value)
+    assert "credential-like factory detail" not in str(error.value)
     assert "credential-like factory detail" not in repr(cache.snapshot().physical_payloads)
 
 
