@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-049a2c8b-1798-5cf5-8a81-3cda98d0f924",
+  "title": "Establish reproducible decision-context evaluations",
+  "description": "## Scope\n\nMeasure whether selected labeled context improves agreement with ground-truth labels across context budgets, datasets, and Jev, Kev, and Laya. Preserve the Few-Shot-Jev study as historical experimental notes. Start with Jev selection and ordering studies before making cross-model claims.\n\n## Definition of done\n\nPinned dataset manifests; frozen study plans; resumable collection; reproducible offline reports; complete accounting of eligible and excluded conditions. Each live study has an explicit request ceiling and collection approval.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-e9e02429-a60a-4747-adb3-93cab7ec4314`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "initiative",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-30T18:06:24.567514Z",
+  "updated_at": "2026-09-30T18:06:24.567623Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-53d48d6f-7ad9-5eb0-bb82-0346cd77a4f8",
+  "title": "Prepare pinned labeled datasets and honest evaluation partitions",
+  "description": "## Scope\n\nPrepare AG News and Emotion as initial datasets while preserving the history of which splits have already been used. Freeze candidate, development, and scoreboard partitions without redistributing source text.\n\n## Definition of done\n\nReproducible loaders, frozen text-free manifests, label mappings, duplicate exclusion, and documented prior-use status for every proposed study.",
+  "type": "epic",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-049a2c8b-1798-5cf5-8a81-3cda98d0f924",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-30T18:06:28.064748Z",
+  "updated_at": "2026-09-30T18:06:28.064878Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

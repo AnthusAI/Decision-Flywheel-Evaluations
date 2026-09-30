@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-4b01739f-08ac-54f6-9080-a5af9a79bf72",
+  "title": "Freeze candidate, development, and scoreboard manifests",
+  "description": "## Scope\n\nDeterministically create disjoint partition manifests with documented seeds, class counts, sampling rationale, source-use history, and exact normalized-text duplicate exclusions across partitions. Scoreboard labels are only available to final scoring. Commit manifests before optimization or collection.\n\n## Definition of done\n\nSpecs reject ID and text-hash leakage, preserve partitions across reruns, report class counts, and prevent policy-selection code from loading scoreboard labels. Historical holdouts are explicitly identified as previously used.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Freeze candidate, development, and scoreboard manifests\n  Scenario: Required observable behavior\n    Given candidate, development, and scoreboard rows share an exact normalized-text duplicate\n    When manifests are prepared\n    Then the duplicate is excluded or preparation fails before any model call\n```",
+  "type": "story",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-53d48d6f-7ad9-5eb0-bb82-0346cd77a4f8",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-a83ed13e-f7c5-5625-8302-4ea3dc98ea49",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:07:55.315211Z",
+  "updated_at": "2026-09-30T18:08:42.021714Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-a83ed13e-f7c5-5625-8302-4ea3dc98ea49",
+  "title": "Add on-demand AG News and Emotion dataset adapters",
+  "description": "## Scope\n\nProvide explicit Hugging Face download commands using immutable revisions and canonical labels. Record licensing/attribution separately from MIT code licensing. Reuse known pinned revisions where replicating history; never use an implicit latest revision or download during specs.\n\n## Definition of done\n\nOffline fixture specs verify source split/index, label mapping, normalized-text hash, and stable IDs; live loaders download only when explicitly invoked and source text is excluded from Git artifacts.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Add on-demand AG News and Emotion dataset adapters\n  Scenario: Required observable behavior\n    Given a pinned dataset revision and a local fixture with canonical labels\n    When the preparation adapter maps its rows\n    Then source identifiers, normalized hashes, and label mapping are stable without network access\n```",
+  "type": "story",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-53d48d6f-7ad9-5eb0-bb82-0346cd77a4f8",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-d2b1c865-ae0e-51ae-a627-9a3e7cc74131",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:07:52.190833Z",
+  "updated_at": "2026-09-30T18:08:39.332716Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

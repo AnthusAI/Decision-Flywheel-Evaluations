@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "57890a49-0559-4968-b6d5-5c1820fe3b76",
+  "issue_id": "decision-flywheel-evaluations-45c7f81f-6ab8-5339-b102-0371c07739bd",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:36.732Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Publish reproducible reports and append experimental lab notes",
+    "description": "## Scope\n\nProvide offline report commands, figures, text-free result bundles and artifact checksums, an experiment inventory, and an article with hypothesis, investigation, results, and limitations. Append dated lab notes instead of rewriting the historical Few-Shot-Jev experiment as product documentation; link evidence to Decision-Flywheel feature issues.\n\n## Definition of done\n\nA clean offline replay reproduces published aggregates; all claimed effects link to plans and result artifacts; a study may be published once completed without waiting for the entire model matrix.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-5ac13e11-6bd8-5787-8136-8f936b5930f8`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

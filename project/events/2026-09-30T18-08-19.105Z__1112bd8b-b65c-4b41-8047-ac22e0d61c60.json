@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "1112bd8b-b65c-4b41-8047-ac22e0d61c60",
+  "issue_id": "decision-flywheel-evaluations-006cd027-f0e4-5f42-a061-76338e29ca2b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:19.105Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Report paired effects, calibration, uncertainty, and complete totals",
+    "description": "## Scope\n\nCompute per-cell and pooled accuracy, macro-F1, recall, log loss, multiclass Brier, top-label ECE/reliability data, latency, requests/attempts, and returned token usage. Mark unavailable probability metrics rather than fabricate distributions. Use paired target bootstrap and draw/order resampling appropriate to each declared contrast; do not treat repeated target rows as independent observations.\n\n## Definition of done\n\nSynthetic fixtures check exact metrics and aggregation weights, missing/malformed-row denominators, deterministic paired intervals, repeated-draw pooling, and counts against the preflight. Report percentage-point changes separately from relative percentages and do not invent dollar pricing.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Report paired effects, calibration, uncertainty, and complete totals\n  Scenario: Required observable behavior\n    Given synthetic paired decisions with missing distributions and repeated draws\n    When an offline report is generated twice with the same seed\n    Then effects and intervals agree, unavailable metrics are identified, and totals reconcile with the matrix\n```",
+    "issue_type": "story",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-6a4811f7-d5d2-5970-abbe-f7f3b99b76a2",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

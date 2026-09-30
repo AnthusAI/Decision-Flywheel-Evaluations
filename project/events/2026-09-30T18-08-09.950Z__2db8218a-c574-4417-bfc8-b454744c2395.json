@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "2db8218a-c574-4417-bfc8-b454744c2395",
+  "issue_id": "decision-flywheel-evaluations-6a4811f7-d5d2-5970-abbe-f7f3b99b76a2",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:09.950Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Build resumable collection and reproducible offline analysis",
+    "description": "## Scope\n\nTurn the study scaffold into a runner with exact preflight manifests, a complete cache identity, bounded collection, and trustworthy metrics.\n\n## Definition of done\n\nFake-engine integration specs prove no-network preflight, safe resume, complete matrix accounting, faithful response storage, and deterministic reports.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-049a2c8b-1798-5cf5-8a81-3cda98d0f924",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

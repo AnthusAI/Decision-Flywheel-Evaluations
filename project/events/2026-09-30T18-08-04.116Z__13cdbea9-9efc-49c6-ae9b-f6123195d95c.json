@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "13cdbea9-9efc-49c6-ae9b-f6123195d95c",
+  "issue_id": "decision-flywheel-evaluations-b7796fc5-0fd4-51f6-aa05-397e635cfff6",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:04.116Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Preregister the Jev demonstration-order sensitivity study",
+    "description": "## Scope\n\nHold selected example membership, context count, target set, task wording, and choice-option order fixed; compare canonical class grouping with deterministic interleaving, reverse order, and multiple shuffled permutations. Cross selection draw with order seed without searching for a winning order on the scoreboard. Run after the initial single-order result and before cross-model comparisons.\n\n## Definition of done\n\nThe plan names the initial-result anchor, frozen example IDs, permutation seeds, budgets, paired contrast and interval method, request ceiling, and treatment of development versus scoreboard analysis.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-fe8852d3-4fd9-593a-a5f6-5d7cc0d84848`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

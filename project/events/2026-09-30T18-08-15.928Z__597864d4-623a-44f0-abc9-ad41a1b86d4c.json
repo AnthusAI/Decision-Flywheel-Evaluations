@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "597864d4-623a-44f0-abc9-ad41a1b86d4c",
+  "issue_id": "decision-flywheel-evaluations-5470b39c-a192-5fc9-8add-95bf5253d7ed",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:15.928Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Persist text-free responses and resume interrupted model runs",
+    "description": "## Scope\n\nKey successful responses by full state/question fingerprints plus model/version and transport-relevant configuration. Store run/dataset revision, condition, example IDs, ordering, draw, target manifest ID, structured raw answers, available probabilities, usage, latency, attempt outcome, and failure metadata. Never store source text or credentials; retry only eligible failures under the ceiling.\n\n## Definition of done\n\nFake-client specs prove crashes/resumes reuse complete successful responses, changed examples/order/task/model invalidate cache hits, malformed responses remain identifiable, and secret sentinels never enter artifacts.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Persist text-free responses and resume interrupted model runs\n  Scenario: Required observable behavior\n    Given a run has cached successful responses and an interrupted attempt\n    When the run resumes with the same matrix\n    Then only missing or retryable cells are attempted and every attempt is counted\n```\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-ce360969-5b44-554d-ba77-d4a38dbd7de1`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+    "issue_type": "story",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-6a4811f7-d5d2-5970-abbe-f7f3b99b76a2",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

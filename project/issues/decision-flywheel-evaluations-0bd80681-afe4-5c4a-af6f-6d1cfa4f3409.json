@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-0bd80681-afe4-5c4a-af6f-6d1cfa4f3409",
+  "title": "Freeze the cross-model comparison and eligibility rules",
+  "description": "## Scope\n\nPlan Jev, Kev, and Laya on matching tasks, policies, counts, and target IDs after the Jev ordering investigation. Distinguish provider context limits and serialization differences from selection effects. Predeclare unsupported cells and do not substitute zero-shot for an unsupported few-shot arm.\n\n## Definition of done\n\nA frozen matrix records exact model versions, environments, eligible cells/exclusions, serialization fingerprints, both count and token sizes, model-by-policy contrasts, and request ceilings before any comparative collection.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-2f4b891a-1749-5c87-af33-a3ab64c5bf57`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-2472015e-9a4d-5236-9fc9-680b7efccd1b",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-f34776a6-baca-5c48-91a0-98613d83eb9f",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:08:07.037027Z",
+  "updated_at": "2026-09-30T18:08:52.450126Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

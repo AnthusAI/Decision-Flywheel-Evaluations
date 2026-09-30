@@ -1,0 +1,45 @@
+{
+  "id": "decision-flywheel-evaluations-2472015e-9a4d-5236-9fc9-680b7efccd1b",
+  "title": "Run Jev ordering sensitivity on fixed selected examples",
+  "description": "## Scope\n\nExecute the frozen ordering protocol after the initial Jev single-order findings. Match targets and selected examples across permutations and report draw-by-order variation separately from example-selection and context-size effects. Keep this analysis ahead of other-model conclusions.\n\n## Definition of done\n\nThe report includes every planned permutation, paired intervals versus the declared reference order, order robustness by policy/budget, and a documented order rule for the subsequent model matrix.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-12fea34f-30fe-593c-90fc-7b038f397170",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-b7796fc5-0fd4-51f6-aa05-397e635cfff6",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-006cd027-f0e4-5f42-a061-76338e29ca2b",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:08:30.945749Z",
+  "updated_at": "2026-09-30T18:09:24.304882Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

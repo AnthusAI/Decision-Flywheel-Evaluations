@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "2bed375f-f830-4e9b-99a9-3a54fc568f65",
+  "issue_id": "decision-flywheel-evaluations-5bef2946-aa7c-5649-a775-77fff3bb309a",
+  "event_type": "issue_created",
+  "occurred_at": "2026-09-30T18:08:33.870Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Collect the eligible Jev, Kev, and Laya comparison matrix",
+    "description": "## Scope\n\nAfter ordering results and matrix preregistration, freeze development-selected policies for each declared model strategy. Collect matching eligible cells on AG News and Emotion with pinned model artifacts and request budgets; document unsupported conditions and fresh-versus-reused holdout status.\n\n## Definition of done\n\nResults reconcile every model/policy/dataset/budget cell, publish model-by-policy effects and usage/latency, and do not claim broad generalization from two datasets.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-2f4b891a-1749-5c87-af33-a3ab64c5bf57`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-6",
+      "name": "Flywheel Planning"
+    }
+  }
+}

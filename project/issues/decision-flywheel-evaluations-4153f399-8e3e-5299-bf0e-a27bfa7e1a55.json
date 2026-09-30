@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
+  "title": "Run and publish the initial experimental sequence",
+  "description": "## Scope\n\nExecute documented smoke checks, a Jev selection/size study, Jev ordering sensitivity, and then the eligible cross-model matrix. Keep lab notes and articles attached to actual measured results.\n\n## Definition of done\n\nEvery frozen eligible cell is accounted for, conclusions distinguish exploratory and confirmatory analyses, and reports reproduce offline from approved text-free results.",
+  "type": "epic",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-049a2c8b-1798-5cf5-8a81-3cda98d0f924",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-09-30T18:08:22.253454Z",
+  "updated_at": "2026-09-30T18:08:22.253554Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {},
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

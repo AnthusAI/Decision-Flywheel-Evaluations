@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-f34776a6-baca-5c48-91a0-98613d83eb9f",
+  "title": "Verify model capabilities with a bounded development-only pilot",
+  "description": "## Scope\n\nUse a small fixed development fixture to check Jev, Kev, and Laya loading, label parsing, context serialization, maximum useful context, latency, and probability availability. Record versions/hardware and separate installation/download/model-call steps. Freeze a small preflight and ceiling before explicitly approved live calls; never involve scoreboard rows.\n\n## Definition of done\n\nA compatibility report records successful zero-shot/few-shot paths or precise exclusions, observed context limits, and real usage; adapter defects are linked back to core issues.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-d556540e-71b5-55cc-9323-143d674bba3d`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-f64b3f0f-7440-53d9-81a8-d7e322c35a34`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-a56306ec-1922-5343-ba9f-f3ee47f4742a`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-4b01739f-08ac-54f6-9080-a5af9a79bf72",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-5470b39c-a192-5fc9-8add-95bf5253d7ed",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:08:25.079394Z",
+  "updated_at": "2026-09-30T18:09:08.408417Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

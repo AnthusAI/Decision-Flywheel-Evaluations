@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-a6df9a09-81b6-56aa-957e-1c0c1de218f7",
+  "title": "Preregister the selector-by-context-size study",
+  "description": "## Scope\n\nCompare zero-shot, five seed-fixed random balanced sets, a development-selected fixed global set, class prototypes, and per-target lexical retrieval. Use a balanced ladder starting at 1, 4, 16, and 64 examples per label (Emotion totals 6/24/96/384; AG News totals 4/16/64/256), subject to documented model limits. Keep wording, option order, candidate pool, and initial display rule fixed. Choose one primary fixed-budget selection contrast and one primary size contrast before collection; correct or clearly separate secondary comparisons.\n\n## Definition of done\n\nThe committed plan specifies dataset-specific metrics (macro-F1 for imbalanced Emotion), repeated draws, exact target counts, development tuning/search budget, nested membership, paired target/draw inference, and a computed request matrix. It does not infer that selection matters more than size from a single-budget result.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-535d9cb6-747f-5976-a272-c4ca86911a73`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-fe8852d3-4fd9-593a-a5f6-5d7cc0d84848`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0822f794-4e56-5a84-8a7d-8a17a16cd2d1`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-4b01739f-08ac-54f6-9080-a5af9a79bf72",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-09-30T18:08:01.182273Z",
+  "updated_at": "2026-09-30T18:08:44.823181Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-6",
+    "name": "Flywheel Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
+}
