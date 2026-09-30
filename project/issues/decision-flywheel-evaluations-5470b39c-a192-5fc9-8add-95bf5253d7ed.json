@@ -17,9 +17,19 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "07a1c805-c969-49c6-86c0-5d661bc47611",
+      "author": "home",
+      "text": "Implemented and reviewed atomic SQLite reservation/completion with immutable task/preflight/dataset/model provenance, stale-token rejection, strict response sanitization, and physical-versus-logical snapshots. Remaining acceptance work: connect the actual bounded collector and prove full crash/resume behavior through fake model integration. Story remains in progress.",
+      "created_at": "2026-09-30T19:46:01.046899Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
   "created_at": "2026-09-30T18:08:15.928596Z",
-  "updated_at": "2026-09-30T19:22:20.086378Z",
+  "updated_at": "2026-09-30T19:46:01.046980Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

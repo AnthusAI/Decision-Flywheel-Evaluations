@@ -21,9 +21,19 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "f079a563-ce35-41fe-9a4e-33eb6b3706f7",
+      "author": "home",
+      "text": "Review identified a fidelity defect: selected-global artifacts currently enforce RandomBalanced seed 2 rather than a completed development-selected winner. Collection remains unapproved pending real optimizer artifact binding, explicit preregistration gate, and bounded runner integration. Ready-path matrix tests cover local synthetic data only; no new live results exist.",
+      "created_at": "2026-09-30T19:46:07.812007Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": null
+    }
+  ],
   "created_at": "2026-09-30T18:08:12.958733Z",
-  "updated_at": "2026-09-30T19:22:17.385611Z",
+  "updated_at": "2026-09-30T19:46:07.812098Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
