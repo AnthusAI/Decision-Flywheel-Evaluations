@@ -72,10 +72,24 @@
         "name": "Flywheel Implementation",
         "settings": {}
       }
+    },
+    {
+      "id": "49a8f29c-aea7-415f-a80e-01021002f129",
+      "author": "home",
+      "text": "HANDOFF: Uncommitted ordering_collection.py/specs use dedicated ordering-plan checksum/physical whitelist ledger, exact cumulative ceiling, explicit max-new and retry/recovery cap, frozen Jev provider version, regenerated full initial evidence, and counted failed/uncertain attempts. Targeted 7 specs passed, including retry fixture correction to reserve the lexically first physical fingerprint actually traversed by the collector. No initial-ledger import or silent free canonical reuse. Blocking wrapper defect: CacheStore is created before complete anchor regeneration; next agent must extract/call cache-independent validation before opening it while preserving direct collector gates. Write failing adjacent spec first. Human stopped all work; no live collection. Full handoff: b7796fc5-0fd4-51f6-aa05-397e635cfff6.",
+      "created_at": "2026-09-30T23:20:09.810114Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-09-30T18:08:15.928596Z",
-  "updated_at": "2026-09-30T22:07:39.153776Z",
+  "updated_at": "2026-09-30T23:20:09.810188Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

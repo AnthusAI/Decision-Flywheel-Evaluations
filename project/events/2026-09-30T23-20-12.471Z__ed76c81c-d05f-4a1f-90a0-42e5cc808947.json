@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "event_id": "ed76c81c-d05f-4a1f-90a0-42e5cc808947",
+  "issue_id": "decision-flywheel-evaluations-b7796fc5-0fd4-51f6-aa05-397e635cfff6",
+  "event_type": "field_updated",
+  "occurred_at": "2026-09-30T23:20:12.471Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "labels": {
+        "from": [
+          "roadmap"
+        ],
+        "to": [
+          "handoff",
+          "roadmap"
+        ]
+      }
+    }
+  }
+}

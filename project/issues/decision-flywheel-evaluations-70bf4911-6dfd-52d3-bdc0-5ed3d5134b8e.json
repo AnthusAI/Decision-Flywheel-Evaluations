@@ -30,10 +30,24 @@
       "comment_type": "default",
       "data": {},
       "agent": null
+    },
+    {
+      "id": "ed0f1231-155f-4a26-af2d-523f74cc08c2",
+      "author": "home",
+      "text": "HANDOFF: Work paused at human request; see ordering preregistration issue b7796fc5-0fd4-51f6-aa05-397e635cfff6 for complete restart instructions. Uncommitted preflight.py fix sorts selected-global artifact sizes numerically so JSON round-trip mapping order cannot change request order/checksum; round-trip and reverse-map specs passed. FrozenProtocol identity/schema unchanged. New ordering CLI/Make gates are WIP. Blocking review defect remains: full initial evidence/ordering regeneration must be validated BEFORE CacheStore creation in run_ordering_collection; currently rejection precedes provider calls but not ledger creation. Write failing no-ledger/no-provider spec first. Full current-tree suite was interrupted at user stop (154 passed; no final pass). Preserve all WIP, rerun complete and isolated specs before commit/push. No live calls or approval inferred.",
+      "created_at": "2026-09-30T23:19:31.285373Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-09-30T18:08:12.958733Z",
-  "updated_at": "2026-09-30T19:46:07.812098Z",
+  "updated_at": "2026-09-30T23:19:31.285441Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

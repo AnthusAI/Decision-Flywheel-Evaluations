@@ -3,12 +3,13 @@
   "title": "Preregister the Jev demonstration-order sensitivity study",
   "description": "## Scope\n\nHold selected example membership, context count, target set, task wording, and choice-option order fixed; compare canonical class grouping with deterministic interleaving, reverse order, and multiple shuffled permutations. Cross selection draw with order seed without searching for a winning order on the scoreboard. Run after the initial single-order result and before cross-model comparisons.\n\n## Definition of done\n\nThe plan names the initial-result anchor, frozen example IDs, permutation seeds, budgets, paired contrast and interval method, request ceiling, and treatment of development versus scoreboard analysis.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-fe8852d3-4fd9-593a-a5f6-5d7cc0d84848`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
   "labels": [
+    "handoff",
     "roadmap"
   ],
   "dependencies": [
@@ -17,9 +18,38 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "53d9c821-c6ac-4de5-8494-6fad0edd5fbb",
+      "author": "home",
+      "text": "Preparing native ordering infrastructure with Terra subagents; no actual ordering preregistration or model calls yet. Planner requires complete initial single-Jev canonical scoreboard observations and exact source preflight, fixes task/options/targets/context membership, and crosses every positive selection/size/draw cell with explicit canonical/interleaved/reversed/shuffled seeds. Zero-shot remains canonical-only. Text-free IO and descriptive matched target/draw/permutation reports are under verification. Actual initial-result anchor, complete ordering enumeration, paid ceiling and approval cannot be frozen until the initial study finishes. This task is not complete.",
+      "created_at": "2026-09-30T23:01:32.078028Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "b7be79dc-7d93-4d00-bbcd-57734f833ded",
+      "author": "home",
+      "text": "HANDOFF 2026-09-30: Human explicitly requested an immediate stop because the weekly limit is exhausted. No further implementation or paid calls are authorized by this handoff. The persistent goal is being paused, not completed.\n\nWorking checkout: /Users/home/Projects/Decision-Flywheel-Evaluations. Local main is 974aad38acbab3c22b8fc7fffb4b9f255a7adb69 (published pilot); fetched origin/main is release robot 024837f (v0.7.0). Current ordering work is UNCOMMITTED, including new ordering.py, ordering_io.py, ordering_collection.py, ordering_reporting.py, ordering_cli.py and adjacent sentence-named specs; Makefile/README/template and protocol/bootstrap/preflight edits. Do not discard these files. No new study results or live calls exist. Original /Users/home/Projects/Jev-Flywheel has unrelated dirty user work: leave it untouched.\n\nImplemented WIP: complete initial single-Jev canonical scoreboard anchor required; all initial targets/selectors/sizes/draws and example membership fixed; canonical/interleaved/reversed plus explicit shuffled seeds; zero only canonical; exact wire dedup; text-free strict IO; bounded resume/retry ledger; descriptive paired target/draw/permutation intervals, percentage points separately from relative percent, no best-order selection or invented p-values. CLI/Make provide ordering-preflight, ordering-run, ordering-report. Template protocols/ORDER_SENSITIVITY.md is NOT an actual preregistration. Actual ordering must follow initial complete results and precede Kev/Laya comparisons.\n\nUNRESOLVED BLOCKING REVIEW DEFECT: ordering_cli.run_ordering_collection opens CacheStore before full initial evidence and ordering-plan regeneration are validated. collect_ordering rejects bad evidence before provider calls, but an invalid initial preflight/observations can still create/bind a ledger. NEXT STEP: add a failing adjacent spec asserting invalid/incomplete initial evidence creates neither ledger nor provider; extract a cache-independent complete-anchor validation helper from ordering_collection and call it before CacheStore. Preserve lower-level validation for direct callers. This fix was NOT implemented before stop.\n\nVerification: earlier intermediate full snapshot passed 286 specs, but that is NOT final current-tree verification. Latest ordering_cli targeted suite passed 11 specs; ordering 17, collection 7, reporting 4 passed in targeted runs. Current full suite was interrupted at human stop: 154 passed, KeyboardInterrupt, no final result. After the gate fix, rerun all specs, git diff --check, kanbus validate, then isolated source-archive specs without datasets/pyarrow/typesafe/caches/history before publication. Stage explicit owned paths only; never .env, dataset text, or caches. Rebase release-only origin changes after committing cleanly; GitHub AnthusAI only, no force push.\n\nNative/provider-neutral optimization ONLY; NO DSPy dependency, bridge, or prompt optimization path. Use Terra subagents as requested. Read repo/project AGENTS and use Kanbus CLI, not direct issue JSON edits. No automatic goal completion at an infrastructure milestone.",
+      "created_at": "2026-09-30T23:19:28.057903Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:04.116317Z",
-  "updated_at": "2026-09-30T18:08:47.373558Z",
+  "updated_at": "2026-09-30T23:20:12.471743Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
