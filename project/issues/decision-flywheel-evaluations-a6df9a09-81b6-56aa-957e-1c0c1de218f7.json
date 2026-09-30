@@ -17,9 +17,24 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "4143cc19-07d6-421c-93fc-a2db30d7232a",
+      "author": "home",
+      "text": "Native next-stage audit: one Jev model entails 20 random-balanced development trials (4 positive per-label sizes x 5 draws), or 8000 AG News / 12000 Emotion logical development decisions. Full one-order scoreboard is 33 conditions x 2000 targets = 66000 logical decisions per dataset (zero1 + random20 + prototype4 + retrieval4 + selected-global4); exact physical deduplication must be computed from the final frozen protocol and selected artifact. No live calls are authorized by these counts. The exact provider model/version, public transport/capability configuration and human-approved attempt ceilings remain to be frozen. Current nominal paired intervals are not a substitute for valid prespecified Holm inputs. Ordering is a subsequent study, before cross-model comparisons. No DSPy.",
+      "created_at": "2026-09-30T21:16:35.924211Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-6",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:01.182273Z",
-  "updated_at": "2026-09-30T18:08:44.823181Z",
+  "updated_at": "2026-09-30T21:16:35.924305Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,

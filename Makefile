@@ -1,8 +1,9 @@
-.PHONY: test preflight select run report install-tools release
+.PHONY: test download preflight select run report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
 MAX_RETRIES_PER_REQUEST ?= 0
+DOWNLOAD_CACHE ?= .data/huggingface
 
 ifeq ($(strip $(ROWS)),)
 SOURCE_ARGS = --dataset-cache "$(DATASET_CACHE)"
@@ -12,6 +13,10 @@ endif
 
 test:
 	$(PYTHON) -m pytest -q
+
+# Only this explicit setup target can acquire datasets; no model is constructed.
+download:
+	$(PYTHON) scripts/download_pinned_datasets.py download --cache-root "$(DOWNLOAD_CACHE)" $(CONFIRM)
 
 # With missing variables these print usage and stop before data or a provider.
 # Inputs are intentionally explicit and are never downloaded by these targets.

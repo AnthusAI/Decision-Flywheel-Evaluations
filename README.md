@@ -57,10 +57,54 @@ make PYTHON=.venv/bin/python preflight \
 ```
 
 `DATASET_CACHE` is read only from the exact dataset/config/revision/split Arrow
-paths named by the manifest. The workflow never downloads data, searches for a
-latest revision, or writes source text into study artifacts. `ROWS=*.fixture.json`
+paths named by the manifest. Collection and analysis never download data, search for a
+latest revision, or write source text into study artifacts. `ROWS=*.fixture.json`
 remains available only for synthetic or caller-owned local fixtures; supply one
 of `ROWS` or `DATASET_CACHE`, never both.
+
+## Acquiring and reproducing the dataset manifests
+
+Dataset acquisition is a separate, explicit network-enabled setup step. It
+downloads the pinned AG News `default` and Emotion `split` train/test inputs
+into the ignored local cache, without constructing a model or exporting text.
+Hugging Face may also populate sibling splits while building a configuration;
+only train/test are requested or used by our preparation path:
+
+```bash
+.venv/bin/pip install -e '.[data]'
+make PYTHON=.venv/bin/python download CONFIRM=--confirm
+```
+
+Without `CONFIRM=--confirm`, this target exits before downloading. Dataset
+revisions are fixed in the package and manifests, not resolved from `main`.
+The command checks the exact Arrow paths used by cache-only collection.
+
+Normal collection uses the committed manifests; it does not need to regenerate
+them. To independently reproduce their selection, first obtain the historical
+study repository, then prepare into an ignored output directory:
+
+```bash
+git clone https://github.com/AnthusAI/Few-Shot-Jev.git ../Few-Shot-Jev
+.venv/bin/python scripts/prepare_datasets.py prepare \
+  --historical-repository ../Few-Shot-Jev \
+  --output-dir .data/reproduced-manifests
+cmp studies/manifests/ag_news.json .data/reproduced-manifests/ag_news.json
+cmp studies/manifests/emotion.json .data/reproduced-manifests/emotion.json
+```
+
+Preparation is cache-only. It reads the historical AG News exposure inventory
+at the recorded commit, rather than trusting that repository's current branch.
+A missing cache or history is an error, not permission to download or weaken
+the exclusion rule. AG News excludes the prior scoreboard and exact normalized
+matches. Emotion remains exploratory because its official test split was
+already exposed in the earlier investigation.
+
+Dataset attribution and terms are separate from this repository's MIT license:
+
+- [Pinned AG News card](https://huggingface.co/datasets/fancyzhx/ag_news/blob/eb185aade064a813bc0b7f42de02595523103ca4/README.md): the topic benchmark is attributed to Xiang Zhang, Junbo Zhao, and Yann LeCun (2015). The card marks its license unknown and describes research/non-commercial uses; this repository does not relicense or redistribute its news text.
+- [Pinned Emotion card](https://huggingface.co/datasets/dair-ai/emotion/blob/cab853a1dbdf4c42c2b3ef2173804746df8825fe/README.md): cite Saravia et al., *CARER: Contextualized Affect Representations for Emotion Recognition* (2018). The card specifies educational and research use only.
+
+## Native selection and live collection
 
 `select` has no provider path: it reopens the exact bounded optimization ledger,
 replays complete sanitized development decisions through the native optimizer,
