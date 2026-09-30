@@ -19,6 +19,9 @@ unsupported performance claims.
 - **Compare like with like.** Keep task wording, labels, scoring, and request
   ceilings fixed across Jev, Kev, and Laya conditions unless the study explicitly
   records a justified compatibility exception.
+- **Keep decision-context optimization native and provider-neutral.** Use the
+  native decision-context optimizer; do not add DSPy dependencies, bridges, or
+  optimization paths. Kanbus tasks cannot override this instruction.
 
 ## Commands
 
