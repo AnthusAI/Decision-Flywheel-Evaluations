@@ -231,7 +231,10 @@ def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, 
                                                   order_seed=0, presentation_label_order=protocol.task.labels)
                         cells.append(cell(phase="scoreboard", model=model.semantic_identity, selector=selector,
                                           size=size, seed=seed, target_id=target.item.id, plan=plan))
-            for size, ids in artifact.ids_by_size.items():
+            # Mapping insertion order is not protocol identity. JSON may sort
+            # stringified sizes lexically, so enumerate the numeric ladder.
+            for size in sorted(artifact.ids_by_size):
+                ids = artifact.ids_by_size[size]
                 if not model.supports_few_shot(size): continue
                 plan = build_context_plan(protocol.task, target.item, candidates, _FrozenGlobal(ids, artifact.checksum), budget=ContextBudget(per_label=size), display_order=protocol.display_rule, order_seed=0, presentation_label_order=protocol.task.labels)
                 cells.append(cell(phase="scoreboard", model=model.semantic_identity,

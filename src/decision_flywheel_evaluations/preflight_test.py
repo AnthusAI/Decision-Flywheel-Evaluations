@@ -203,6 +203,23 @@ def test_request_cells_are_complete_and_reused_contexts_are_logical_not_new_wire
     assert cached.checksum == result.checksum
 
 
+def test_scoreboard_preflight_is_stable_after_protocol_json_roundtrip_or_artifact_mapping_reordering(tmp_path):
+    from .serialization import read_protocol, write_protocol
+    manifest, rows = _rows()
+    protocol = _protocol(manifest, rows)
+    before = preflight(protocol, manifest=manifest, rows=rows)
+    path = tmp_path / "protocol.json"
+    write_protocol(path, protocol)
+    restored = read_protocol(path)
+    artifact = protocol.selector_search_artifact
+    reordered = replace(protocol, selector_search_artifact=replace(
+        artifact, ids_by_size=dict(reversed(tuple(artifact.ids_by_size.items())))))
+
+    assert restored.identity == reordered.identity == protocol.identity
+    assert preflight(restored, manifest=manifest, rows=rows) == before
+    assert preflight(reordered, manifest=manifest, rows=rows) == before
+
+
 def test_optimization_needs_no_selected_global_artifact_but_scoreboard_does():
     manifest, rows = _rows()
     protocol = _protocol(manifest, rows, artifact=False)

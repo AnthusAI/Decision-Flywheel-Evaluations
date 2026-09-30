@@ -1,4 +1,4 @@
-.PHONY: test download preflight select run report pilot-preflight pilot pilot-report install-tools release
+.PHONY: test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
@@ -61,6 +61,24 @@ pilot-report:
 		echo "Usage: make pilot-report PROTOCOL=... PILOT=... OBSERVATIONS=... OUTPUT=..."; exit 2; \
 	fi
 	$(PYTHON) -m decision_flywheel_evaluations.pilot_cli report --protocol "$(PROTOCOL)" --pilot "$(PILOT)" --observations "$(OBSERVATIONS)" --output "$(OUTPUT)" $(OVERWRITE)
+
+ordering-preflight:
+	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(PREFLIGHT)" || test -z "$(INITIAL_OBSERVATIONS)" || test -z "$(RESULT_REFERENCE)" || test -z "$(ORDER_SEEDS)" || test -z "$(OUTPUT)" || { test -z "$(ROWS)" && test -z "$(DATASET_CACHE)"; } || { test -n "$(ROWS)" && test -n "$(DATASET_CACHE)"; }; then \
+		echo "Usage: make ordering-preflight PROTOCOL=... MANIFEST=... PREFLIGHT=initial.preflight.json INITIAL_OBSERVATIONS=... RESULT_REFERENCE=results/initial.json ORDER_SEEDS='0 1 2 3 4' (ROWS=fixture.json | DATASET_CACHE=.data/huggingface) OUTPUT=... [OVERWRITE=--overwrite]"; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.ordering_cli preflight --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --initial-preflight "$(PREFLIGHT)" --initial-observations "$(INITIAL_OBSERVATIONS)" --initial-result-reference "$(RESULT_REFERENCE)" $(foreach seed,$(ORDER_SEEDS),--shuffle-seed "$(seed)") $(SOURCE_ARGS) --output "$(OUTPUT)" $(OVERWRITE)
+
+ordering-run:
+	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(PREFLIGHT)" || test -z "$(INITIAL_OBSERVATIONS)" || test -z "$(ORDERING)" || test -z "$(LEDGER)" || test -z "$(PREREGISTRATION)" || test -z "$(OUTPUT)" || test -z "$(PROVIDER_MODEL)" || test -z "$(BASE_URL)" || test -z "$(TIMEOUT_SECONDS)" || test -z "$(ADAPTER_REVISION)" || test -z "$(PACKAGE_REVISION)" || test -z "$(ATTEMPT_CEILING)" || test -z "$(MAX_NEW)" || { test -z "$(ROWS)" && test -z "$(DATASET_CACHE)"; } || { test -n "$(ROWS)" && test -n "$(DATASET_CACHE)"; }; then \
+		echo "Usage: make ordering-run PROTOCOL=... MANIFEST=... PREFLIGHT=initial.preflight.json INITIAL_OBSERVATIONS=... ORDERING=... (ROWS=fixture.json | DATASET_CACHE=.data/huggingface) LEDGER=... PREREGISTRATION=... OUTPUT=... PROVIDER_MODEL=... BASE_URL=https://... TIMEOUT_SECONDS=... ADAPTER_REVISION=... PACKAGE_REVISION=typesafe-sdk-0.7.1 ATTEMPT_CEILING=... MAX_NEW=... CONFIRM=--confirm"; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.ordering_cli run --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --initial-preflight "$(PREFLIGHT)" --initial-observations "$(INITIAL_OBSERVATIONS)" --ordering "$(ORDERING)" $(SOURCE_ARGS) --ledger "$(LEDGER)" --preregistration "$(PREREGISTRATION)" --output "$(OUTPUT)" --provider-model "$(PROVIDER_MODEL)" --base-url "$(BASE_URL)" --timeout-seconds "$(TIMEOUT_SECONDS)" --adapter-revision "$(ADAPTER_REVISION)" --package-revision "$(PACKAGE_REVISION)" --attempt-ceiling "$(ATTEMPT_CEILING)" --max-new "$(MAX_NEW)" --max-retries-per-request "$(MAX_RETRIES_PER_REQUEST)" $(RETRY_FAILED) $(RECOVER_UNCERTAIN) $(CONFIRM) $(OVERWRITE)
+
+ordering-report:
+	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(ORDERING)" || test -z "$(OBSERVATIONS)" || test -z "$(OUTPUT)"; then \
+		echo "Usage: make ordering-report PROTOCOL=... MANIFEST=... ORDERING=... OBSERVATIONS=... OUTPUT=... [BOOTSTRAP_SEED=0 RESAMPLES=1000 OVERWRITE=--overwrite]"; exit 2; \
+	fi
+	$(PYTHON) -m decision_flywheel_evaluations.ordering_cli report --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" --ordering "$(ORDERING)" --observations "$(OBSERVATIONS)" --output "$(OUTPUT)" $(if $(BOOTSTRAP_SEED),--seed "$(BOOTSTRAP_SEED)") $(if $(RESAMPLES),--resamples "$(RESAMPLES)") $(OVERWRITE)
 
 install-tools:
 	$(PYTHON) -m pip install -e '.[tools]'

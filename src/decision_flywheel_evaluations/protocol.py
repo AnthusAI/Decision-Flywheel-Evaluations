@@ -619,8 +619,20 @@ class OrderAnchor:
     dataset_manifest_sha256: str
 
     def validate(self, task: DecisionTask) -> None:
-        if not self.initial_result_artifact or not _SHA256.fullmatch(self.dataset_manifest_sha256): raise ValueError("a completed initial result anchor is required")
+        if not isinstance(self.frozen_context_artifact, SelectedGlobalArtifact):
+            raise ValueError("order anchor requires a typed selected-global artifact")
+        validate_result_reference(self.initial_result_artifact)
+        if not isinstance(self.dataset_manifest_sha256, str) or not _SHA256.fullmatch(self.dataset_manifest_sha256):
+            raise ValueError("a completed initial result anchor is required")
         self.frozen_context_artifact.validate(task)
+
+
+def validate_result_reference(reference: str) -> None:
+    """An artifact locator is public metadata, not an arbitrary URL or source text."""
+    if (not isinstance(reference, str)
+            or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,511}\.json", reference)
+            or any(part in {"", ".", ".."} for part in reference.split("/"))):
+        raise ValueError("initial result reference must be a safe relative JSON path")
 
 
 @dataclass(frozen=True)
@@ -629,8 +641,15 @@ class OrderTreatment:
     seed: int
 
     def validate(self) -> None:
-        if self.display_order not in _ORDERS or not isinstance(self.seed, int) or isinstance(self.seed, bool) or self.seed < 0:
+        if (not isinstance(self.display_order, str) or self.display_order not in _ORDERS
+                or not isinstance(self.seed, int) or isinstance(self.seed, bool) or self.seed < 0
+                or (self.display_order != "shuffled" and self.seed != 0)):
             raise ValueError("order treatment needs a core order and nonnegative seed")
+
+    @property
+    def label(self) -> str:
+        self.validate()
+        return f"shuffled-{self.seed}" if self.display_order == "shuffled" else self.display_order
 
 
 @dataclass(frozen=True)
@@ -642,11 +661,20 @@ class OrderProtocol:
     treatments: tuple[OrderTreatment, ...]
 
     def validate(self) -> None:
-        if not self.name or not _SHA256.fullmatch(self.dataset_manifest_sha256): raise ValueError("order protocol needs a frozen manifest")
+        if (not isinstance(self.name, str) or not self.name.strip()
+                or not isinstance(self.dataset_manifest_sha256, str) or not _SHA256.fullmatch(self.dataset_manifest_sha256)
+                or not isinstance(self.task, DecisionTask)):
+            raise ValueError("order protocol needs a frozen manifest and typed task")
         if self.anchor is None: raise ValueError("a completed initial result is required before freezing order study")
+        if not isinstance(self.anchor, OrderAnchor):
+            raise ValueError("order protocol needs a typed initial anchor")
         self.anchor.validate(self.task)
         if self.anchor.dataset_manifest_sha256 != self.dataset_manifest_sha256: raise ValueError("order anchor must use the frozen manifest")
+        if not isinstance(self.treatments, tuple) or any(not isinstance(item, OrderTreatment) for item in self.treatments):
+            raise ValueError("order protocol needs typed immutable treatments")
         for item in self.treatments: item.validate()
+        if len({item.label for item in self.treatments}) != len(self.treatments):
+            raise ValueError("order treatments must have unique identities")
         required = {"canonical", "interleaved", "reversed"}
         if not required <= {item.display_order for item in self.treatments} or sum(item.display_order == "shuffled" for item in self.treatments) < 2:
             raise ValueError("freeze canonical, interleaved, reversed, and multiple shuffled treatments")

@@ -105,11 +105,50 @@ def test_a_protocol_rejects_changed_task_options_order_or_model_before_preflight
 def test_an_order_protocol_requires_a_completed_initial_anchor_before_it_can_freeze():
     with pytest.raises(ValueError, match="completed initial"):
         OrderProtocol("order", "a" * 64, _protocol().task, None, ()).validate()
-    class ValidatedArtifact:
-        def validate(self, task): pass
-    order = OrderProtocol("order", "a" * 64, _protocol().task, OrderAnchor("initial-result", ValidatedArtifact(), "a" * 64),
+    from .preflight_test import _protocol as fixture_protocol, _rows
+    manifest, rows = _rows()
+    initial = fixture_protocol(manifest, rows)
+    order = OrderProtocol("order", initial.dataset_manifest_sha256, initial.task,
+                          OrderAnchor("results/initial.json", initial.selector_search_artifact, initial.dataset_manifest_sha256),
                           (OrderTreatment("canonical", 0), OrderTreatment("interleaved", 0), OrderTreatment("reversed", 0), OrderTreatment("shuffled", 1), OrderTreatment("shuffled", 2)))
     order.validate()
     with pytest.raises(ValueError, match="freeze canonical"):
         replace(order, treatments=(OrderTreatment("interleaved", 0), OrderTreatment("reversed", 0),
                                    OrderTreatment("shuffled", 1), OrderTreatment("shuffled", 2))).validate()
+
+
+def test_an_order_anchor_rejects_an_untyped_context_and_unsafe_result_reference():
+    from .preflight_test import _protocol as fixture_protocol, _rows
+    manifest, rows = _rows()
+    initial = fixture_protocol(manifest, rows)
+    class PretendedArtifact:
+        def validate(self, task): pass
+    with pytest.raises(ValueError, match="typed"):
+        OrderAnchor("results/initial.json", PretendedArtifact(), initial.dataset_manifest_sha256).validate(initial.task)
+    for reference in (None, [], "initial", "/tmp/initial.json", "../initial.json", "results/../initial.json",
+                      "https://example.test/key.json", "results/initial.json?token=secret"):
+        with pytest.raises(ValueError, match="reference"):
+            OrderAnchor(reference, initial.selector_search_artifact, initial.dataset_manifest_sha256).validate(initial.task)
+
+
+@pytest.mark.parametrize("order,seed", ((None, 0), ([], 0), ("canonical", True), ("canonical", 1),
+                                       ("interleaved", 2), ("reversed", 3), ("shuffled", 1.5)))
+def test_order_treatments_reject_untyped_or_meaningless_seeds(order, seed):
+    with pytest.raises(ValueError):
+        OrderTreatment(order, seed).validate()
+
+
+def test_order_labels_distinguish_shuffled_permutations_and_reject_duplicate_treatments():
+    assert OrderTreatment("shuffled", 1).label == "shuffled-1"
+    assert OrderTreatment("shuffled", 2).label == "shuffled-2"
+    assert OrderTreatment("canonical", 0).label == "canonical"
+    from .preflight_test import _protocol as fixture_protocol, _rows
+    manifest, rows = _rows()
+    initial = fixture_protocol(manifest, rows)
+    duplicate = OrderTreatment("shuffled", 1)
+    order = OrderProtocol("order", initial.dataset_manifest_sha256, initial.task,
+                          OrderAnchor("results/initial.json", initial.selector_search_artifact, initial.dataset_manifest_sha256),
+                          (OrderTreatment("canonical", 0), OrderTreatment("interleaved", 0),
+                           OrderTreatment("reversed", 0), duplicate, duplicate))
+    with pytest.raises(ValueError, match="unique"):
+        order.validate()

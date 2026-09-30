@@ -6,7 +6,7 @@ import random
 from dataclasses import dataclass
 from typing import Sequence
 
-from .metrics import Observation, summarize, validate_rows
+from .metrics import Observation, validate_rows
 
 
 @dataclass(frozen=True)
@@ -41,7 +41,7 @@ def paired_macro_f1_bootstrap(
         raise ValueError("metric must be macro_f1 or accuracy")
     if include_order:
         raise ValueError("ordering-factor inference is not implemented")
-    validate_rows(rows, labels)
+    labels = validate_rows(rows, labels)
     arms = [row for row in rows if row.condition in {baseline, treatment}]
     if not any(row.condition == baseline for row in arms):
         raise ValueError("missing baseline arm")
@@ -61,11 +61,8 @@ def paired_macro_f1_bootstrap(
     targets = _targets(arms, baseline, treatment, draws, orders, expected_target_ids)
 
     def score(condition: str, draw_sample: Sequence[int], target_sample: Sequence[str]) -> float:
-        summaries = [summarize([index[(condition, draw, orders[0], target)] for target in target_sample], labels) for draw in draw_sample]
-        values = [summary.macro_f1 if metric == "macro_f1" else summary.accuracy for summary in summaries]
-        # Every source cell was completed and label-validated, so this is defensive.
-        if any(value is None for value in values):
-            raise ValueError("paired inference has no scoreable observations")
+        values = [_label_score([index[(condition, draw, orders[0], target)] for target in target_sample], labels, metric)
+                  for draw in draw_sample]
         return sum(values) / len(values)
 
     shared_draws = draws[baseline] if baseline_multi else draws[treatment]
@@ -116,11 +113,7 @@ def _targets(
     actual = groups[0]
     if any(group != actual for group in groups):
         raise ValueError("paired conditions and draws must share equal target sets")
-    if expected_target_ids is not None:
-        expected = tuple(expected_target_ids)
-        if (not expected or any(not isinstance(target, str) or not target for target in expected)
-            or len(set(expected)) != len(expected) or set(expected) != actual):
-            raise ValueError("expected target manifest does not exactly cover paired targets")
+    _validate_expected_targets(expected_target_ids, actual)
     for target in actual:
         if len({row.true_label for row in rows if row.target_id == target}) != 1:
             raise ValueError("shared targets must have identical true labels")
@@ -143,7 +136,7 @@ def paired_order_bootstrap(
         raise ValueError("orders must differ and metric must be accuracy or macro_f1")
     if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0 or isinstance(resamples, bool) or not isinstance(resamples, int) or resamples < 1:
         raise ValueError("seed and resamples must be valid")
-    validate_rows(rows, labels)
+    labels = validate_rows(rows, labels)
     selected = [row for row in rows if row.condition == condition and row.order in {baseline_order, treatment_order}]
     if not selected or any(row.status != "completed" for row in selected):
         raise ValueError("missing cells cannot support paired order inference")
@@ -153,16 +146,14 @@ def paired_order_bootstrap(
     if not draws or not targets or any((condition, draw, order, target) not in index for draw in draws for order in (baseline_order, treatment_order) for target in targets):
         raise ValueError("orders and draws must share exact target cells")
     targets = tuple(sorted(targets))
-    if expected_target_ids is not None and set(expected_target_ids) != set(targets):
-        raise ValueError("expected target manifest does not exactly cover paired targets")
+    _validate_expected_targets(expected_target_ids, set(targets))
     for target in targets:
         if len({row.true_label for row in selected if row.target_id == target}) != 1:
             raise ValueError("shared targets must have identical true labels")
     def score(order, draw_sample, target_sample):
         values=[]
         for draw in draw_sample:
-            summary=summarize([index[(condition, draw, order, target)] for target in target_sample], labels)
-            values.append(summary.accuracy if metric == "accuracy" else summary.macro_f1)
+            values.append(_label_score([index[(condition, draw, order, target)] for target in target_sample], labels, metric))
         return sum(values)/len(values)
     point=score(treatment_order,draws,targets)-score(baseline_order,draws,targets)
     rng=random.Random(seed); effects=[]
@@ -197,7 +188,7 @@ def paired_permutation_family_bootstrap(
     if (isinstance(seed, bool) or not isinstance(seed, int) or seed < 0
         or isinstance(resamples, bool) or not isinstance(resamples, int) or resamples < 1):
         raise ValueError("seed and resamples must be valid")
-    validate_rows(rows, labels)
+    labels = validate_rows(rows, labels)
     relevant_orders = {reference_order, *family}
     selected = [row for row in rows if row.condition == condition and row.order in relevant_orders]
     if not selected or any(row.status != "completed" for row in selected):
@@ -208,11 +199,7 @@ def paired_permutation_family_bootstrap(
     if any((condition, draw, order, target) not in index
            for draw in draws for order in relevant_orders for target in targets):
         raise ValueError("reference and permutations must share exact target/draw cells")
-    if expected_target_ids is not None:
-        expected = tuple(expected_target_ids)
-        if (not expected or any(not isinstance(target, str) or not target for target in expected)
-            or len(set(expected)) != len(expected) or set(expected) != set(targets)):
-            raise ValueError("expected target manifest does not exactly cover paired targets")
+    _validate_expected_targets(expected_target_ids, set(targets))
     for target in targets:
         if len({row.true_label for row in selected if row.target_id == target}) != 1:
             raise ValueError("shared targets must have identical true labels")
@@ -220,11 +207,7 @@ def paired_permutation_family_bootstrap(
     def score(order: str, draw_sample: Sequence[int], target_sample: Sequence[str]) -> float:
         scores = []
         for draw in draw_sample:
-            summary = summarize([index[(condition, draw, order, target)] for target in target_sample], labels)
-            value = summary.accuracy if metric == "accuracy" else summary.macro_f1
-            if value is None:
-                raise ValueError("paired permutation inference has no scoreable observations")
-            scores.append(value)
+            scores.append(_label_score([index[(condition, draw, order, target)] for target in target_sample], labels, metric))
         return sum(scores) / len(scores)
 
     point = sum(score(order, draws, targets) - score(reference_order, draws, targets) for order in family) / len(family)
@@ -239,3 +222,38 @@ def paired_permutation_family_bootstrap(
     effects.sort()
     return PairedInterval(point, effects[int(.025 * (resamples - 1))],
                           effects[int(.975 * (resamples - 1))], tuple(effects))
+
+
+def _validate_expected_targets(expected_target_ids: Sequence[str] | None, actual: set[str]) -> None:
+    if expected_target_ids is None:
+        return
+    if not isinstance(expected_target_ids, Sequence) or isinstance(expected_target_ids, (str, bytes)):
+        raise ValueError("expected target manifest must be a sequence of unique IDs")
+    expected = tuple(expected_target_ids)
+    if (not expected or any(not isinstance(target, str) or not target for target in expected)
+            or len(set(expected)) != len(expected) or set(expected) != actual):
+        raise ValueError("expected target manifest does not exactly cover paired targets")
+
+
+def _label_score(rows: Sequence[Observation], labels: Sequence[str], metric: str) -> float:
+    """Score already validated completed labels, without recomputing calibration.
+
+    Public bootstrap entry points validate every original response first. Each
+    resample then needs only accuracy or macro-F1, including repeated targets
+    and absent classes; probability metrics still belong in the study report.
+    """
+    if not rows:
+        raise ValueError("paired inference has no scoreable observations")
+    correct = sum(row.true_label == row.predicted_label for row in rows)
+    if metric == "accuracy":
+        return correct / len(rows)
+    actual = dict.fromkeys(labels, 0)
+    predicted = dict.fromkeys(labels, 0)
+    positive = dict.fromkeys(labels, 0)
+    for row in rows:
+        actual[row.true_label] += 1
+        predicted[row.predicted_label] += 1
+        if row.true_label == row.predicted_label:
+            positive[row.true_label] += 1
+    return sum(2 * positive[label] / denominator if (denominator := actual[label] + predicted[label]) else 0.0
+               for label in labels) / len(labels)

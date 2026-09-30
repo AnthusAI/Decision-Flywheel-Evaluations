@@ -25,12 +25,10 @@
       "text": "Preparing native ordering infrastructure with Terra subagents; no actual ordering preregistration or model calls yet. Planner requires complete initial single-Jev canonical scoreboard observations and exact source preflight, fixes task/options/targets/context membership, and crosses every positive selection/size/draw cell with explicit canonical/interleaved/reversed/shuffled seeds. Zero-shot remains canonical-only. Text-free IO and descriptive matched target/draw/permutation reports are under verification. Actual initial-result anchor, complete ordering enumeration, paid ceiling and approval cannot be frozen until the initial study finishes. This task is not complete.",
       "created_at": "2026-09-30T23:01:32.078028Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -39,29 +37,32 @@
       "text": "HANDOFF 2026-09-30: Human explicitly requested an immediate stop because the weekly limit is exhausted. No further implementation or paid calls are authorized by this handoff. The persistent goal is being paused, not completed.\n\nWorking checkout: /Users/home/Projects/Decision-Flywheel-Evaluations. Local main is 974aad38acbab3c22b8fc7fffb4b9f255a7adb69 (published pilot); fetched origin/main is release robot 024837f (v0.7.0). Current ordering work is UNCOMMITTED, including new ordering.py, ordering_io.py, ordering_collection.py, ordering_reporting.py, ordering_cli.py and adjacent sentence-named specs; Makefile/README/template and protocol/bootstrap/preflight edits. Do not discard these files. No new study results or live calls exist. Original /Users/home/Projects/Jev-Flywheel has unrelated dirty user work: leave it untouched.\n\nImplemented WIP: complete initial single-Jev canonical scoreboard anchor required; all initial targets/selectors/sizes/draws and example membership fixed; canonical/interleaved/reversed plus explicit shuffled seeds; zero only canonical; exact wire dedup; text-free strict IO; bounded resume/retry ledger; descriptive paired target/draw/permutation intervals, percentage points separately from relative percent, no best-order selection or invented p-values. CLI/Make provide ordering-preflight, ordering-run, ordering-report. Template protocols/ORDER_SENSITIVITY.md is NOT an actual preregistration. Actual ordering must follow initial complete results and precede Kev/Laya comparisons.\n\nUNRESOLVED BLOCKING REVIEW DEFECT: ordering_cli.run_ordering_collection opens CacheStore before full initial evidence and ordering-plan regeneration are validated. collect_ordering rejects bad evidence before provider calls, but an invalid initial preflight/observations can still create/bind a ledger. NEXT STEP: add a failing adjacent spec asserting invalid/incomplete initial evidence creates neither ledger nor provider; extract a cache-independent complete-anchor validation helper from ordering_collection and call it before CacheStore. Preserve lower-level validation for direct callers. This fix was NOT implemented before stop.\n\nVerification: earlier intermediate full snapshot passed 286 specs, but that is NOT final current-tree verification. Latest ordering_cli targeted suite passed 11 specs; ordering 17, collection 7, reporting 4 passed in targeted runs. Current full suite was interrupted at human stop: 154 passed, KeyboardInterrupt, no final result. After the gate fix, rerun all specs, git diff --check, kanbus validate, then isolated source-archive specs without datasets/pyarrow/typesafe/caches/history before publication. Stage explicit owned paths only; never .env, dataset text, or caches. Rebase release-only origin changes after committing cleanly; GitHub AnthusAI only, no force push.\n\nNative/provider-neutral optimization ONLY; NO DSPy dependency, bridge, or prompt optimization path. Use Terra subagents as requested. Read repo/project AGENTS and use Kanbus CLI, not direct issue JSON edits. No automatic goal completion at an infrastructure milestone.",
       "created_at": "2026-09-30T23:19:28.057903Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
+    },
+    {
+      "id": "99b9a907-e731-47a6-9a6d-76502d092167",
+      "author": "home",
+      "text": "Claude Code takeover: fixed the blocking gate defect. Added failing spec first (invalid_initial_evidence_creates_neither_a_ledger_nor_a_provider), extracted cache-independent validate_ordering_evidence in ordering_collection.py, and run_ordering_collection now calls it before CacheStore. Full suite 295 passed; ordering_cli/collection 19 passed after final edit; git diff --check clean. Still UNCOMMITTED. Remaining: isolated source-archive specs, commit owned paths, rebase onto origin release commit, push. No live calls, no approval inferred.",
+      "created_at": "2026-09-30T23:31:57.497714Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-09-30T18:08:04.116317Z",
-  "updated_at": "2026-09-30T23:20:12.471743Z",
+  "updated_at": "2026-09-30T23:31:57.497742Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

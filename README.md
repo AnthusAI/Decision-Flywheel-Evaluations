@@ -245,6 +245,66 @@ and successful observed contexts. It deliberately reports no accuracy or other
 benchmark metrics. A successful pilot does not establish a context limit or
 authorize the development optimization, ordering, or cross-model studies.
 
+## Ordering follow-up
+
+The [ordering preregistration template](protocols/ORDER_SENSITIVITY.md) records
+the next investigation, before other model comparisons. This is not an actual
+ordering preregistration: the initial live scoreboard has not yet been collected.
+
+The offline planner requires complete initial single-Jev canonical scoreboard
+observations and an exact regenerated initial preflight. It preserves the task,
+choice options, model, targets, context sizes, selection draws, and example
+membership. Only presentation changes. Shuffled order seeds are independent
+of example-selection draws and retain distinct logical labels. Every positive
+initial cell is crossed with every declared treatment; zero-shot appears once.
+
+After completing the initial scoreboard, author an unapproved follow-up plan:
+
+```bash
+make PYTHON=.venv/bin/python ordering-preflight \
+  PROTOCOL=initial.derived.protocol.json MANIFEST=studies/manifests/ag_news.json \
+  PREFLIGHT=initial.scoreboard.preflight.json \
+  INITIAL_OBSERVATIONS=initial.scoreboard.observations.json \
+  RESULT_REFERENCE=results/ag_news.initial.json ORDER_SEEDS='0 1 2 3 4' \
+  DATASET_CACHE=.data/huggingface OUTPUT=.data/ag_news.ordering.json
+```
+
+Canonical, interleaved, and reversed seed-zero treatments are always included,
+along with the explicitly named shuffled seeds. The result contains only
+request provenance and ordered example IDs, never source text. It reports exact
+logical and deduplicated physical counts and makes no model calls. A pilot,
+development run, incomplete scoreboard, changed wording, or missing context
+artifact cannot replace the initial anchor. Output replacement requires
+`OVERWRITE=--overwrite`.
+
+Live ordering collection is a separate approval. Commit an actual preregistration
+binding the initial protocol, initial preflight, complete initial observations,
+and ordering-plan checksums before using `make ordering-run`. That target requires
+the same initial evidence plus `ORDERING`, a dedicated `LEDGER`, `PREREGISTRATION`,
+the frozen provider and transport versions, an explicit cumulative
+`ATTEMPT_CEILING`, a per-invocation `MAX_NEW`, and `CONFIRM=--confirm`.
+It validates the complete initial anchor again before constructing a provider.
+The ceiling counts attempts, including failed or uncertain calls; retries are
+disabled unless explicitly bounded. Resume uses the ordering ledger, not the
+initial-study ledger. Canonical responses are collected again and count toward
+the ceiling; they are not silently imported from the initial study.
+No ordering request ceiling is approved by this README or the template.
+
+An offline report from separately collected, sanitized ordering observations is:
+
+```bash
+make PYTHON=.venv/bin/python ordering-report \
+  PROTOCOL=initial.derived.protocol.json MANIFEST=studies/manifests/ag_news.json \
+  ORDERING=.data/ag_news.ordering.json OBSERVATIONS=ordering.observations.json \
+  OUTPUT=.data/ag_news.ordering.report.json BOOTSTRAP_SEED=0 RESAMPLES=1000
+```
+
+Reports show every condition/draw/order, pooled and mean-draw metrics, deduplicated
+physical totals, and nominal paired intervals for fixed orders and the declared
+shuffled family. They never choose a winning order or claim significance.
+Incomplete cells remain visible and make the corresponding intervals unavailable.
+These offline commands do not approve ordering collection or cross-model runs.
+
 Development optimization is a separate native-core step: before scoreboard
 preflight, it must produce a complete, validated `SelectedGlobalArtifact` from
 trusted development evidence. Scoreboard execution refuses protocols without

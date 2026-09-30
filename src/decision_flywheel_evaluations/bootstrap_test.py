@@ -1,5 +1,6 @@
 from .bootstrap import paired_macro_f1_bootstrap, paired_order_bootstrap, paired_permutation_family_bootstrap
 from .metrics import Observation
+from . import bootstrap, metrics
 import pytest
 import random
 def _rows():
@@ -117,3 +118,51 @@ def test_permutation_family_uses_one_shared_target_draw_and_order_vector_per_rep
  assert result.replicates==tuple(sorted(expected))
  with pytest.raises(ValueError,match="shuffled"):
   paired_permutation_family_bootstrap(rows,("yes","no"),condition="c",reference_order="canonical",exchangeable_orders=("reversed",))
+
+
+@pytest.mark.parametrize("metric", ("accuracy", "macro_f1"))
+@pytest.mark.parametrize("kind", ("conditions", "orders", "permutations"))
+def test_bootstrap_validates_probability_fields_once_not_again_for_each_label_only_resample(monkeypatch, metric, kind):
+ rows = [Observation(f"{condition}{draw}{order}{target}", target, condition, draw, order, label,
+                     label if order == "canonical" else "yes", "completed",
+                     probabilities={"yes": .6, "no": .4})
+         for condition in ("b", "t") for draw in (0, 1)
+         for order in ("canonical", "reversed", "shuffled-1", "shuffled-2")
+         for target, label in (("a", "yes"), ("z", "no"))]
+ if kind == "conditions":
+  rows = [row for row in rows if row.order == "canonical"]
+  run = lambda: paired_macro_f1_bootstrap(rows, ("yes", "no"), baseline="b", treatment="t", metric=metric, resamples=7)
+ elif kind == "orders":
+  run = lambda: paired_order_bootstrap(rows, ("yes", "no"), condition="b", baseline_order="canonical", treatment_order="reversed", metric=metric, resamples=7)
+ else:
+  run = lambda: paired_permutation_family_bootstrap(rows, ("yes", "no"), condition="b", reference_order="canonical", exchangeable_orders=("shuffled-1", "shuffled-2"), metric=metric, resamples=7)
+ original = metrics._valid_probs
+ checked = []
+ def count(probabilities, labels):
+  checked.append(1)
+  return original(probabilities, labels)
+ monkeypatch.setattr(metrics, "_valid_probs", count)
+ result = run()
+ assert len(result.replicates) == 7
+ assert len(checked) == len(rows)
+
+
+def test_label_only_bootstrap_scoring_matches_full_metrics_for_repeated_multiclass_targets():
+ labels = ("yes", "no", "other")
+ rows = [Observation(str(index), str(index), "c", 0, "canonical", actual, predicted, "completed")
+         for index, (actual, predicted) in enumerate((("yes", "no"), ("yes", "yes"), ("no", "other"), ("other", "other")))]
+ rng = random.Random(4)
+ for _ in range(20):
+  sample = [rng.choice(rows) for _ in range(9)]
+  summary = metrics.summarize(sample, labels)
+  assert bootstrap._label_score(sample, labels, "accuracy") == summary.accuracy
+  assert bootstrap._label_score(sample, labels, "macro_f1") == summary.macro_f1
+
+
+@pytest.mark.parametrize("expected", (("a", "z", "a"), "az", 5))
+def test_order_bootstrap_requires_a_unique_typed_target_manifest(expected):
+ rows = [Observation(f"{order}{target}", target, "c", 0, order, label, label, "completed")
+         for order in ("canonical", "reversed") for target, label in (("a", "yes"), ("z", "no"))]
+ with pytest.raises(ValueError, match="expected target"):
+  paired_order_bootstrap(rows, ("yes", "no"), condition="c", baseline_order="canonical",
+                         treatment_order="reversed", expected_target_ids=expected)
