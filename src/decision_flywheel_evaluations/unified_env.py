@@ -101,17 +101,44 @@ def put_clone_first(clone: Path | None = None) -> CloneIdentity:
 
 PINNED_DECISION_FLYWHEEL = "6137fa185a1a98afa84b5e6d5948d1780df5d56d"
 SHIM_DIR = REPO_ROOT / "var" / "unified-flywheel" / "pyshim"
+CORE_ENV = "UNIFIED_FLYWHEEL_CORE"
+
+
+def _core_from_working_tree(source: Path) -> dict:
+    """Put a Decision-Flywheel source tree (``.../Decision-Flywheel/src``) first, and identify it."""
+    source = source.resolve()
+    if not (source / "decision_flywheel" / "__init__.py").exists():
+        raise EnvironmentProblem(f"{CORE_ENV}={source} does not contain decision_flywheel/")
+    if str(source) not in sys.path:
+        sys.path.insert(0, str(source))
+    import decision_flywheel as package  # noqa: PLC0415 - resolved only after the path is fixed
+
+    resolved = Path(package.__file__).resolve().parent
+    if resolved != source / "decision_flywheel":
+        raise EnvironmentProblem(f"decision_flywheel resolved to {resolved}, not {CORE_ENV}={source}; "
+                                 "another copy was imported first")
+    try:
+        commit = _git(source, "rev-parse", "HEAD")
+        dirty = bool(_git(source, "status", "--porcelain", "--untracked-files=no", "--", "."))
+    except (OSError, subprocess.CalledProcessError):
+        commit, dirty = None, True
+    return {"commit": commit, "pinned": commit == PINNED_DECISION_FLYWHEEL, "source": "working-tree",
+            "path": str(source), "dirty": dirty}
 
 
 def ensure_decision_flywheel() -> dict:
     """Make ``decision_flywheel`` importable and say which copy it is.
 
-    The interpreter that has scikit-learn and Tactus (Jev-Flywheel's) does not have
-    Decision-Flywheel installed, while this repository's own ``.venv`` has the pinned copy.
-    Decision-Flywheel is pure standard-library Python, so a one-entry shim directory holding
-    a symlink to the pinned package is enough; nothing else from that environment is put on
-    the path.
+    With ``UNIFIED_FLYWHEEL_CORE`` set (the Makefile sets it to ``../Decision-Flywheel/src``),
+    the harness uses that working tree and records its commit and whether its ``src`` has
+    uncommitted changes. Otherwise it falls back to the pinned published copy: the
+    interpreter that has scikit-learn and Tactus (Jev-Flywheel's) does not have
+    Decision-Flywheel installed, while this repository's own ``.venv`` has the pinned copy,
+    so a one-entry shim directory holding a symlink to that package is put on the path.
+    Decision-Flywheel is pure standard-library Python, so nothing else is needed.
     """
+    if os.environ.get(CORE_ENV):
+        return _core_from_working_tree(Path(os.environ[CORE_ENV]))
     try:
         import decision_flywheel  # noqa: F401
     except ImportError:

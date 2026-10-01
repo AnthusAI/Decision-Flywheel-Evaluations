@@ -1,4 +1,5 @@
-"""The unified flywheel loop: arms 0, A, B-local, B and A+B (studies/UNIFIED_FLYWHEEL_PLAN.md).
+"""The unified flywheel loop: arms 0, A, B-local, B and A+B (studies/UNIFIED_FLYWHEEL_PLAN.md),
+plus the fixed-list arms F, F-rand, A-c and A-c+F (studies/DECISION_FLYWHEEL_DESIGN.md).
 
 Import this only after ``unified_env.put_clone_first()``: it imports ``jev_flywheel`` from
 the pinned clone (Workspace, AnswerCache, fit_head, compare, steer, ...) and needs
@@ -31,6 +32,22 @@ Leakage rules: labels come from the pool only; retrieval and kNN pools are the l
 only; a target is excluded from its own context by ID and by normalized text. Scoring uses
 dev-100 unless ``final`` is set, and paper-600 is never touched otherwise.
 
+**Fixed-list arms** (F, F-rand, A-c+F) follow the owner's round, in the simplest request shape
+(one Jev request per item with the example list in the state and every rubric question; see
+``unified_lists``):
+
+1. predict the new labels with the served classifier (round 1: Jev zero-shot), and take the
+   feedback; the confidently wrong items are the hard demos;
+2. A-c+F only: one steering round, with the labeler's comments in the feedback (A-c as well);
+3. F and A-c+F: ``improve_example_list`` tries the incumbent, a hard-demo swap and a random
+   control against the labels so far and keeps the incumbent on ties; F-rand redraws a
+   random list each round instead;
+4. answer every label and the evaluation slice with the chosen list and refit the head on
+   those answers (no separate few-shot feature, no extra gate).
+
+A-c is arm A with the labeler's comments recorded in the feedback. Until an explanation
+labeler supplies comments (``RunConfig.comments``), A-c behaves exactly like A.
+
 Outputs are text-free: metrics, intervals, request counts, fingerprints and element keys.
 The analyst's raw replies (which can quote dataset text) are kept only in the run
 directory's ``analyst-replies.jsonl`` under the gitignored ``var/``, for replay.
@@ -48,7 +65,8 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from decision_flywheel.adapters.jev import JevAdapter, JevConfiguration
 from decision_flywheel.budget import ContextBudget, build_context_plan
-from decision_flywheel.context import PerLabelLexicalRetrieval
+from decision_flywheel.context import FixedExampleList, PerLabelLexicalRetrieval
+from decision_flywheel.example_list import improve_example_list, plan_example_list_round
 from decision_flywheel.models import DecisionTask
 from decision_flywheel.models import Item as DFItem
 from decision_flywheel.models import LabeledItem
@@ -67,6 +85,7 @@ from jev_flywheel.workspace import Workspace
 
 from . import unified_env
 from .unified_fake_jev import FAKE_MODEL, FakeJevAsync, FakeJevCore, FakeJevSync, text_key
+from .unified_lists import ListAnswers, ListModel, random_list
 from .unified_knn import (KNN_FEATURES, PoolEntry, context_fingerprint, knn_policy_fingerprint,
                           knn_rows, retrieval_policy_fingerprint)
 from .unified_spend import (CountingAsyncClient, CountingSyncClient, SpendLedger,
@@ -77,8 +96,12 @@ from .unified_splits import (LABELS, Splits, assert_labels_from_pool, assert_ret
 from .unified_stats import ItemResult, contrasts, summarize
 
 HARNESS_VERSION = "unified-flywheel-1"
-ARMS = ("0", "A", "B-local", "B", "A+B")
-WORKSPACE_ARMS = frozenset({"A", "A+B"})
+UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")     # the first study; still the default
+ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
+F_RAND_SEED_OFFSET = 1000   # F-rand draws independently of F's own random-control trial
+WORKSPACE_ARMS = frozenset({"A", "A+B", "A-c", "A-c+F"})
+COMMENT_ARMS = frozenset({"A-c", "A-c+F"})
+LIST_ARMS = frozenset({"F", "F-rand", "A-c+F"})
 FEWSHOT_ARMS = frozenset({"B", "A+B"})
 KNN_ARMS = frozenset({"B-local"})
 SCORE_NAME = "Sentiment"
@@ -122,9 +145,10 @@ class RunConfig:
     seed: int = 1
     rounds: int = 3
     per_round: int = 100
-    arms: Tuple[str, ...] = ARMS
+    arms: Tuple[str, ...] = UNIFIED_ARMS
     final: bool = False
     live: bool = False
+    replay: bool = False
     dev_size: int = 100
     request_ceiling: int = PLAN_REQUEST_CEILING
     max_new_requests: Optional[int] = None
@@ -145,6 +169,9 @@ class RunConfig:
     bootstrap_resamples: int = 1000
     bootstrap_seed: int = 0
     fake_signal_strength: float = 0.15
+    comments: Optional[Mapping[str, str]] = None   # item_id -> the labeler's explanation (A-c arms)
+    list_per_label: int = 4
+    list_dev_max: Optional[int] = None             # None: every label outside the trial lists
 
     def validate(self) -> None:
         unknown = set(self.arms) - set(ARMS)
@@ -156,6 +183,8 @@ class RunConfig:
             raise HarnessError(f"the plan caps the study at {PLAN_REQUEST_CEILING} requests")
         if self.live and self.spend_ledger is None:
             raise HarnessError("live mode needs a durable --spend-ledger for the cumulative ceiling")
+        if self.replay and self.live:
+            raise HarnessError("replay is offline: it may not be combined with live mode")
 
 
 @dataclass
@@ -177,6 +206,33 @@ def offline_engines(cfg: RunConfig, splits: Splits, ledger: SpendLedger,
                          configuration=JevConfiguration(model=FAKE_MODEL))
     return Engines(lambda: CountingAsyncClient(lambda: FakeJevAsync(core), ledger, slots),
                    adapter, f"fake:{FAKE_MODEL}:signal-{core.strength}", "offline-fake")
+
+
+class ReplayMiss(RuntimeError):
+    """A replay needed an answer that is not cached. Nothing was sent."""
+
+
+class _RefusingClient:
+    def system_one(self, *, state, questions):
+        raise ReplayMiss("replay needed an uncached Jev answer")
+
+
+class _RefusingAsyncClient:
+    async def system_one(self, *, state, questions):
+        raise ReplayMiss("replay needed an uncached Jev answer")
+
+
+def replay_engines(cfg: RunConfig, ledger: SpendLedger) -> Engines:
+    """The live engine's identity, but clients that refuse: every answer must come from cache.
+
+    The ledger still counts each refused attempt, so a run that needed anything uncached
+    reports it (``UnifiedFlywheel.run`` then fails) instead of silently scoring gaps.
+    """
+    slots = concurrency_slots(cfg.max_concurrency)
+    configuration = JevConfiguration(model=cfg.provider_model)
+    adapter = JevAdapter(CountingSyncClient(_RefusingClient, ledger, slots), configuration=configuration)
+    return Engines(lambda: CountingAsyncClient(_RefusingAsyncClient, ledger, slots), adapter,
+                   configuration.model_identity, "live")
 
 
 def live_engines(cfg: RunConfig, ledger: SpendLedger) -> Engines:  # pragma: no cover - never run offline
@@ -311,6 +367,7 @@ class ArmState:
     head: Score
     workspace: Optional[Workspace] = None
     gates: List[Dict[str, Any]] = field(default_factory=list)
+    example_list: Optional[FixedExampleList] = None   # list arms; None = Jev zero-shot
 
 
 class UnifiedFlywheel:
@@ -334,12 +391,17 @@ class UnifiedFlywheel:
         else:
             if not unified_env.network_guard_installed():
                 raise HarnessError("offline runs must install the network guard first")
+            if cfg.replay:
+                engines = engines or replay_engines(cfg, self.ledger)
             engines = engines or offline_engines(cfg, self.splits, self.ledger, fake_core)
         self.engines = engines
         self.run_dir = Path(cfg.run_dir)
         self._prepare_run_dir()
         self.cache = self._shared_cache()
         self.fewshot_cache = AnswerCache(self.run_dir / "fewshot-answers.jsonl")
+        self.list_answers = ListAnswers(self.run_dir / "list-answers.jsonl", TASK,
+                                        {i: item.text for i, item in self.splits.items.items()}, self.labels,
+                                        self.engines.zero_shot_factory, concurrency=cfg.max_concurrency)
         self.v1 = Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
         self.events: List[Dict[str, Any]] = []
         self.results: Dict[int, Dict[str, List[ItemResult]]] = {}
@@ -539,20 +601,31 @@ class UnifiedFlywheel:
 
     # ---- lever A -------------------------------------------------------------------------
 
-    def _record_feedback(self, workspace: Workspace, batch: Sequence[str], round_number: int) -> None:
+    def _record_feedback(self, workspace: Workspace, batch: Sequence[str], round_number: int, *,
+                         predictions: Optional[Mapping[str, Tuple[str, float]]] = None,
+                         with_comments: bool = False) -> int:
+        """Feedback for the new labels; returns how many carried a labeler comment."""
         card = workspace.scorecard()
         score = card.score(SCORE_NAME)
         questions = card.questions()
+        commented = 0
         for item_id in batch:
-            result = predict(score, self.cache.partial_answers_for(item_id, questions))
+            if predictions is not None:
+                value, confidence = predictions[item_id]
+            else:
+                result = predict(score, self.cache.partial_answers_for(item_id, questions))
+                value, confidence = result.value, result.confidence
             label = self.labels[item_id]
+            comment = (self.cfg.comments or {}).get(item_id) if with_comments else None
+            commented += int(bool(comment))
             workspace.add_feedback(FeedbackItem(
                 id=f"fb-{item_id}-s{self.cfg.seed}-r{round_number}", item_id=item_id, score_name=SCORE_NAME,
-                initial_answer_value=result.value, final_answer_value=label,
-                is_agreement=agrees(result.value, label), editor_name="scripted-labeler",
+                initial_answer_value=value, final_answer_value=label, edit_comment_value=comment or None,
+                is_agreement=agrees(value, label), editor_name="scripted-labeler",
                 cache_key=f"{item_id}:{SCORE_NAME}:v{workspace.version}", label_source=LABEL_SOURCE_FINAL,
                 metadata={"propensity": 1.0, "selection_policy": "seeded-uniform-order",
-                          "shown_confidence": result.confidence, "round": round_number}))
+                          "shown_confidence": confidence, "round": round_number}))
+        return commented
 
     def _replies_path(self) -> Path:
         return self.run_dir / "analyst-replies.jsonl"
@@ -579,9 +652,11 @@ class UnifiedFlywheel:
         from jev_flywheel.steer import ScriptedApprover, run_steering
 
         workspace = state.workspace
-        if self.cfg.live:
+        if self.cfg.live or self.cfg.replay:
             reply = self._recorded_reply(arm, round_number)
             source = "replayed" if reply is not None else "live"
+            if reply is None and self.cfg.replay:
+                raise HarnessError(f"replay has no recorded analyst reply for arm {arm} round {round_number}")
         else:
             reply, source = self._offline_reply(round_number), "offline-fixed"
         before = workspace.scorecard().score(SCORE_NAME)
@@ -647,17 +722,22 @@ class UnifiedFlywheel:
             if round_number in self.fewshot_diagnostics:
                 round_record["fewshot_vs_zero_shot"] = self.fewshot_diagnostics[round_number]
             rounds_out.append(round_record)
+        if self.cfg.replay and self.ledger.new_attempts:
+            raise HarnessError(f"replay needed {self.ledger.new_attempts} uncached answers; it is not a pure replay")
         return self._finish(rounds_out)
 
     def _run_arm(self, arm: str, state: ArmState, round_number: int, batch: Sequence[str],
                  labeled: Sequence[str]) -> Dict[str, Any]:
+        if arm in LIST_ARMS:
+            return self._run_list_arm(arm, state, round_number, batch, labeled)
         out: Dict[str, Any] = {}
         if arm in WORKSPACE_ARMS:
             workspace = state.workspace
             existing = workspace.scorecard().questions()
             self._step(arm, round_number, "zero-shot", "top-up-new-labels",
                        lambda: self._fill_zero_shot(batch, existing))
-            self._record_feedback(workspace, batch, round_number)
+            out["comments"] = self._record_feedback(workspace, batch, round_number,
+                                                    with_comments=arm in COMMENT_ARMS)
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
             ws_score = workspace.scorecard().score(SCORE_NAME)
@@ -670,7 +750,7 @@ class UnifiedFlywheel:
             ws_score = workspace.scorecard().score(SCORE_NAME)
             self._step(arm, round_number, "zero-shot", "fill-evaluation-slice",
                        lambda: self._fill_zero_shot(self.eval_ids, workspace.scorecard().questions()))
-            if arm == "A":
+            if arm in ("A", "A-c"):
                 state.head = ws_score
         if arm in FEWSHOT_ARMS:
             out["fewshot_requests"] = self._step(
@@ -678,7 +758,7 @@ class UnifiedFlywheel:
                 lambda: self._ensure_fewshot(list(labeled) + list(self.eval_ids), labeled))
             if round_number not in self.fewshot_diagnostics:
                 self.fewshot_diagnostics[round_number] = self._fewshot_diagnostic(labeled)
-        if arm != "A":
+        if arm not in ("A", "A-c"):
             base = state.workspace.scorecard().score(SCORE_NAME) if state.workspace else self.v1.score(SCORE_NAME)
             template = candidate_template(base, fewshot=arm in FEWSHOT_ARMS, knn=arm in KNN_ARMS)
             state.head, gate, _ = self._gate(arm, round_number, template, state.head, labeled)
@@ -691,8 +771,121 @@ class UnifiedFlywheel:
         self.ledger.raise_if_tripped()
         return out
 
-    def _score(self, head: Score, labeled: Sequence[str]) -> Tuple[List[ItemResult], int]:
-        rows = self._rows(head, self.eval_ids, labeled)
+    # ---- fixed-list arms (F, F-rand, A-c+F) ------------------------------------------------
+
+    def _list_fill(self, fixed: Optional[FixedExampleList], ids: Sequence[str],
+                   questions: Mapping[str, Any]) -> Dict[str, int]:
+        if fixed is None:
+            return self._fill_zero_shot(ids, questions)
+        assert_labels_from_pool(fixed.example_ids + fixed.reserve_ids, self.splits)
+        out = self.list_answers.fill(ids, questions, fixed)
+        self.ledger.raise_if_tripped()
+        return out
+
+    def _list_rows(self, score: Score, ids: Sequence[str],
+                   fixed: Optional[FixedExampleList]) -> Dict[str, Dict[str, float]]:
+        if fixed is None:
+            answers = self.cache.bulk_partial_answers(ids, score.questions())
+        else:
+            answers = self.list_answers.answers(ids, score.questions(), fixed)
+        return {i: feature_row(score, answers[i], None) for i in ids}
+
+    def _labeled_rows(self, labeled: Sequence[str]) -> List[LabeledItem]:
+        return [LabeledItem(DFItem(i, {"text": self.splits.items[i].text}), self.labels[i]) for i in sorted(labeled)]
+
+    def _improve_list(self, state: ArmState, labeled: Sequence[str], hard_demos: Sequence[str],
+                      questions: Mapping[str, Any], round_number: int) -> Tuple[FixedExampleList, Dict[str, Any]]:
+        rows = self._labeled_rows(labeled)
+        settings = dict(incumbent=state.example_list, hard_demo_ids=hard_demos, per_label=self.cfg.list_per_label,
+                        seed=round_number, dev_max=self.cfg.list_dev_max)
+        plan = plan_example_list_round(TASK, rows, **settings)
+        development = [row.item.id for row in plan.development]
+        for _, fixed in plan.trials:   # prefetch concurrently; the search then reads the cache
+            self._list_fill(fixed, development, questions)
+        model = ListModel(self.list_answers, questions, SCORE_NAME, [fixed for _, fixed in plan.trials],
+                          self.engines.identity)
+        result = asyncio.run(improve_example_list(
+            TASK, rows, model, max_model_calls=len(plan.trials) * len(development),
+            min_brier_gain=self.cfg.min_brier_gain, protected_ids=self.splits.test,
+            presentation_label_order=TASK.labels, **settings))   # the order ListAnswers presents in
+        self.ledger.raise_if_tripped()
+        record = {"winner": result.winner_trial, "promoted": result.promoted, "reason": result.reason,
+                  "incumbent_source": plan.incumbent_source, "n_development": len(development),
+                  "scores": {name: {k: round(v, 6) for k, v in score.items()} for name, score in result.scores.items()},
+                  "trial_fingerprints": {name: fixed.fingerprint for name, fixed in plan.trials},
+                  "trial_status": {t.trial_name: {"status": t.status, "failures": list(t.failure_reasons)}
+                                   for t in result.optimization.trials},
+                  "requests_not_prefetched": model.requests}
+        return result.winner, record
+
+    def _run_list_arm(self, arm: str, state: ArmState, round_number: int, batch: Sequence[str],
+                      labeled: Sequence[str]) -> Dict[str, Any]:
+        out: Dict[str, Any] = {}
+        # 1. Predict the new labels with the served classifier; its confident mistakes are hard demos.
+        #    F-rand uses neither, so it skips these requests.
+        predictions, wrong = None, []
+        if arm != "F-rand":
+            self._step(arm, round_number, "list", "predict-new-labels",
+                       lambda: self._list_fill(state.example_list, batch, state.head.questions()))
+            served_rows = self._list_rows(state.head, batch, state.example_list)
+            predictions = {i: serve(state.head, served_rows[i]) for i in batch}
+            wrong = sorted((i for i in batch if not agrees(predictions[i][0], self.labels[i])),
+                           key=lambda i: (-predictions[i][1], i))
+            out["new_labels_wrong"] = len(wrong)
+        # 2. A-c+F: the analyst reads the feedback (with comments) and may add a question.
+        base = self.v1.score(SCORE_NAME)
+        if state.workspace is not None:
+            workspace = state.workspace
+            existing = workspace.scorecard().questions()
+            self._step(arm, round_number, "zero-shot", "top-up-new-labels",
+                       lambda: self._fill_zero_shot(batch, existing))
+            out["comments"] = self._record_feedback(workspace, batch, round_number, predictions=predictions,
+                                                    with_comments=arm in COMMENT_ARMS)
+            out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
+                                         lambda: self._steer(arm, state, round_number))
+            base = workspace.scorecard().score(SCORE_NAME)
+        template = candidate_template(base, fewshot=False, knn=False)
+        questions = template.questions()
+        # 3. Choose the example list against the labels so far.
+        if arm == "F-rand":
+            chosen = random_list(TASK, self._labeled_rows(labeled), per_label=self.cfg.list_per_label,
+                                 seed=F_RAND_SEED_OFFSET + round_number)
+            out["list"] = {"winner": "random", "seed": F_RAND_SEED_OFFSET + round_number}
+        else:
+            chosen, out["list"] = self._step(arm, round_number, "list", "improve-list",
+                                             lambda: self._improve_list(state, labeled, wrong, questions, round_number))
+        out["list"].update({"fingerprint": chosen.fingerprint, "example_ids": list(chosen.example_ids),
+                            "reserve_ids": list(chosen.reserve_ids)})
+        # 4. Answer every label and the evaluation slice with that list; retrain the head.
+        out["fill"] = self._step(arm, round_number, "list", "fill-labels-and-evaluation",
+                                 lambda: self._list_fill(chosen, list(labeled) + list(self.eval_ids), questions))
+        rows = self._list_rows(template, labeled, chosen)
+        training = training_set(template, labeled, self.labels, rows, f"example-list:{chosen.fingerprint}")
+        record: Dict[str, Any] = {"n_train": training.n, "missing_features": len(training.needs_answers)}
+        try:
+            result = fit_head(training, template, folds=self.cfg.folds, seed=self.cfg.fit_seed)
+        except LadderRefusal as refusal:
+            result, record["reasons"] = None, [str(refusal)]
+        if result is not None and result.fitted:
+            state.head, state.example_list = head_from_fit(template, result), chosen
+            record.update({"decision": "refit", "fit_id": result.provenance.get("fit_id"),
+                           "fit_head_oof": _summary_dict(result.metrics)})
+        else:
+            record.setdefault("reasons", [getattr(result, "reason", "not fitted")])
+            record["decision"] = "kept previous"
+        out["head"] = record
+        out["head_features"] = list(state.head.decision.features)
+        results, coverage = self._score(state.head, labeled, fixed=state.example_list, list_arm=True)
+        self.results[round_number][arm] = results
+        out["metrics"] = summarize(results)
+        out["evaluation_rows_missing_features"] = coverage
+        self.ledger.raise_if_tripped()
+        return out
+
+    def _score(self, head: Score, labeled: Sequence[str], *, fixed: Optional[FixedExampleList] = None,
+               list_arm: bool = False) -> Tuple[List[ItemResult], int]:
+        rows = (self._list_rows(head, self.eval_ids, fixed) if list_arm
+                else self._rows(head, self.eval_ids, labeled))
         results, missing = [], 0
         for item_id in self.eval_ids:
             row = rows[item_id]
@@ -724,7 +917,7 @@ class UnifiedFlywheel:
         summary = {
             "harness": HARNESS_VERSION,
             "jev_flywheel": {"clone": "var/" + Path(self.cfg.clone).name, "commit": unified_env.JEV_FLYWHEEL_COMMIT},
-            "mode": self.engines.mode, "engine": self.engines.identity,
+            "mode": self.engines.mode, "replay": self.cfg.replay, "engine": self.engines.identity,
             "analyst": {"provider": self.cfg.analyst_provider, "model": self.cfg.analyst_model,
                         "replies": "live (recorded for replay)" if self.cfg.live else
                         "offline: round 1 = recorded Kimi-K3 reply from the clone's simulated-labeler recording; later rounds = fixed fake replies"},
@@ -741,6 +934,14 @@ class UnifiedFlywheel:
                                  "k": self.cfg.knn_k, "top": self.cfg.knn_top},
                          "gate": {"min_brier_gain": self.cfg.min_brier_gain, "folds": self.cfg.folds,
                                   "fit_seed": self.cfg.fit_seed, "candidate_metrics": "nested per-fold out-of-fold"},
+                         "fixed_list": {"policy": "fixed-example-list", "per_label": self.cfg.list_per_label,
+                                        "request": "one Jev request per item: examples in state + every rubric question",
+                                        "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+                                        "development": "labels so far outside every trial list",
+                                        "dev_max": self.cfg.list_dev_max, "min_brier_gain": self.cfg.min_brier_gain,
+                                        "head": "refit each round on the chosen list's answers (no extra gate)"},
+                         "comments": {"supplied": len(self.cfg.comments or {}),
+                                      "source": "explanation labeler" if self.cfg.comments else "none (A-c runs as A)"},
                          "bootstrap": {"resamples": self.cfg.bootstrap_resamples, "seed": self.cfg.bootstrap_seed}},
             "per_round": rounds_out,
             "requests": self.ledger.summary(),

@@ -90,11 +90,15 @@ release:
 # Unified flywheel harness (studies/UNIFIED_FLYWHEEL_PLAN.md). Offline only: a fake Jev and fixed
 # analyst replies, with every non-local socket blocked. UF_PYTHON must have scikit-learn and Tactus
 # (Jev-Flywheel's interpreter does); the pinned Jev-Flywheel clone lives in var/ (see prepare-clone).
+# UF_CORE is the Decision-Flywheel source tree the harness imports (default: the sibling working
+# tree); its commit and cleanliness are recorded in every run summary. UF_CORE= uses the pinned copy.
+UF_CORE ?= $(abspath ../Decision-Flywheel/src)
+
 unified-flywheel-test:
 	@if test -z "$(UF_PYTHON)"; then echo "Usage: make unified-flywheel-test UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus"; exit 2; fi
-	$(UF_PYTHON) scripts/unified_flywheel.py check-env
-	PYTHONPATH=src:var/unified-flywheel/pyshim $(UF_PYTHON) -m pytest -q -p no:cacheprovider src/decision_flywheel_evaluations/unified_*_test.py
+	UNIFIED_FLYWHEEL_CORE=$(UF_CORE) $(UF_PYTHON) scripts/unified_flywheel.py check-env
+	UNIFIED_FLYWHEEL_CORE=$(UF_CORE) PYTHONPATH=src:$(if $(UF_CORE),$(UF_CORE),var/unified-flywheel/pyshim) $(UF_PYTHON) -m pytest -q -p no:cacheprovider src/decision_flywheel_evaluations/unified_*_test.py
 
 unified-flywheel-dry-run:
 	@if test -z "$(UF_PYTHON)"; then echo "Usage: make unified-flywheel-dry-run UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus"; exit 2; fi
-	$(UF_PYTHON) scripts/unified_flywheel.py run --run-dir var/unified-flywheel/dry-run
+	UNIFIED_FLYWHEEL_CORE=$(UF_CORE) $(UF_PYTHON) scripts/unified_flywheel.py run --run-dir var/unified-flywheel/dry-run $(UF_ARGS)

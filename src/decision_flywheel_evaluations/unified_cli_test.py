@@ -80,3 +80,30 @@ def test_unknown_arms_are_refused():
 def test_main_reports_a_usage_error_with_exit_code_two(nothing_may_load, capsys):
     assert unified_cli.main(_without(LIVE_OK, "--confirm")) == 2
     assert "--confirm" in capsys.readouterr().err
+
+
+ROUND_ONE_F = ["run", "--live", "--confirm", "--arms", "0,F,F-rand", "--rounds", "1",
+               "--spend-ledger", "ledger.json", "--request-ceiling", "7500", "--max-new-requests", "1000",
+               "--provider-model", "jev-1.13.0"]
+
+
+def test_round_one_of_f_against_f_rand_passes_every_gate_within_a_1000_request_cap():
+    args = parser().parse_args(ROUND_ONE_F)
+    bound = check_live_gates(args, parse_arms(args.arms), 100)
+    assert bound == {"0": 0, "F": 500, "F-rand": 200, "total": 700}
+
+
+def test_the_new_arms_parse_and_the_default_stays_the_first_studys_five():
+    assert parse_arms("F-rand,A-c+F,F,A-c") == ("F", "F-rand", "A-c", "A-c+F")
+    assert parse_arms(parser().parse_args(["run"]).arms) == ("0", "A", "B-local", "B", "A+B")
+
+
+def test_replay_needs_a_provider_model_and_a_run_dir_and_is_never_live(nothing_may_load):
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(["run", "--replay", "--run-dir", "x"]))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(["run", "--replay", "--provider-model", "jev-1.13.0"]))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(["run", "--provider-model", "jev-1.13.0", "--run-dir", "x"]))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(LIVE_OK + ["--replay"]))

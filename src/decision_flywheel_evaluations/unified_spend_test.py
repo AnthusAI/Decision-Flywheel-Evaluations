@@ -155,3 +155,13 @@ def test_a_planted_signal_makes_element_answers_lean_toward_the_reference_label(
     question = {"x": {"type": "noul", "instructions": "?"}}
     assert core.answer({"text": "good"}, question).answers["x"]["noul"] > 0.5
     assert core.answer({"text": "bad"}, question).answers["x"]["noul"] < 0.5
+
+
+def test_the_upper_bound_counts_one_list_request_per_item_per_trial_list():
+    bound = request_upper_bound(["F", "F-rand"], rounds=2, per_round=100, eval_n=100)
+    # F, round 1: 3 trial lists over 100 labels + the chosen list over 100 labels and 100 evaluation items;
+    # round 2: predict 100 new labels, 3 x 200, then 200 + 100.
+    assert bound["F"] == (3 * 100 + 200) + (100 + 3 * 200 + 300)
+    assert bound["F-rand"] == 200 + 300
+    assert request_upper_bound(["A-c"], rounds=3, per_round=100, eval_n=100)["A-c"] == \
+        request_upper_bound(["A"], rounds=3, per_round=100, eval_n=100)["A"]

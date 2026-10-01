@@ -108,16 +108,18 @@ def contrasts(results: Mapping[str, Sequence[ItemResult]], *, resamples: int = 1
     full-sample point estimate and then held fixed across resamples.
     """
     out: Dict[str, Dict[str, Dict[str, object]]] = {}
-    pairs = (("A-0", "0", "A"), ("B-0", "0", "B"), ("B-B-local", "B-local", "B"))
+    pairs = (("A-0", "0", "A"), ("B-0", "0", "B"), ("B-B-local", "B-local", "B"),
+             ("F-0", "0", "F"), ("F-F-rand", "F-rand", "F"), ("A-c-A", "A", "A-c"))
     for label, base, treat in pairs:
         if base in results and treat in results:
             out[label] = {name: paired_interval(results[base], results[treat], name,
                                                 resamples=resamples, seed=seed) for name in METRICS}
-    if all(arm in results for arm in ("A", "B", "A+B")):
-        entry: Dict[str, Dict[str, object]] = {}
-        for name in METRICS:
-            base = better_arm(results, "A", "B", name)
-            entry[name] = {**paired_interval(results[base], results["A+B"], name,
-                                             resamples=resamples, seed=seed), "baseline_arm": base}
-        out["A+B-max(A,B)"] = entry
+    for both, first, second in (("A+B", "A", "B"), ("A-c+F", "A-c", "F")):
+        if all(arm in results for arm in (first, second, both)):
+            entry: Dict[str, Dict[str, object]] = {}
+            for name in METRICS:
+                base = better_arm(results, first, second, name)
+                entry[name] = {**paired_interval(results[base], results[both], name,
+                                                 resamples=resamples, seed=seed), "baseline_arm": base}
+            out[f"{both}-max({first},{second})"] = entry
     return out

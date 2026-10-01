@@ -21,7 +21,8 @@ from typing import Dict, List, Optional
 from . import unified_env
 from .unified_spend import request_upper_bound
 
-ARMS = ("0", "A", "B-local", "B", "A+B")
+UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")
+ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
 PLAN_REQUEST_CEILING = 9500
 DEFAULT_RUN_ROOT = unified_env.REPO_ROOT / "var" / "unified-flywheel"
 
@@ -45,7 +46,9 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--clone", type=Path, default=None)
     run.add_argument("--seed", type=int, default=1)
     run.add_argument("--rounds", type=int, default=3)
-    run.add_argument("--arms", default=",".join(ARMS), help="comma-separated subset of 0,A,B-local,B,A+B")
+    run.add_argument("--arms", default=",".join(UNIFIED_ARMS), help="comma-separated subset of " + ",".join(ARMS))
+    run.add_argument("--comments", type=Path, default=None,
+                     help="JSONL of {item_id, comment} from an explanation labeler, for arms A-c and A-c+F")
     run.add_argument("--final", action="store_true",
                      help="score paper-600 instead of dev-100 (final comparison only)")
     run.add_argument("--max-concurrency", type=int, default=8)
@@ -55,6 +58,9 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--analyst-replies", type=Path, default=None,
                      help="offline only: JSON object {round: reply} replacing the fixed fake replies")
     run.add_argument("--bootstrap-resamples", type=int, default=1000)
+    run.add_argument("--replay", action="store_true",
+                     help="offline, $0: rerun a copied live run directory from its cached answers and recorded "
+                          "analyst replies; fails if anything is uncached (needs --provider-model)")
     live = run.add_argument_group("live mode (never default)")
     live.add_argument("--live", action="store_true")
     live.add_argument("--confirm", action="store_true")
@@ -77,6 +83,8 @@ def parse_arms(text: str) -> tuple:
 
 def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict[str, int]:
     """Every live gate, checked before any data is loaded or any client is constructed."""
+    if getattr(args, "replay", False):
+        raise UsageError("--replay is offline and cannot be combined with --live")
     if args.confirm is not True:
         raise UsageError("--live needs --confirm; nothing was loaded and no client was constructed")
     if not 0 <= args.request_ceiling <= PLAN_REQUEST_CEILING:
@@ -103,6 +111,13 @@ def _offline_replies(path: Optional[Path]) -> Optional[Dict[int, str]]:
     return {int(k): v if isinstance(v, str) else json.dumps(v) for k, v in raw.items()}
 
 
+def _comments(path: Optional[Path]) -> Optional[Dict[str, str]]:
+    if path is None:
+        return None
+    rows = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+    return {str(row["item_id"]): str(row["comment"]) for row in rows if row.get("comment")}
+
+
 def run(args: argparse.Namespace) -> Dict:
     arms = parse_arms(args.arms)
     eval_n = 600 if args.final else 100
@@ -110,10 +125,17 @@ def run(args: argparse.Namespace) -> Dict:
     if args.live:
         check_live_gates(args, arms, eval_n)
     else:
-        if args.confirm or args.spend_ledger or args.max_new_requests is not None or args.provider_model:
+        if args.confirm or args.spend_ledger or args.max_new_requests is not None:
             raise UsageError("live-only options were given without --live; refusing to guess")
+        if bool(args.provider_model) != bool(args.replay):
+            raise UsageError("--provider-model without --live is only for --replay, and --replay needs it")
+        if args.replay and args.run_dir is None:
+            raise UsageError("--replay needs an explicit --run-dir (a copy of a live run directory)")
         unified_env.install_network_guard()
-    unified_env.ensure_decision_flywheel()
+    core = unified_env.ensure_decision_flywheel()
+    if args.live and core.get("dirty"):
+        raise UsageError(f"the Decision-Flywheel working tree at {core.get('path')} has uncommitted changes in src; "
+                         "commit them first so the run records an exact core commit")
     identity = unified_env.put_clone_first(args.clone)
     if not unified_env.jev_dependencies_available():
         raise unified_env.EnvironmentProblem(
@@ -125,11 +147,11 @@ def run(args: argparse.Namespace) -> Dict:
     run_dir = args.run_dir or DEFAULT_RUN_ROOT / f"{mode}-seed{args.seed}"
     cfg = RunConfig(
         clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, arms=arms,
-        final=args.final, live=args.live, request_ceiling=args.request_ceiling,
+        final=args.final, live=args.live, replay=args.replay, request_ceiling=args.request_ceiling,
         max_new_requests=args.max_new_requests, spend_ledger=args.spend_ledger,
         max_concurrency=args.max_concurrency, max_consecutive_failures=args.max_consecutive_failures,
         analyst_provider=args.analyst_provider, analyst_model=args.analyst_model,
-        analyst_replies=_offline_replies(args.analyst_replies),
+        analyst_replies=_offline_replies(args.analyst_replies), comments=_comments(args.comments),
         provider_model=args.provider_model or "fake-jev-0", base_url=args.base_url,
         timeout_seconds=args.timeout_seconds, bootstrap_resamples=args.bootstrap_resamples)
     summary = UnifiedFlywheel(cfg).run()

@@ -256,11 +256,16 @@ class CountingSyncClient(_Counting):
 def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Dict[str, int]:
     """The most requests a fresh run could make, per arm, before anything is cached.
 
-    * A / A+B (zero-shot), round r: top up existing elements for the new labels (none in
+    * A / A+B / A-c (zero-shot), round r: top up existing elements for the new labels (none in
       round 1), ask a new element of every labeled item, and of the evaluation slice.
     * B (few-shot), round r: one answer per labeled item and per evaluation item, because the
       context changes whenever the labeled set does. A+B reuses B's few-shot answers when B
       runs in the same invocation (same pool, same policy, same context fingerprint).
+    * F (one request per item, list in the state), round r: predict the new labels with the
+      incumbent list (none in round 1), at most three trial lists over the labels so far, then
+      the chosen list over every label and the evaluation slice.
+    * F-rand: its list over every label and the evaluation slice. A-c+F: A-c's steering
+      top-ups plus F's requests for its own question set.
     * 0 and B-local: nothing.
     """
     arms = set(arms)
@@ -268,10 +273,16 @@ def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Di
     for arm in sorted(arms):
         total = 0
         for r in range(1, rounds + 1):
-            if arm in ("A", "A+B"):
-                total += (per_round if r > 1 else 0) + r * per_round + eval_n
+            labeled = r * per_round
+            new_labels = per_round if r > 1 else 0
+            if arm in ("A", "A+B", "A-c", "A-c+F"):
+                total += new_labels + labeled + eval_n
             if arm == "B" or (arm == "A+B" and "B" not in arms):
-                total += r * per_round + eval_n
+                total += labeled + eval_n
+            if arm in ("F", "A-c+F"):
+                total += new_labels + 3 * labeled + labeled + eval_n
+            if arm == "F-rand":
+                total += labeled + eval_n
         out[arm] = total
     out["total"] = sum(out.values())
     return out
