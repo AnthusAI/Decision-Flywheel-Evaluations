@@ -118,3 +118,29 @@ Retriever comparison, free (neighbour-label purity, k = 4, 1,500 labeled pool it
 lexical v1 equivalent 0.867. Differences are small on this topic-driven corpus;
 embeddings lead. Dynamic retrieval remains an optional feature; the fixed list stays
 the default.
+
+## Addendum 3: optional dynamic retrieval (arm D), paper-600
+
+Arm D keeps the discovered rubric (A-c's round-3 questions) and puts each item's own
+retrieved examples (4 per label from the 300 labeled items; leave-one-out for labeled
+items) in the same request, then refits the head. Final-only, one seed, scored on
+paper-600 straight from its cached answers (not through a bundle). 900 Jev requests per
+variant, no failures.
+
+| Arm | Accuracy | Brier | ECE |
+|---|---|---|---|
+| 0 baseline | 0.767 | 0.161 | 0.043 |
+| F fixed list | 0.782 | 0.142 | 0.055 |
+| A-c+F (default product) | 0.850 | 0.092 | 0.050 |
+| A-c features + explanations | 0.867 | 0.098 | 0.028 |
+| D, BM25 retrieval | 0.898 | 0.074 | 0.009 |
+| D, embedding retrieval | **0.915** | **0.065** | 0.032 |
+
+D (embedding) − A-c: accuracy +0.048 (0.020 to 0.077), Brier −0.033 (−0.048 to −0.018);
+D (embedding) − A-c+F: accuracy +0.065 (0.038 to 0.093). D (BM25) − A-c: +0.032 (0.003 to
+0.058). Summaries: [embedding](results/unified/phase3-d-embedding.paper600.summary.json),
+[BM25](results/unified/phase3-d-bm25.paper600.summary.json). Retrieval is the strongest arm
+here and embeddings beat BM25 slightly, matching the free purity ranking. Caveat as before:
+this corpus's labels follow topic, and retrieved same-topic neighbours carry the label, so
+the gain may partly be the planted bias being absorbed; it is the optional feature, and the
+optimized fixed list stays the default because it is simpler to deploy.
