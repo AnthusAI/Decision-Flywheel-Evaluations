@@ -1,0 +1,1501 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "A",
+    "F",
+    "F-rand",
+    "A-c+F"
+  ],
+  "decision_flywheel": {
+    "commit": "eb90da5cca33ea1dded8ad31ea65625f74013399",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "6b0354788d560a27c66b1c31fdd320c2aa7e4397b2633241cca87089b2212678",
+    "n": 100,
+    "name": "dev-100"
+  },
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "8e802219cd3beb66d83079b72cb7960a2b4333d361980d76fd4c2421148e5823",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.158743,
+              "ece": 0.05327,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.159424,
+              "ece": 0.061949,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-537fb34c11",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "9c1e926001d01c01347a71ce1bda55807dc40ab24191a6a5a524c14842156218",
+            "analyst_source": "live",
+            "decision": "rejected_by_metrics",
+            "elements_after": [],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "b5d76f7bd0105d892a2b90114a9ff05522e37a1791db2e1fa2ea947010af1237",
+                "key": "neutral_factual_reporting",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 1
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.158743,
+              "ece": 0.05327,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.159424,
+              "ece": 0.061949,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-537fb34c11",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          }
+        },
+        "A-c+F": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.140826,
+              "ece": 0.099257,
+              "n": 100
+            },
+            "fit_id": "dh-537fb34c11",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "1e5424ab32e6",
+              "3d32a8720a13",
+              "bfa67c55c1a2",
+              "c03be5622e63",
+              "b54b17c75899",
+              "d6a98b478b21",
+              "4500fdbb47aa",
+              "77014bcc98f4"
+            ],
+            "fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "incumbent_source": "prototype-seed",
+            "n_development": 78,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "8960a030d5a0",
+              "eba199f6333a"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.833333,
+                "brier": 0.119733
+              },
+              "incumbent": {
+                "accuracy": 0.833333,
+                "brier": 0.117295
+              },
+              "random-control": {
+                "accuracy": 0.820513,
+                "brier": 0.0918
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "cb340e4d46e32fddd9ef477577efe98e056948fc5a808bc76142047c2668215b",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "13a5e299011a7fca313c308aa5a53536703b6c1878ad070e939410a79768ced0"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.09,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.78,
+            "brier": 0.135169,
+            "ece": 0.07661,
+            "n": 100
+          },
+          "new_labels_wrong": 22,
+          "steering": {
+            "analyst_reply_sha256": "b42196ec27c99484e757e4987f8514e38e7452e426a30579238ea74962346c63",
+            "analyst_source": "live",
+            "decision": "rejected_by_metrics",
+            "elements_after": [],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "1869043271d249cd0f243fee9db3791366f421f999940c837e15a7425a4c3cf1",
+                "key": "routine_neutral_description",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 1
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.140826,
+              "ece": 0.099257,
+              "n": 100
+            },
+            "fit_id": "dh-537fb34c11",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "1e5424ab32e6",
+              "3d32a8720a13",
+              "bfa67c55c1a2",
+              "c03be5622e63",
+              "b54b17c75899",
+              "d6a98b478b21",
+              "4500fdbb47aa",
+              "77014bcc98f4"
+            ],
+            "fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "incumbent_source": "prototype-seed",
+            "n_development": 78,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "8960a030d5a0",
+              "eba199f6333a"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.833333,
+                "brier": 0.119733
+              },
+              "incumbent": {
+                "accuracy": 0.833333,
+                "brier": 0.117295
+              },
+              "random-control": {
+                "accuracy": 0.820513,
+                "brier": 0.0918
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "cb340e4d46e32fddd9ef477577efe98e056948fc5a808bc76142047c2668215b",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "13a5e299011a7fca313c308aa5a53536703b6c1878ad070e939410a79768ced0"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.09,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.78,
+            "brier": 0.135169,
+            "ece": 0.07661,
+            "n": 100
+          },
+          "new_labels_wrong": 22
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.75,
+              "brier": 0.135752,
+              "ece": 0.118977,
+              "n": 100
+            },
+            "fit_id": "dh-537fb34c11",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "8960a030d5a0",
+              "ef894a93dfdc",
+              "6ca3c743c9fb",
+              "908953eb339b",
+              "37eaaad49586",
+              "eba199f6333a",
+              "ac0e9d02cf32",
+              "389a156999e8"
+            ],
+            "fingerprint": "9d4b38027781d8e190aec7abd8c3cc7b638a9af6e5c67c4b706a7d18a54b03bb",
+            "reserve_ids": [
+              "862ce1167b71",
+              "3d4ebd0ab847"
+            ],
+            "seed": 1001,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.125,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.150085,
+            "ece": 0.083458,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "brier": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "ece": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.04,
+            "lower": -0.02,
+            "upper": 0.1
+          },
+          "brier": {
+            "effect": -0.024818,
+            "lower": -0.04692,
+            "upper": -0.00341
+          },
+          "ece": {
+            "effect": -0.033366,
+            "lower": -0.099269,
+            "upper": 0.055004
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.05,
+            "upper": 0.1
+          },
+          "brier": {
+            "effect": -0.014915,
+            "lower": -0.044314,
+            "upper": 0.012369
+          },
+          "ece": {
+            "effect": -0.006848,
+            "lower": -0.075944,
+            "upper": 0.069993
+          }
+        }
+      },
+      "fewshot_context": "b30f226264f813adfed0df7c82ffd42b846c464eb30aad4cb7e4506601404419",
+      "knn_context": "26efe36ff381282d288543492f50d536a2f9f7f28a6cfd49c6be808501d4af3e",
+      "labeled_fingerprint": "5c0520760ecac92c348ec5a5078f5e4da2913522d43b05da6065b7757674e633",
+      "n_labeled": 100,
+      "round": 1
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.735,
+              "brier": 0.170762,
+              "ece": 0.080669,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.735,
+              "brier": 0.171172,
+              "ece": 0.050656,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-90b245f68b",
+            "incumbent_served": {
+              "accuracy": 0.745,
+              "brier": 0.170117,
+              "ece": 0.067863,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0011, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p"
+          ],
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.069005,
+            "ece": 0.096043,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "ead7bf3697687bd72b7b7d0734da88daa8a12ab96de62e66cc719960bcce788e",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "sports_topic"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "7781fb707825180462d35ff22ddf6cf42416d28b8fd172ab4eab1cb48055a4f5",
+                "key": "sports_topic",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 3
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.835,
+              "brier": 0.120728,
+              "ece": 0.062495,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.835,
+              "brier": 0.122292,
+              "ece": 0.065044,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-76e2122722",
+            "incumbent_served": {
+              "accuracy": 0.83,
+              "brier": 0.117031,
+              "ece": 0.056129,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0053, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          }
+        },
+        "A-c+F": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 122
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.82,
+              "brier": 0.112511,
+              "ece": 0.07718,
+              "n": 200
+            },
+            "fit_id": "dh-cfd07bda1b",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p"
+          ],
+          "list": {
+            "example_ids": [
+              "1e5424ab32e6",
+              "3d32a8720a13",
+              "bfa67c55c1a2",
+              "c03be5622e63",
+              "b54b17c75899",
+              "d6a98b478b21",
+              "4500fdbb47aa",
+              "77014bcc98f4"
+            ],
+            "fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "incumbent_source": "given",
+            "n_development": 178,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "8960a030d5a0",
+              "eba199f6333a"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.775281,
+                "brier": 0.145721
+              },
+              "incumbent": {
+                "accuracy": 0.792135,
+                "brier": 0.135694
+              },
+              "random-control": {
+                "accuracy": 0.780899,
+                "brier": 0.163197
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "730bcffcf7ccb9487ad143807129299fb35285077301402201b1a4ce4343dc0a",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "939c76c216ac8827a5c80e72e58bb1189972f362e5e4c94158d861a4f6282219"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.11,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.91,
+            "brier": 0.064197,
+            "ece": 0.040628,
+            "n": 100
+          },
+          "new_labels_wrong": 23,
+          "steering": {
+            "analyst_reply_sha256": "b278b4ae8acae0f3ef9719a9b131bab97e9e0861197301165f580019fe070a02",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "sports_topic"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "d518857494bd05c88199e4c67c2713ce9338716d8a2862a57cd82b8f9c633929",
+                "key": "sports_topic",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.146457,
+              "ece": 0.07334,
+              "n": 200
+            },
+            "fit_id": "dh-76cdb41082",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "1e5424ab32e6",
+              "3d32a8720a13",
+              "bfa67c55c1a2",
+              "c03be5622e63",
+              "b54b17c75899",
+              "d6a98b478b21",
+              "4500fdbb47aa",
+              "77014bcc98f4"
+            ],
+            "fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "incumbent_source": "given",
+            "n_development": 178,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "8960a030d5a0",
+              "eba199f6333a"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.775281,
+                "brier": 0.145721
+              },
+              "incumbent": {
+                "accuracy": 0.792135,
+                "brier": 0.135694
+              },
+              "random-control": {
+                "accuracy": 0.780899,
+                "brier": 0.163197
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "730bcffcf7ccb9487ad143807129299fb35285077301402201b1a4ce4343dc0a",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "939c76c216ac8827a5c80e72e58bb1189972f362e5e4c94158d861a4f6282219"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.11,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.146307,
+            "ece": 0.10389,
+            "n": 100
+          },
+          "new_labels_wrong": 23
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 300
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.705,
+              "brier": 0.175021,
+              "ece": 0.10344,
+              "n": 200
+            },
+            "fit_id": "dh-90b245f68b",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "e9cfa94b0ad0",
+              "4a2fca663b0c",
+              "ea6e78007fc0",
+              "958284df19c9",
+              "666f93aafa1b",
+              "8dd0ebe431a5",
+              "a2ab5075ecdc",
+              "95ba9e4dc1d0"
+            ],
+            "fingerprint": "72fbcfcb2b3db6ff7bc0fce32075f060ad5001564669506258e3355ae42fa842",
+            "reserve_ids": [
+              "715ffaab41dc",
+              "db89bf2b3fe4"
+            ],
+            "seed": 1002,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.0767,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.7,
+            "brier": 0.172162,
+            "ece": 0.145091,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.15,
+            "lower": 0.07,
+            "upper": 0.24
+          },
+          "brier": {
+            "effect": -0.090983,
+            "lower": -0.12741,
+            "upper": -0.056083
+          },
+          "ece": {
+            "effect": -0.013933,
+            "lower": -0.102254,
+            "upper": 0.065996
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.0,
+            "lower": -0.06,
+            "upper": 0.06
+          },
+          "brier": {
+            "effect": -0.01368,
+            "lower": -0.038759,
+            "upper": 0.009834
+          },
+          "ece": {
+            "effect": -0.006086,
+            "lower": -0.076529,
+            "upper": 0.073767
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.04,
+            "lower": -0.02,
+            "upper": 0.1
+          },
+          "brier": {
+            "effect": -0.025855,
+            "lower": -0.04806,
+            "upper": -0.006283
+          },
+          "ece": {
+            "effect": -0.041201,
+            "lower": -0.107317,
+            "upper": 0.033807
+          }
+        }
+      },
+      "fewshot_context": "222a04e8d453a481211a1571081036ddd31a707b4635db86ecc2448250787b45",
+      "knn_context": "63f2d7b4985093cc13c218bd15a2d15d730a0c7f672ebcfd718a6a078f0d3607",
+      "labeled_fingerprint": "0fa8c82b440fbc482cb8bf8801ebe7c6cfd45c9f3f6d6e479de4e3a808e59724",
+      "n_labeled": 200,
+      "round": 2
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.763333,
+              "brier": 0.16137,
+              "ece": 0.054283,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.766667,
+              "brier": 0.161541,
+              "ece": 0.060407,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-33b458197a",
+            "incumbent_served": {
+              "accuracy": 0.766667,
+              "brier": 0.160043,
+              "ece": 0.063743,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0015, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p",
+            "explicit_evaluative_stance.clr.clearly_positive",
+            "explicit_evaluative_stance.clr.clearly_negative"
+          ],
+          "metrics": {
+            "accuracy": 0.92,
+            "brier": 0.058632,
+            "ece": 0.038512,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "ab1878ed88bd17206f6508f8b1db6bfab433b6374cca22f1396f88c5d8d08cff",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "sports_topic",
+              "explicit_evaluative_stance"
+            ],
+            "elements_before": [
+              "sports_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "3bd6746264056ec02a750effa29d5407b04224c91a69c24261ff712abaf9b4dc",
+                "key": "explicit_evaluative_stance",
+                "question_type": "choice"
+              }
+            ],
+            "scorecard_version": 4
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.86,
+              "brier": 0.097534,
+              "ece": 0.042989,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.86,
+              "brier": 0.097607,
+              "ece": 0.03492,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "sports_topic.logit_p",
+              "explicit_evaluative_stance.clr.clearly_positive",
+              "explicit_evaluative_stance.clr.clearly_negative"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-d185aa65aa",
+            "incumbent_served": {
+              "accuracy": 0.87,
+              "brier": 0.09416,
+              "ece": 0.03281,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0034, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          }
+        },
+        "A-c+F": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 123
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.856667,
+              "brier": 0.094253,
+              "ece": 0.037961,
+              "n": 300
+            },
+            "fit_id": "dh-98fc4300f6",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p",
+            "explicit_favorable_outcome.logit_p"
+          ],
+          "list": {
+            "example_ids": [
+              "a427c865de5f",
+              "657edb5c2bda",
+              "f9cf022d583e",
+              "f97be3b1c993",
+              "acad4f7de583",
+              "ea76a4f13b0d",
+              "b54b17c75899",
+              "9537f46f6523"
+            ],
+            "fingerprint": "b4459192157d308d8ff05df153e8bd2799715606904c53ff0ece3b2f31d2c10d",
+            "incumbent_source": "given",
+            "n_development": 277,
+            "promoted": true,
+            "reason": "promoted random-control: brier gain 0.006404",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "0436b86d78ec",
+              "c25dc7d25244"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.67509,
+                "brier": 0.265126
+              },
+              "incumbent": {
+                "accuracy": 0.790614,
+                "brier": 0.139202
+              },
+              "random-control": {
+                "accuracy": 0.790614,
+                "brier": 0.132797
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "d90098a1c756a4507064a6f2b83bfb80253b0f4bccb8fcfed3b269b05260f8a9",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "b4459192157d308d8ff05df153e8bd2799715606904c53ff0ece3b2f31d2c10d"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "random-control"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.2175,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.07915,
+            "ece": 0.019659,
+            "n": 100
+          },
+          "new_labels_wrong": 13,
+          "steering": {
+            "analyst_reply_sha256": "971bef00c917ad23cbc5a8a8d68eb7b7a578d995059f9d13daed3a04d417a733",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "sports_topic",
+              "explicit_favorable_outcome"
+            ],
+            "elements_before": [
+              "sports_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "70db7088eeeafe7435c38b18146566c5cf23f8b820b2b52446b3a7bc5da9ea46",
+                "key": "explicit_favorable_outcome",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 3
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.79,
+              "brier": 0.142211,
+              "ece": 0.056794,
+              "n": 300
+            },
+            "fit_id": "dh-aec3212e93",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "1e5424ab32e6",
+              "3d32a8720a13",
+              "bfa67c55c1a2",
+              "c03be5622e63",
+              "b54b17c75899",
+              "d6a98b478b21",
+              "4500fdbb47aa",
+              "77014bcc98f4"
+            ],
+            "fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "incumbent_source": "given",
+            "n_development": 277,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "8960a030d5a0",
+              "eba199f6333a"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.808664,
+                "brier": 0.135515
+              },
+              "incumbent": {
+                "accuracy": 0.790614,
+                "brier": 0.137405
+              },
+              "random-control": {
+                "accuracy": 0.787004,
+                "brier": 0.135406
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "1b8126b7cd73b83860cc60785c4afb2227274f8a6b9a78c4b2ea0d2d695b1e1b",
+              "incumbent": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+              "random-control": "b4459192157d308d8ff05df153e8bd2799715606904c53ff0ece3b2f31d2c10d"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.1,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.78,
+            "brier": 0.138774,
+            "ece": 0.103559,
+            "n": 100
+          },
+          "new_labels_wrong": 22
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 400
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.753333,
+              "brier": 0.154171,
+              "ece": 0.074132,
+              "n": 300
+            },
+            "fit_id": "dh-aec3212e93",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "cb415b158de2",
+              "f1dc64424697",
+              "cb9d673d74c6",
+              "d6a151e86a97",
+              "3d5452cd03ea",
+              "e5c95206b828",
+              "b54b17c75899",
+              "eb916314da10"
+            ],
+            "fingerprint": "0d1bfed777cab95b0a0d492ee3b426c019fdcf00262b38519639f88acb971e74",
+            "reserve_ids": [
+              "93de8ae551e3",
+              "77014bcc98f4"
+            ],
+            "seed": 1003,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.06,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.72,
+            "brier": 0.153496,
+            "ece": 0.12422,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.18,
+            "lower": 0.09,
+            "upper": 0.27
+          },
+          "brier": {
+            "effect": -0.101355,
+            "lower": -0.139991,
+            "upper": -0.061507
+          },
+          "ece": {
+            "effect": -0.071464,
+            "lower": -0.129899,
+            "upper": 0.009555
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.04,
+            "lower": -0.02,
+            "upper": 0.1
+          },
+          "brier": {
+            "effect": -0.021213,
+            "lower": -0.044147,
+            "upper": 0.001318
+          },
+          "ece": {
+            "effect": -0.006417,
+            "lower": -0.089883,
+            "upper": 0.071045
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.06,
+            "lower": 0.01,
+            "upper": 0.12
+          },
+          "brier": {
+            "effect": -0.014722,
+            "lower": -0.034462,
+            "upper": 0.001877
+          },
+          "ece": {
+            "effect": -0.020661,
+            "lower": -0.083366,
+            "upper": 0.047678
+          }
+        }
+      },
+      "fewshot_context": "711a9c6f93f94a683e7d536664bf81d18994d647f7a5a4ff28cf4d5400749953",
+      "knn_context": "7d820d7bc33ec04172cbe2c3d52f9b079e7994deef975b4aac5fd6391d504966",
+      "labeled_fingerprint": "7cd76b3a3ba3993eb4b1b53e7a7df94137224245c98c8d8ce408934b80b1b6a5",
+      "n_labeled": 300,
+      "round": 3
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "source": "none (A-c runs as A)",
+      "supplied": 0
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "A": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "A-c+F": {
+        "list": 1710,
+        "total": 2410,
+        "zero-shot": 700
+      },
+      "F": {
+        "list": 1110,
+        "total": 1110
+      },
+      "F-rand": {
+        "list": 700,
+        "total": 700
+      }
+    },
+    "by_arm_round": {
+      "A": {
+        "1": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 30942,
+            "output_tokens": 2600,
+            "successes": 100
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 90390,
+            "output_tokens": 7200,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 500,
+            "failures": 0,
+            "input_tokens": 162106,
+            "output_tokens": 24643,
+            "successes": 500
+          }
+        }
+      },
+      "A-c+F": {
+        "1": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 30742,
+            "output_tokens": 2700,
+            "successes": 100
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 656,
+            "failures": 0,
+            "input_tokens": 357618,
+            "output_tokens": 15744,
+            "successes": 656
+          },
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 60207,
+            "output_tokens": 4800,
+            "successes": 200
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 1054,
+            "failures": 0,
+            "input_tokens": 610399,
+            "output_tokens": 55206,
+            "successes": 1054
+          },
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 120923,
+            "output_tokens": 11100,
+            "successes": 400
+          }
+        }
+      },
+      "F": {
+        "2": {
+          "list": {
+            "attempts": 456,
+            "failures": 0,
+            "input_tokens": 256905,
+            "output_tokens": 14592,
+            "successes": 456
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 654,
+            "failures": 0,
+            "input_tokens": 375136,
+            "output_tokens": 20928,
+            "successes": 654
+          }
+        }
+      },
+      "F-rand": {
+        "2": {
+          "list": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 181329,
+            "output_tokens": 9600,
+            "successes": 300
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 222870,
+            "output_tokens": 12800,
+            "successes": 400
+          }
+        }
+      }
+    },
+    "ceiling": 8900,
+    "circuit_breaker": null,
+    "cumulative_used": 5120,
+    "error_classes": {},
+    "max_new_this_invocation": 8900,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 5120,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 1
+}

@@ -61,3 +61,25 @@ is −0.018 (−0.027 to −0.011). No significance claims.
 - Jev spend: 2,400 live requests on dev-100 and 3,600 on paper-600 (about 6,000
   in all, well under the ceilings set). Dollar cost is not derivable from usage;
   check provider billing. Analyst calls (OpenAI) are small and not counted.
+
+## Addendum: the default product (optimized fixed list), dev-100 only
+
+Run 2026-10-01 on Jev with the one-request-per-item shape, three rounds of 100
+labels, scored on the 100-item development slice only (about ±9 points; paper-600
+not used). Text-free summary:
+[results/unified/flywheel-seed1.dev100.summary.json](results/unified/flywheel-seed1.dev100.summary.json).
+About 5,700 Jev requests in all.
+
+| Round | 0 | A features | F fixed list | F-rand | A-c+F (default) |
+|---|---|---|---|---|---|
+| 1 | 0.74 / 0.160 | 0.74 / 0.160 | 0.78 / 0.135 | 0.76 / 0.150 | 0.78 / 0.135 |
+| 2 | 0.74 / 0.160 | 0.89 / 0.069 | 0.74 / 0.146 | 0.70 / 0.172 | 0.91 / 0.064 |
+| 3 | 0.74 / 0.160 | 0.92 / 0.059 | 0.78 / 0.139 | 0.72 / 0.153 | 0.89 / 0.079 |
+
+(accuracy / Brier.) Feature discovery drives the gain on this corpus (the analyst
+finds the topic question in round 2). The optimized fixed list helps a little
+alone (0.78 vs 0.74 baseline; better than a random list at 0.72) but adds nothing
+visible on top of discovered features (A-c+F is within noise of A). Dynamic
+retrieval (arm B, 0.92 on paper-600 earlier) is a different mechanism that feeds
+per-item topic neighbours. Single seed; a leaking-free labeler with comments is
+not yet in place (A-c equals A).
