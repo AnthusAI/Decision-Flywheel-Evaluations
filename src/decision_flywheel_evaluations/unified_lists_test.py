@@ -146,6 +146,7 @@ def test_list_arms_report_metrics_and_the_new_contrasts(list_run):
         for arm in ("F", "F-rand", "A-c+F"):
             assert entry["arms"][arm]["metrics"]["n"] == 30
             assert entry["arms"][arm]["evaluation_rows_missing_features"] == 0
+            assert entry["arms"][arm]["list_vs_zero_shot"]["n"] == entry["n_labeled"] + 30
     assert set(summary["requests"]["by_arm"]) >= {"F", "F-rand"}
 
 

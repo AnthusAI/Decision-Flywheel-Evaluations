@@ -874,6 +874,7 @@ class UnifiedFlywheel:
             record.setdefault("reasons", [getattr(result, "reason", "not fitted")])
             record["decision"] = "kept previous"
         out["head"] = record
+        out["list_vs_zero_shot"] = self._list_diagnostic(list(labeled) + list(self.eval_ids), chosen)
         out["head_features"] = list(state.head.decision.features)
         results, coverage = self._score(state.head, labeled, fixed=state.example_list, list_arm=True)
         self.results[round_number][arm] = results
@@ -881,6 +882,16 @@ class UnifiedFlywheel:
         out["evaluation_rows_missing_features"] = coverage
         self.ledger.raise_if_tripped()
         return out
+
+    def _list_diagnostic(self, ids: Sequence[str], fixed: FixedExampleList) -> Dict[str, Any]:
+        """S1's check: how often the holistic answer with the list differs from zero-shot (text-free)."""
+        holistic = {SCORE_NAME: self.v1.questions()[SCORE_NAME]}
+        with_list = self.list_answers.answers(ids, holistic, fixed)
+        zero = self.cache.bulk_partial_answers(ids, holistic)
+        pairs = [(with_list[i][SCORE_NAME], zero[i][SCORE_NAME]) for i in ids
+                 if SCORE_NAME in with_list[i] and SCORE_NAME in zero[i]]
+        changed = sum(a.get("choice") != b.get("choice") for a, b in pairs)
+        return {"n": len(pairs), "choice_differs_rate": round(changed / len(pairs), 4) if pairs else None}
 
     def _score(self, head: Score, labeled: Sequence[str], *, fixed: Optional[FixedExampleList] = None,
                list_arm: bool = False) -> Tuple[List[ItemResult], int]:
