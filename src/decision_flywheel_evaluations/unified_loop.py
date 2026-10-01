@@ -46,7 +46,15 @@ dev-100 unless ``final`` is set, and paper-600 is never touched otherwise.
    those answers (no separate few-shot feature, no extra gate).
 
 A-c is arm A with the labeler's comments recorded in the feedback. Until an explanation
-labeler supplies comments (``RunConfig.comments``), A-c behaves exactly like A.
+labeler supplies comments (``RunConfig.comments``, see ``unified_labeler``), A-c behaves exactly
+like A. Each steering record notes how many comments the arm's feedback carried and the hashes of
+those the analyst's reply quoted.
+
+**Bundles.** At the end of every run the arms 0, A, A-c, F, F-rand and A-c+F are frozen as core
+``ClassifierBundle`` directories (``run_dir/bundles/<arm>/round-<n>``; private, under ``var/``) and
+the summary records their hashes. ``final=True`` runs no rounds: it reloads the bundles of the
+last round from the run directory and scores paper-600 *through them* (one request per item,
+answered from cache when possible), so the held-out slice never informs any choice.
 
 Outputs are text-free: metrics, intervals, request counts, fingerprints and element keys.
 The analyst's raw replies (which can quote dataset text) are kept only in the run
@@ -64,6 +72,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from decision_flywheel.adapters.jev import JevAdapter, JevConfiguration
+from decision_flywheel.bundle import ClassifierBundle, load_bundle
 from decision_flywheel.budget import ContextBudget, build_context_plan
 from decision_flywheel.context import FixedExampleList, PerLabelLexicalRetrieval
 from decision_flywheel.example_list import improve_example_list, plan_example_list_round
@@ -84,6 +93,7 @@ from jev_flywheel.scoring import predict
 from jev_flywheel.workspace import Workspace
 
 from . import unified_env
+from .unified_bundles import BUNDLE_ARMS, CachedJevClient, ScoreRubric, bundle_dir, text_free
 from .unified_fake_jev import FAKE_MODEL, FakeJevAsync, FakeJevCore, FakeJevSync, text_key
 from .unified_lists import ListAnswers, ListModel, random_list
 from .unified_knn import (KNN_FEATURES, PoolEntry, context_fingerprint, knn_policy_fingerprint,
@@ -185,6 +195,8 @@ class RunConfig:
             raise HarnessError("live mode needs a durable --spend-ledger for the cumulative ceiling")
         if self.replay and self.live:
             raise HarnessError("replay is offline: it may not be combined with live mode")
+        if self.final and set(self.arms) - set(BUNDLE_ARMS):
+            raise HarnessError(f"the final run scores frozen bundles; choose arms from {BUNDLE_ARMS}")
 
 
 @dataclass
@@ -368,6 +380,8 @@ class ArmState:
     workspace: Optional[Workspace] = None
     gates: List[Dict[str, Any]] = field(default_factory=list)
     example_list: Optional[FixedExampleList] = None   # list arms; None = Jev zero-shot
+    steering: List[Dict[str, Any]] = field(default_factory=list)
+    list_record: Optional[Dict[str, Any]] = None
 
 
 class UnifiedFlywheel:
@@ -406,6 +420,8 @@ class UnifiedFlywheel:
         self.events: List[Dict[str, Any]] = []
         self.results: Dict[int, Dict[str, List[ItemResult]]] = {}
         self.fewshot_diagnostics: Dict[int, Dict[str, Any]] = {}
+        self.bundles: Dict[str, Dict[str, Any]] = {}
+        self._labeled_so_far: set = set()
 
     # ---- setup ---------------------------------------------------------------------------
 
@@ -679,7 +695,14 @@ class UnifiedFlywheel:
                                          "provider": self.cfg.analyst_provider, "model": self.cfg.analyst_model,
                                          "reply": raw}) + "\n")
         after = workspace.scorecard().score(SCORE_NAME)
-        return {"decision": outcome.decision, "analyst_source": source,
+        comments = [c for i, c in sorted((self.cfg.comments or {}).items())
+                    if arm in COMMENT_ARMS and i in self._labeled_so_far] if self.cfg.comments else []
+        cited = sorted({hashlib.sha256(c.encode()).hexdigest() for c in comments
+                        if len(c) >= 12 and c in (raw or "")})
+        record = {"round": round_number, "comments_in_feedback": len(comments), "reply_cites_comments": cited}
+        state.steering.append({**record, "reply_sha256": hashlib.sha256((raw or "").encode()).hexdigest(),
+                               "elements_after": [e.key for e in after.elements]})
+        return {**record, "decision": outcome.decision, "analyst_source": source,
                 "analyst_reply_sha256": hashlib.sha256((raw or "").encode()).hexdigest(),
                 "proposed": _proposed_elements(raw),
                 "elements_before": [e.key for e in before.elements],
@@ -697,6 +720,8 @@ class UnifiedFlywheel:
         return out
 
     def run(self) -> Dict[str, Any]:
+        if self.cfg.final:
+            return self.run_final()
         arms = [a for a in ARMS if a in self.cfg.arms]   # B before A+B: A+B reuses B's few-shot cache
         states: Dict[str, ArmState] = {}
         v1_score = self.v1.score(SCORE_NAME)
@@ -707,6 +732,7 @@ class UnifiedFlywheel:
         rounds_out = []
         for round_number, batch in enumerate(self.batches, start=1):
             labeled = labeled + list(batch)
+            self._labeled_so_far = set(labeled)
             assert_labels_from_pool(labeled, self.splits)
             assert_retrieval_pool_clean(labeled, self.splits)
             round_record: Dict[str, Any] = {"round": round_number, "n_labeled": len(labeled),
@@ -724,6 +750,8 @@ class UnifiedFlywheel:
             rounds_out.append(round_record)
         if self.cfg.replay and self.ledger.new_attempts:
             raise HarnessError(f"replay needed {self.ledger.new_attempts} uncached answers; it is not a pure replay")
+        self.bundles = {arm: text_free(self._freeze(arm, states[arm], labeled).manifest())
+                        for arm in arms if arm in BUNDLE_ARMS}
         return self._finish(rounds_out)
 
     def _run_arm(self, arm: str, state: ArmState, round_number: int, batch: Sequence[str],
@@ -856,6 +884,8 @@ class UnifiedFlywheel:
                                              lambda: self._improve_list(state, labeled, wrong, questions, round_number))
         out["list"].update({"fingerprint": chosen.fingerprint, "example_ids": list(chosen.example_ids),
                             "reserve_ids": list(chosen.reserve_ids)})
+        state.list_record = {k: out["list"].get(k) for k in ("winner", "promoted", "seed", "fingerprint", "n_development",
+                                                              "trial_fingerprints") if k in out["list"]}
         # 4. Answer every label and the evaluation slice with that list; retrain the head.
         out["fill"] = self._step(arm, round_number, "list", "fill-labels-and-evaluation",
                                  lambda: self._list_fill(chosen, list(labeled) + list(self.eval_ids), questions))
@@ -924,6 +954,107 @@ class UnifiedFlywheel:
         return {"n": n, "choice_differs_rate": round(changed / n, 4) if n else None,
                 "mean_abs_p_positive_difference": round(sum(gaps) / n, 4) if n else None}
 
+    # ---- bundles (design section 1.2) ----------------------------------------------------------
+
+    def _freeze(self, arm: str, state: ArmState, labeled: Sequence[str]) -> ClassifierBundle:
+        """The arm's served classifier as a core bundle, saved under ``run_dir/bundles``."""
+        fixed = state.example_list
+        rows = [] if fixed is None else self._labeled_rows(fixed.example_ids + fixed.reserve_ids)
+        decision = state.head.decision
+        provenance = decision.provenance or {}
+        bundle = ClassifierBundle(
+            TASK, ScoreRubric.dump(state.head), ScoreRubric(state.head), examples=fixed, example_rows=rows,
+            engine={"adapter": "jev", "configured_model": self.cfg.provider_model,
+                    "model_identity": self.engines.identity, "reported_model": self.cfg.provider_model},
+            head={"features": list(decision.features), "classes": list(decision.classes), "model": decision.model,
+                  "fit_id": provenance.get("fit_id"), "calibration": (decision.calibration or {}).get("method"),
+                  "n_labels": len(labeled), "labels_fingerprint": fingerprint_ids(labeled)},
+            provenance={"analyst_provider": self.cfg.analyst_provider, "analyst_model": self.cfg.analyst_model,
+                        "comments_supplied": arm in COMMENT_ARMS and bool(self.cfg.comments),
+                        "steering": state.steering} if state.workspace is not None else {},
+            fewshot_audit=state.list_record or {},
+            lineage={"harness": HARNESS_VERSION, "arm": arm, "seed": self.cfg.seed, "round": len(self.batches),
+                     "labels_fingerprint": fingerprint_ids(labeled), "label_order_sha256": self._order_sha(),
+                     "decision_flywheel_commit": self.decision_flywheel.get("commit"),
+                     "jev_flywheel_commit": unified_env.JEV_FLYWHEEL_COMMIT, "parent": None})
+        path = bundle_dir(self.run_dir, arm, len(self.batches))
+        manifest = path / "bundle.json"
+        if manifest.exists():
+            old = json.loads(manifest.read_text()).get("bundle_hash", "unknown")
+            if old != bundle.bundle_hash:   # a rerun changed it (e.g. filled failed requests): keep both
+                path.rename(path.with_name(f"{path.name}.superseded-{old[:12]}"))
+        bundle.save(path)
+        return bundle
+
+    def _order_sha(self) -> str:
+        return hashlib.sha256(json.dumps(list(self.order[:self.cfg.rounds * self.cfg.per_round])).encode()).hexdigest()
+
+    def load_arm_bundle(self, arm: str) -> ClassifierBundle:
+        path = bundle_dir(self.run_dir, arm, self.cfg.rounds)
+        if not path.exists():
+            raise HarnessError(f"no frozen bundle for arm {arm} at round {self.cfg.rounds}; run the rounds first")
+        return load_bundle(path, TASK, ScoreRubric.parse, configured_model=self.cfg.provider_model)
+
+    def classify_with_bundle(self, bundle: ClassifierBundle, ids: Sequence[str],
+                             client_factory: Optional[Callable[[], Any]] = None) -> Dict[str, Any]:
+        """``bundle.classify`` for every item (one request each unless cached); results by ID."""
+        by_text = {self.splits.items[i].text: i for i in ids}
+        results: Dict[str, Any] = {}
+        failures = 0
+
+        async def all_of_them() -> int:
+            nonlocal failures
+            inner = (client_factory or self.engines.zero_shot_factory)()
+            client = CachedJevClient(inner, by_text, zero_shot=self.cache, lists=self.list_answers,
+                                     fixed=bundle.examples)
+            semaphore = asyncio.Semaphore(self.cfg.max_concurrency)
+
+            async def one(item_id: str) -> None:
+                nonlocal failures
+                async with semaphore:
+                    try:
+                        results[item_id] = await bundle.classify(DFItem(item_id, {"text": self.splits.items[item_id].text}), client)
+                    except ReplayMiss:
+                        raise
+                    except Exception:  # noqa: BLE001 - counted by the ledger; a gap is reported, not fatal
+                        failures += 1
+
+            await asyncio.gather(*(one(i) for i in ids))
+            return client.sent
+
+        sent = asyncio.run(all_of_them())
+        self.ledger.raise_if_tripped()
+        return {"results": results, "requests": sent, "failures": failures}
+
+    def run_final(self) -> Dict[str, Any]:
+        """Score the evaluation slice (paper-600) through the reloaded bundles of the last round."""
+        arms = [a for a in ARMS if a in self.cfg.arms]
+        final: Dict[str, List[ItemResult]] = {}
+        out: Dict[str, Any] = {}
+        for arm in arms:
+            bundle = self.load_arm_bundle(arm)
+            done = self._step(arm, "final", "bundle", "classify-through-bundle",
+                              lambda: self.classify_with_bundle(bundle, self.eval_ids))
+            rows = []
+            for item_id in self.eval_ids:
+                decision = done["results"].get(item_id)
+                if decision is None:
+                    continue
+                correct = int(agrees(decision.label, self.splits.items[item_id].reference_label))
+                rows.append(ItemResult(item_id, float(decision.confidence or 0.0), correct))
+            final[arm] = rows
+            out[arm] = {"bundle": text_free(bundle.manifest()), "metrics": summarize(rows),
+                        "unscored": len(self.eval_ids) - len(rows), "requests": done["requests"],
+                        "failures": done["failures"]}
+        if self.cfg.replay and self.ledger.new_attempts:
+            raise HarnessError(f"replay needed {self.ledger.new_attempts} uncached answers; it is not a pure replay")
+        complete = {arm: rows for arm, rows in final.items() if len(rows) == len(self.eval_ids)}
+        self.results = {self.cfg.rounds: final}
+        self.bundles = {arm: entry["bundle"] for arm, entry in out.items()}
+        record = {"round": "final", "scored_through": "reloaded bundles", "arms": out,
+                  "contrasts": contrasts(complete, resamples=self.cfg.bootstrap_resamples, seed=self.cfg.bootstrap_seed)}
+        return self._finish([record])
+
     def _finish(self, rounds_out: List[Dict[str, Any]]) -> Dict[str, Any]:
         summary = {
             "harness": HARNESS_VERSION,
@@ -936,8 +1067,7 @@ class UnifiedFlywheel:
             "arms": [a for a in ARMS if a in self.cfg.arms],
             "evaluation_slice": {"name": self.slice_name, "n": len(self.eval_ids),
                                  "fingerprint": fingerprint_ids(self.eval_ids)},
-            "label_order_sha256": hashlib.sha256(
-                json.dumps(list(self.order[:self.cfg.rounds * self.cfg.per_round])).encode()).hexdigest(),
+            "label_order_sha256": self._order_sha(), "final": self.cfg.final,
             "decision_flywheel": self.decision_flywheel,
             "policies": {"fewshot": {"policy": "per-label-lexical-retrieval", "fingerprint": retrieval_policy_fingerprint(),
                                      "per_label": FEWSHOT_PER_LABEL, "display_order": DISPLAY_ORDER},
@@ -955,6 +1085,7 @@ class UnifiedFlywheel:
                                       "source": "explanation labeler" if self.cfg.comments else "none (A-c runs as A)"},
                          "bootstrap": {"resamples": self.cfg.bootstrap_resamples, "seed": self.cfg.bootstrap_seed}},
             "per_round": rounds_out,
+            "bundles": self.bundles,
             "requests": self.ledger.summary(),
         }
         _assert_text_free(summary, self.splits)

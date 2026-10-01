@@ -107,3 +107,51 @@ def test_replay_needs_a_provider_model_and_a_run_dir_and_is_never_live(nothing_m
         unified_cli.run(parser().parse_args(["run", "--provider-model", "jev-1.13.0", "--run-dir", "x"]))
     with pytest.raises(UsageError):
         unified_cli.run(parser().parse_args(LIVE_OK + ["--replay"]))
+
+
+FINAL = ["run", "--live", "--confirm", "--final", "--arms", "0,A-c,F,F-rand,A-c+F", "--run-dir", "x",
+         "--spend-ledger", "ledger.final2.json", "--request-ceiling", "3000", "--max-new-requests", "3000",
+         "--provider-model", "jev-1.13.0"]
+
+
+def test_a_final_run_is_bounded_by_one_request_per_paper_600_item_per_bundle():
+    args = parser().parse_args(FINAL)
+    bound = check_live_gates(args, parse_arms(args.arms), 600)
+    assert bound == {"0": 600, "A-c": 600, "F": 600, "F-rand": 600, "A-c+F": 600, "total": 3000}
+
+
+def test_a_final_run_refuses_a_low_cap_arms_it_cannot_bundle_and_a_missing_run_dir(nothing_may_load):
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args([t if t != "3000" else "2999" for t in FINAL]))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args([t if t != "0,A-c,F,F-rand,A-c+F" else "0,B" for t in FINAL]))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(_without(FINAL, "--run-dir")))
+
+
+@pytest.fixture
+def no_clone(monkeypatch):
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("a labeler gate let the run reach data or a client")
+
+    monkeypatch.setattr(unified_env, "verify_clone", forbidden)
+    monkeypatch.setattr(unified_env, "install_network_guard", forbidden)
+
+
+COMMENTS_LIVE = ["comments", "--out", "c.jsonl", "--live", "--confirm", "--spend-ledger", "labeler-ledger.json",
+                 "--max-calls", "300"]
+
+
+@pytest.mark.parametrize("missing", ["--confirm", "--spend-ledger", "--max-calls"])
+def test_the_live_labeler_refuses_before_loading_anything_when_a_gate_is_missing(missing, no_clone):
+    with pytest.raises(UsageError):
+        unified_cli.comments(parser().parse_args(_without(COMMENTS_LIVE, missing)))
+
+
+def test_the_live_labeler_is_capped_at_300_calls_and_live_options_need_live(no_clone):
+    with pytest.raises(UsageError):
+        unified_cli.comments(parser().parse_args([t if t != "300" else "301" for t in COMMENTS_LIVE]))
+    with pytest.raises(UsageError):
+        unified_cli.comments(parser().parse_args(["comments", "--out", "c.jsonl", "--confirm"]))
+    with pytest.raises(UsageError):
+        unified_cli.comments(parser().parse_args(["comments", "--out", "c.jsonl", "--model", "gpt-6-luna"]))

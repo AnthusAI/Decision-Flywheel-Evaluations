@@ -9,6 +9,13 @@ Live mode mirrors the repository's collector: it needs ``--live`` *and* ``--conf
 request ceiling no greater than the plan's 9,500, a per-invocation cap at least as large as
 the run's precomputed upper bound, a durable ``--spend-ledger``, and an explicit Jev model.
 Every one of these is checked before any data is read or any client is constructed.
+
+``run --final`` runs no rounds: it reloads the bundles the last round froze in ``--run-dir`` and
+scores paper-600 through them; its upper bound is one request per item per bundle.
+
+``comments`` writes the simulated reviewer's reasons for the labeled items (``unified_labeler``):
+offline with a deterministic fake by default, ``--replay`` from the cache, or ``--live --confirm``
+against OpenAI with a durable call ledger capped at 300 calls.
 """
 from __future__ import annotations
 
@@ -19,10 +26,11 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from . import unified_env
-from .unified_spend import request_upper_bound
+from .unified_spend import final_upper_bound, request_upper_bound
 
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")
 ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
+BUNDLE_ARMS = ("0", "A", "A-c", "F", "F-rand", "A-c+F")
 PLAN_REQUEST_CEILING = 9500
 DEFAULT_RUN_ROOT = unified_env.REPO_ROOT / "var" / "unified-flywheel"
 
@@ -50,7 +58,7 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--comments", type=Path, default=None,
                      help="JSONL of {item_id, comment} from an explanation labeler, for arms A-c and A-c+F")
     run.add_argument("--final", action="store_true",
-                     help="score paper-600 instead of dev-100 (final comparison only)")
+                     help="no rounds: score paper-600 through the bundles the last round froze in --run-dir")
     run.add_argument("--max-concurrency", type=int, default=8)
     run.add_argument("--request-ceiling", type=int, default=PLAN_REQUEST_CEILING)
     run.add_argument("--analyst-provider", default="openai")
@@ -70,6 +78,20 @@ def parser() -> argparse.ArgumentParser:
     live.add_argument("--base-url", default=None)
     live.add_argument("--timeout-seconds", type=float, default=30.0)
     live.add_argument("--max-consecutive-failures", type=int, default=25)
+
+    comments = commands.add_parser("comments", help="write the simulated reviewer's reasons for the labeled items")
+    comments.add_argument("--out", type=Path, required=True, help="JSONL of {item_id, comment} for run --comments")
+    comments.add_argument("--cache", type=Path, default=DEFAULT_RUN_ROOT / "labeler-cache.jsonl")
+    comments.add_argument("--clone", type=Path, default=None)
+    comments.add_argument("--seed", type=int, default=1)
+    comments.add_argument("--rounds", type=int, default=3)
+    comments.add_argument("--per-round", type=int, default=100)
+    comments.add_argument("--model", default=None, help="the labeler model (live or replay); default gpt-6-luna")
+    comments.add_argument("--replay", action="store_true", help="offline: every comment must come from the cache")
+    comments.add_argument("--live", action="store_true")
+    comments.add_argument("--confirm", action="store_true")
+    comments.add_argument("--spend-ledger", type=Path, default=None)
+    comments.add_argument("--max-calls", type=int, default=None)
     return top
 
 
@@ -97,11 +119,19 @@ def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict
         raise UsageError("--live needs --max-new-requests between 0 and --request-ceiling")
     if args.analyst_replies is not None:
         raise UsageError("--analyst-replies is for offline runs; live runs replay their own recorded replies")
-    bound = request_upper_bound(arms, rounds=args.rounds, per_round=100, eval_n=eval_n)
+    bound = upper_bound(args, arms)
     if bound["total"] > args.max_new_requests:
         raise UsageError(f"this run may need up to {bound['total']} requests ({bound}); "
                          f"--max-new-requests {args.max_new_requests} is lower. Raise it deliberately or run fewer arms/rounds")
     return bound
+
+
+def upper_bound(args: argparse.Namespace, arms: tuple) -> Dict[str, int]:
+    if args.final:
+        if set(arms) - set(BUNDLE_ARMS):
+            raise UsageError(f"--final scores frozen bundles; choose arms from {','.join(BUNDLE_ARMS)}")
+        return final_upper_bound(arms, eval_n=600)
+    return request_upper_bound(arms, rounds=args.rounds, per_round=100, eval_n=100)
 
 
 def _offline_replies(path: Optional[Path]) -> Optional[Dict[int, str]]:
@@ -121,7 +151,9 @@ def _comments(path: Optional[Path]) -> Optional[Dict[str, str]]:
 def run(args: argparse.Namespace) -> Dict:
     arms = parse_arms(args.arms)
     eval_n = 600 if args.final else 100
-    bound = request_upper_bound(arms, rounds=args.rounds, per_round=100, eval_n=eval_n)
+    bound = upper_bound(args, arms)
+    if args.final and args.run_dir is None:
+        raise UsageError("--final needs the --run-dir whose last round froze the bundles")
     if args.live:
         check_live_gates(args, arms, eval_n)
     else:
@@ -159,8 +191,71 @@ def run(args: argparse.Namespace) -> Dict:
     return summary
 
 
+def check_comment_gates(args: argparse.Namespace, needed: int) -> None:
+    """The labeler's live gates: --confirm, a durable ledger, and a call cap that covers the run."""
+    from .unified_labeler import LABELER_CALL_CEILING
+
+    if args.replay:
+        raise UsageError("--replay is offline and cannot be combined with --live")
+    if args.confirm is not True:
+        raise UsageError("--live needs --confirm; no client was constructed")
+    if args.spend_ledger is None:
+        raise UsageError("--live needs --spend-ledger, the durable call counter")
+    if args.max_calls is None or not 0 <= args.max_calls <= LABELER_CALL_CEILING:
+        raise UsageError(f"--live needs --max-calls between 0 and {LABELER_CALL_CEILING}")
+    if needed > args.max_calls:
+        raise UsageError(f"this run may need up to {needed} calls; --max-calls {args.max_calls} is lower")
+
+
+def comments(args: argparse.Namespace) -> Dict:
+    """Comments for the first rounds x per-round labels of the seeded order; prints a text-free report."""
+    from . import unified_labeler as labeler
+    from .unified_spend import SpendLedger
+    from .unified_splits import label_order, load_splits
+
+    if not args.live and (args.confirm or args.spend_ledger or args.max_calls is not None):
+        raise UsageError("live-only options were given without --live; refusing to guess")
+    if args.model and not (args.live or args.replay):
+        raise UsageError("--model names a real labeler; offline runs use the fake (add --replay or --live)")
+    if args.live:
+        check_comment_gates(args, 0)   # every static gate, before any data is read
+    identity = unified_env.verify_clone(args.clone)
+    splits = load_splits(Path(identity.path) / "fixtures")
+    order = label_order(splits.pool, args.seed)[:args.rounds * args.per_round]
+    items = [labeler.LabelerItem(i, splits.items[i].text, splits.items[i].reference_label) for i in order]
+    model = args.model or (labeler.DEFAULT_MODEL if (args.live or args.replay) else labeler.FAKE_MODEL)
+    cache = labeler.CommentCache(args.cache)
+    ledger = None
+    if args.live:
+        needed = sum(labeler.wants_comment(i.item_id, args.seed)
+                     and cache.get(labeler.cache_key(i, labeler.labeler_prompt(i), model)) is None for i in items)
+        check_comment_gates(args, needed)
+        ledger = SpendLedger(args.spend_ledger, labeler.LABELER_CALL_CEILING, max_new=args.max_calls,
+                             max_consecutive_failures=5, run_label=f"labeler-seed{args.seed}")
+        complete = labeler.openai_completion(model)
+    else:
+        unified_env.install_network_guard()
+        complete = labeler.refusing_completion if args.replay else labeler.fake_completion
+    found, report = labeler.generate(items, complete, model=model, cache=cache, seed=args.seed, ledger=ledger)
+    labeler.write_comments(args.out, found)
+    report["upper_bound_calls"] = labeler.upper_bound_calls(items, seed=args.seed)
+    if ledger is not None:
+        report["ledger"] = {k: v for k, v in ledger.summary().items() if k in ("ceiling", "cumulative_used", "new_this_invocation")}
+    return report
+
+
 def compact(summary: Dict) -> Dict:
     """The few numbers worth printing: metrics and requests per arm per round."""
+    if summary.get("final"):
+        entry = summary["per_round"][0]
+        return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "final": True,
+                "arms": {arm: {**{k: v["metrics"][k] for k in ("accuracy", "brier", "ece")},
+                               "bundle": v["bundle"]["bundle_hash"][:12], "requests": v["requests"],
+                               "unscored": v["unscored"]} for arm, v in entry["arms"].items()},
+                "contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
+                              for name, by_metric in entry["contrasts"].items()},
+                "requests_this_invocation": summary["requests"]["new_this_invocation"],
+                "upper_bound_requests": summary.get("upper_bound_requests")}
     rounds = []
     for entry in summary["per_round"]:
         rounds.append({
@@ -192,6 +287,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                       "scikit_learn_and_tactus": unified_env.jev_dependencies_available()}
             print(json.dumps(report, sort_keys=True))
             return 0 if report["scikit_learn_and_tactus"] else 2
+        if args.command == "comments":
+            print(json.dumps(comments(args), indent=1, sort_keys=True))
+            return 0
         summary = run(args)
     except (UsageError, unified_env.EnvironmentProblem) as error:
         print(f"error: {error}", file=sys.stderr)

@@ -294,6 +294,17 @@ def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Di
     return out
 
 
+def final_upper_bound(arms, *, eval_n: int) -> Dict[str, int]:
+    """The most requests a final run could make: one per evaluation item per frozen bundle.
+
+    No rounds run in a final run; each bundle asks one request per item (fewer when cached --
+    e.g. arm 0's holistic answers on paper-600 ship with the fixtures).
+    """
+    out = {arm: eval_n for arm in sorted(set(arms))}
+    out["total"] = sum(out.values())
+    return out
+
+
 def concurrency_slots(max_concurrency: int) -> threading.BoundedSemaphore:
     if isinstance(max_concurrency, bool) or not isinstance(max_concurrency, int) or max_concurrency < 1:
         raise ValueError("max_concurrency must be a positive integer")
