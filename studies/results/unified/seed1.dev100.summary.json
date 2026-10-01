@@ -1,0 +1,1367 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "A",
+    "B-local",
+    "B",
+    "A+B"
+  ],
+  "decision_flywheel": {
+    "commit": "6137fa185a1a98afa84b5e6d5948d1780df5d56d",
+    "pinned": true,
+    "source": "site-packages"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "6b0354788d560a27c66b1c31fdd320c2aa7e4397b2633241cca87089b2212678",
+    "n": 100,
+    "name": "dev-100"
+  },
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "8e802219cd3beb66d83079b72cb7960a2b4333d361980d76fd4c2421148e5823",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.158743,
+              "ece": 0.05327,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.159424,
+              "ece": 0.061949,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-537fb34c11",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "1e137669f509d274b9d63ce774f2d2f44b6a541894bedf31957594d615d17302",
+            "analyst_source": "replayed",
+            "decision": "rejected_by_metrics",
+            "elements_after": [],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "824860289497ade317a1010393170c6da1de32eef087ce4a3cb5b16640ad82a3",
+                "key": "neutral_routine_description",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 1
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.158743,
+              "ece": 0.05327,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.159424,
+              "ece": 0.061949,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-537fb34c11",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          }
+        },
+        "A+B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.129295,
+              "ece": 0.12864,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.81,
+              "brier": 0.132037,
+              "ece": 0.112071,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-c8b6a4d87a",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "factual_without_evaluation.logit_p",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.83,
+            "brier": 0.098837,
+            "ece": 0.111297,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "fff1a21528e66165741a3ef026006c9b521a067d2723ed63da4affad90283f18",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "factual_without_evaluation"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "b694c756ca8a1edaba71b25378c94f70fabbf48c9e06b8d6fd3a75b9855ad0e9",
+                "key": "factual_without_evaluation",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.79,
+              "brier": 0.157182,
+              "ece": 0.045462,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.79,
+              "brier": 0.158437,
+              "ece": 0.04216,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-f6f54b8370",
+            "incumbent_served": {
+              "accuracy": 0.77,
+              "brier": 0.144737,
+              "ece": 0.044538,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0137, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 1
+          }
+        },
+        "B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.82,
+              "brier": 0.12135,
+              "ece": 0.064954,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.82,
+              "brier": 0.123089,
+              "ece": 0.067847,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-9ccc3f69ec",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.85,
+            "brier": 0.102732,
+            "ece": 0.052409,
+            "n": 100
+          }
+        },
+        "B-local": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "B-local",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.15221,
+              "ece": 0.046307,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.156748,
+              "ece": 0.050107,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive",
+              "knn.share.positive",
+              "knn.top4.positive",
+              "knn.top4.negative"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-1ea1ca0619",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.188178,
+              "ece": 0.16595,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": true,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "knn.share.positive",
+            "knn.top4.positive",
+            "knn.top4.negative"
+          ],
+          "metrics": {
+            "accuracy": 0.73,
+            "brier": 0.153595,
+            "ece": 0.135147,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A+B-max(A,B)": {
+          "accuracy": {
+            "baseline_arm": "B",
+            "effect": -0.02,
+            "lower": -0.06,
+            "upper": 0.02
+          },
+          "brier": {
+            "baseline_arm": "B",
+            "effect": -0.003895,
+            "lower": -0.01221,
+            "upper": 0.004757
+          },
+          "ece": {
+            "baseline_arm": "B",
+            "effect": 0.058887,
+            "lower": -0.022269,
+            "upper": 0.094077
+          }
+        },
+        "A-0": {
+          "accuracy": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "brier": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "ece": {
+            "effect": 0.0,
+            "lower": 0.0,
+            "upper": 0.0
+          }
+        },
+        "B-0": {
+          "accuracy": {
+            "effect": 0.11,
+            "lower": 0.01,
+            "upper": 0.21
+          },
+          "brier": {
+            "effect": -0.057255,
+            "lower": -0.101704,
+            "upper": -0.017115
+          },
+          "ece": {
+            "effect": -0.057567,
+            "lower": -0.117551,
+            "upper": 0.041971
+          }
+        },
+        "B-B-local": {
+          "accuracy": {
+            "effect": 0.12,
+            "lower": 0.03,
+            "upper": 0.22
+          },
+          "brier": {
+            "effect": -0.050863,
+            "lower": -0.092812,
+            "upper": -0.0138
+          },
+          "ece": {
+            "effect": -0.082738,
+            "lower": -0.136361,
+            "upper": 0.029155
+          }
+        }
+      },
+      "fewshot_context": "b30f226264f813adfed0df7c82ffd42b846c464eb30aad4cb7e4506601404419",
+      "fewshot_vs_zero_shot": {
+        "choice_differs_rate": 0.205,
+        "mean_abs_p_positive_difference": 0.1797,
+        "n": 200
+      },
+      "knn_context": "26efe36ff381282d288543492f50d536a2f9f7f28a6cfd49c6be808501d4af3e",
+      "labeled_fingerprint": "5c0520760ecac92c348ec5a5078f5e4da2913522d43b05da6065b7757674e633",
+      "n_labeled": 100,
+      "round": 1
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.735,
+              "brier": 0.170762,
+              "ece": 0.080669,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.735,
+              "brier": 0.171172,
+              "ece": 0.050656,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-90b245f68b",
+            "incumbent_served": {
+              "accuracy": 0.745,
+              "brier": 0.170117,
+              "ece": 0.067863,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0011, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "topic_domain.clr.sports_and_athletics",
+            "topic_domain.clr.administrative_or_workplace_operations"
+          ],
+          "metrics": {
+            "accuracy": 0.9,
+            "brier": 0.066646,
+            "ece": 0.050618,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "9f40b42045928e9c4a60aab2b8eb1b7059d95d65b8266bd24549deeeec1c517f",
+            "analyst_source": "replayed",
+            "decision": "promoted",
+            "elements_after": [
+              "topic_domain"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "d1d9cd4170c191941eb269414720ca3e62c7fb73f5745c7598b36866004e0f95",
+                "key": "topic_domain",
+                "question_type": "choice"
+              }
+            ],
+            "scorecard_version": 3
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.835,
+              "brier": 0.110599,
+              "ece": 0.034232,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.835,
+              "brier": 0.111607,
+              "ece": 0.028764,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "topic_domain.clr.sports_and_athletics",
+              "topic_domain.clr.administrative_or_workplace_operations"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-dec4482e6f",
+            "incumbent_served": {
+              "accuracy": 0.84,
+              "brier": 0.103086,
+              "ece": 0.045174,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0085, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          }
+        },
+        "A+B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.875,
+              "brier": 0.08409,
+              "ece": 0.037278,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.875,
+              "brier": 0.08532,
+              "ece": 0.025402,
+              "n": 200
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p",
+              "sports_topic.logit_p",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-a547a4db6c",
+            "incumbent_served": {
+              "accuracy": 0.835,
+              "brier": 0.102492,
+              "ece": 0.074304,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "factual_without_evaluation.logit_p",
+            "sports_topic.logit_p",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.92,
+            "brier": 0.050067,
+            "ece": 0.052978,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "a55f19e0670bdc5eb29296f17d21aa7f01316e3f2e6257854705ea0862a3df88",
+            "analyst_source": "live",
+            "decision": "promoted",
+            "elements_after": [
+              "factual_without_evaluation",
+              "sports_topic"
+            ],
+            "elements_before": [
+              "factual_without_evaluation"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "af91360d2a5c4d6cd069e6757697e4b89e114ea9ab6a1235cf01cae2ab831639",
+                "key": "sports_topic",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 3
+          },
+          "workspace_gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.855,
+              "brier": 0.104339,
+              "ece": 0.016816,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.855,
+              "brier": 0.10466,
+              "ece": 0.025853,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-8bfefd5696",
+            "incumbent_served": {
+              "accuracy": 0.865,
+              "brier": 0.098406,
+              "ece": 0.037507,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0063, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          }
+        },
+        "B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.855,
+              "brier": 0.103083,
+              "ece": 0.060701,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.845,
+              "brier": 0.103682,
+              "ece": 0.040013,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-849ba217fc",
+            "incumbent_served": {
+              "accuracy": 0.84,
+              "brier": 0.101989,
+              "ece": 0.051835,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0017, below the 0.005 required"
+            ],
+            "regularization_c": 1.0,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.91,
+            "brier": 0.07607,
+            "ece": 0.095548,
+            "n": 100
+          }
+        },
+        "B-local": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "B-local",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.124564,
+              "ece": 0.052844,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.755,
+              "brier": 0.145323,
+              "ece": 0.077573,
+              "n": 200
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive",
+              "knn.share.positive",
+              "knn.top4.positive",
+              "knn.top4.negative"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-71633203d1",
+            "incumbent_served": {
+              "accuracy": 0.75,
+              "brier": 0.153147,
+              "ece": 0.096436,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": true,
+            "reasons": [],
+            "regularization_c": 10.0,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "knn.share.positive",
+            "knn.top4.positive",
+            "knn.top4.negative"
+          ],
+          "metrics": {
+            "accuracy": 0.84,
+            "brier": 0.099927,
+            "ece": 0.049155,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A+B-max(A,B)": {
+          "accuracy": {
+            "baseline_arm": "B",
+            "effect": 0.01,
+            "lower": -0.05,
+            "upper": 0.07
+          },
+          "brier": {
+            "baseline_arm": "A",
+            "effect": -0.016579,
+            "lower": -0.037906,
+            "upper": 0.002802
+          },
+          "ece": {
+            "baseline_arm": "A",
+            "effect": 0.00236,
+            "lower": -0.044078,
+            "upper": 0.045278
+          }
+        },
+        "A-0": {
+          "accuracy": {
+            "effect": 0.16,
+            "lower": 0.07,
+            "upper": 0.25
+          },
+          "brier": {
+            "effect": -0.093341,
+            "lower": -0.13356,
+            "upper": -0.056231
+          },
+          "ece": {
+            "effect": -0.059358,
+            "lower": -0.125926,
+            "upper": 0.020929
+          }
+        },
+        "B-0": {
+          "accuracy": {
+            "effect": 0.17,
+            "lower": 0.07,
+            "upper": 0.27
+          },
+          "brier": {
+            "effect": -0.083917,
+            "lower": -0.125167,
+            "upper": -0.043707
+          },
+          "ece": {
+            "effect": -0.014428,
+            "lower": -0.092514,
+            "upper": 0.068141
+          }
+        },
+        "B-B-local": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.0,
+            "upper": 0.14
+          },
+          "brier": {
+            "effect": -0.023857,
+            "lower": -0.050877,
+            "upper": 0.003475
+          },
+          "ece": {
+            "effect": 0.046393,
+            "lower": -0.020145,
+            "upper": 0.095145
+          }
+        }
+      },
+      "fewshot_context": "222a04e8d453a481211a1571081036ddd31a707b4635db86ecc2448250787b45",
+      "fewshot_vs_zero_shot": {
+        "choice_differs_rate": 0.2067,
+        "mean_abs_p_positive_difference": 0.2022,
+        "n": 300
+      },
+      "knn_context": "63f2d7b4985093cc13c218bd15a2d15d730a0c7f672ebcfd718a6a078f0d3607",
+      "labeled_fingerprint": "0fa8c82b440fbc482cb8bf8801ebe7c6cfd45c9f3f6d6e479de4e3a808e59724",
+      "n_labeled": 200,
+      "round": 2
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.763333,
+              "brier": 0.16137,
+              "ece": 0.054283,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.766667,
+              "brier": 0.161541,
+              "ece": 0.060407,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-33b458197a",
+            "incumbent_served": {
+              "accuracy": 0.766667,
+              "brier": 0.160043,
+              "ece": 0.063743,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0015, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.159987,
+            "ece": 0.109976,
+            "n": 100
+          }
+        },
+        "A": {
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "topic_domain.clr.sports_and_athletics",
+            "topic_domain.clr.administrative_or_workplace_operations"
+          ],
+          "metrics": {
+            "accuracy": 0.9,
+            "brier": 0.066646,
+            "ece": 0.050618,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "b70194962c95f0b0da5f1da525a1d0aff5ad9f3ca003f735a76053614ef59636",
+            "analyst_source": "replayed",
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "topic_domain"
+            ],
+            "elements_before": [
+              "topic_domain"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "f276ceed93a966f576edc758e8da9788b6d321d6723646455f359271a69cd91f",
+                "key": "neutral_operational_statement",
+                "question_type": "noul"
+              }
+            ],
+            "scorecard_version": 3
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.843333,
+              "brier": 0.10737,
+              "ece": 0.060694,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.843333,
+              "brier": 0.10775,
+              "ece": 0.053834,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "topic_domain.clr.sports_and_athletics",
+              "topic_domain.clr.administrative_or_workplace_operations"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-86744b7ad3",
+            "incumbent_served": {
+              "accuracy": 0.846667,
+              "brier": 0.10638,
+              "ece": 0.076018,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0014, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          }
+        },
+        "A+B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.88,
+              "brier": 0.078282,
+              "ece": 0.028673,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.88,
+              "brier": 0.078577,
+              "ece": 0.027436,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p",
+              "sports_topic.logit_p",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-e04d1a0040",
+            "incumbent_served": {
+              "accuracy": 0.89,
+              "brier": 0.072388,
+              "ece": 0.025837,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0062, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "factual_without_evaluation.logit_p",
+            "sports_topic.logit_p",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.93,
+            "brier": 0.048363,
+            "ece": 0.044659,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "be53e22e9238e6840cda4b73cd5d5152cd72886208368d5ab2e39877eff039eb",
+            "analyst_source": "live",
+            "decision": "no_change_proposed",
+            "elements_after": [
+              "factual_without_evaluation",
+              "sports_topic"
+            ],
+            "elements_before": [
+              "factual_without_evaluation",
+              "sports_topic"
+            ],
+            "proposed": [],
+            "scorecard_version": 3
+          },
+          "workspace_gate": {
+            "arm": "A+B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.84,
+              "brier": 0.10442,
+              "ece": 0.039527,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.84,
+              "brier": 0.104808,
+              "ece": 0.031599,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "factual_without_evaluation.logit_p",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-a2d3c206c8",
+            "incumbent_served": {
+              "accuracy": 0.856667,
+              "brier": 0.102016,
+              "ece": 0.029558,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0028, below the 0.005 required",
+              "accuracy fell by 0.0167, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          }
+        },
+        "B": {
+          "evaluation_rows_missing_features": 0,
+          "fewshot_requests": {
+            "failures": 0,
+            "requests": 0
+          },
+          "gate": {
+            "arm": "B",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.856667,
+              "brier": 0.094887,
+              "ece": 0.047995,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.856667,
+              "brier": 0.095373,
+              "ece": 0.046573,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "fewshot.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": true,
+            "fit_id": "dh-26571f847a",
+            "incumbent_served": {
+              "accuracy": 0.87,
+              "brier": 0.092528,
+              "ece": 0.058024,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0028, below the 0.005 required",
+              "accuracy fell by 0.0133, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "fewshot.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.92,
+            "brier": 0.071247,
+            "ece": 0.048369,
+            "n": 100
+          }
+        },
+        "B-local": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "B-local",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.826667,
+              "brier": 0.112071,
+              "ece": 0.040537,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.853333,
+              "brier": 0.109019,
+              "ece": 0.023973,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "knn.share.positive",
+              "knn.top4.positive",
+              "knn.top4.negative"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-249705b02b",
+            "incumbent_served": {
+              "accuracy": 0.833333,
+              "brier": 0.112225,
+              "ece": 0.025811,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": true,
+            "reasons": [
+              "Brier improved by +0.0032, below the 0.005 required"
+            ],
+            "regularization_c": 10.0,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "knn.share.positive",
+            "knn.top4.positive",
+            "knn.top4.negative"
+          ],
+          "metrics": {
+            "accuracy": 0.9,
+            "brier": 0.073766,
+            "ece": 0.065109,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A+B-max(A,B)": {
+          "accuracy": {
+            "baseline_arm": "B",
+            "effect": 0.01,
+            "lower": -0.02,
+            "upper": 0.05
+          },
+          "brier": {
+            "baseline_arm": "A",
+            "effect": -0.018283,
+            "lower": -0.039004,
+            "upper": -0.001067
+          },
+          "ece": {
+            "baseline_arm": "B",
+            "effect": -0.00371,
+            "lower": -0.049775,
+            "upper": 0.036142
+          }
+        },
+        "A-0": {
+          "accuracy": {
+            "effect": 0.16,
+            "lower": 0.07,
+            "upper": 0.25
+          },
+          "brier": {
+            "effect": -0.093341,
+            "lower": -0.13356,
+            "upper": -0.056231
+          },
+          "ece": {
+            "effect": -0.059358,
+            "lower": -0.125926,
+            "upper": 0.020929
+          }
+        },
+        "B-0": {
+          "accuracy": {
+            "effect": 0.18,
+            "lower": 0.08,
+            "upper": 0.28
+          },
+          "brier": {
+            "effect": -0.08874,
+            "lower": -0.132949,
+            "upper": -0.043569
+          },
+          "ece": {
+            "effect": -0.061607,
+            "lower": -0.130858,
+            "upper": 0.019904
+          }
+        },
+        "B-B-local": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.04,
+            "upper": 0.08
+          },
+          "brier": {
+            "effect": -0.00252,
+            "lower": -0.028742,
+            "upper": 0.024241
+          },
+          "ece": {
+            "effect": -0.01674,
+            "lower": -0.065143,
+            "upper": 0.030631
+          }
+        }
+      },
+      "fewshot_context": "711a9c6f93f94a683e7d536664bf81d18994d647f7a5a4ff28cf4d5400749953",
+      "fewshot_vs_zero_shot": {
+        "choice_differs_rate": 0.2025,
+        "mean_abs_p_positive_difference": 0.1976,
+        "n": 400
+      },
+      "knn_context": "7d820d7bc33ec04172cbe2c3d52f9b079e7994deef975b4aac5fd6391d504966",
+      "labeled_fingerprint": "7cd76b3a3ba3993eb4b1b53e7a7df94137224245c98c8d8ce408934b80b1b6a5",
+      "n_labeled": 300,
+      "round": 3
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "requests": {
+    "by_arm": {
+      "A+B": {
+        "total": 700,
+        "zero-shot": 700
+      }
+    },
+    "by_arm_round": {
+      "A+B": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 62525,
+            "output_tokens": 5400,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 122155,
+            "output_tokens": 9900,
+            "successes": 400
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 33458,
+            "output_tokens": 4700,
+            "successes": 100
+          }
+        }
+      }
+    },
+    "ceiling": 9500,
+    "circuit_breaker": null,
+    "cumulative_used": 2400,
+    "max_new_this_invocation": 3100,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 700,
+    "used_before_this_invocation": 1700
+  },
+  "rounds": 3,
+  "seed": 1
+}
