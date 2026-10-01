@@ -1090,10 +1090,11 @@ class UnifiedFlywheel:
         }
         _assert_text_free(summary, self.splits)
         self.run_dir.mkdir(parents=True, exist_ok=True)
-        (self.run_dir / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
-        (self.run_dir / "run-log.json").write_text(json.dumps(
+        prefix = "final-" if self.cfg.final else ""   # a final run never overwrites the rounds' outputs
+        (self.run_dir / f"{prefix}summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+        (self.run_dir / f"{prefix}run-log.json").write_text(json.dumps(
             {"events": self.events, "requests": self.ledger.summary()}, indent=2, sort_keys=True) + "\n")
-        with (self.run_dir / "predictions.jsonl").open("w") as handle:
+        with (self.run_dir / f"{prefix}predictions.jsonl").open("w") as handle:
             for round_number, by_arm in sorted(self.results.items()):
                 for arm, rows in by_arm.items():
                     for row in rows:

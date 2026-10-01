@@ -121,6 +121,7 @@ def test_the_final_run_scores_paper_600_only_through_the_reloaded_bundles(final,
     final_run, summary, core = final
     paper = set(final_run.splits.paper600)
     assert summary["evaluation_slice"]["name"] == "paper-600" and summary["final"] is True
+    assert json.loads((final_run.run_dir / "summary.json").read_text())["evaluation_slice"]["name"] == "dev-100"
     (entry,) = summary["per_round"]
     assert entry["scored_through"] == "reloaded bundles"
     for arm in BUNDLE_ARMS:
@@ -177,7 +178,8 @@ def test_labeler_comments_reach_the_analyst_briefing_of_the_comment_arms_only(fr
 def test_no_output_carries_dataset_or_comment_text(frozen, final):
     flywheel, _, comments = frozen
     final_run, _, _ = final
-    for name in ("summary.json", "run-log.json", "predictions.jsonl"):
+    names = ("summary.json", "run-log.json", "predictions.jsonl")
+    for name in names + tuple("final-" + n for n in names):
         blob = (flywheel.run_dir / name).read_text()
         assert not any(c in blob for c in comments.values() if len(c) >= 12)
         for item_id in list(flywheel.batches[0])[:20] + list(final_run.eval_ids)[:20]:
