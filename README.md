@@ -2,8 +2,9 @@
 
 Reproducible evaluation scaffolding for Decision Flywheel context policies
 across decision models and labelled datasets. It is not yet a completed live
-study: the model/policy matrix is still being filled in. A bounded Jev pilot
-has a frozen design and exact request plans, but live approval remains pending.
+study. The initial Jev selection-by-size study has completed on AG News and
+Emotion; see [INITIAL_JEV_RESULTS.md](studies/INITIAL_JEV_RESULTS.md). Ordering,
+Kev and Laya comparisons have not been run.
 
 Optimization scope is native to Decision Flywheel and provider-neutral; this
 repository does not include DSPy integration. This is a scope boundary, not a
@@ -19,7 +20,8 @@ designs, split manifests, response-cache metadata, and aggregate findings.
 The repository currently provides frozen protocol and split-manifest contracts,
 offline preflight checks, gated Jev collection, text-free observation/metric/reporting
 utilities, and synthetic tests. No new live results have been collected with
-this harness. Complete matrix results remain planned work.
+this harness before the initial Jev study (see the results document above).
+Ordering sensitivity and cross-model comparisons remain planned work.
 
 ## Native command-line workflow
 

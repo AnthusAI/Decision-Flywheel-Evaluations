@@ -1,0 +1,241 @@
+{
+ "complete": true,
+ "conditions": [
+  {
+   "accuracy": 0.8865,
+   "condition": "development_selected_global:1",
+   "draws": [
+    0
+   ],
+   "ece": 0.0594,
+   "log_loss": 1.3112,
+   "logical_cells": 2000,
+   "macro_f1": 0.886
+  },
+  {
+   "accuracy": 0.8845,
+   "condition": "development_selected_global:4",
+   "draws": [
+    0
+   ],
+   "ece": 0.059,
+   "log_loss": 1.2729,
+   "logical_cells": 2000,
+   "macro_f1": 0.8841
+  },
+  {
+   "accuracy": 0.8945,
+   "condition": "development_selected_global:16",
+   "draws": [
+    0
+   ],
+   "ece": 0.0548,
+   "log_loss": 1.2166,
+   "logical_cells": 2000,
+   "macro_f1": 0.8943
+  },
+  {
+   "accuracy": 0.889,
+   "condition": "development_selected_global:64",
+   "draws": [
+    0
+   ],
+   "ece": 0.0521,
+   "log_loss": 1.0553,
+   "logical_cells": 2000,
+   "macro_f1": 0.8887
+  },
+  {
+   "accuracy": 0.879,
+   "condition": "prototype:1",
+   "draws": [
+    0
+   ],
+   "ece": 0.0611,
+   "log_loss": 1.2737,
+   "logical_cells": 2000,
+   "macro_f1": 0.8787
+  },
+  {
+   "accuracy": 0.8895,
+   "condition": "prototype:4",
+   "draws": [
+    0
+   ],
+   "ece": 0.0562,
+   "log_loss": 1.2214,
+   "logical_cells": 2000,
+   "macro_f1": 0.8892
+  },
+  {
+   "accuracy": 0.8855,
+   "condition": "prototype:16",
+   "draws": [
+    0
+   ],
+   "ece": 0.0541,
+   "log_loss": 1.1369,
+   "logical_cells": 2000,
+   "macro_f1": 0.885
+  },
+  {
+   "accuracy": 0.89,
+   "condition": "prototype:64",
+   "draws": [
+    0
+   ],
+   "ece": 0.0503,
+   "log_loss": 1.0092,
+   "logical_cells": 2000,
+   "macro_f1": 0.8896
+  },
+  {
+   "accuracy": 0.883,
+   "condition": "random:1",
+   "draws": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "ece": 0.062,
+   "log_loss": 1.3065,
+   "logical_cells": 10000,
+   "macro_f1": 0.8825
+  },
+  {
+   "accuracy": 0.8871,
+   "condition": "random:4",
+   "draws": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "ece": 0.0583,
+   "log_loss": 1.178,
+   "logical_cells": 10000,
+   "macro_f1": 0.8868
+  },
+  {
+   "accuracy": 0.8911,
+   "condition": "random:16",
+   "draws": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "ece": 0.0541,
+   "log_loss": 1.1745,
+   "logical_cells": 10000,
+   "macro_f1": 0.8908
+  },
+  {
+   "accuracy": 0.8889,
+   "condition": "random:64",
+   "draws": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "ece": 0.0507,
+   "log_loss": 1.0246,
+   "logical_cells": 10000,
+   "macro_f1": 0.8885
+  },
+  {
+   "accuracy": 0.892,
+   "condition": "retrieval:1",
+   "draws": [
+    0
+   ],
+   "ece": 0.0549,
+   "log_loss": 1.2186,
+   "logical_cells": 2000,
+   "macro_f1": 0.8917
+  },
+  {
+   "accuracy": 0.8995,
+   "condition": "retrieval:4",
+   "draws": [
+    0
+   ],
+   "ece": 0.0514,
+   "log_loss": 1.1951,
+   "logical_cells": 2000,
+   "macro_f1": 0.8993
+  },
+  {
+   "accuracy": 0.905,
+   "condition": "retrieval:16",
+   "draws": [
+    0
+   ],
+   "ece": 0.0528,
+   "log_loss": 1.1159,
+   "logical_cells": 2000,
+   "macro_f1": 0.9048
+  },
+  {
+   "accuracy": 0.899,
+   "condition": "retrieval:64",
+   "draws": [
+    0
+   ],
+   "ece": 0.0479,
+   "log_loss": 0.9834,
+   "logical_cells": 2000,
+   "macro_f1": 0.8987
+  },
+  {
+   "accuracy": 0.8785,
+   "condition": "zero:0",
+   "draws": [
+    0
+   ],
+   "ece": 0.0552,
+   "log_loss": 1.0699,
+   "logical_cells": 2000,
+   "macro_f1": 0.8779
+  }
+ ],
+ "contrasts": {
+  "selection_retrieval_minus_random_at_16": {
+   "available": true,
+   "confidence_level": 0.95,
+   "effect": 0.013900000000000023,
+   "interval_scope": "nominal per-contrast, not multiplicity adjusted",
+   "lower": 0.005800000000000027,
+   "upper": 0.021600000000000064
+  },
+  "size_random_64_minus_1": {
+   "available": true,
+   "confidence_level": 0.95,
+   "effect": 0.005899999999999905,
+   "interval_scope": "nominal per-contrast, not multiplicity adjusted",
+   "lower": -0.0027000000000001467,
+   "upper": 0.015000000000000013
+  }
+ },
+ "dataset": "ag_news",
+ "inference": {
+  "adjusted_significance_available": false,
+  "family_correction": "none; descriptive paired 95% intervals",
+  "formal_test": "not performed",
+  "interval_scope": "nominal per-contrast, not multiplicity adjusted"
+ },
+ "logical_cells": 66000,
+ "physical": {
+  "attempts": 58009,
+  "requests": 58000
+ },
+ "preflight_checksum": "6a65806853cf3c77781a868e76ddd5b52eb9789b494cc0b360725b02732715f0",
+ "primary_metric": "accuracy",
+ "protocol_identity": "0daf01d0eaf417b7a2438cd00898fb31b78634d25aab95d4c96e4570e44acf2d"
+}
