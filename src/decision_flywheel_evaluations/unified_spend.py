@@ -96,6 +96,7 @@ class SpendLedger:
         self.consecutive_failures = 0
         self.tripped: Optional[str] = None
         self.models_reported: set = set()
+        self.error_classes: Dict[str, int] = {}
         self._persist()
 
     # ---- scope ---------------------------------------------------------------------------
@@ -142,6 +143,11 @@ class SpendLedger:
             self._counts().failures += 1
             self.consecutive_failures += 1
             status = getattr(error, "status", None) or getattr(error, "status_code", None)
+            label = _safe(type(error).__name__) + (f"[{_safe(status)}]" if status else "")
+            self.error_classes[label] = self.error_classes.get(label, 0) + 1
+            if self.error_classes[label] <= 2:  # local stderr only (run logs are gitignored), never the summary
+                import sys
+                print(f"[failure sample] {label}: {str(error)[:200]!r}", file=sys.stderr)
             if status in SYSTEMIC_STATUSES:
                 self.tripped = f"provider rejected the account (HTTP {status})"
             elif self.consecutive_failures >= self.max_consecutive_failures:
@@ -173,7 +179,7 @@ class SpendLedger:
             "ceiling": self.ceiling, "max_new_this_invocation": self.max_new,
             "used_before_this_invocation": self.used_before, "new_this_invocation": self.new_attempts,
             "cumulative_used": self.used, "circuit_breaker": self.tripped,
-            "models_reported": sorted(self.models_reported),
+            "models_reported": sorted(self.models_reported), "error_classes": dict(sorted(self.error_classes.items())),
             "by_arm": self.by_arm(), "by_arm_round": self.by_arm_round(),
         }
 

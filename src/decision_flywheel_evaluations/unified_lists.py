@@ -102,6 +102,9 @@ class ListAnswers:
 
         async def run_all() -> None:
             nonlocal failures
+            # A client is bound to the event loop that first used it; every fill runs its own
+            # loop, so each gets its own client ("Event loop is closed" otherwise).
+            self._client = None
             semaphore = asyncio.Semaphore(self.concurrency)
 
             async def one(item_id: str, gap: Dict[str, dict]) -> None:

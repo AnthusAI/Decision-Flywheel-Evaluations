@@ -165,3 +165,16 @@ def test_the_upper_bound_counts_one_list_request_per_item_per_trial_list():
     assert bound["F-rand"] == 200 + 300
     assert request_upper_bound(["A-c"], rounds=3, per_round=100, eval_n=100)["A-c"] == \
         request_upper_bound(["A"], rounds=3, per_round=100, eval_n=100)["A"]
+
+
+def test_failures_are_tallied_by_error_class_and_status_without_message_text():
+    class Rejected(Exception):
+        status = 429
+
+    ledger = SpendLedger(None, ceiling=100, max_consecutive_failures=50)
+    for error in (TimeoutError("secret detail"), TimeoutError("other"), Rejected("more secret")):
+        ledger.reserve()
+        ledger.failed(error)
+    classes = ledger.summary()["error_classes"]
+    assert classes == {"TimeoutError": 2, "Rejected[429]": 1}
+    assert "secret" not in repr(ledger.summary())

@@ -182,3 +182,26 @@ def test_a_replay_is_free_when_everything_is_cached_and_refuses_otherwise(tmp_pa
                                          provider_model="jev-1.13.0", **cfg))
     with pytest.raises((HarnessError, CircuitOpen)):
         flywheel.run()
+
+
+def test_each_fill_builds_its_own_client_so_none_outlives_its_event_loop(tmp_path):
+    items = load_items(Path(CLONE.path) / "fixtures")
+    pool = sorted(i for i, item in items.items() if item.split == "pool")
+    from decision_flywheel.models import Item, LabeledItem
+    from .unified_fake_jev import FakeJevAsync
+    rows = {i: LabeledItem(Item(i, {"text": items[i].text}), items[i].reference_label) for i in pool[:200]}
+    by_label = {label: [i for i in rows if rows[i].label == label] for label in TASK.labels}
+    fixed = FixedExampleList.from_items(TASK, [rows[i] for label in TASK.labels for i in by_label[label][:2]],
+                                        [rows[by_label[label][2]] for label in TASK.labels])
+    core, built = _core(), []
+
+    def factory():
+        built.append(1)
+        return FakeJevAsync(core)
+
+    answers = ListAnswers(tmp_path / "b.jsonl", TASK, {i: items[i].text for i in items},
+                          {i: items[i].reference_label for i in pool}, factory)
+    question = {"Sentiment": {"type": "choice", "instructions": "x", "criteria": {"positive": None, "negative": None}}}
+    answers.fill(pool[300:303], question, fixed)
+    answers.fill(pool[303:306], question, fixed)
+    assert len(built) == 2
