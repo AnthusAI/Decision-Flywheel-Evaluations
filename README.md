@@ -1,7 +1,7 @@
 # Decision Flywheel Evaluations
 
 Reproducible evaluation scaffolding for Decision Flywheel context policies
-across decision models and labelled datasets. It is not yet a completed live
+across decision models and labelled datasets. It is not yet a complete multi-model
 study. The initial Jev selection-by-size study has completed on AG News and
 Emotion; see [INITIAL_JEV_RESULTS.md](studies/INITIAL_JEV_RESULTS.md). Ordering,
 Kev and Laya comparisons have not been run.
