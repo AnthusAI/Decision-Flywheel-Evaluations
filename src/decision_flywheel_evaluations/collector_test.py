@@ -282,6 +282,34 @@ def test_a_provider_that_cannot_be_constructed_aborts_before_any_attempt_is_rese
     assert "credential-like factory detail" not in repr(cache.snapshot().physical_payloads)
 
 
+class _BillingModel:
+    async def decide(self, _task, _target, _context):
+        error = RuntimeError("402 account detail that must not be exported")
+        error.status = 402
+        raise error
+
+
+def test_a_billing_or_auth_error_aborts_the_run_after_the_first_attempt(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, ceiling=None)
+    with pytest.raises(RuntimeError) as error:
+        asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, lambda _model: _BillingModel(),
+                            committed_checker=lambda *_: True,
+                            options=CollectionOptions(max_new_attempts=plan.new_request_count)))
+    assert cache.attempts_used == 1 and "402" in str(error.value)
+    assert "account detail" not in str(error.value)
+
+
+def test_consecutive_provider_failures_stop_the_run_before_the_budget_is_spent(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, ceiling=None)
+    assert plan.new_request_count > 3
+    with pytest.raises(RuntimeError, match="consecutive"):
+        asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, lambda _model: _CrashingModel(),
+                            committed_checker=lambda *_: True,
+                            options=CollectionOptions(max_new_attempts=plan.new_request_count,
+                                                      max_consecutive_failures=3)))
+    assert cache.attempts_used == 3
+
+
 def test_baseexception_crash_persists_reservation_for_reopen_recovery_and_one_retry(tmp_path):
     manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, confirmed=True, ceiling=2)
     class Crash(BaseException): pass

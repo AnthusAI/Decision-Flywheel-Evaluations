@@ -51,13 +51,16 @@ class CollectionOptions:
     retry_failed: bool = False
     recover_uncertain: bool = False
     max_retries_per_request: int = 0
+    max_consecutive_failures: int = 25
 
     def validate(self) -> None:
         if (self.max_new_attempts is not None and (isinstance(self.max_new_attempts, bool)
             or not isinstance(self.max_new_attempts, int) or self.max_new_attempts < 0)
             or not isinstance(self.retry_failed, bool) or not isinstance(self.recover_uncertain, bool)
             or isinstance(self.max_retries_per_request, bool)
-            or not isinstance(self.max_retries_per_request, int) or self.max_retries_per_request < 0):
+            or not isinstance(self.max_retries_per_request, int) or self.max_retries_per_request < 0
+            or isinstance(self.max_consecutive_failures, bool)
+            or not isinstance(self.max_consecutive_failures, int) or self.max_consecutive_failures < 1):
             raise ValueError("collection options must be explicit non-negative bounds")
         if (self.retry_failed or self.recover_uncertain) and self.max_retries_per_request < 1:
             raise ValueError("retry and recovery require an explicit positive retry bound")
@@ -109,6 +112,7 @@ async def _collect_execution(
     """Execute an already gate-validated physical plan without widening it."""
     initial_successes = cache.successful_request_ids()
     new_attempts = 0
+    consecutive_failures = 0
     models: dict[str, DecisionModel] = {}
     cells_by_physical: dict[str, list[tuple[RequestCell, Item, object]]] = {}
     for cell, target, plan in execution:
@@ -169,10 +173,22 @@ async def _collect_execution(
             # DecisionResult validation errors represent an invalid structured
             # provider response; keep only the safe ledger category.
             cache.fail(reserved, "malformed-response")
-        except Exception:
+        except Exception as error:
             # Provider exception contents must never become result provenance.
             cache.fail(reserved, "model-failure")
+            consecutive_failures += 1
+            # Billing/auth failures and long failure streaks are systemic, not
+            # per-request: stop instead of spending the whole approved ceiling.
+            status = getattr(error, "status", None)
+            if status in {401, 402, 403}:
+                raise RuntimeError(
+                    f"provider rejected the account (HTTP {status}); stopped after {new_attempts} attempts") from None
+            if consecutive_failures >= options.max_consecutive_failures:
+                raise RuntimeError(
+                    f"stopped after {consecutive_failures} consecutive provider failures") from None
+            continue
         else:
+            consecutive_failures = 0
             # Persistence/ledger errors are not model failures and must not try
             # to finalize an already-transitioned reservation a second time.
             completed = cache.complete(reserved, _result_payload(result)).get("status") == "success"
