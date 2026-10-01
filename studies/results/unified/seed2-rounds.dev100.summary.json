@@ -1,0 +1,1613 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "F",
+    "F-rand",
+    "A-c",
+    "A-c+F"
+  ],
+  "bundles": {
+    "0": {
+      "bundle_hash": "18971fb0aa41ff1c013de9e540312eaaa12b63eea7a323db5c6e2c82b6ca8810",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-65739f9f4e",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "d92fc2769c29f406497fec3735ccf1cf5fe4ec28da2c8fca769dc11acd192dc8"
+    },
+    "A-c": {
+      "bundle_hash": "d4fcc16ac43249451414d576f61eef6b03718c2feb8a921561408f2bd7619305",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-87c34a7b34",
+      "questions": [
+        "Sentiment",
+        "sentiment.sports_topic"
+      ],
+      "scorecard_sha256": "f5acdea9809f50cdd928ca4029c6c32b1d86f933db7f9b68d0303b5ed755aeea"
+    },
+    "A-c+F": {
+      "bundle_hash": "aff7012c65580e080aba9bb3263d59e6da669ebdcdaded9e696a5017e4ff8177",
+      "fewshot_fingerprint": "352be2b39d0e18da7614d8950153ecb996e4a7a1fe636a104ac5ff82a85d652f",
+      "head_fit_id": "dh-5260adfa67",
+      "questions": [
+        "Sentiment",
+        "sentiment.text_topic"
+      ],
+      "scorecard_sha256": "77c7f702f3f977f44d13571d1cc4e69ce677dabfc8dbf5ab302e0294161d98cd"
+    },
+    "F": {
+      "bundle_hash": "d71df03ae64f27bab94bee765a2b113c82b49bddcadd695cb3d82674b20786c2",
+      "fewshot_fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+      "head_fit_id": "dh-44e9eb8979",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "d9476117f7af2ea227dfbf584838a9d9de9fe55227f434ecef382dd6d3c5fd27"
+    },
+    "F-rand": {
+      "bundle_hash": "40263fe8f35332ed483580118aa9c596d6585a73296cf171953ebf085786d803",
+      "fewshot_fingerprint": "70c7e1a2ff3c720f13ee336e9eea882ffe7a07aee41670a21817dbfa03a0e25f",
+      "head_fit_id": "dh-44e9eb8979",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "f4c5c9463e7f81fecad4caa02c0504cf7b7963d18226609be4633d28d077039b"
+    }
+  },
+  "decision_flywheel": {
+    "commit": "2bcfe6c9bf24dfa677e147195cd0e2a4aa56427a",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "6b0354788d560a27c66b1c31fdd320c2aa7e4397b2633241cca87089b2212678",
+    "n": 100,
+    "name": "dev-100"
+  },
+  "final": false,
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "189cce88cc240d61ec62525c81c407bfb67c49f1277c60fce221e7cb0f3d645d",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.130525,
+              "ece": 0.130381,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.81,
+              "brier": 0.13192,
+              "ece": 0.131119,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-65739f9f4e",
+            "incumbent_served": {
+              "accuracy": 0.81,
+              "brier": 0.14412,
+              "ece": 0.147152,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.75,
+            "brier": 0.159882,
+            "ece": 0.101802,
+            "n": 100
+          }
+        },
+        "A-c": {
+          "comments": 67,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p"
+          ],
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.075091,
+            "ece": 0.041792,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "a9a6695811272abffa45a5984d0dbdc7aed2c4178653dce73eeb9dff699abcd4",
+            "analyst_source": "live",
+            "comments_in_feedback": 67,
+            "decision": "promoted",
+            "elements_after": [
+              "sports_topic"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "65f919aaa68719620c802bc8d11a87168cd7b44438cda7ce3dbcb300f8c1513f",
+                "key": "sports_topic",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.85,
+              "brier": 0.109251,
+              "ece": 0.050124,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.85,
+              "brier": 0.113386,
+              "ece": 0.041369,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-87c34a7b34",
+            "incumbent_served": {
+              "accuracy": 0.86,
+              "brier": 0.103357,
+              "ece": 0.079179,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0100, below the 0.005 required"
+            ],
+            "regularization_c": 0.1,
+            "round": 1
+          }
+        },
+        "A-c+F": {
+          "comments": 67,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 124
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.89,
+              "brier": 0.078451,
+              "ece": 0.043259,
+              "n": 100
+            },
+            "fit_id": "dh-3813d8458b",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "text_topic.clr.sports_or_athletics",
+            "text_topic.clr.routine_administration_or_operations"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "a165f1b7a9a2",
+              "c97c4ab2ce19",
+              "e37140750c18",
+              "15c369a11273",
+              "f68c9d998237",
+              "4e1b4f56d5d4"
+            ],
+            "fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+            "incumbent_source": "prototype-seed",
+            "n_development": 76,
+            "promoted": true,
+            "reason": "promoted hard-swap: brier gain 0.050209",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.855263,
+                "brier": 0.10007
+              },
+              "incumbent": {
+                "accuracy": 0.815789,
+                "brier": 0.150279
+              },
+              "random-control": {
+                "accuracy": 0.828947,
+                "brier": 0.1308
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "incumbent": "c64e1f9f0e88a483c9ce259e773223b4a7b35dde9d9513fed588f38c70d8dc66",
+              "random-control": "bf7dc6bce63870433b346748fe48b4d77d72ad8d6675b805afbc080122f1cbb8"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "hard-swap"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.075,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.88,
+            "brier": 0.069595,
+            "ece": 0.043629,
+            "n": 100
+          },
+          "new_labels_wrong": 19,
+          "steering": {
+            "analyst_reply_sha256": "40731f22da0a365674809ff261353ce43a379eac178aaea7999e9fda85474c78",
+            "analyst_source": "live",
+            "comments_in_feedback": 67,
+            "decision": "promoted",
+            "elements_after": [
+              "text_topic"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "5219c6cb2df40a3f6781288ebefe0981401a6b81645450912dd5c5fbcf2ba5a6",
+                "key": "text_topic",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 124
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.82,
+              "brier": 0.120636,
+              "ece": 0.038048,
+              "n": 100
+            },
+            "fit_id": "dh-65739f9f4e",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "a165f1b7a9a2",
+              "c97c4ab2ce19",
+              "e37140750c18",
+              "15c369a11273",
+              "f68c9d998237",
+              "4e1b4f56d5d4"
+            ],
+            "fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+            "incumbent_source": "prototype-seed",
+            "n_development": 76,
+            "promoted": true,
+            "reason": "promoted hard-swap: brier gain 0.050209",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.855263,
+                "brier": 0.10007
+              },
+              "incumbent": {
+                "accuracy": 0.815789,
+                "brier": 0.150279
+              },
+              "random-control": {
+                "accuracy": 0.828947,
+                "brier": 0.1308
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "incumbent": "c64e1f9f0e88a483c9ce259e773223b4a7b35dde9d9513fed588f38c70d8dc66",
+              "random-control": "bf7dc6bce63870433b346748fe48b4d77d72ad8d6675b805afbc080122f1cbb8"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "hard-swap"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.075,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.156634,
+            "ece": 0.113855,
+            "n": 100
+          },
+          "new_labels_wrong": 19
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 200
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.79,
+              "brier": 0.145008,
+              "ece": 0.085706,
+              "n": 100
+            },
+            "fit_id": "dh-65739f9f4e",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "7710c485f10c",
+              "39173c0ce319",
+              "367f3264b98a",
+              "9394f859aac9",
+              "db7111d9c0ed",
+              "b7627d8765eb",
+              "aeb148119271",
+              "56c8f822770d"
+            ],
+            "fingerprint": "a1e0b04e9172637267f1818d1d5bf3af6d44014c6355e67df56072817aafaf49",
+            "reserve_ids": [
+              "d126b3423b7b",
+              "86ecac2a2d06"
+            ],
+            "seed": 1001,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.085,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.67,
+            "brier": 0.188475,
+            "ece": 0.179536,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": -0.01,
+            "lower": -0.07,
+            "upper": 0.05
+          },
+          "brier": {
+            "baseline_arm": "A-c",
+            "effect": -0.005496,
+            "lower": -0.030908,
+            "upper": 0.018375
+          },
+          "ece": {
+            "baseline_arm": "A-c",
+            "effect": 0.001837,
+            "lower": -0.066635,
+            "upper": 0.040373
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.01,
+            "lower": -0.03,
+            "upper": 0.06
+          },
+          "brier": {
+            "effect": -0.003248,
+            "lower": -0.025219,
+            "upper": 0.020674
+          },
+          "ece": {
+            "effect": 0.012053,
+            "lower": -0.071172,
+            "upper": 0.092634
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.09,
+            "lower": 0.03,
+            "upper": 0.16
+          },
+          "brier": {
+            "effect": -0.03184,
+            "lower": -0.059099,
+            "upper": -0.002686
+          },
+          "ece": {
+            "effect": -0.065681,
+            "lower": -0.137922,
+            "upper": 0.025585
+          }
+        }
+      },
+      "fewshot_context": "bb8ccfd1d143eb7c5668e2b2267ef0ea6ba01c6207d0e49ca7914ce81c2f1ee6",
+      "knn_context": "3d5555fdbef27ddb7a8379e45a59978bc20b70a6ab03048ac400bbe05a88c844",
+      "labeled_fingerprint": "de9016b7545b4b8e85344bc3f59210e3db090df65eba9f186c2fcd9744b60f5a",
+      "n_labeled": 100,
+      "round": 1
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.79,
+              "brier": 0.137817,
+              "ece": 0.076328,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.79,
+              "brier": 0.138034,
+              "ece": 0.075232,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-db978b1385",
+            "incumbent_served": {
+              "accuracy": 0.79,
+              "brier": 0.136042,
+              "ece": 0.090033,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0020, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.75,
+            "brier": 0.159882,
+            "ece": 0.101802,
+            "n": 100
+          }
+        },
+        "A-c": {
+          "comments": 63,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p"
+          ],
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.075091,
+            "ece": 0.041792,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "d84baeb153ed4b7fc6bcf8cd64b847510ffb3cf9f1d254c9c78ed11a2957a62b",
+            "analyst_source": "live",
+            "comments_in_feedback": 130,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "sports_topic"
+            ],
+            "elements_before": [
+              "sports_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "84388037588b4ccb581c3ca95c687a520a3917eae3d57eb7b670f7e66f349637",
+                "key": "routine_admin_tone",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.84,
+              "brier": 0.103426,
+              "ece": 0.043574,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.84,
+              "brier": 0.103343,
+              "ece": 0.039431,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-cbe163eafc",
+            "incumbent_served": {
+              "accuracy": 0.855,
+              "brier": 0.10144,
+              "ece": 0.055733,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0019, below the 0.005 required",
+              "accuracy fell by 0.0150, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 1.0,
+            "round": 2
+          }
+        },
+        "A-c+F": {
+          "comments": 63,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.88,
+              "brier": 0.073657,
+              "ece": 0.025659,
+              "n": 200
+            },
+            "fit_id": "dh-c392390241",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "text_topic.clr.sports_or_athletics",
+            "text_topic.clr.routine_administration_or_operations"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "a165f1b7a9a2",
+              "c97c4ab2ce19",
+              "e37140750c18",
+              "15c369a11273",
+              "f68c9d998237",
+              "4e1b4f56d5d4"
+            ],
+            "fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+            "incumbent_source": "given",
+            "n_development": 178,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.769663,
+                "brier": 0.170138
+              },
+              "incumbent": {
+                "accuracy": 0.837079,
+                "brier": 0.113989
+              },
+              "random-control": {
+                "accuracy": 0.786517,
+                "brier": 0.148314
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "9745746f819961f52c118492886f861171c25bbed6c0065ef56e10924a2c961e",
+              "incumbent": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "random-control": "e01a16ad130aa42681a75eb8e0d1858282c134f7d6dbc53cb7fe2abad5457fec"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.0967,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.91,
+            "brier": 0.062676,
+            "ece": 0.039395,
+            "n": 100
+          },
+          "new_labels_wrong": 11,
+          "steering": {
+            "analyst_reply_sha256": "95ccf092f015962b7e78be9edc03fd16ff34b78634b6d48f44ae150961e41fdf",
+            "analyst_source": "live",
+            "comments_in_feedback": 130,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "text_topic"
+            ],
+            "elements_before": [
+              "text_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "efb0430b0b9f0896314993a8553b61fba2294dc8b3e0670fbcc90680bcf1fba1",
+                "key": "procedural_neutrality",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.815,
+              "brier": 0.127601,
+              "ece": 0.052361,
+              "n": 200
+            },
+            "fit_id": "dh-b1ccaaffe3",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "a165f1b7a9a2",
+              "c97c4ab2ce19",
+              "e37140750c18",
+              "15c369a11273",
+              "f68c9d998237",
+              "4e1b4f56d5d4"
+            ],
+            "fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+            "incumbent_source": "given",
+            "n_development": 178,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.758427,
+                "brier": 0.18589
+              },
+              "incumbent": {
+                "accuracy": 0.848315,
+                "brier": 0.107939
+              },
+              "random-control": {
+                "accuracy": 0.775281,
+                "brier": 0.155246
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "de2060300adb313b17595d48bd4dbcbf4a623e93dc69866fe37638e216af0856",
+              "incumbent": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "random-control": "e01a16ad130aa42681a75eb8e0d1858282c134f7d6dbc53cb7fe2abad5457fec"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.0967,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.74,
+            "brier": 0.158845,
+            "ece": 0.135971,
+            "n": 100
+          },
+          "new_labels_wrong": 17
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 300
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.8,
+              "brier": 0.12885,
+              "ece": 0.045699,
+              "n": 200
+            },
+            "fit_id": "dh-b1ccaaffe3",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "b1e027f7daa4",
+              "3fd1825f6ef5",
+              "77a4b50e9da0",
+              "1b80a6537cda",
+              "56c8f822770d",
+              "b858ae93412d",
+              "5eb561dff02f",
+              "91cea374203a"
+            ],
+            "fingerprint": "d0d785dbf0bf30f5b09a23d33d765554bc9bb8a52f30778dcdcc39b099d983c4",
+            "reserve_ids": [
+              "67ef81ddaba8",
+              "23908b6950a2"
+            ],
+            "seed": 1002,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.15,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.105205,
+            "ece": 0.123344,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": 0.02,
+            "lower": -0.04,
+            "upper": 0.07
+          },
+          "brier": {
+            "baseline_arm": "A-c",
+            "effect": -0.012416,
+            "lower": -0.038165,
+            "upper": 0.010373
+          },
+          "ece": {
+            "baseline_arm": "A-c",
+            "effect": -0.002397,
+            "lower": -0.055117,
+            "upper": 0.028983
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": -0.01,
+            "lower": -0.05,
+            "upper": 0.04
+          },
+          "brier": {
+            "effect": -0.001037,
+            "lower": -0.02264,
+            "upper": 0.022458
+          },
+          "ece": {
+            "effect": 0.034169,
+            "lower": -0.051636,
+            "upper": 0.112265
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": -0.15,
+            "lower": -0.23,
+            "upper": -0.06
+          },
+          "brier": {
+            "effect": 0.05364,
+            "lower": 0.021041,
+            "upper": 0.087586
+          },
+          "ece": {
+            "effect": 0.012627,
+            "lower": -0.047382,
+            "upper": 0.097565
+          }
+        }
+      },
+      "fewshot_context": "9c28ab58074766649e42b8cd7363f2ddf59fbf9f02b4b0d190b11d29a3f5ae84",
+      "knn_context": "4672acd12f6f73167d679ab333ace4b5a420d3d1b92b4d5fb8dc5f9f349ad076",
+      "labeled_fingerprint": "272eeb7aaae0de41bcc7d2558782f910ae22e36aad480ccbaddc085469fbf904",
+      "n_labeled": 200,
+      "round": 2
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.793333,
+              "brier": 0.14552,
+              "ece": 0.082302,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.79,
+              "brier": 0.14641,
+              "ece": 0.046196,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-9fd73a6120",
+            "incumbent_served": {
+              "accuracy": 0.783333,
+              "brier": 0.144382,
+              "ece": 0.095357,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0020, below the 0.005 required"
+            ],
+            "regularization_c": 0.1,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "metrics": {
+            "accuracy": 0.75,
+            "brier": 0.159882,
+            "ece": 0.101802,
+            "n": 100
+          }
+        },
+        "A-c": {
+          "comments": 59,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.positive",
+            "sports_topic.logit_p"
+          ],
+          "metrics": {
+            "accuracy": 0.89,
+            "brier": 0.075091,
+            "ece": 0.041792,
+            "n": 100
+          },
+          "steering": {
+            "analyst_reply_sha256": "07f5dbcbb08e0bc7c3deba207cf9d24b32f36db923eb47f03d0190504d7674a2",
+            "analyst_source": "live",
+            "comments_in_feedback": 189,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "sports_topic"
+            ],
+            "elements_before": [
+              "sports_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "fc60e86bc671dc9659095fa1a671bb71fd8319d1e1d3252f6b17e3e16807ae2d",
+                "key": "routine_admin",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.856667,
+              "brier": 0.094959,
+              "ece": 0.02879,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.856667,
+              "brier": 0.09504,
+              "ece": 0.036369,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.positive",
+              "sports_topic.logit_p"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-d78d26a936",
+            "incumbent_served": {
+              "accuracy": 0.866667,
+              "brier": 0.093739,
+              "ece": 0.054073,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0013, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          }
+        },
+        "A-c+F": {
+          "comments": 59,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 122
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.836667,
+              "brier": 0.096618,
+              "ece": 0.057866,
+              "n": 300
+            },
+            "fit_id": "dh-5260adfa67",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive",
+            "text_topic.clr.sports_or_athletics",
+            "text_topic.clr.routine_administration_or_operations"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "137226abda99",
+              "3981fbef6c6a",
+              "e37140750c18",
+              "15c369a11273",
+              "0f780f90f14f",
+              "d84b34d5d103"
+            ],
+            "fingerprint": "352be2b39d0e18da7614d8950153ecb996e4a7a1fe636a104ac5ff82a85d652f",
+            "incumbent_source": "given",
+            "n_development": 278,
+            "promoted": true,
+            "reason": "promoted hard-swap: brier gain 0.007631",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.838129,
+                "brier": 0.121505
+              },
+              "incumbent": {
+                "accuracy": 0.823741,
+                "brier": 0.129136
+              },
+              "random-control": {
+                "accuracy": 0.791367,
+                "brier": 0.155487
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "352be2b39d0e18da7614d8950153ecb996e4a7a1fe636a104ac5ff82a85d652f",
+              "incumbent": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "random-control": "827825281f9ba27bac61872e9e20cb5538d707a1931414499bf418ddb278e7ce"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "hard-swap"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.16,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.83,
+            "brier": 0.098471,
+            "ece": 0.075454,
+            "n": 100
+          },
+          "new_labels_wrong": 10,
+          "steering": {
+            "analyst_reply_sha256": "3b11c03506f59c44bd2d14eb5b139a78d25f66b08986617bd9fe4eea81513b37",
+            "analyst_source": "live",
+            "comments_in_feedback": 189,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "text_topic"
+            ],
+            "elements_before": [
+              "text_topic"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "940c41d312f14e031ff68dcd038ea044262bacce3ce3e70f8dca762eb4adb305",
+                "key": "successful_outcome",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.81,
+              "brier": 0.135205,
+              "ece": 0.076718,
+              "n": 300
+            },
+            "fit_id": "dh-44e9eb8979",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "f2bb204f1c4c",
+              "bc189b8fd882",
+              "a165f1b7a9a2",
+              "c97c4ab2ce19",
+              "e37140750c18",
+              "15c369a11273",
+              "f68c9d998237",
+              "4e1b4f56d5d4"
+            ],
+            "fingerprint": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+            "incumbent_source": "given",
+            "n_development": 278,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule (some challenger trials were incomplete)",
+            "requests_not_prefetched": 1,
+            "reserve_ids": [
+              "6151473c22b9",
+              "1d7edd7e01d0"
+            ],
+            "scores": {
+              "incumbent": {
+                "accuracy": 0.827338,
+                "brier": 0.125175
+              },
+              "random-control": {
+                "accuracy": 0.791367,
+                "brier": 0.153745
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "812e3cdb05fb2a93208ae407d6733fd10cbcc4975079dfec2b9009dbc7410c4e",
+              "incumbent": "ec72a197e042fc41f82399927a5850fc54a44e8f35f43f3de5b4aa0d1bd2d901",
+              "random-control": "827825281f9ba27bac61872e9e20cb5538d707a1931414499bf418ddb278e7ce"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [
+                  "model-failure"
+                ],
+                "status": "incomplete"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.095,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.77,
+            "brier": 0.150797,
+            "ece": 0.135932,
+            "n": 100
+          },
+          "new_labels_wrong": 23
+        },
+        "F-rand": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 400
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.783333,
+              "brier": 0.146266,
+              "ece": 0.053907,
+              "n": 300
+            },
+            "fit_id": "dh-44e9eb8979",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.positive"
+          ],
+          "list": {
+            "example_ids": [
+              "3f35f3bb1d3a",
+              "bfa67c55c1a2",
+              "9059241da494",
+              "0bea5c0710b8",
+              "0e1a8c615b46",
+              "91cea374203a",
+              "a442069d3b67",
+              "86ecac2a2d06"
+            ],
+            "fingerprint": "70c7e1a2ff3c720f13ee336e9eea882ffe7a07aee41670a21817dbfa03a0e25f",
+            "reserve_ids": [
+              "0e5bfc05b816",
+              "ac5e837d3bd2"
+            ],
+            "seed": 1003,
+            "winner": "random"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.1125,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.149146,
+            "ece": 0.128969,
+            "n": 100
+          }
+        }
+      },
+      "contrasts": {
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": -0.06,
+            "lower": -0.12,
+            "upper": -0.01
+          },
+          "brier": {
+            "baseline_arm": "A-c",
+            "effect": 0.02338,
+            "lower": -0.000344,
+            "upper": 0.049391
+          },
+          "ece": {
+            "baseline_arm": "A-c",
+            "effect": 0.033662,
+            "lower": -0.040964,
+            "upper": 0.07874
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "brier": {
+            "effect": -0.009085,
+            "lower": -0.031142,
+            "upper": 0.01473
+          },
+          "ece": {
+            "effect": 0.03413,
+            "lower": -0.060823,
+            "upper": 0.116571
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.01,
+            "lower": -0.05,
+            "upper": 0.07
+          },
+          "brier": {
+            "effect": 0.001651,
+            "lower": -0.022936,
+            "upper": 0.027135
+          },
+          "ece": {
+            "effect": 0.006963,
+            "lower": -0.081642,
+            "upper": 0.092745
+          }
+        }
+      },
+      "fewshot_context": "7aaa55d988f5ec07678bf941a2bd8441986654c74480d3486869a93ccf73a3ef",
+      "knn_context": "70e9be03bcada9aad5395b7e4d33adfbb643c3702b00da956ff8ef9632e58614",
+      "labeled_fingerprint": "5811928e472de02aba580e252e72f109d906100fe7353c3137287ade39bfe7a8",
+      "n_labeled": 300,
+      "round": 3
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "source": "explanation labeler",
+      "supplied": 189
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "A-c": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "A-c+F": {
+        "list": 1586,
+        "total": 2386,
+        "zero-shot": 800
+      },
+      "F": {
+        "list": 1465,
+        "total": 1465
+      },
+      "F-rand": {
+        "list": 900,
+        "total": 900
+      }
+    },
+    "by_arm_round": {
+      "A-c": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 61361,
+            "output_tokens": 4800,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 93626,
+            "output_tokens": 7800,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 122924,
+            "output_tokens": 9900,
+            "successes": 400
+          }
+        }
+      },
+      "A-c+F": {
+        "1": {
+          "list": {
+            "attempts": 352,
+            "failures": 0,
+            "input_tokens": 204463,
+            "output_tokens": 19390,
+            "successes": 352
+          },
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 32678,
+            "output_tokens": 5462,
+            "successes": 100
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 456,
+            "failures": 0,
+            "input_tokens": 267704,
+            "output_tokens": 30484,
+            "successes": 456
+          },
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 94826,
+            "output_tokens": 10888,
+            "successes": 300
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 778,
+            "failures": 0,
+            "input_tokens": 457186,
+            "output_tokens": 54627,
+            "successes": 778
+          },
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 127024,
+            "output_tokens": 13908,
+            "successes": 400
+          }
+        }
+      },
+      "F": {
+        "1": {
+          "list": {
+            "attempts": 352,
+            "failures": 0,
+            "input_tokens": 199535,
+            "output_tokens": 11264,
+            "successes": 352
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 456,
+            "failures": 0,
+            "input_tokens": 255912,
+            "output_tokens": 14592,
+            "successes": 456
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 657,
+            "failures": 2,
+            "input_tokens": 370845,
+            "output_tokens": 20960,
+            "successes": 655
+          }
+        }
+      },
+      "F-rand": {
+        "1": {
+          "list": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 119129,
+            "output_tokens": 6400,
+            "successes": 200
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 177184,
+            "output_tokens": 9600,
+            "successes": 300
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 236280,
+            "output_tokens": 12800,
+            "successes": 400
+          }
+        }
+      }
+    },
+    "ceiling": 8900,
+    "circuit_breaker": null,
+    "cumulative_used": 5651,
+    "error_classes": {
+      "RuntimeError": 1,
+      "TypeSafeAPIConnectionError": 1
+    },
+    "max_new_this_invocation": 8900,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 5651,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 2
+}

@@ -1,0 +1,255 @@
+{
+  "arm": "D",
+  "bundle": null,
+  "bundle_note": "not bundled: core ClassifierBundle records retrieval as null and load_bundle refuses retrieval bundles; D is optional, so core is not widened",
+  "comparison": {
+    "arms": {
+      "0": {
+        "accuracy": 0.766667,
+        "brier": 0.164303,
+        "ece": 0.056019,
+        "n": 600
+      },
+      "A-c": {
+        "accuracy": 0.828333,
+        "brier": 0.113183,
+        "ece": 0.032681,
+        "n": 600
+      },
+      "A-c+F": {
+        "accuracy": 0.856667,
+        "brier": 0.09369,
+        "ece": 0.021051,
+        "n": 600
+      },
+      "F": {
+        "accuracy": 0.781667,
+        "brier": 0.14562,
+        "ece": 0.071866,
+        "n": 600
+      }
+    },
+    "contrasts": {
+      "D-0": {
+        "accuracy": {
+          "effect": 0.126667,
+          "lower": 0.093333,
+          "upper": 0.16
+        },
+        "brier": {
+          "effect": -0.08513,
+          "lower": -0.104059,
+          "upper": -0.067982
+        },
+        "ece": {
+          "effect": -0.033586,
+          "lower": -0.071774,
+          "upper": -0.011599
+        }
+      },
+      "D-A-c": {
+        "accuracy": {
+          "effect": 0.065,
+          "lower": 0.036667,
+          "upper": 0.096667
+        },
+        "brier": {
+          "effect": -0.03401,
+          "lower": -0.048936,
+          "upper": -0.019647
+        },
+        "ece": {
+          "effect": -0.010248,
+          "lower": -0.038057,
+          "upper": 0.015132
+        }
+      },
+      "D-A-c+F": {
+        "accuracy": {
+          "effect": 0.036667,
+          "lower": 0.013333,
+          "upper": 0.061667
+        },
+        "brier": {
+          "effect": -0.014517,
+          "lower": -0.028021,
+          "upper": -0.002712
+        },
+        "ece": {
+          "effect": 0.001382,
+          "lower": -0.02528,
+          "upper": 0.02072
+        }
+      },
+      "D-F": {
+        "accuracy": {
+          "effect": 0.111667,
+          "lower": 0.078333,
+          "upper": 0.146667
+        },
+        "brier": {
+          "effect": -0.066447,
+          "lower": -0.084138,
+          "upper": -0.049487
+        },
+        "ece": {
+          "effect": -0.049433,
+          "lower": -0.08174,
+          "upper": -0.022767
+        }
+      }
+    },
+    "source": "final-predictions.jsonl",
+    "source_sha256": "0b42d2be09dd6cb5a4245824d1fe0f2d8a19ccb6ab52856aae0f2bc4bf11565f"
+  },
+  "decision_flywheel": {
+    "commit": "2bcfe6c9bf24dfa677e147195cd0e2a4aa56427a",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "2f6e3ef479c335131202d5c65dda8f85b783e100fcfa62571ff2739154495e96",
+    "n": 600,
+    "name": "paper-600"
+  },
+  "fills": {
+    "evaluation": {
+      "failures": 0,
+      "requests": 600
+    },
+    "labeled_leave_one_out": {
+      "failures": 0,
+      "requests": 300
+    }
+  },
+  "final": true,
+  "final_d": true,
+  "harness": "unified-flywheel-1",
+  "head": {
+    "calibration": "temperature",
+    "features": [
+      "self.holistic.clr.positive",
+      "sports_topic.logit_p"
+    ],
+    "fit_head_oof": {
+      "accuracy": 0.913333,
+      "brier": 0.069309,
+      "ece": 0.029932,
+      "n": 300
+    },
+    "fit_id": "dh-8c3e1e5385",
+    "missing_features": 0,
+    "n_train": 300
+  },
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "189cce88cc240d61ec62525c81c407bfb67c49f1277c60fce221e7cb0f3d645d",
+  "metrics": {
+    "accuracy": 0.893333,
+    "brier": 0.079173,
+    "ece": 0.022433,
+    "n": 600
+  },
+  "mode": "live",
+  "per_round": 100,
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "D": {
+        "retrieval": 900,
+        "total": 900
+      }
+    },
+    "by_arm_round": {
+      "D": {
+        "final": {
+          "retrieval": {
+            "attempts": 900,
+            "failures": 0,
+            "input_tokens": 546547,
+            "output_tokens": 47700,
+            "successes": 900
+          }
+        }
+      }
+    },
+    "ceiling": 900,
+    "circuit_breaker": null,
+    "cumulative_used": 900,
+    "error_classes": {},
+    "max_new_this_invocation": 900,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 900,
+    "used_before_this_invocation": 0
+  },
+  "retrieval": {
+    "backend": "embedding",
+    "combine": "head refit on retrieved-example answers",
+    "context_fingerprint": "15097e3b8fb401cf4976212f23acb5ad242fcf10e960d9d8a6695a013981126a",
+    "default": "off (the product default is A-c+F)",
+    "embedder": {
+      "embedding_calls_this_invocation": 4,
+      "identity": "openai:text-embedding-3-small:512",
+      "texts_embedded_this_invocation": 900
+    },
+    "enabled": true,
+    "lexical": null,
+    "per_label": 4,
+    "policy_fingerprint": "cd14d7f8726b5fba19c6a48b25ceccb33c0646e2a073a6472dd2960b7714e6ab",
+    "pool": {
+      "fingerprint": "5811928e472de02aba580e252e72f109d906100fe7353c3137287ade39bfe7a8",
+      "labeled_items": "leave-one-out",
+      "n": 300
+    },
+    "protected": {
+      "held_out_ids": 3521
+    },
+    "request": "one Jev request per item: retrieved examples in state + every rubric question",
+    "retriever": {
+      "embedder": "openai:text-embedding-3-small:512",
+      "kind": "embedding",
+      "store": {
+        "approximate": false,
+        "kind": "memory"
+      },
+      "version": "1"
+    },
+    "variant": "embedding"
+  },
+  "retrieved_vs_zero_shot": {
+    "choice_differs_rate": 0.1833,
+    "n": 900
+  },
+  "rounds": 3,
+  "rubric": {
+    "questions": [
+      "Sentiment",
+      "sentiment.sports_topic"
+    ],
+    "source_arm": "A-c",
+    "source_bundle": {
+      "bundle_hash": "d4fcc16ac43249451414d576f61eef6b03718c2feb8a921561408f2bd7619305",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-87c34a7b34",
+      "questions": [
+        "Sentiment",
+        "sentiment.sports_topic"
+      ],
+      "scorecard_sha256": "f5acdea9809f50cdd928ca4029c6c32b1d86f933db7f9b68d0303b5ed755aeea"
+    }
+  },
+  "seed": 2,
+  "unscored": 0,
+  "upper_bound_requests": {
+    "evaluation": 600,
+    "labeled": 300,
+    "total": 900
+  }
+}

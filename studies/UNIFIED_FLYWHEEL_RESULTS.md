@@ -144,3 +144,27 @@ here and embeddings beat BM25 slightly, matching the free purity ranking. Caveat
 this corpus's labels follow topic, and retrieved same-topic neighbours carry the label, so
 the gain may partly be the planted bias being absorbed; it is the optional feature, and the
 optimized fixed list stays the default because it is simpler to deploy.
+
+## Addendum 4: second seed (label order 2)
+
+Same pipeline, new label order and new simulated-human comments (184 `gpt-6-luna`
+calls), 100 labels per round for 3 rounds, Jev, about 8,950 requests in all. Summaries:
+[rounds](results/unified/seed2-rounds.dev100.summary.json),
+[final](results/unified/seed2-final.paper600.summary.json),
+[D](results/unified/seed2-d-embedding.paper600.summary.json). paper-600 after 300 labels,
+accuracy / Brier (seed 1 accuracy in brackets):
+
+| Arm | Seed 2 | (Seed 1) |
+|---|---|---|
+| 0 baseline | 0.767 / 0.164 | (0.767) |
+| F fixed list | 0.782 / 0.146 | (0.782) |
+| F-rand | 0.780 / 0.147 | (0.763) |
+| A-c features + explanations | 0.828 / 0.113 | (0.867) |
+| A-c+F (default product) | 0.857 / 0.094 | (0.850) |
+| D, embedding retrieval | 0.893 / 0.079 | (0.915) |
+
+The ordering repeats: retrieval (D) > features (A-c, A-c+F) > a fixed list alone > baseline.
+With explanations, A-c again reached about 0.89 on dev-100 in round 1. The optimized fixed list
+beat a random list in seed 1 but not in seed 2 (0.782 vs 0.780; Brier 0.146 vs 0.147), so the
+optimizer's edge over a random list is not established. Random lists are noisy on dev-100
+(F-rand 0.67, 0.89, 0.76 across rounds). Two seeds on one planted-bias corpus.
