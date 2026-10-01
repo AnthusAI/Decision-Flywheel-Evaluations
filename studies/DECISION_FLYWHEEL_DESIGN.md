@@ -15,7 +15,11 @@ included, and does two things:
 **Default end state:** a frozen, reloadable, versioned classifier made of the
 fixed example list, the rubric questions, and a trained head over Jev's answers.
 **Dynamic per-item retrieval** is a separate option, off by default, and
-configured on its own.
+configured on its own. The fixed list is the default because it is simple to set
+up and deploy for inference; retrieval stays off by default whatever a benchmark
+shows, because it is harder to deploy (a slow in-memory vector search at
+inference, a vector store to set up, or a weaker non-semantic word match). Owner
+decision, 2026-10-01.
 
 ---
 
@@ -432,7 +436,7 @@ significance claims.
 |---|---|
 | **F vs F-rand** (does the optimizer earn its keep?) | Within ±1 point, with an interval spanning 0: ship the plain `PrototypeBalanced` or random list as the default, shrink `improve_example_list` to a one-shot pick, and stop investing in it |
 | **A-c+F vs A-c and vs F** (do the levers add up for the fixed default?) | No gain over the better single lever: the default collapses to one lever, and two Jev requests per item are not justified |
-| **A-c+F vs A+D-v1 (0.918)** (is the fixed default good enough?) | A+D ahead by ≥3 points: report it plainly. The owner decides whether D stays off by default (Q3) |
+| **A-c+F vs A+D-v1 (0.918)** (how far is the fixed default from retrieval?) | Reported only. No threshold applies: the default stays the fixed list (Q3, decided) |
 | **A-c vs A** (do explanations help?) | No gain even with leaky L2 comments: the comment path is not the bottleneck, so investigate the analyst prompt before any labeling UI work |
 | **D proxy, v2 with stop words vs v1** | v2 worse: flip the stop-word default off |
 | **D proxy, embeddings vs best lexical** | Not ≥3 points better: keep embeddings as an interface stub only |
@@ -494,8 +498,11 @@ significance claims.
    - **One request** costs half as much per item.
    - **But** the examples' labels would influence element answers, and every
      list change would make every cached element answer stale.
-3. **If A+D clearly beats A-c+F,** does the default stay fixed, or does
-   retrieval become the default for small pools?
+3. ~~If A+D clearly beats A-c+F, does the default change?~~ **Decided
+   (owner, 2026-10-01): no.** The fixed list is the default because it is simple
+   to set up and deploy; retrieval is not the default regardless of any benchmark
+   result, because it is harder to deploy. A retrieval comparison, if run, is
+   only reported.
 4. **Ownership.** Should Jev-Flywheel's `Score` and `fit_head` be ported into
    core eventually, replacing core's parallel `Scorecard`, `LearnedHead` and
    `run_steering_round`? Or should core bundles keep wrapping Jev-Flywheel YAML?
