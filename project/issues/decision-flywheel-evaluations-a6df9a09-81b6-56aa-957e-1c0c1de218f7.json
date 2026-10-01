@@ -24,12 +24,10 @@
       "text": "Native next-stage audit: one Jev model entails 20 random-balanced development trials (4 positive per-label sizes x 5 draws), or 8000 AG News / 12000 Emotion logical development decisions. Full one-order scoreboard is 33 conditions x 2000 targets = 66000 logical decisions per dataset (zero1 + random20 + prototype4 + retrieval4 + selected-global4); exact physical deduplication must be computed from the final frozen protocol and selected artifact. No live calls are authorized by these counts. The exact provider model/version, public transport/capability configuration and human-approved attempt ceilings remain to be frozen. Current nominal paired intervals are not a substitute for valid prespecified Holm inputs. Ordering is a subsequent study, before cross-model comparisons. No DSPy.",
       "created_at": "2026-09-30T21:16:35.924211Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-6",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -38,12 +36,10 @@
       "text": "Native unapproved protocol setup is now executable and root completed real cache-only development preflights: AG8000 logical/8000 unique physical; Emotion12000/12000; no excluded cells or structural blockers and no model calls. Proposed ceilings8400/12600 include retry allowance and are not human approval. Task templates explicitly permit learning intended categories from labeled_examples while classifying target only, canonical initial display, pinned Jev1.13.0/API-root/SDK0.7.1/core6137fa1. The proposed INITIAL_JEV_STUDY.md honestly leaves formal Holm inference unresolved; no significance or new study-result claim. Exact public preflight provenance will be published separately. This task remains in progress until real preregistration and approval gates are satisfied.",
       "created_at": "2026-09-30T21:48:28.655946Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-6",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -52,29 +48,32 @@
       "text": "User delegated the analysis choice; the native initial design now explicitly uses descriptive paired95% intervals with no familywise significance test. Root regenerated actual cache-only preflights under the new immutable identities: AG8000/8000 checksum8fdd7cb6613c0cf29db31dddf4f5fe70bc07bc7c6e99e7476d0175743f262432; Emotion12000/12000 e3d09d8089264ef8e3644ec9a03bc4a6512d5f2e9545a9145e87d2e96c69d052. Compact text-free record and exact reproduction commands included. Full161 offline evaluation specs pass; installed SDK0.7.1/core6137fa1 provenance verified without provider construction. Proposed8400/12600 ceilings are not approval. Preregistration and bounded capability pilot still outstanding; no new model findings.",
       "created_at": "2026-09-30T22:07:36.429282Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
+    },
+    {
+      "id": "47e97cd8-6205-42a9-83d8-cc8dbb00cd7e",
+      "author": "home",
+      "text": "Claude Code: initial Jev scoreboard collection complete on AG News and Emotion (58,000 physical requests each, all completed). Results, caveats and text-free summaries published in studies/INITIAL_JEV_RESULTS.md. Headline: per-target retrieval best at every size; selection effect +0.014 acc (AG News) / +0.062 macro-F1 (Emotion); size effect +0.006 (CI includes 0) / +0.082; development-selected fixed context indistinguishable from random. Ordering and Kev/Laya studies not run.",
+      "created_at": "2026-10-01T15:43:51.739223Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-09-30T18:08:01.182273Z",
-  "updated_at": "2026-09-30T22:07:36.429356Z",
+  "updated_at": "2026-10-01T15:43:51.739962Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }
