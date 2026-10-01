@@ -48,8 +48,8 @@ is −0.018 (−0.027 to −0.011). No significance claims.
 
 ## Limits
 
-- One seed, one planted-bias corpus, one engine, a simulated labeler, and the
-  scorer used a model-scored `paper-600` slice that is not pristine.
+- One seed, one planted-bias corpus, one engine, a simulated labeler, and a
+  `paper-600` slice that is not pristine.
 - B and B-local may be absorbing the planted bias silently (retrieved
   same-topic neighbours carry the label); A states it in words. Accuracy alone
   cannot separate these, and B's advantage here may not transfer to real labels.
@@ -59,5 +59,5 @@ is −0.018 (−0.027 to −0.011). No significance claims.
 - Jev-Flywheel's own steering found the right factor only about a quarter of the
   time per round, so one seed does not settle A's reliability.
 - Jev spend: 2,400 live requests on dev-100 and 3,600 on paper-600 (about 6,000
-  in all, 0.3× of the ceilings set). Dollar cost is not derivable from usage;
+  in all, well under the ceilings set). Dollar cost is not derivable from usage;
   check provider billing. Analyst calls (OpenAI) are small and not counted.
