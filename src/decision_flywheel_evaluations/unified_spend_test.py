@@ -6,7 +6,7 @@ import pytest
 from .unified_fake_jev import FakeJevAsync, FakeJevCore, FakeJevSync, text_key
 from .unified_spend import (
     CeilingExhausted, CircuitOpen, CountingAsyncClient, CountingSyncClient, SpendLedger,
-    concurrency_slots, request_upper_bound)
+    concurrency_slots, final_d_upper_bound, request_upper_bound)
 
 QUESTIONS = {"Sentiment": {"type": "choice", "instructions": "?", "criteria": {"positive": None, "negative": None}}}
 
@@ -178,3 +178,8 @@ def test_failures_are_tallied_by_error_class_and_status_without_message_text():
     classes = ledger.summary()["error_classes"]
     assert classes == {"TimeoutError": 2, "Rejected[429]": 1}
     assert "secret" not in repr(ledger.summary())
+
+
+def test_arm_d_needs_one_request_per_labeled_item_and_per_evaluation_item():
+    assert final_d_upper_bound(n_labeled=300, eval_n=600) == {"D": 900, "total": 900}
+    assert final_d_upper_bound(n_labeled=80, eval_n=600)["total"] == 680

@@ -51,7 +51,14 @@ def random_list(task: DecisionTask, labeled: Sequence[LabeledItem], *, per_label
 
 
 class ListAnswers:
-    """Jev answers asked with a fixed example list in the request state."""
+    """Jev answers asked with a fixed example list in the request state.
+
+    ``context`` (called ``fixed`` below) is anything with a ``fingerprint`` that ``examples_for``
+    can resolve; ``unified_retrieval.RetrievalAnswers`` reuses this class for per-item retrieval
+    under its own cache key name.
+    """
+
+    key = LIST_KEY
 
     def __init__(self, path, task: DecisionTask, texts: Mapping[str, str], labels: Mapping[str, str],
                  client_factory: Callable[[], Any], *, concurrency: int = 8):
@@ -80,9 +87,12 @@ class ListAnswers:
             self._examples[key] = plan.examples
         return self._examples[key]
 
+    def keyed(self, question: Mapping[str, Any], fixed: Any) -> Dict[str, Any]:
+        return {**question, self.key: fixed.fingerprint}
+
     def answers(self, ids: Sequence[str], questions: Mapping[str, Mapping[str, Any]],
                 fixed: FixedExampleList) -> Dict[str, Dict[str, dict]]:
-        found = self.cache.bulk_partial_answers(ids, {name: keyed(q, fixed) for name, q in questions.items()})
+        found = self.cache.bulk_partial_answers(ids, {name: self.keyed(q, fixed) for name, q in questions.items()})
         return {item_id: dict(found[item_id]) for item_id in ids}
 
     def missing(self, ids: Sequence[str], questions: Mapping[str, Mapping[str, Any]],
@@ -131,7 +141,7 @@ class ListAnswers:
         model = getattr(response, "model", None)
         for name, answer in (getattr(response, "answers", None) or {}).items():
             if name in gap:
-                self.cache.put(item_id, name, keyed(gap[name], fixed), normalize_answer(_as_dict(answer)), model)
+                self.cache.put(item_id, name, self.keyed(gap[name], fixed), normalize_answer(_as_dict(answer)), model)
 
 
 class ListModel:

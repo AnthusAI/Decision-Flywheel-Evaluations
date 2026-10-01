@@ -56,6 +56,11 @@ the summary records their hashes. ``final=True`` runs no rounds: it reloads the 
 last round from the run directory and scores paper-600 *through them* (one request per item,
 answered from cache when possible), so the held-out slice never informs any choice.
 
+**Arm D (optional dynamic retrieval, final only).** ``--final --arms D --retriever <variant>`` runs
+``unified_retrieval.run_final_d``: A-c's frozen rubric questions, each item's own retrieved examples
+from the run's labels (leave-one-out for labeled items) in one request per item, a refit head, and
+paper-600 scored from those answers. Its outputs go to ``run_dir/final-d/<variant>/``; it is not bundled.
+
 Outputs are text-free: metrics, intervals, request counts, fingerprints and element keys.
 The analyst's raw replies (which can quote dataset text) are kept only in the run
 directory's ``analyst-replies.jsonl`` under the gitignored ``var/``, for replay.
@@ -96,6 +101,7 @@ from . import unified_env
 from .unified_bundles import BUNDLE_ARMS, CachedJevClient, ScoreRubric, bundle_dir, text_free
 from .unified_fake_jev import FAKE_MODEL, FakeJevAsync, FakeJevCore, FakeJevSync, text_key
 from .unified_lists import ListAnswers, ListModel, random_list
+from .unified_retrieval import D_ARM, RETRIEVERS
 from .unified_knn import (KNN_FEATURES, PoolEntry, context_fingerprint, knn_policy_fingerprint,
                           knn_rows, retrieval_policy_fingerprint)
 from .unified_spend import (CountingAsyncClient, CountingSyncClient, SpendLedger,
@@ -108,6 +114,7 @@ from .unified_stats import ItemResult, contrasts, summarize
 HARNESS_VERSION = "unified-flywheel-1"
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")     # the first study; still the default
 ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
+FINAL_ONLY_ARMS = (D_ARM,)   # optional dynamic retrieval (unified_retrieval); never part of the rounds
 F_RAND_SEED_OFFSET = 1000   # F-rand draws independently of F's own random-control trial
 WORKSPACE_ARMS = frozenset({"A", "A+B", "A-c", "A-c+F"})
 COMMENT_ARMS = frozenset({"A-c", "A-c+F"})
@@ -182,11 +189,20 @@ class RunConfig:
     comments: Optional[Mapping[str, str]] = None   # item_id -> the labeler's explanation (A-c arms)
     list_per_label: int = 4
     list_dev_max: Optional[int] = None             # None: every label outside the trial lists
+    retriever: Optional[str] = None                # arm D only: one of unified_retrieval.RETRIEVERS
+    embedding_cache: Optional[Path] = None         # arm D embedding: default run_dir/embeddings.jsonl
 
     def validate(self) -> None:
-        unknown = set(self.arms) - set(ARMS)
+        unknown = set(self.arms) - set(ARMS + FINAL_ONLY_ARMS)
         if unknown or not self.arms:
-            raise HarnessError(f"unknown arms {sorted(unknown)}; choose from {ARMS}")
+            raise HarnessError(f"unknown arms {sorted(unknown)}; choose from {ARMS + FINAL_ONLY_ARMS}")
+        if D_ARM in self.arms:
+            if not self.final or tuple(self.arms) != (D_ARM,):
+                raise HarnessError("arm D is final-only and runs alone: --final --arms D after the rounds exist")
+            if self.retriever not in RETRIEVERS:
+                raise HarnessError(f"arm D needs a retriever from {RETRIEVERS}")
+        elif self.retriever is not None or self.embedding_cache is not None:
+            raise HarnessError("a retriever applies only to arm D")
         if self.rounds < 1 or self.per_round < 1:
             raise HarnessError("rounds and per_round must be positive")
         if self.request_ceiling > PLAN_REQUEST_CEILING:
@@ -195,7 +211,7 @@ class RunConfig:
             raise HarnessError("live mode needs a durable --spend-ledger for the cumulative ceiling")
         if self.replay and self.live:
             raise HarnessError("replay is offline: it may not be combined with live mode")
-        if self.final and set(self.arms) - set(BUNDLE_ARMS):
+        if self.final and set(self.arms) - set(BUNDLE_ARMS) - {D_ARM}:
             raise HarnessError(f"the final run scores frozen bundles; choose arms from {BUNDLE_ARMS}")
 
 
@@ -721,6 +737,9 @@ class UnifiedFlywheel:
 
     def run(self) -> Dict[str, Any]:
         if self.cfg.final:
+            if D_ARM in self.cfg.arms:
+                from .unified_retrieval import run_final_d
+                return run_final_d(self)
             return self.run_final()
         arms = [a for a in ARMS if a in self.cfg.arms]   # B before A+B: A+B reuses B's few-shot cache
         states: Dict[str, ArmState] = {}

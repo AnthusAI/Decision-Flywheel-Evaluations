@@ -13,6 +13,11 @@ Every one of these is checked before any data is read or any client is construct
 ``run --final`` runs no rounds: it reloads the bundles the last round froze in ``--run-dir`` and
 scores paper-600 through them; its upper bound is one request per item per bundle.
 
+``run --final --arms D --retriever <variant>`` is the optional dynamic-retrieval arm
+(``unified_retrieval``): it runs alone, after the rounds, and its upper bound is one request per
+labeled item plus one per paper-600 item (300 + 600 = 900 for the seed-1 study). ``embedding``
+calls OpenAI only with ``--live --confirm``; offline it uses a fake hashing embedder.
+
 ``comments`` writes the simulated reviewer's reasons for the labeled items (``unified_labeler``):
 offline with a deterministic fake by default, ``--replay`` from the cache, or ``--live --confirm``
 against OpenAI with a durable call ledger capped at 300 calls.
@@ -26,11 +31,13 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from . import unified_env
-from .unified_spend import final_upper_bound, request_upper_bound
+from .unified_spend import final_d_upper_bound, final_upper_bound, request_upper_bound
 
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")
 ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
 BUNDLE_ARMS = ("0", "A", "A-c", "F", "F-rand", "A-c+F")
+D_ARM = "D"                                     # final-only, optional (unified_retrieval)
+RETRIEVERS = ("embedding", "bm25", "lexical-v2", "lexical-v1")
 PLAN_REQUEST_CEILING = 9500
 DEFAULT_RUN_ROOT = unified_env.REPO_ROOT / "var" / "unified-flywheel"
 
@@ -54,7 +61,12 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--clone", type=Path, default=None)
     run.add_argument("--seed", type=int, default=1)
     run.add_argument("--rounds", type=int, default=3)
-    run.add_argument("--arms", default=",".join(UNIFIED_ARMS), help="comma-separated subset of " + ",".join(ARMS))
+    run.add_argument("--arms", default=",".join(UNIFIED_ARMS),
+                     help="comma-separated subset of " + ",".join(ARMS) + "; or D alone with --final")
+    run.add_argument("--retriever", choices=RETRIEVERS, default=None,
+                     help="arm D only: the dynamic-retrieval variant (embedding is live-only OpenAI; offline a fake)")
+    run.add_argument("--embedding-cache", type=Path, default=None,
+                     help="arm D embedding only: text-free vector cache (default: <run-dir>/embeddings.jsonl)")
     run.add_argument("--comments", type=Path, default=None,
                      help="JSONL of {item_id, comment} from an explanation labeler, for arms A-c and A-c+F")
     run.add_argument("--final", action="store_true",
@@ -97,9 +109,13 @@ def parser() -> argparse.ArgumentParser:
 
 def parse_arms(text: str) -> tuple:
     arms = tuple(a.strip() for a in text.split(",") if a.strip())
-    unknown = set(arms) - set(ARMS)
+    unknown = set(arms) - set(ARMS) - {D_ARM}
     if not arms or unknown:
-        raise UsageError(f"unknown arms {sorted(unknown)}; choose from {','.join(ARMS)}")
+        raise UsageError(f"unknown arms {sorted(unknown)}; choose from {','.join(ARMS)} (or D alone with --final)")
+    if D_ARM in arms:
+        if arms != (D_ARM,):
+            raise UsageError("arm D runs alone (--final --arms D --retriever ...)")
+        return arms
     return tuple(a for a in ARMS if a in arms)
 
 
@@ -127,6 +143,14 @@ def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict
 
 
 def upper_bound(args: argparse.Namespace, arms: tuple) -> Dict[str, int]:
+    if D_ARM in arms:
+        if not args.final:
+            raise UsageError("arm D is final-only: run the rounds first, then --final --arms D --retriever ...")
+        if args.retriever is None:
+            raise UsageError(f"arm D needs --retriever ({','.join(RETRIEVERS)})")
+        return final_d_upper_bound(n_labeled=args.rounds * 100, eval_n=600)
+    if args.retriever is not None or args.embedding_cache is not None:
+        raise UsageError("--retriever and --embedding-cache apply only to arm D")
     if args.final:
         if set(arms) - set(BUNDLE_ARMS):
             raise UsageError(f"--final scores frozen bundles; choose arms from {','.join(BUNDLE_ARMS)}")
@@ -185,7 +209,8 @@ def run(args: argparse.Namespace) -> Dict:
         analyst_provider=args.analyst_provider, analyst_model=args.analyst_model,
         analyst_replies=_offline_replies(args.analyst_replies), comments=_comments(args.comments),
         provider_model=args.provider_model or "fake-jev-0", base_url=args.base_url,
-        timeout_seconds=args.timeout_seconds, bootstrap_resamples=args.bootstrap_resamples)
+        timeout_seconds=args.timeout_seconds, bootstrap_resamples=args.bootstrap_resamples,
+        retriever=args.retriever, embedding_cache=args.embedding_cache)
     summary = UnifiedFlywheel(cfg).run()
     summary["upper_bound_requests"] = bound
     return summary
@@ -246,6 +271,18 @@ def comments(args: argparse.Namespace) -> Dict:
 
 def compact(summary: Dict) -> Dict:
     """The few numbers worth printing: metrics and requests per arm per round."""
+    if summary.get("final_d"):
+        return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "final": True, "arm": "D",
+                "retriever": summary["retrieval"]["variant"],
+                "context": summary["retrieval"]["context_fingerprint"][:12],
+                **{k: summary["metrics"][k] for k in ("accuracy", "brier", "ece")}, "unscored": summary["unscored"],
+                "comparison": {arm: {k: m[k] for k in ("accuracy", "brier", "ece")}
+                               for arm, m in summary["comparison"]["arms"].items()},
+                "contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
+                              for name, by_metric in summary["comparison"]["contrasts"].items()},
+                "embedder": summary["retrieval"]["embedder"],
+                "requests_this_invocation": summary["requests"]["new_this_invocation"],
+                "upper_bound_requests": summary.get("upper_bound_requests")}
     if summary.get("final"):
         entry = summary["per_round"][0]
         return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "final": True,

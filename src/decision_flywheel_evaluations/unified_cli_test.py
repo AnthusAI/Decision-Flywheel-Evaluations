@@ -155,3 +155,34 @@ def test_the_live_labeler_is_capped_at_300_calls_and_live_options_need_live(no_c
         unified_cli.comments(parser().parse_args(["comments", "--out", "c.jsonl", "--confirm"]))
     with pytest.raises(UsageError):
         unified_cli.comments(parser().parse_args(["comments", "--out", "c.jsonl", "--model", "gpt-6-luna"]))
+
+
+FINAL_D = ["run", "--live", "--confirm", "--final", "--arms", "D", "--retriever", "embedding", "--rounds", "3",
+           "--run-dir", "x", "--spend-ledger", "ledger.d-emb.json", "--request-ceiling", "900",
+           "--max-new-requests", "900", "--provider-model", "jev-1.13.0"]
+
+
+def test_arm_d_is_bounded_by_300_labeled_plus_600_paper_requests_per_variant():
+    for retriever in ("embedding", "bm25"):
+        args = parser().parse_args([t if t != "embedding" else retriever for t in FINAL_D])
+        assert check_live_gates(args, parse_arms(args.arms), 600) == {"D": 900, "total": 900}
+
+
+def test_arm_d_refuses_before_loading_anything_when_misused(nothing_may_load):
+    bad = [
+        [t if t != "900" else "899" for t in FINAL_D],                       # cap below the bound
+        [t for t in FINAL_D if t != "--final"],                              # not final
+        _without(FINAL_D, "--retriever"),                                    # no retriever
+        [t if t != "D" else "D,A-c" for t in FINAL_D],                       # not alone
+        _without(FINAL_D, "--confirm"),                                      # live gates still apply
+    ]
+    for argv in bad:
+        with pytest.raises(UsageError):
+            unified_cli.run(parser().parse_args(argv))
+    with pytest.raises(UsageError):
+        unified_cli.run(parser().parse_args(["run", "--final", "--run-dir", "x", "--arms", "A-c", "--retriever", "bm25"]))
+
+
+def test_the_retriever_must_be_a_known_variant():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["run", "--arms", "D", "--final", "--retriever", "tfidf"])

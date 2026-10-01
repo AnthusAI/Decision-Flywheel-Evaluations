@@ -305,6 +305,15 @@ def final_upper_bound(arms, *, eval_n: int) -> Dict[str, int]:
     return out
 
 
+def final_d_upper_bound(*, n_labeled: int, eval_n: int) -> Dict[str, int]:
+    """Arm D (one retriever variant): one request per labeled item (leave-one-out examples) and one
+    per evaluation item (retrieved examples), each carrying every rubric question. 300 + 600 = 900
+    for the seed-1 study."""
+    out = {"D": n_labeled + eval_n}
+    out["total"] = out["D"]
+    return out
+
+
 def concurrency_slots(max_concurrency: int) -> threading.BoundedSemaphore:
     if isinstance(max_concurrency, bool) or not isinstance(max_concurrency, int) or max_concurrency < 1:
         raise ValueError("max_concurrency must be a positive integer")
