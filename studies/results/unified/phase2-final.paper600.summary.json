@@ -1,0 +1,370 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "F",
+    "F-rand",
+    "A-c",
+    "A-c+F"
+  ],
+  "bundles": {
+    "0": {
+      "bundle_hash": "407c2f565ada2d8480eb8ac3e4d558fa318e852222393c5c81f249db305e74c2",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-537fb34c11",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "210d3d77debf2dd5e5d6eacd115a7e38e7a3905f702de6224e07ded759dc766e"
+    },
+    "A-c": {
+      "bundle_hash": "2a756fe6a43a6e8a21283baa5774e6d7c496c81236468c4c8d44517854518786",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-51b143adac",
+      "questions": [
+        "Sentiment",
+        "sentiment.primary_topic",
+        "sentiment.routine_fact_without_evaluation"
+      ],
+      "scorecard_sha256": "0ff86e38feebb7a1bc7c9aff29ef72a7d54277d8c8d78d828a3f078a029c2469"
+    },
+    "A-c+F": {
+      "bundle_hash": "5c548267cec8fbd14b1e71bd68b79efe8a0aaeba099198f1b13299a5390a2d78",
+      "fewshot_fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+      "head_fit_id": "dh-257ff99ad3",
+      "questions": [
+        "Sentiment",
+        "sentiment.routine_admin",
+        "sentiment.sports_recreation"
+      ],
+      "scorecard_sha256": "119d1d7b4a8993002a04803f2731e1191652e65976f6b6d98d9f36f4745e1f3c"
+    },
+    "F": {
+      "bundle_hash": "bddc1c15316763eeb2585190c1c76205fd4e154a6e70c4ae3568650910632eff",
+      "fewshot_fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+      "head_fit_id": "dh-aec3212e93",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "662c82f6db4cde8ea08441b7e8efc4e33ba77fe3c4c11218eac0c27626c72f23"
+    },
+    "F-rand": {
+      "bundle_hash": "9008bb28f1c295dd4a5a108398e4e35f4849ad91ee551b9fb9dfe2ff6460c971",
+      "fewshot_fingerprint": "0d1bfed777cab95b0a0d492ee3b426c019fdcf00262b38519639f88acb971e74",
+      "head_fit_id": "dh-aec3212e93",
+      "questions": [
+        "Sentiment"
+      ],
+      "scorecard_sha256": "791d56a84a6e1d5429831f404a291e39f12ba3fdd569bfbb6da42a2334ee9fcc"
+    }
+  },
+  "decision_flywheel": {
+    "commit": "2bcfe6c9bf24dfa677e147195cd0e2a4aa56427a",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "2f6e3ef479c335131202d5c65dda8f85b783e100fcfa62571ff2739154495e96",
+    "n": 600,
+    "name": "paper-600"
+  },
+  "final": true,
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "8e802219cd3beb66d83079b72cb7960a2b4333d361980d76fd4c2421148e5823",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "bundle": {
+            "bundle_hash": "407c2f565ada2d8480eb8ac3e4d558fa318e852222393c5c81f249db305e74c2",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-537fb34c11",
+            "questions": [
+              "Sentiment"
+            ],
+            "scorecard_sha256": "210d3d77debf2dd5e5d6eacd115a7e38e7a3905f702de6224e07ded759dc766e"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.766667,
+            "brier": 0.160635,
+            "ece": 0.042814,
+            "n": 600
+          },
+          "requests": 0,
+          "unscored": 0
+        },
+        "A-c": {
+          "bundle": {
+            "bundle_hash": "2a756fe6a43a6e8a21283baa5774e6d7c496c81236468c4c8d44517854518786",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-51b143adac",
+            "questions": [
+              "Sentiment",
+              "sentiment.primary_topic",
+              "sentiment.routine_fact_without_evaluation"
+            ],
+            "scorecard_sha256": "0ff86e38feebb7a1bc7c9aff29ef72a7d54277d8c8d78d828a3f078a029c2469"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.866667,
+            "brier": 0.097998,
+            "ece": 0.027945,
+            "n": 600
+          },
+          "requests": 600,
+          "unscored": 0
+        },
+        "A-c+F": {
+          "bundle": {
+            "bundle_hash": "5c548267cec8fbd14b1e71bd68b79efe8a0aaeba099198f1b13299a5390a2d78",
+            "fewshot_fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "head_fit_id": "dh-257ff99ad3",
+            "questions": [
+              "Sentiment",
+              "sentiment.routine_admin",
+              "sentiment.sports_recreation"
+            ],
+            "scorecard_sha256": "119d1d7b4a8993002a04803f2731e1191652e65976f6b6d98d9f36f4745e1f3c"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.85,
+            "brier": 0.091598,
+            "ece": 0.050333,
+            "n": 600
+          },
+          "requests": 600,
+          "unscored": 0
+        },
+        "F": {
+          "bundle": {
+            "bundle_hash": "bddc1c15316763eeb2585190c1c76205fd4e154a6e70c4ae3568650910632eff",
+            "fewshot_fingerprint": "7372a944f2b4feb8ee8e32e0601fee6fba8a568ae371c0da9008a51980e785d5",
+            "head_fit_id": "dh-aec3212e93",
+            "questions": [
+              "Sentiment"
+            ],
+            "scorecard_sha256": "662c82f6db4cde8ea08441b7e8efc4e33ba77fe3c4c11218eac0c27626c72f23"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.781667,
+            "brier": 0.142029,
+            "ece": 0.054971,
+            "n": 600
+          },
+          "requests": 600,
+          "unscored": 0
+        },
+        "F-rand": {
+          "bundle": {
+            "bundle_hash": "9008bb28f1c295dd4a5a108398e4e35f4849ad91ee551b9fb9dfe2ff6460c971",
+            "fewshot_fingerprint": "0d1bfed777cab95b0a0d492ee3b426c019fdcf00262b38519639f88acb971e74",
+            "head_fit_id": "dh-aec3212e93",
+            "questions": [
+              "Sentiment"
+            ],
+            "scorecard_sha256": "791d56a84a6e1d5429831f404a291e39f12ba3fdd569bfbb6da42a2334ee9fcc"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.763333,
+            "brier": 0.152181,
+            "ece": 0.089871,
+            "n": 600
+          },
+          "requests": 600,
+          "unscored": 0
+        }
+      },
+      "contrasts": {
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": -0.016667,
+            "lower": -0.038333,
+            "upper": 0.001667
+          },
+          "brier": {
+            "baseline_arm": "A-c",
+            "effect": -0.0064,
+            "lower": -0.015819,
+            "upper": 0.00248
+          },
+          "ece": {
+            "baseline_arm": "A-c",
+            "effect": 0.022388,
+            "lower": -0.008328,
+            "upper": 0.040022
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": 0.015,
+            "lower": -0.008333,
+            "upper": 0.038333
+          },
+          "brier": {
+            "effect": -0.018606,
+            "lower": -0.02777,
+            "upper": -0.009306
+          },
+          "ece": {
+            "effect": 0.012157,
+            "lower": -0.024571,
+            "upper": 0.047271
+          }
+        },
+        "F-F-rand": {
+          "accuracy": {
+            "effect": 0.018333,
+            "lower": -0.005,
+            "upper": 0.043333
+          },
+          "brier": {
+            "effect": -0.010152,
+            "lower": -0.01874,
+            "upper": -0.001457
+          },
+          "ece": {
+            "effect": -0.0349,
+            "lower": -0.062067,
+            "upper": -0.009271
+          }
+        }
+      },
+      "round": "final",
+      "scored_through": "reloaded bundles"
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "source": "none (A-c runs as A)",
+      "supplied": 0
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "A-c": {
+        "bundle": 600,
+        "total": 600
+      },
+      "A-c+F": {
+        "bundle": 600,
+        "total": 600
+      },
+      "F": {
+        "bundle": 600,
+        "total": 600
+      },
+      "F-rand": {
+        "bundle": 600,
+        "total": 600
+      }
+    },
+    "by_arm_round": {
+      "A-c": {
+        "final": {
+          "bundle": {
+            "attempts": 600,
+            "failures": 0,
+            "input_tokens": 215594,
+            "output_tokens": 50596,
+            "successes": 600
+          }
+        }
+      },
+      "A-c+F": {
+        "final": {
+          "bundle": {
+            "attempts": 600,
+            "failures": 0,
+            "input_tokens": 337994,
+            "output_tokens": 28200,
+            "successes": 600
+          }
+        }
+      },
+      "F": {
+        "final": {
+          "bundle": {
+            "attempts": 600,
+            "failures": 0,
+            "input_tokens": 323594,
+            "output_tokens": 19200,
+            "successes": 600
+          }
+        }
+      },
+      "F-rand": {
+        "final": {
+          "bundle": {
+            "attempts": 600,
+            "failures": 0,
+            "input_tokens": 334394,
+            "output_tokens": 19200,
+            "successes": 600
+          }
+        }
+      }
+    },
+    "ceiling": 3000,
+    "circuit_breaker": null,
+    "cumulative_used": 2400,
+    "error_classes": {},
+    "max_new_this_invocation": 3000,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 2400,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 1
+}

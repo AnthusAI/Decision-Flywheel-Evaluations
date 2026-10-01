@@ -83,3 +83,38 @@ visible on top of discovered features (A-c+F is within noise of A). Dynamic
 retrieval (arm B, 0.92 on paper-600 earlier) is a different mechanism that feeds
 per-item topic neighbours. Single seed; a leaking-free labeler with comments is
 not yet in place (A-c equals A).
+
+## Addendum 2: explanations, saved bundles, and retriever comparison
+
+Simulated human with reasons (`gpt-6-luna` writing terse reasons from the corpus's
+hidden convention; leaks the rule by design, so this shows the plumbing and speed,
+not that real comments find hidden factors): 172 comments for 300 labels, 128 labels
+without a comment. Dev-100, three rounds, Jev:
+
+| Round | 0 | A-c (features + explanations) | A-c+F (default product) |
+|---|---|---|---|
+| 1 | 0.74 / 0.160 | **0.89 / 0.071** | 0.87 / 0.112 |
+| 2 | 0.74 / 0.160 | 0.89 / 0.073 | 0.88 / 0.070 |
+| 3 | 0.74 / 0.160 | 0.89 / 0.073 | 0.91 / 0.063 |
+
+With explanations the analyst found the topic factor in round 1; without them
+(arm A) it took until round 2.
+
+Final comparison on paper-600 (n = 600), scored through the reloaded saved
+classifier bundles after 300 labels (accuracy / Brier / ECE): baseline
+0.767 / 0.161 / 0.043; A-c 0.867 / 0.098 / 0.028; F (optimized fixed list only)
+0.782 / 0.142 / 0.055; F-rand 0.763 / 0.152 / 0.090; A-c+F 0.850 / 0.092 / 0.050.
+F − baseline: +0.015 accuracy (−0.008 to +0.038), Brier −0.019 (−0.028 to −0.009);
+F − F-rand: +0.018 (−0.005 to +0.043), Brier −0.010 (−0.019 to −0.001);
+A-c+F − better of A-c and F: accuracy −0.017 (−0.038 to +0.002), Brier −0.006
+(−0.016 to +0.002). On this corpus the discovered features carry the gain; the
+optimized fixed list improves calibration modestly and adds no accuracy on top of
+features. Text-free summaries: [rounds](results/unified/phase2-rounds.dev100.summary.json),
+[final](results/unified/phase2-final.paper600.summary.json).
+
+Retriever comparison, free (neighbour-label purity, k = 4, 1,500 labeled pool items,
+[results](results/unified/retrieval-purity.json)): embeddings (`text-embedding-3-small`,
+512 d) 0.890; BM25 0.874; lexical v2 with stop words 0.869; TF-IDF 0.868;
+lexical v1 equivalent 0.867. Differences are small on this topic-driven corpus;
+embeddings lead. Dynamic retrieval remains an optional feature; the fixed list stays
+the default.

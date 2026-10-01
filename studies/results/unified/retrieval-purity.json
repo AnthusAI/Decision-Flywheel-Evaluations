@@ -1,0 +1,47 @@
+{
+ "embedding text-embedding-3-small (512d)": {
+  "items": 1500,
+  "k": 4,
+  "mean": 0.8902,
+  "per_label": {
+   "negative": 0.8861,
+   "positive": 0.8933
+  }
+ },
+ "lexical-v1-equivalent (binary-cosine, no stop words, ascii)": {
+  "items": 1500,
+  "k": 4,
+  "mean": 0.8668,
+  "per_label": {
+   "negative": 0.8471,
+   "positive": 0.8821
+  }
+ },
+ "lexical-v2 bm25": {
+  "items": 1500,
+  "k": 4,
+  "mean": 0.8743,
+  "per_label": {
+   "negative": 0.8589,
+   "positive": 0.8862
+  }
+ },
+ "lexical-v2 stop words (binary-cosine)": {
+  "items": 1500,
+  "k": 4,
+  "mean": 0.8692,
+  "per_label": {
+   "negative": 0.8624,
+   "positive": 0.8744
+  }
+ },
+ "lexical-v2 tfidf-cosine": {
+  "items": 1500,
+  "k": 4,
+  "mean": 0.8678,
+  "per_label": {
+   "negative": 0.8544,
+   "positive": 0.8783
+  }
+ }
+}
