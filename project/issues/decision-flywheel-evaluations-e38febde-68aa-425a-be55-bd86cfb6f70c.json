@@ -3,7 +3,7 @@
   "title": "Add the opt-in cached embedding step and the embedding proxy (S2)",
   "description": "## Purpose\n\nAdd an opt-in, cached embedding step and the embedding row of the retrieval proxy (stop S2).\n\n## Scope\n\nAn explicit `embed` script (never in specs; specs use the `fake` embedder) writing `var/embeddings.jsonl` keyed by provider, model, dimensions and text SHA-256; OpenAI `text-embedding-3-small`, 512 dims, for this public corpus. Then the same proxy with the in-memory embedding retriever.\n\n## Cost cap\n\n≈0.3M tokens ≈ $0.01 (verified price $0.02 / 1M tokens); one run, replays from cache.\n\n## Definition of done (S2)\n\nEmbedding proxy row committed and reported; at most one D variant goes live, and only if the owner chooses one from the proxy table. Retrieval stays optional and off by default either way (Q3).\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §4.4, §5.2, §5.4, §6 step 6.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0e7d4b0b-34de-4b93-a7a2-64e4b4637e7d`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -18,10 +18,23 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c6cf3d86-1892-4021-ae96-ec2916b9b539",
+      "author": "home",
+      "text": "Embedding step done: core OpenAIEmbedder (text-embedding-3-small, 512 d) with a text-free VectorCache, run once by scripts/retrieval_purity.py; embedding purity 0.890 vs lexical v1-equivalent 0.867 (+2.3 points, below the design's 3-point bar for live spend in section 5.2). Harness arm D (e6ad9a7) now embeds live only behind --live --confirm and uses the fake HashingEmbedder offline and in specs. Which D variant (if any) goes live is the owner's choice; see the live-D task.",
+      "created_at": "2026-10-01T22:59:23.376558Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Phase 3"
+      }
+    }
+  ],
   "created_at": "2026-10-01T20:02:47.121764Z",
-  "updated_at": "2026-10-01T21:47:05.774903Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T22:59:29.659411Z",
+  "closed_at": "2026-10-01T22:59:23.392229Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

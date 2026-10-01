@@ -23,9 +23,22 @@
       "type": "relates-to"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "a4211838-b09b-4aa1-a331-de399fa58e08",
+      "author": "home",
+      "text": "Arm D built offline (e6ad9a7): run --final --arms D --retriever {embedding,bm25,lexical-v2,lexical-v1}. D = A-c's frozen rubric questions + per-item retrieved examples (4 per label, from the 300 labels; leave-one-out for labeled items; held-out IDs protected) in one Jev request per item + a refit head; scores paper-600 and compares with A-c+F, A-c, F, 0 from final-predictions.jsonl. Upper bound 300 + 600 = 900 requests per variant; cache keyed by the retrieval context fingerprint; outputs in run_dir/final-d/<variant>/final-d-summary.json. Not bundled (core ClassifierBundle records retrieval as null). Live commands prepared, NOT run: D-emb and D-bm25, each with its own ledger (ceiling 900, max-new 900) against var/unified-flywheel/phase2-live-seed1 (new files only). Note: the proxy gap is +2.3 points (embedding vs v1), under the design's 3-point bar, so running any variant live is an owner decision; the task's 'at most one' still applies unless the owner widens it.",
+      "created_at": "2026-10-01T22:59:23.409508Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Phase 3"
+      }
+    }
+  ],
   "created_at": "2026-10-01T20:02:50.603461Z",
-  "updated_at": "2026-10-01T20:04:36.260147Z",
+  "updated_at": "2026-10-01T22:59:29.674448Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",
