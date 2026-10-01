@@ -3,8 +3,8 @@
   "title": "Preregister the Jev demonstration-order sensitivity study",
   "description": "## Scope\n\nHold selected example membership, context count, target set, task wording, and choice-option order fixed; compare canonical class grouping with deterministic interleaving, reverse order, and multiple shuffled permutations. Cross selection draw with order seed without searching for a winning order on the scoreboard. Run after the initial single-order result and before cross-model comparisons.\n\n## Definition of done\n\nThe plan names the initial-result anchor, frozen example IDs, permutation seeds, budgets, paired contrast and interval method, request ceiling, and treatment of development versus scoreboard analysis.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-fe8852d3-4fd9-593a-a5f6-5d7cc0d84848`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "in_progress",
-  "priority": 1,
+  "status": "backlog",
+  "priority": 3,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
@@ -49,10 +49,22 @@
       "text": "Claude Code takeover: fixed the blocking gate defect. Added failing spec first (invalid_initial_evidence_creates_neither_a_ledger_nor_a_provider), extracted cache-independent validate_ordering_evidence in ordering_collection.py, and run_ordering_collection now calls it before CacheStore. Full suite 295 passed; ordering_cli/collection 19 passed after final edit; git diff --check clean. Still UNCOMMITTED. Remaining: isolated source-archive specs, commit owned paths, rebase onto origin release commit, push. No live calls, no approval inferred.",
       "created_at": "2026-09-30T23:31:57.497714Z",
       "comment_type": "default"
+    },
+    {
+      "id": "5cf9d70b-3283-4d80-86b1-9bc34c21da36",
+      "author": "home",
+      "text": "**Owner redirect, 2026-10-01.** Priorities moved to the Unified Decision Flywheel: initiative `decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959`, design `studies/DECISION_FLYWHEEL_DESIGN.md`. The large static Jev selection-by-size study is complete and published: `studies/INITIAL_JEV_RESULTS.md` (commits 44e14e1, 7068ded). Demonstration-ordering and Jev/Kev/Laya cross-model comparisons are **deferred, not cancelled** (Laya and Kev cannot take few-shot context). No spend is approved for this work.\n\nState: the native ordering infrastructure, including the pre-ledger evidence gate from the last handoff, is committed (fa37abb). The actual preregistration (initial-result anchor, permutation seeds, request ceiling, approval) was never frozen. Remaining when resumed: freeze it from the completed initial scoreboard (protocols/ORDER_SENSITIVITY.md is only a template). Moved to backlog at low priority; the handoff notes above are superseded by this comment.\n",
+      "created_at": "2026-10-01T20:07:45.902695Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
     }
   ],
   "created_at": "2026-09-30T18:08:04.116317Z",
-  "updated_at": "2026-09-30T23:31:57.497742Z",
+  "updated_at": "2026-10-01T20:09:33.047583Z",
   "closed_at": null,
   "agent": {
     "platform": "codex",

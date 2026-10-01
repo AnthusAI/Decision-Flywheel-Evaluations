@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-7652a7f5-3b12-48f6-99de-e5bc897652d8",
+  "title": "Score the frozen arms on paper-600 through reloaded bundles (S5)",
+  "description": "## Purpose\n\nScore the frozen arms on paper-600 **through reloaded bundles** (stop S5).\n\n## Scope\n\nF, F-rand, A-c, A-c+F live; 0 / A / D-v1 / A+D-v1 replayed at $0; A-c+F+D as a head-only variant only if its answers are cached (say it is not an independent trajectory). Paired bootstrap intervals for the §5.4 comparisons; no significance claims; nothing tuned on paper-600.\n\n## Cost cap\n\n≈1,200 few-shot + ≈1,200 zero-shot, ≈$1.20; **hard cap 2,400 Jev requests**; cumulative ledger ≤7,500. Pre-approved within these caps.\n\n## Definition of done\n\nAll arms scored from reloaded bundles, text-free summaries committed under `studies/results/`, spend reconciled against the ledger. **Stop S5.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.4, §6 step 10.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+  "labels": [
+    "roadmap",
+    "phase-2",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-128450f9-bdfb-47e0-9c69-7203be6598d3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:28.909200Z",
+  "updated_at": "2026-10-01T20:03:53.718404Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

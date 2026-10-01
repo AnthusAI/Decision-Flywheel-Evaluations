@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "6119bfff-7329-49bd-9768-7e5c43e153da",
+  "issue_id": "decision-flywheel-evaluations-7652a7f5-3b12-48f6-99de-e5bc897652d8",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:02:28.909Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Score the frozen arms on paper-600 through reloaded bundles (S5)",
+    "description": "## Purpose\n\nScore the frozen arms on paper-600 **through reloaded bundles** (stop S5).\n\n## Scope\n\nF, F-rand, A-c, A-c+F live; 0 / A / D-v1 / A+D-v1 replayed at $0; A-c+F+D as a head-only variant only if its answers are cached (say it is not an independent trajectory). Paired bootstrap intervals for the §5.4 comparisons; no significance claims; nothing tuned on paper-600.\n\n## Cost cap\n\n≈1,200 few-shot + ≈1,200 zero-shot, ≈$1.20; **hard cap 2,400 Jev requests**; cumulative ledger ≤7,500. Pre-approved within these caps.\n\n## Definition of done\n\nAll arms scored from reloaded bundles, text-free summaries committed under `studies/results/`, spend reconciled against the ledger. **Stop S5.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.4, §6 step 10.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+    "labels": [
+      "roadmap",
+      "phase-2",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

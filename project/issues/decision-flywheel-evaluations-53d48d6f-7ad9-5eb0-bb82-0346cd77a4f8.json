@@ -3,7 +3,7 @@
   "title": "Prepare pinned labeled datasets and honest evaluation partitions",
   "description": "## Scope\n\nPrepare AG News and Emotion as initial datasets while preserving the history of which splits have already been used. Freeze candidate, development, and scoreboard partitions without redistributing source text.\n\n## Definition of done\n\nReproducible loaders, frozen text-free manifests, label mappings, duplicate exclusion, and documented prior-use status for every proposed study.",
   "type": "epic",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -12,18 +12,29 @@
     "roadmap"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "3ce6237a-9746-4aa0-b6cb-6949dbd8ff5c",
+      "author": "home",
+      "text": "Closing: all child issues are done (prior-use inventory, dataset adapters, frozen manifests).\n",
+      "created_at": "2026-10-01T20:09:15.551189Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:06:28.064748Z",
-  "updated_at": "2026-09-30T18:06:28.064878Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
+  "updated_at": "2026-10-01T20:11:09.066519Z",
+  "closed_at": "2026-10-01T20:11:09.066476Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }

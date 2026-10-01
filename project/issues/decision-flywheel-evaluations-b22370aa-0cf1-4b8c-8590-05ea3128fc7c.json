@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-b22370aa-0cf1-4b8c-8590-05ea3128fc7c",
+  "title": "Owner decision needed: if dynamic retrieval beats the fixed default by 3+ points, does the default stay fixed?",
+  "description": "## Owner decision needed (Q3)\n\nDo not assume an answer. The plan only **reports** the comparison.\n\nIf dynamic retrieval plus features (A+D) beats the fixed default (A-c+F) by **≥3 points** on paper-600, does the default stay fixed, or does retrieval become the default (for example for small pools)?\n\n## Definition of done\n\nAnswer recorded here once the results page exists (the owner may also answer earlier). Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.4, §7 Q3.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+  "labels": [
+    "roadmap",
+    "phase-2",
+    "owner-decision"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-a3c25179-119f-4f4f-aba6-4124c8d17d01",
+      "type": "relates-to"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:39.280584Z",
+  "updated_at": "2026-10-01T20:04:02.807006Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

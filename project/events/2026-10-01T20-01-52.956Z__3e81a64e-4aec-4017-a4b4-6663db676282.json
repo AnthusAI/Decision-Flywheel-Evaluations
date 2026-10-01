@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "3e81a64e-4aec-4017-a4b4-6663db676282",
+  "issue_id": "decision-flywheel-evaluations-1a994dd9-cf5d-4374-9296-bdf1e17395e5",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:01:52.956Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Run live round 1 for F and F-rand and take the first reading (S1)",
+    "description": "## Purpose\n\nRun live round 1 for F and F-rand on Jev and take the first F vs F-rand reading (stop S1).\n\n## Scope\n\nRound 1 (100 labels) on dev-100: F's 3-trial search plus fill, and F-rand. A-c / A-c+F zero-shot work waits for L2 comments (Phase 2); design §5.3 lists them in round 1, the owner's phasing moves them. No paper-600.\n\n## Cost cap\n\n≈600 few-shot requests, ≈$0.40–0.55 (Appendix C rates); **hard cap 1,000 Jev requests** for this step inside the 7,500 cumulative ledger. Pre-approved by the owner within these caps.\n\n## Definition of done (S1)\n\nRequests well-formed; F's list differs from F-rand's; few-shot answers differ from zero-shot on about 20% of items; token multiplier about 1.9×; dev-100 F vs F-rand accuracy/Brier and actual spend posted as a comment; humans look before Phase 2 spend.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §3.2, §5.3, §6 step 5.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-8e2358d8-3585-427a-ad4d-70655d0cf9cd",
+    "labels": [
+      "roadmap",
+      "phase-1",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

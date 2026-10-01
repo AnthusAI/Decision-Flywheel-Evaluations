@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "5fd27ecc-3ef1-4fa5-8fcb-31fdf4e88514",
+  "issue_id": "decision-flywheel-evaluations-86786617-714c-4edf-9d52-5e70c909de85",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T19:59:49.475Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Build the offline unified flywheel harness (arms 0, A, B-local, B, A+B)",
+    "description": "## Purpose\n\nOffline harness for arms 0 / A / B-local / B / A+B.\n\n## Done\n\nCommit eb6927f (`feat: offline harness for the unified flywheel`): `unified_loop`, `unified_spend` (durable request ceiling, failure breaker), `unified_splits`, `unified_stats`, `unified_knn`, fake Jev, leakage guards, text-free outputs, live mode off by default; specs beside each module. Commit 85cbb32 lets `gpt-6` analysts run (`max_completion_tokens`, no default temperature). Released as 0.10.0 / 0.10.1.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "4ba547e0-3372-4b8e-8cae-915c45b3bb89",
+  "issue_id": "decision-flywheel-evaluations-f34776a6-baca-5c48-91a0-98613d83eb9f",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-01T20:08:10.862Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "124ff461-e411-4338-b49f-1ac3941f4740",
+    "comment_author": "home",
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

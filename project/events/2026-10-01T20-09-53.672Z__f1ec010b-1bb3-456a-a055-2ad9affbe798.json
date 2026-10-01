@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "f1ec010b-1bb3-456a-a055-2ad9affbe798",
+  "issue_id": "decision-flywheel-evaluations-2472015e-9a4d-5236-9fc9-680b7efccd1b",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-01T20:09:53.672Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "priority": {
+        "from": 2,
+        "to": 3
+      }
+    }
+  }
+}

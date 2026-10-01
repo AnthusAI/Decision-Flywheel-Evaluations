@@ -1,0 +1,31 @@
+{
+  "id": "decision-flywheel-evaluations-e9cfcb6f-2fca-4f4b-b0b2-0a514067828a",
+  "title": "Compare retrievers with a free kNN proxy (lexical v1, v2 with stop words, v2+BM25)",
+  "description": "## Purpose\n\nCompare retrievers for free with a kNN proxy before any live retrieval spend.\n\n## Scope\n\nMake `unified_knn` take a pluggable core `Retriever`. For dev-100 items against the 300-label pool, compute label-weighted kNN vote accuracy and same-label purity of the top 4 neighbours for lexical v1, v2 with stop words, and v2 + BM25.\n\n## Definition of done\n\nSpecs first (fake data); proxy table committed text-free. If v2 with stop words is worse than v1, recommend flipping the stop-word default off. Cost: $0, no Jev requests.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §4.3, §5.2 (staged retrieval comparison), §5.4, §6 step 6.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-09ea97a1-4466-479c-b4dc-c463f2f6bc5d`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-df19d04e-64e9-45f9-8b42-d29d5d4090ac`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-f06dcf08-6182-41ce-a9f5-31b37d08bf51",
+  "labels": [
+    "roadmap",
+    "phase-3"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:43.557080Z",
+  "updated_at": "2026-10-01T20:04:49.230876Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

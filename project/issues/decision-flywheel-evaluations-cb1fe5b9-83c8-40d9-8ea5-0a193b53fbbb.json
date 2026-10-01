@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-cb1fe5b9-83c8-40d9-8ea5-0a193b53fbbb",
+  "title": "Run at most one dynamic-retrieval variant live if its proxy justifies it",
+  "description": "## Purpose\n\nRun at most one dynamic-retrieval variant live, only if the proxy justified it.\n\n## Scope\n\nThe chosen D variant: 300 labeled leave-one-out answers + paper-600 answers, then score D and A-c+F+D (head-only, not an independent steering trajectory).\n\n## Cost cap\n\n≈900 few-shot requests ≈ $0.60; **hard cap 900 Jev requests**; counts toward the 7,500 cumulative ledger. Skip entirely if S2 chose none.\n\n## Definition of done\n\nResults added to the unified results page, or a note here that no variant qualified. Cost as above.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.3 (Optional: one D variant live), §6 step 10.",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-f06dcf08-6182-41ce-a9f5-31b37d08bf51",
+  "labels": [
+    "roadmap",
+    "phase-3",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-e38febde-68aa-425a-be55-bd86cfb6f70c",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-7652a7f5-3b12-48f6-99de-e5bc897652d8",
+      "type": "relates-to"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:50.603461Z",
+  "updated_at": "2026-10-01T20:04:36.260147Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

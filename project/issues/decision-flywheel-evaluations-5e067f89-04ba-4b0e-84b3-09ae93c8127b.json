@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-5e067f89-04ba-4b0e-84b3-09ae93c8127b",
+  "title": "Owner decision needed: separate few-shot request per item or one shared request?",
+  "description": "## Owner decision needed (Q2)\n\nDo not assume an answer. The design builds the two-request shape until the owner decides.\n\nShould the fixed example list go in its **own few-shot request** per item (2 Jev requests per item, clean caches; the design's choice), or **ride in the same request** as every rubric question?\n\n- One request halves the per-item cost.\n- But the examples' labels would influence element answers, and every list change would make every cached element answer stale.\n\n## Definition of done\n\nAnswer recorded here; the core `ClassifierBundle` story and the bundle-freeze task follow it. Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2 (Reload and classify), §7 Q2.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-7284b9aa-7c87-4bd4-b5d3-f7a67546cbdd`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+  "labels": [
+    "roadmap",
+    "phase-2",
+    "owner-decision"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:16.760780Z",
+  "updated_at": "2026-10-01T20:02:16.760810Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

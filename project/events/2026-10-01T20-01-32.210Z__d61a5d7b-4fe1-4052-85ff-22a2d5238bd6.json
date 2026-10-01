@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "d61a5d7b-4fe1-4052-85ff-22a2d5238bd6",
+  "issue_id": "decision-flywheel-evaluations-8e2358d8-3585-427a-ad4d-70655d0cf9cd",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:01:32.210Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Phase 1: fixed example list arms and the first live reading (S0-S1)",
+    "description": "## Purpose\n\nPhase 1: get the first live reading of a native, optimized **fixed** example list (F) against a random fixed list (F-rand) on Jev.\n\n## Scope\n\nHarness arms F / F-rand (plus the A-c and A-c+F wiring, offline), the $0 replay check, and live round 1. Depends on core `FixedExampleList`, the Brier objective, and `improve_example_list`.\n\n## Definition of done\n\nS1 reached and the dev-100 F vs F-rand reading recorded on this epic with actual spend. Cost: ≈$0.55, ≤1,000 Jev requests, inside the 7,500-request ledger.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §3, §5.2, §6 steps 1–5.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-6d3f7611-cb20-480f-b44e-b0317754bb13`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-886c718d-c0f7-4384-81e9-7ad29677be98`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1ed56f35-629d-48d5-84c1-f9e26d038d9e`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1dc7a4b2-61d5-48ab-962e-22a55ffa6a39`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959",
+    "labels": [
+      "roadmap",
+      "phase-1"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

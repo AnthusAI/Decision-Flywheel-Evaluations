@@ -1,0 +1,43 @@
+{
+  "id": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+  "title": "Build the unified harness and run the first features-plus-few-shot experiment",
+  "description": "## Purpose\n\nRecord the first unified experiment: features (A), few-shot by per-item retrieval (B), free neighbour-vote features (B-local), and both (A+B), on Jev.\n\n## Scope (done)\n\nJev-Flywheel planted-bias sentiment corpus; 3 rounds × 100 scripted labels, label-order seed 1; iteration on dev-100; final comparison on paper-600 (not pristine). Analyst OpenAI `gpt-6-luna`. Plan: [UNIFIED_FLYWHEEL_PLAN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_PLAN.md).\n\n## Outcome\n\nPaper-600 accuracy after 300 labels: 0 = 0.767, A = 0.855, B-local = 0.853, B = 0.892, **A+B = 0.918**. A+B − better single lever = +0.027 (0.007 to 0.048). One seed, exploratory, no significance claims. About 6,000 Jev requests (2,400 dev-100 + 3,600 paper-600), under the 9,500 ceiling.\n\n## Definition of done\n\nMet: offline harness (eb6927f, 85cbb32), live run, published results (33f2afe, ef1f088), and the follow-up design (studies/DECISION_FLYWHEEL_DESIGN.md).",
+  "type": "epic",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "06dbeac5-3807-471d-be31-70dd021152c2",
+      "author": "home",
+      "text": "All four child tasks done; outcome summarized in the description. Follow-on work is in the Phase 1-3 epics of this initiative.",
+      "created_at": "2026-10-01T20:01:12.176928Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
+  "created_at": "2026-10-01T19:59:46.947936Z",
+  "updated_at": "2026-10-01T20:06:46.876611Z",
+  "closed_at": "2026-10-01T20:01:15.579206Z",
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

@@ -4,7 +4,7 @@
   "description": "## Scope\n\nProvide offline report commands, figures, text-free result bundles and artifact checksums, an experiment inventory, and an article with hypothesis, investigation, results, and limitations. Append dated lab notes instead of rewriting the historical Few-Shot-Jev experiment as product documentation; link evidence to Decision-Flywheel feature issues.\n\n## Definition of done\n\nA clean offline replay reproduces published aggregates; all claimed effects link to plans and result artifacts; a study may be published once completed without waiting for the entire model matrix.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-5ac13e11-6bd8-5787-8136-8f936b5930f8`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
   "status": "open",
-  "priority": 2,
+  "priority": 3,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-4153f399-8e3e-5299-bf0e-a27bfa7e1a55",
@@ -17,21 +17,32 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "fe1e97c4-6c69-4a46-9453-df403d5ebc07",
+      "author": "home",
+      "text": "**Owner redirect, 2026-10-01.** Priorities moved to the Unified Decision Flywheel: initiative `decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959`, design `studies/DECISION_FLYWHEEL_DESIGN.md`. The large static Jev selection-by-size study is complete and published: `studies/INITIAL_JEV_RESULTS.md` (commits 44e14e1, 7068ded). Demonstration-ordering and Jev/Kev/Laya cross-model comparisons are **deferred, not cancelled** (Laya and Kev cannot take few-shot context). No spend is approved for this work.\n\nDone so far: the initial study is published with hypothesis, design, results and limits (`studies/INITIAL_JEV_STUDY.md`, `INITIAL_JEV_RESULTS.md`, text-free `results/*.summary.json`) and the experiment inventory (`studies/PRIOR_EXPERIMENTS.md`).\n\nRemaining before this can close: a recorded clean offline replay (`make report` from the text-free observations) that reproduces the published aggregates. No such replay is recorded on this board. The ordering and model-matrix reports are deferred. Kept open at low priority.\n",
+      "created_at": "2026-10-01T20:08:17.154756Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:36.732816Z",
-  "updated_at": "2026-09-30T18:09:34.479962Z",
+  "updated_at": "2026-10-01T20:10:11.106443Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

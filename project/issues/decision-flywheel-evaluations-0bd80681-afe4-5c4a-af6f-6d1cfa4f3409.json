@@ -3,8 +3,8 @@
   "title": "Freeze the cross-model comparison and eligibility rules",
   "description": "## Scope\n\nPlan Jev, Kev, and Laya on matching tasks, policies, counts, and target IDs after the Jev ordering investigation. Distinguish provider context limits and serialization differences from selection effects. Predeclare unsupported cells and do not substitute zero-shot for an unsupported few-shot arm.\n\n## Definition of done\n\nA frozen matrix records exact model versions, environments, eligible cells/exclusions, serialization fingerprints, both count and token sizes, model-by-policy contrasts, and request ceilings before any comparative collection.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-2f4b891a-1749-5c87-af33-a3ab64c5bf57`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
-  "priority": 2,
+  "status": "backlog",
+  "priority": 3,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-5d7f311f-9ee0-5dd7-bd8b-4d3c9f32ae9e",
@@ -21,21 +21,32 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "990d3517-a421-425e-b570-b8095eb11853",
+      "author": "home",
+      "text": "**Owner redirect, 2026-10-01.** Priorities moved to the Unified Decision Flywheel: initiative `decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959`, design `studies/DECISION_FLYWHEEL_DESIGN.md`. The large static Jev selection-by-size study is complete and published: `studies/INITIAL_JEV_RESULTS.md` (commits 44e14e1, 7068ded). Demonstration-ordering and Jev/Kev/Laya cross-model comparisons are **deferred, not cancelled** (Laya and Kev cannot take few-shot context). No spend is approved for this work.\n\nNot started. Moved to backlog at low priority. When resumed, record Kev/Laya few-shot exclusions explicitly (Laya adapter rejects labeled context; Kev's server flattens state to text and was trained on states of at most 384 tokens; see `studies/UNIFIED_FLYWHEEL_PLAN.md` Appendix A).\n",
+      "created_at": "2026-10-01T20:07:59.035586Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:07.037027Z",
-  "updated_at": "2026-09-30T18:08:52.450126Z",
+  "updated_at": "2026-10-01T20:09:58.719188Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

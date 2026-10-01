@@ -4,7 +4,7 @@
   "description": "## Scope\n\nMeasure whether selected labeled context improves agreement with ground-truth labels across context budgets, datasets, and Jev, Kev, and Laya. Preserve the Few-Shot-Jev study as historical experimental notes. Start with Jev selection and ordering studies before making cross-model claims.\n\n## Definition of done\n\nPinned dataset manifests; frozen study plans; resumable collection; reproducible offline reports; complete accounting of eligible and excluded conditions. Each live study has an explicit request ceiling and collection approval.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-e9e02429-a60a-4747-adb3-93cab7ec4314`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "initiative",
   "status": "open",
-  "priority": 1,
+  "priority": 3,
   "assignee": null,
   "creator": null,
   "parent": null,
@@ -12,18 +12,29 @@
     "roadmap"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1fa62847-0fcd-4ab3-8c43-c276befcfdd0",
+      "author": "home",
+      "text": "**Owner redirect, 2026-10-01.** Priorities moved to the Unified Decision Flywheel: initiative `decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959`, design `studies/DECISION_FLYWHEEL_DESIGN.md`. The large static Jev selection-by-size study is complete and published: `studies/INITIAL_JEV_RESULTS.md` (commits 44e14e1, 7068ded). Demonstration-ordering and Jev/Kev/Laya cross-model comparisons are **deferred, not cancelled** (Laya and Kev cannot take few-shot context). No spend is approved for this work.\n\nReconciled today: dataset, collection/reporting infrastructure, selector-by-size preregistration and the initial study are closed with evidence; ordering, cross-model rules, the model matrix and the Kev/Laya pilot half are in backlog; reporting keeps one open replay item. Active work is in the new initiative above (Phase 1 to Phase 3 epics). Lowered to low priority.\n",
+      "created_at": "2026-10-01T20:08:30.446137Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:06:24.567514Z",
-  "updated_at": "2026-09-30T18:06:24.567623Z",
+  "updated_at": "2026-10-01T20:10:24.508368Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }

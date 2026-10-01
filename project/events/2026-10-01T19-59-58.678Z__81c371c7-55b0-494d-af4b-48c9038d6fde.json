@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "81c371c7-55b0-494d-af4b-48c9038d6fde",
+  "issue_id": "decision-flywheel-evaluations-bed4ffb5-4526-4344-9c99-9f646cef2ca4",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T19:59:58.678Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Publish the first unified flywheel results",
+    "description": "## Purpose\n\nPublish the first unified results.\n\n## Done\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md), commits 33f2afe and ef1f088: table, paired intervals, limits (one seed, planted-bias corpus, simulated labeler, paper-600 not pristine, B may absorb the bias silently, leave-one-out computed once).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

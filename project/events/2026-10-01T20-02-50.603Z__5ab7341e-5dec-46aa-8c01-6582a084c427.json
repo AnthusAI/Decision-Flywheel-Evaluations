@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "5ab7341e-5dec-46aa-8c01-6582a084c427",
+  "issue_id": "decision-flywheel-evaluations-cb1fe5b9-83c8-40d9-8ea5-0a193b53fbbb",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:02:50.603Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Run at most one dynamic-retrieval variant live if its proxy justifies it",
+    "description": "## Purpose\n\nRun at most one dynamic-retrieval variant live, only if the proxy justified it.\n\n## Scope\n\nThe chosen D variant: 300 labeled leave-one-out answers + paper-600 answers, then score D and A-c+F+D (head-only, not an independent steering trajectory).\n\n## Cost cap\n\n≈900 few-shot requests ≈ $0.60; **hard cap 900 Jev requests**; counts toward the 7,500 cumulative ledger. Skip entirely if S2 chose none.\n\n## Definition of done\n\nResults added to the unified results page, or a note here that no variant qualified. Cost as above.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.3 (Optional: one D variant live), §6 step 10.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 2,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-f06dcf08-6182-41ce-a9f5-31b37d08bf51",
+    "labels": [
+      "roadmap",
+      "phase-3",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

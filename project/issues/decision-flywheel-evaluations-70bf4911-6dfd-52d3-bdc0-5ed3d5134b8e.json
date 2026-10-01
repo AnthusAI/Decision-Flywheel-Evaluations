@@ -3,7 +3,7 @@
   "title": "Enumerate the complete matrix and gate live collection",
   "description": "## Scope\n\nExpand every model, dataset, selector, context size, draw, order, and target cell into a frozen preflight manifest. Display exact new/cache-hit request counts, token estimates labeled as estimates, unsupported cells, and optimization versus scoreboard budgets. Require a frozen preregistration, explicit collection confirmation, and a hard request ceiling.\n\n## Definition of done\n\nFake engines count zero calls during preflight; integration specs prove the actual runner cannot exceed the approved ceiling including retries and cannot silently add matrix cells.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Enumerate the complete matrix and gate live collection\n  Scenario: Required observable behavior\n    Given a complete study plan and a fake engine that counts calls\n    When preflight enumerates the matrix\n    Then every eligible request is identified and the engine receives zero calls\n```\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-91347c58-fd85-5e64-8b20-8179d723fa9f`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "story",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -27,9 +27,7 @@
       "author": "home",
       "text": "Review identified a fidelity defect: selected-global artifacts currently enforce RandomBalanced seed 2 rather than a completed development-selected winner. Collection remains unapproved pending real optimizer artifact binding, explicit preregistration gate, and bounded runner integration. Ready-path matrix tests cover local synthetic data only; no new live results exist.",
       "created_at": "2026-09-30T19:46:07.812007Z",
-      "comment_type": "default",
-      "data": {},
-      "agent": null
+      "comment_type": "default"
     },
     {
       "id": "ed0f1231-155f-4a26-af2d-523f74cc08c2",
@@ -37,29 +35,37 @@
       "text": "HANDOFF: Work paused at human request; see ordering preregistration issue b7796fc5-0fd4-51f6-aa05-397e635cfff6 for complete restart instructions. Uncommitted preflight.py fix sorts selected-global artifact sizes numerically so JSON round-trip mapping order cannot change request order/checksum; round-trip and reverse-map specs passed. FrozenProtocol identity/schema unchanged. New ordering CLI/Make gates are WIP. Blocking review defect remains: full initial evidence/ordering regeneration must be validated BEFORE CacheStore creation in run_ordering_collection; currently rejection precedes provider calls but not ledger creation. Write failing no-ledger/no-provider spec first. Full current-tree suite was interrupted at user stop (154 passed; no final pass). Preserve all WIP, rerun complete and isolated specs before commit/push. No live calls or approval inferred.",
       "created_at": "2026-09-30T23:19:31.285373Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
+      }
+    },
+    {
+      "id": "f99bb56e-9110-492b-958b-6422e69f6ea6",
+      "author": "home",
+      "text": "Closing: definition of done met. Preflight enumerates the complete matrix with zero model calls (`preflight_test.py`), and the collector cannot exceed the approved ceiling including retries or add cells (`collector_test.py`). The selected-global defect noted above was resolved by freezing development winners before the scoreboard preflight (44e032d), and the ordering pre-ledger gate defect was fixed in fa37abb. Both live initial-study runs stayed within their approved ceilings. The ordering-specific gate is built but its study is deferred.\n",
+      "created_at": "2026-10-01T20:08:57.143653Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
       }
     }
   ],
   "created_at": "2026-09-30T18:08:12.958733Z",
-  "updated_at": "2026-09-30T23:19:31.285441Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
+  "updated_at": "2026-10-01T20:10:46.386776Z",
+  "closed_at": "2026-10-01T20:10:46.386734Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

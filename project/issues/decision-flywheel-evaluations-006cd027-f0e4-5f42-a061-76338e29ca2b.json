@@ -3,7 +3,7 @@
   "title": "Report paired effects, calibration, uncertainty, and complete totals",
   "description": "## Scope\n\nCompute per-cell and pooled accuracy, macro-F1, recall, log loss, multiclass Brier, top-label ECE/reliability data, latency, requests/attempts, and returned token usage. Mark unavailable probability metrics rather than fabricate distributions. Use paired target bootstrap and draw/order resampling appropriate to each declared contrast; do not treat repeated target rows as independent observations.\n\n## Definition of done\n\nSynthetic fixtures check exact metrics and aggregation weights, missing/malformed-row denominators, deterministic paired intervals, repeated-draw pooling, and counts against the preflight. Report percentage-point changes separately from relative percentages and do not invent dollar pricing.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Report paired effects, calibration, uncertainty, and complete totals\n  Scenario: Required observable behavior\n    Given synthetic paired decisions with missing distributions and repeated draws\n    When an offline report is generated twice with the same seed\n    Then effects and intervals agree, unavailable metrics are identified, and totals reconcile with the matrix\n```",
   "type": "story",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -24,12 +24,10 @@
       "text": "Inference audit found that the forced Holm protocol field had no corresponding justified p-value procedure. User delegated the choice; preserve the original descriptive paired 95% target/draw bootstrap intervals and make no adjusted significance claim. New protocols will explicitly declare no family correction; previously frozen Holm-labelled protocols remain readable and must report correction unavailable. No p-values will be inferred from confidence interval endpoints. Implementation and refreshed exact preflight hashes are being verified offline; no live results.",
       "created_at": "2026-09-30T21:59:56.069488Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -38,29 +36,37 @@
       "text": "HANDOFF: Paused at human request. Native ordering_reporting.py and adjacent specs are uncommitted. Reports retain every condition/draw/order, pooled and mean-draw metrics, deduplicated physical attempts/usage, incomplete-cell visibility, fixed-order paired contrasts and declared shuffled-family bootstrap. Nominal descriptive 95% intervals only; no p-values, best order, or multiplicity-adjusted claim. Percentage points and relative percentages are distinct. Bootstrap WIP validates source responses once and uses label-only accuracy/macro-F1 resamples; seeded existing sampling is unchanged, helper matches full metrics on synthetic repeated/absent-class samples. Targeted reporting 4 specs passed; bootstrap/CLI 34 passed earlier. Current full suite interrupted after 154 passes, not verified final. No actual initial/ordering results exist. See b7796fc5 handoff for gate defect and publication checks.",
       "created_at": "2026-09-30T23:19:33.824307Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
+      }
+    },
+    {
+      "id": "10156367-71e0-4844-866a-5731eb261dc7",
+      "author": "home",
+      "text": "Closing: definition of done met. `metrics.py`, `bootstrap.py` and `reporting.py` with adjacent specs cover exact metrics, missing-row denominators, deterministic paired intervals, repeated-draw pooling and reconciliation against the preflight; the published initial results were produced with them (descriptive nominal 95% intervals, no p-values, percentage points separate from relative change).\n",
+      "created_at": "2026-10-01T20:09:10.095594Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
       }
     }
   ],
   "created_at": "2026-09-30T18:08:19.105766Z",
-  "updated_at": "2026-09-30T23:19:33.824377Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
+  "updated_at": "2026-10-01T20:11:01.953744Z",
+  "closed_at": "2026-10-01T20:11:01.953709Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

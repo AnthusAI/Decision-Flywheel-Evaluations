@@ -3,7 +3,7 @@
   "title": "Preregister the selector-by-context-size study",
   "description": "## Scope\n\nCompare zero-shot, five seed-fixed random balanced sets, a development-selected fixed global set, class prototypes, and per-target lexical retrieval. Use a balanced ladder starting at 1, 4, 16, and 64 examples per label (Emotion totals 6/24/96/384; AG News totals 4/16/64/256), subject to documented model limits. Keep wording, option order, candidate pool, and initial display rule fixed. Choose one primary fixed-budget selection contrast and one primary size contrast before collection; correct or clearly separate secondary comparisons.\n\n## Definition of done\n\nThe committed plan specifies dataset-specific metrics (macro-F1 for imbalanced Emotion), repeated draws, exact target counts, development tuning/search budget, nested membership, paired target/draw inference, and a computed request matrix. It does not infer that selection matters more than size from a single-budget result.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-535d9cb6-747f-5976-a272-c4ca86911a73`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-fe8852d3-4fd9-593a-a5f6-5d7cc0d84848`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0822f794-4e56-5a84-8a7d-8a17a16cd2d1`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -60,11 +60,23 @@
       "text": "Claude Code: initial Jev scoreboard collection complete on AG News and Emotion (58,000 physical requests each, all completed). Results, caveats and text-free summaries published in studies/INITIAL_JEV_RESULTS.md. Headline: per-target retrieval best at every size; selection effect +0.014 acc (AG News) / +0.062 macro-F1 (Emotion); size effect +0.006 (CI includes 0) / +0.082; development-selected fixed context indistinguishable from random. Ordering and Kev/Laya studies not run.",
       "created_at": "2026-10-01T15:43:51.739223Z",
       "comment_type": "default"
+    },
+    {
+      "id": "8c1a14a1-c441-4de9-a602-39db3c6de7c5",
+      "author": "home",
+      "text": "Closing: definition of done met. The committed design (`studies/INITIAL_JEV_STUDY.md`), frozen protocols and cache-only preflights, the development-run preregistration (`INITIAL_JEV_DEVELOPMENT_RUN.md`, 995ba6a), frozen development winners (44e032d) and the scoreboard-run preregistration with owner approval (`INITIAL_JEV_SCOREBOARD_RUN.md`, f75ff41) all preceded the corresponding calls. Metrics (accuracy; macro-F1 for Emotion), draws, target counts, nested membership, computed request matrix and descriptive paired intervals (no familywise test) are declared. Note: the status line at the top of `INITIAL_JEV_STUDY.md` still says \"proposed design\", which is stale wording now that the run is approved and complete.\n",
+      "created_at": "2026-10-01T20:08:32.686623Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
     }
   ],
   "created_at": "2026-09-30T18:08:01.182273Z",
-  "updated_at": "2026-10-01T15:43:51.739962Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T20:10:26.191377Z",
+  "closed_at": "2026-10-01T20:10:26.191336Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",

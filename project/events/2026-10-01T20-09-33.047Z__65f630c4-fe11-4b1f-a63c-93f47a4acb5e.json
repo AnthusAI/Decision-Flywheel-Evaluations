@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "event_id": "65f630c4-fe11-4b1f-a63c-93f47a4acb5e",
+  "issue_id": "decision-flywheel-evaluations-b7796fc5-0fd4-51f6-aa05-397e635cfff6",
+  "event_type": "state_transition",
+  "occurred_at": "2026-10-01T20:09:33.047Z",
+  "actor_id": "home",
+  "payload": {
+    "from_status": "open",
+    "to_status": "backlog"
+  }
+}

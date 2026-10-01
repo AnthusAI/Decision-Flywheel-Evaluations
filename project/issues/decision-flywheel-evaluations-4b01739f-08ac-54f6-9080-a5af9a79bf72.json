@@ -3,7 +3,7 @@
   "title": "Freeze candidate, development, and scoreboard manifests",
   "description": "## Scope\n\nDeterministically create disjoint partition manifests with documented seeds, class counts, sampling rationale, source-use history, and exact normalized-text duplicate exclusions across partitions. Scoreboard labels are only available to final scoring. Commit manifests before optimization or collection.\n\n## Definition of done\n\nSpecs reject ID and text-hash leakage, preserve partitions across reruns, report class counts, and prevent policy-selection code from loading scoreboard labels. Historical holdouts are explicitly identified as previously used.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Freeze candidate, development, and scoreboard manifests\n  Scenario: Required observable behavior\n    Given candidate, development, and scoreboard rows share an exact normalized-text duplicate\n    When manifests are prepared\n    Then the duplicate is excluded or preparation fails before any model call\n```",
   "type": "story",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -24,12 +24,10 @@
       "text": "Terra delivered deterministic text-free manifest construction and round-trip validation, official-test scoreboard selection with train-only candidate/development roles, duplicate exclusions, and prior-exposure guards. Independent foundation specs passed 28 tests. This story remains in progress: actual dataset-specific manifests and source rehydration must be frozen and audited before live collection. Typed fixtures are not a new benchmark or fresh holdout.",
       "created_at": "2026-09-30T19:22:25.405593Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-6",
-        "name": "Flywheel Integration",
-        "settings": {}
+        "name": "Flywheel Integration"
       }
     },
     {
@@ -37,9 +35,7 @@
       "author": "home",
       "text": "Prepared actual pinned manifests and independently reproduced them from cached Arrow sources: AG News 2048 candidate / 400 development / 2000 scoreboard, 500 per class, with zero prior-source-index and normalized historical-text overlap; Emotion 1536 / 600 / 2000 natural-distribution scoreboard marked exploratory. Full metadata/history participates in manifest binding. Included in the native workflow milestone; no new live model study occurred. Remaining publication/registration acceptance is tracked separately.",
       "created_at": "2026-09-30T21:05:04.022557Z",
-      "comment_type": "default",
-      "data": {},
-      "agent": null
+      "comment_type": "default"
     },
     {
       "id": "b7b30649-7021-479d-b330-1669f84c2b96",
@@ -47,12 +43,10 @@
       "text": "Pre-live audit identified a stricter firewall gap: core optimizer receives development labels only, but surrounding optimization/preflight currently rehydrates all heldout source rows. Keeping this story open while Terra implements development-only cache reading/rehydration; protected scoreboard IDs/hashes will come from the text-free manifest, with specs proving no official test Arrow file is opened by development selection. Public groundtruth metadata remains in the committed manifest for final scoring; it is not a prompt or optimization input.",
       "created_at": "2026-09-30T21:25:10.905964Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-6",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -61,29 +55,37 @@
       "text": "Source firewall fix verified: optimization preflight/run/select accept candidate+development rows alone and never require the official-test Arrow input; full fixtures ignore heldout source fields after ID routing. Native optimizer still sees only protected IDs/hashes for scoreboard. Root145offline specs pass, including poisoned/unavailable heldout source regression and full fake development-selection-to-scoreboard pipeline. Public text-free manifest metadata retains groundtruth for provenance/final scoring; no claim that public dataset labels cease to exist. Actual AG8000 and Emotion12000 cache-only preflight rows complete without model calls.",
       "created_at": "2026-09-30T21:48:32.905796Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-6",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
+      }
+    },
+    {
+      "id": "d4aab3c7-33f8-4ed1-bcc3-520ebadf2241",
+      "author": "home",
+      "text": "Closing: definition of done met. Pinned manifests (AG News 2048/400/2000; Emotion 1536/600/2000, exploratory) are committed and reproduce from cached sources; specs in `manifests_test.py` cover duplicate-text exclusion, ID/hash leakage, deterministic splits, class targets and prior-exposure flags; the source firewall keeps scoreboard text out of optimization (comment 860a45). The manifests were used unchanged by the completed initial study.\n",
+      "created_at": "2026-10-01T20:08:52.623329Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
       }
     }
   ],
   "created_at": "2026-09-30T18:07:55.315211Z",
-  "updated_at": "2026-09-30T21:48:32.905890Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
+  "updated_at": "2026-10-01T20:10:40.089301Z",
+  "closed_at": "2026-10-01T20:10:40.089255Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

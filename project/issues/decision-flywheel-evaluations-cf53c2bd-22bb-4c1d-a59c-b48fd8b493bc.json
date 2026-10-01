@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-cf53c2bd-22bb-4c1d-a59c-b48fd8b493bc",
+  "title": "Human review of 20 labeler comments for leakage and realism (S3)",
+  "description": "## Purpose\n\nHave a person check the L2 comments for leakage and realism before any analyst sees them (stop S3).\n\n## Scope\n\nA human (owner or delegate) reads 20 generated comments, sampled with a fixed seed, against the hidden convention: does any quote or paraphrase the rule too closely, and do they read like a busy reviewer?\n\n## Definition of done\n\nVerdict recorded here as a comment (pass, or revise the prompt and regenerate). No analyst call uses the comments before a pass. Cost: $0. **Stop S3.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2 (A human checks first), §6 step 7.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+  "labels": [
+    "roadmap",
+    "phase-2",
+    "human-review"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-8b8d8513-b626-4f34-87bc-d2b36ffa4312",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:06.906562Z",
+  "updated_at": "2026-10-01T20:03:22.094693Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

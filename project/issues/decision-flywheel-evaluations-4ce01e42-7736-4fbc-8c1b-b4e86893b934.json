@@ -1,0 +1,48 @@
+{
+  "id": "decision-flywheel-evaluations-4ce01e42-7736-4fbc-8c1b-b4e86893b934",
+  "title": "Run the seed-1 live rounds and the paper-600 comparison on Jev",
+  "description": "## Purpose\n\nLive seed-1 run of arms 0 / A / B-local / B / A+B on Jev `jev-1.13.0`.\n\n## Done\n\n3 × 100 labels, iteration on dev-100 (2,400 Jev requests), final frozen comparison on paper-600 (3,600 Jev requests); about 6,000 in all, under the 9,500-request ($5) ceiling. Analyst calls (OpenAI `gpt-6-luna`) small and not counted. Text-free summaries: `studies/results/unified/seed1.dev100.summary.json`, `seed1.paper600.summary.json` (commit 33f2afe).",
+  "type": "task",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-86786617-714c-4edf-9d52-5e70c909de85",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [
+    {
+      "id": "0b0f38aa-1f90-4cc1-9bea-3a6dc8c0ee96",
+      "author": "home",
+      "text": "Done: seed-1 live run, about 6,000 Jev requests (2,400 dev-100 + 3,600 paper-600) under the 9,500 ceiling; summaries in studies/results/unified/ (commit 33f2afe). Recorded retroactively on 2026-10-01.",
+      "created_at": "2026-10-01T20:00:38.289136Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
+  "created_at": "2026-10-01T19:59:54.433836Z",
+  "updated_at": "2026-10-01T20:06:32.348391Z",
+  "closed_at": "2026-10-01T20:00:41.671731Z",
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

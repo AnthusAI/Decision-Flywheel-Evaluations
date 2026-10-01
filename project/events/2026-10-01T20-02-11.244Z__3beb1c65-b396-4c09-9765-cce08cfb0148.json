@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "3beb1c65-b396-4c09-9765-cce08cfb0148",
+  "issue_id": "decision-flywheel-evaluations-72db681e-8014-4aeb-bc75-26b7a5f8429e",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:02:11.244Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Run live rounds 2-3 for F, F-rand, A-c and A-c+F and freeze the protocol (S4)",
+    "description": "## Purpose\n\nRun live rounds 2–3 for F, F-rand, A-c and A-c+F on dev-100 and freeze versions and protocol for the final run (stop S4).\n\n## Scope\n\nRound-1 catch-up for A-c / A-c+F (≈400 zero-shot), then rounds 2–3 for all four arms (≈1,750 few-shot + ≈1,200 zero-shot), about 6 analyst calls with L2 comments. Same corpus, label order (seed 1), rounds, dev-100, gate, folds and leakage rules as the unified study.\n\n## Cost cap\n\n≈$1.75 Jev; **hard cap 3,400 Jev requests** for this step; cumulative ledger ≤7,500. Pre-approved within these caps.\n\n## Definition of done (S4)\n\nDev-100 table for all arms with Brier/accuracy, the analyst's proposed questions, which comments each promoted element cited, and actual spend; humans look; the frozen versions and the final protocol are written in `studies/` before any paper-600 request.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.3, §6 step 8.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+    "labels": [
+      "roadmap",
+      "phase-2",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

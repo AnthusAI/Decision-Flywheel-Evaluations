@@ -3,7 +3,7 @@
   "title": "Persist text-free responses and resume interrupted model runs",
   "description": "## Scope\n\nKey successful responses by full state/question fingerprints plus model/version and transport-relevant configuration. Store run/dataset revision, condition, example IDs, ordering, draw, target manifest ID, structured raw answers, available probabilities, usage, latency, attempt outcome, and failure metadata. Never store source text or credentials; retry only eligible failures under the ceiling.\n\n## Definition of done\n\nFake-client specs prove crashes/resumes reuse complete successful responses, changed examples/order/task/model invalidate cache hits, malformed responses remain identifiable, and secret sentinels never enter artifacts.\n\n## Acceptance scenario\n\n```gherkin\nFeature: Persist text-free responses and resume interrupted model runs\n  Scenario: Required observable behavior\n    Given a run has cached successful responses and an interrupted attempt\n    When the run resumes with the same matrix\n    Then only missing or retryable cells are attempted and every attempt is counted\n```\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-ce360969-5b44-554d-ba77-d4a38dbd7de1`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "story",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -23,27 +23,21 @@
       "author": "home",
       "text": "Implemented and reviewed atomic SQLite reservation/completion with immutable task/preflight/dataset/model provenance, stale-token rejection, strict response sanitization, and physical-versus-logical snapshots. Remaining acceptance work: connect the actual bounded collector and prove full crash/resume behavior through fake model integration. Story remains in progress.",
       "created_at": "2026-09-30T19:46:01.046899Z",
-      "comment_type": "default",
-      "data": {},
-      "agent": null
+      "comment_type": "default"
     },
     {
       "id": "1c2b8fe8-76c4-4e60-b9ea-23786820827e",
       "author": "home",
       "text": "Review finding: current native cell identity binds model/version and generic context-plan state/question hash, but transport-relevant configuration is not yet bound. Jev base_url and Kev endpoint changes must invalidate approved requests before claiming complete physical-request cache identity or running live collection. Keep this story in progress; no DSPy integration is authorized.",
       "created_at": "2026-09-30T20:33:02.507476Z",
-      "comment_type": "default",
-      "data": {},
-      "agent": null
+      "comment_type": "default"
     },
     {
       "id": "e8250d9d-2236-467f-bd8e-8d9d3760e5fd",
       "author": "home",
       "text": "Native Jev workflow now binds explicit public transport fingerprints into protocol/model/cache identity, reserves attempts before factory construction, supports opt-in bounded retry/recovery, and verifies mixed cached/new provenance. Full offline suite passed 125 tests against the pinned core dependency, including complete development collection -> native cache-only optimizer replay -> scoreboard -> report. No DSPy, provider credentials, or live calls. Keep cross-provider collection/compatibility claims pending their separate adapter pilots and matrix work.",
       "created_at": "2026-09-30T21:05:07.970574Z",
-      "comment_type": "default",
-      "data": {},
-      "agent": null
+      "comment_type": "default"
     },
     {
       "id": "475b6a8d-777b-4e6f-9bb3-141a7facf79d",
@@ -51,12 +45,10 @@
       "text": "Native collector scalability audit found repeated full snapshots and SUM(attempts) scans inside the physical-request loop. Terra implemented point request-state reads, one final export snapshot, and a transactional runtime attempt counter with one locked migration/integrity scan on opening. Focused cache/collector suite passed30, including two-connection retry-ceiling, replay/recovery, malformed response, and secret-sentinel behavior. Root reviewed the changes; full clean-clone verification and runtime SDK/core provenance gating are next. No paid calls or DSPy.",
       "created_at": "2026-09-30T21:59:59.948872Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -65,12 +57,10 @@
       "text": "Root final review and full161 offline specs passed. Collector performs one final ledger snapshot, point reads per request, and transactional scalar attempt accounting; rollback on logical-cell failure and constructor cleanup after invalid configuration/counter are covered. Live collection now requires installed SDK version and exact PEP610 Git core revision to match frozen metadata before ledger/provider construction. Explicit confidence remains separate from probabilities. Clean-clone verification follows; cross-provider/pilot collection remains pending.",
       "created_at": "2026-09-30T22:07:39.153702Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
       }
     },
     {
@@ -79,29 +69,37 @@
       "text": "HANDOFF: Uncommitted ordering_collection.py/specs use dedicated ordering-plan checksum/physical whitelist ledger, exact cumulative ceiling, explicit max-new and retry/recovery cap, frozen Jev provider version, regenerated full initial evidence, and counted failed/uncertain attempts. Targeted 7 specs passed, including retry fixture correction to reserve the lexically first physical fingerprint actually traversed by the collector. No initial-ledger import or silent free canonical reuse. Blocking wrapper defect: CacheStore is created before complete anchor regeneration; next agent must extract/call cache-independent validation before opening it while preserving direct collector gates. Write failing adjacent spec first. Human stopped all work; no live collection. Full handoff: b7796fc5-0fd4-51f6-aa05-397e635cfff6.",
       "created_at": "2026-09-30T23:20:09.810114Z",
       "comment_type": "default",
-      "data": {},
       "agent": {
         "platform": "codex",
         "model": "GPT-5",
-        "name": "Flywheel Implementation",
-        "settings": {}
+        "name": "Flywheel Implementation"
+      }
+    },
+    {
+      "id": "4626e7b5-2120-49ac-889b-85681daeaa60",
+      "author": "home",
+      "text": "Closing: definition of done met. The atomic ledger binds model, version and transport fingerprints; fake-client specs in `cache_test.py` / `collector_test.py` cover replay without new attempts, failed attempts consuming the ceiling, malformed responses and secret sentinels. In practice the AG News Run 2 resumed from its ledger without repeating completed requests (`studies/INITIAL_JEV_RESULTS.md`, collection record).\n",
+      "created_at": "2026-10-01T20:09:03.964800Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
       }
     }
   ],
   "created_at": "2026-09-30T18:08:15.928596Z",
-  "updated_at": "2026-09-30T23:20:09.810188Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
+  "updated_at": "2026-10-01T20:10:57.165244Z",
+  "closed_at": "2026-10-01T20:10:57.165207Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

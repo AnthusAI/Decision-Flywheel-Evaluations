@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "a7a56e0d-8f15-4814-adda-72591ef4f621",
+  "issue_id": "decision-flywheel-evaluations-8b8d8513-b626-4f34-87bc-d2b36ffa4312",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:02:01.704Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Build the L2 explanation labeler and wire comments into feedback",
+    "description": "## Purpose\n\nBuild the L2 explanation labeler so arm A-c's analyst sees terse reviewer-style reasons, and wire comments into the harness feedback.\n\n## Scope\n\n- Labels stay the corpus reference labels for every arm; the LLM writes only the **reason**.\n- One call per labeled item that some arm got wrong, conditioned on text + correct label, never on any arm's prediction (shared across arms). **≤300 calls**, about 100 expected. Model per Q1.\n- Cache in `var/` keyed by item, label, prompt SHA-256 and model; exact replay. Text-free summaries: hashes, counts, a \"mentions topic or domain\" flag.\n- Wire comments into `unified_loop._record_feedback` (`edit_comment_value`); record which promoted element cited which comment hashes. L0 = existing template; optional L3 (full rule) offline-only as a leakage ceiling, never evidence.\n- Generate comments for the 300 labels.\n\n## Definition of done\n\nSpecs first with a fake labeler, no network: cache replay is exact, summaries are text-free, comments reach the analyst briefing, attribution recorded. Comments generated and cached. Ends at the input to **S3**. Cost: ≤300 OpenAI calls (price unverified, expected cents); 0 Jev requests.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2 (labels with explanations, caveats), §6 step 7.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+    "labels": [
+      "roadmap",
+      "phase-2"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

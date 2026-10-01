@@ -3,7 +3,7 @@
   "title": "Build resumable collection and reproducible offline analysis",
   "description": "## Scope\n\nTurn the study scaffold into a runner with exact preflight manifests, a complete cache identity, bounded collection, and trustworthy metrics.\n\n## Definition of done\n\nFake-engine integration specs prove no-network preflight, safe resume, complete matrix accounting, faithful response storage, and deterministic reports.",
   "type": "epic",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -12,18 +12,29 @@
     "roadmap"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "75307af6-1f27-4187-82b4-ac082a7f06cb",
+      "author": "home",
+      "text": "Closing: all child stories are done (matrix gate, resumable text-free ledger, reporting) and carried the initial study end to end.\n",
+      "created_at": "2026-10-01T20:09:17.909185Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:09.950082Z",
-  "updated_at": "2026-09-30T18:08:09.950185Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
+  "updated_at": "2026-10-01T20:11:12.675506Z",
+  "closed_at": "2026-10-01T20:11:12.675471Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }

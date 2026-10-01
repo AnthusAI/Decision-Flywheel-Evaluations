@@ -1,0 +1,40 @@
+{
+  "id": "decision-flywheel-evaluations-128450f9-bdfb-47e0-9c69-7203be6598d3",
+  "title": "Freeze each arm as a ClassifierBundle and verify reloaded predictions offline",
+  "description": "## Purpose\n\nFreeze each arm's S4 version as a core `ClassifierBundle` and prove that reloading changes nothing.\n\n## Scope\n\nSave F, F-rand, A-c and A-c+F (and the replayed 0 / A / D-v1 / A+D-v1 where meaningful) as bundles: `bundle.json` committed text-free, `examples.jsonl` private and never committed, `scorecard.yaml` hashed. Lineage records harness, core and Jev-Flywheel clone commits.\n\n## Definition of done\n\nOffline (fake engine and cached answers): reloaded bundles give identical predictions to the in-memory versions; bundle hashes recorded here. Cost: $0. Part of the way to **S5**.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2, §6 step 9.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-7284b9aa-7c87-4bd4-b5d3-f7a67546cbdd`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+  "labels": [
+    "roadmap",
+    "phase-2"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-72db681e-8014-4aeb-bc75-26b7a5f8429e",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-5e067f89-04ba-4b0e-84b3-09ae93c8127b",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-01T20:02:22.505462Z",
+  "updated_at": "2026-10-01T20:03:48.768800Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

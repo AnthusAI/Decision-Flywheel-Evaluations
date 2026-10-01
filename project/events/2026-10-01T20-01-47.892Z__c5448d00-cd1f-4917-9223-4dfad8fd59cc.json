@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "c5448d00-cd1f-4917-9223-4dfad8fd59cc",
+  "issue_id": "decision-flywheel-evaluations-90d218e5-c6e4-43e3-adc0-bc4696fafa8b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:01:47.892Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Replay check: reproduce arms 0, A, D-v1 and A+D-v1 from cache before spending",
+    "description": "## Purpose\n\nProve the new harness version reproduces earlier arms exactly from cache before any new spend.\n\n## Scope\n\nReplay 0, A, D-v1 (earlier B) and A+D-v1 (earlier A+B) from cached Jev answers and recorded analyst replies.\n\n## Definition of done\n\nPaper-600 numbers match the published 0.767 / 0.855 / 0.892 / 0.918 (and Brier/ECE) with **0 new requests**. If they do not, stop and fix the harness; live round 1 stays blocked. Gate before S1. **Cost: $0.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §6 step 4.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-8e2358d8-3585-427a-ad4d-70655d0cf9cd",
+    "labels": [
+      "roadmap",
+      "phase-1"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "15540285-f812-4773-8203-6868e930de1f",
+  "issue_id": "decision-flywheel-evaluations-a3c25179-119f-4f4f-aba6-4124c8d17d01",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:02:34.741Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Publish the unified flywheel bundle results",
+    "description": "## Purpose\n\nPublish a one-page result for the unified flywheel bundle experiment.\n\n## Scope\n\nA page in `studies/`: arm table (accuracy, Brier, ECE), paired intervals for F vs F-rand, A-c+F vs A-c and F, A-c+F vs A+D-v1 (0.918), A-c vs A; analyst questions and comment attribution; actual spend; L2 and single-seed caveats; and the §5.4 consequence for each comparison (e.g. F within ±1 point of F-rand → ship the plain list as default).\n\n## Definition of done\n\nPage committed and linked from the initiative; owner decision Q3 raised if A+D leads by ≥3 points. Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.1, §5.4.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+    "labels": [
+      "roadmap",
+      "phase-2"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "decision-flywheel-evaluations-bed4ffb5-4526-4344-9c99-9f646cef2ca4",
+  "title": "Publish the first unified flywheel results",
+  "description": "## Purpose\n\nPublish the first unified results.\n\n## Done\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md), commits 33f2afe and ef1f088: table, paired intervals, limits (one seed, planted-bias corpus, simulated labeler, paper-600 not pristine, B may absorb the bias silently, leave-one-out computed once).",
+  "type": "task",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-4ce01e42-7736-4fbc-8c1b-b4e86893b934",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [
+    {
+      "id": "2169ab9c-04f3-4645-b8e6-dc1caab52b08",
+      "author": "home",
+      "text": "Done: studies/UNIFIED_FLYWHEEL_RESULTS.md, commits 33f2afe and ef1f088. Recorded retroactively on 2026-10-01.",
+      "created_at": "2026-10-01T20:00:49.815190Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
+  "created_at": "2026-10-01T19:59:58.678800Z",
+  "updated_at": "2026-10-01T20:06:36.996702Z",
+  "closed_at": "2026-10-01T20:00:59.289856Z",
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

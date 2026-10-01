@@ -4,7 +4,7 @@
   "description": "## Scope\n\nMake the central question testable: do many well-chosen examples improve weak initial alignment, and how does that improvement change with example count, selection policy, and presentation order?\n\n## Definition of done\n\nSigned-off preregistrations declare compatible cells, primary contrasts, seeds, budgets, inference, request ceilings, and deviations before live collection. Jev ordering results precede cross-model conclusions.",
   "type": "epic",
   "status": "open",
-  "priority": 1,
+  "priority": 3,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-049a2c8b-1798-5cf5-8a81-3cda98d0f924",
@@ -12,18 +12,29 @@
     "roadmap"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "701235af-e39b-4119-a6af-34d9e56bdf36",
+      "author": "home",
+      "text": "**Owner redirect, 2026-10-01.** Priorities moved to the Unified Decision Flywheel: initiative `decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959`, design `studies/DECISION_FLYWHEEL_DESIGN.md`. The large static Jev selection-by-size study is complete and published: `studies/INITIAL_JEV_RESULTS.md` (commits 44e14e1, 7068ded). Demonstration-ordering and Jev/Kev/Laya cross-model comparisons are **deferred, not cancelled** (Laya and Kev cannot take few-shot context). No spend is approved for this work.\n\nSelector-by-size preregistration is closed as done; the ordering preregistration and the cross-model rules are moved to backlog. This epic stays open at low priority until they are resumed or dropped by the owner.\n",
+      "created_at": "2026-10-01T20:08:21.642307Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:07:58.250271Z",
-  "updated_at": "2026-09-30T18:07:58.250364Z",
+  "updated_at": "2026-10-01T20:10:17.534772Z",
   "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {},
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
 }

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "f54e59b3-6c94-4569-be4d-201d496d4fc7",
+  "issue_id": "decision-flywheel-evaluations-45bb2244-a23a-4488-97bb-a6b97e977c16",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:00:03.205Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Write the Decision Flywheel product design and experiment plan",
+    "description": "## Purpose\n\nTurn the first results and the owner's product definition into a design and a small experiment plan.\n\n## Done\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) (2026-10-01, design only): architecture and classifier bundle (§1), feedback explanations (§2), fixed example-list optimizer (§3), retrieval options (§4), experiment plan with arms and costs (§5), build order with stops S0–S5 (§6), open questions (§7), facts in Appendices A–C. Every task in this initiative links to its sections.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

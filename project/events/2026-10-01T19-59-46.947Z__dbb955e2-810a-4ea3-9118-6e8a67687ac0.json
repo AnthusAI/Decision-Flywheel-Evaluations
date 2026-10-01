@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "dbb955e2-810a-4ea3-9118-6e8a67687ac0",
+  "issue_id": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T19:59:46.947Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Build the unified harness and run the first features-plus-few-shot experiment",
+    "description": "## Purpose\n\nRecord the first unified experiment: features (A), few-shot by per-item retrieval (B), free neighbour-vote features (B-local), and both (A+B), on Jev.\n\n## Scope (done)\n\nJev-Flywheel planted-bias sentiment corpus; 3 rounds × 100 scripted labels, label-order seed 1; iteration on dev-100; final comparison on paper-600 (not pristine). Analyst OpenAI `gpt-6-luna`. Plan: [UNIFIED_FLYWHEEL_PLAN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_PLAN.md).\n\n## Outcome\n\nPaper-600 accuracy after 300 labels: 0 = 0.767, A = 0.855, B-local = 0.853, B = 0.892, **A+B = 0.918**. A+B − better single lever = +0.027 (0.007 to 0.048). One seed, exploratory, no significance claims. About 6,000 Jev requests (2,400 dev-100 + 3,600 paper-600), under the 9,500 ceiling.\n\n## Definition of done\n\nMet: offline harness (eb6927f, 85cbb32), live run, published results (33f2afe, ef1f088), and the follow-up design (studies/DECISION_FLYWHEEL_DESIGN.md).",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "decision-flywheel-evaluations-86786617-714c-4edf-9d52-5e70c909de85",
+  "title": "Build the offline unified flywheel harness (arms 0, A, B-local, B, A+B)",
+  "description": "## Purpose\n\nOffline harness for arms 0 / A / B-local / B / A+B.\n\n## Done\n\nCommit eb6927f (`feat: offline harness for the unified flywheel`): `unified_loop`, `unified_spend` (durable request ceiling, failure breaker), `unified_splits`, `unified_stats`, `unified_knn`, fake Jev, leakage guards, text-free outputs, live mode off by default; specs beside each module. Commit 85cbb32 lets `gpt-6` analysts run (`max_completion_tokens`, no default temperature). Released as 0.10.0 / 0.10.1.",
+  "type": "task",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+  "labels": [
+    "roadmap"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "0c9a0111-1631-4a3a-ae66-f62a9fc468c0",
+      "author": "home",
+      "text": "Done: commits eb6927f (offline harness, fake Jev, ceiling, leakage guards) and 85cbb32 (gpt-6 analyst fix); released 0.10.0/0.10.1. Recorded retroactively on 2026-10-01.",
+      "created_at": "2026-10-01T20:00:30.523261Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
+  "created_at": "2026-10-01T19:59:49.475877Z",
+  "updated_at": "2026-10-01T20:06:27.131721Z",
+  "closed_at": "2026-10-01T20:00:34.302223Z",
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Flywheel Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

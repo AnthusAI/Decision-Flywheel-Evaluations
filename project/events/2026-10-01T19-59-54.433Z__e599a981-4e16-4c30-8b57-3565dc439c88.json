@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "e599a981-4e16-4c30-8b57-3565dc439c88",
+  "issue_id": "decision-flywheel-evaluations-4ce01e42-7736-4fbc-8c1b-b4e86893b934",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T19:59:54.433Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Run the seed-1 live rounds and the paper-600 comparison on Jev",
+    "description": "## Purpose\n\nLive seed-1 run of arms 0 / A / B-local / B / A+B on Jev `jev-1.13.0`.\n\n## Done\n\n3 × 100 labels, iteration on dev-100 (2,400 Jev requests), final frozen comparison on paper-600 (3,600 Jev requests); about 6,000 in all, under the 9,500-request ($5) ceiling. Analyst calls (OpenAI `gpt-6-luna`) small and not counted. Text-free summaries: `studies/results/unified/seed1.dev100.summary.json`, `seed1.paper600.summary.json` (commit 33f2afe).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-40f776f6-06f0-4c04-80fb-5a21ddda8f5d",
+    "labels": [
+      "roadmap"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

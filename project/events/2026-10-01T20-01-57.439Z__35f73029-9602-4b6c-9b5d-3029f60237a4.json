@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "35f73029-9602-4b6c-9b5d-3029f60237a4",
+  "issue_id": "decision-flywheel-evaluations-81f0ec6c-0714-4f22-8725-9bd0bf4e4b94",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-01T20:01:57.439Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Owner decision needed: is the leaky L2 labeler acceptable evidence for the explanation path?",
+    "description": "## Owner decision needed (Q1)\n\nDo not assume an answer. The L2 labeler build waits for it.\n\n1. Is an LLM-simulated labeler that knows a hidden team convention (L2: ≤20 words, never quotes the rule, no comment 40% of the time) acceptable evidence for the explanation path? It **leaks by design**: a gain shows the plumbing works, not that real reviewers' comments surface hidden factors.\n2. Labeler model: OpenAI `gpt-6-luna` (same as the analyst; phrasing coupling) or Bedrock Kimi-K3 (already wired in Jev-Flywheel)?\n3. Does **any real reviewer feedback with comments** exist? None on disk: every recorded comment is the template \"I disagree; the correct label is X\" (43 in `fixtures/recordings/simulated-labeler`, about 2,270 in the `bios_attorney` recordings).\n\n## Definition of done\n\nThe owner's answers are recorded as a comment here and reflected in the labeler task's scope. Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2, §7 Q1.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-86b6d78a-d49b-4006-b70a-168eeff4c358",
+    "labels": [
+      "roadmap",
+      "phase-2",
+      "owner-decision"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Flywheel Planning"
+    }
+  }
+}

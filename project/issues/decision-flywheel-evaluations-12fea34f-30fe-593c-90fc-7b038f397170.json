@@ -3,7 +3,7 @@
   "title": "Collect and analyze the initial Jev selection-by-size study",
   "description": "## Scope\n\nAfter the development-only pilot, freeze a policy and select a valid fresh or explicitly historical scoreboard according to the exposure inventory. Collect all approved Jev selector/size/draw cells using the one predeclared initial order; publish the complete dose-response and selection findings.\n\n## Definition of done\n\nManifest/plan commits precede calls; all counts reconcile; primary paired effects, variation across draws, failed cells, calibration, and usage are reported. Historical Emotion results remain cited experimental notes rather than a substituted fresh run.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0822f794-4e56-5a84-8a7d-8a17a16cd2d1`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-ce360969-5b44-554d-ba77-d4a38dbd7de1`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -25,21 +25,32 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "d01ac959-3d65-4637-b54a-f98b60586ff9",
+      "author": "home",
+      "text": "Closing: definition of done met. Manifests and plans were committed before calls; Run 2 completed 58,000/58,000 physical requests per dataset with counts reconciled (Run 1, cut short by HTTP 402, is kept but unused). Primary paired effects, variation across draws, calibration (log loss, ECE) and physical usage are in `studies/results/*.summary.json`; Emotion is labelled exploratory. Results: `studies/INITIAL_JEV_RESULTS.md` (44e14e1, 7068ded; recorded on the board in 408c63f). Its blocker, the capability pilot, stays open only for its deferred Kev/Laya half; the Jev pilot that gated this Jev-only study completed.\n",
+      "created_at": "2026-10-01T20:08:40.321022Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Flywheel Planning"
+      }
+    }
+  ],
   "created_at": "2026-09-30T18:08:27.958753Z",
-  "updated_at": "2026-09-30T18:09:16.380071Z",
-  "closed_at": null,
-  "right_now_summary": null,
-  "right_now_updated_at": null,
-  "custom": {
-    "source": "shared",
-    "project_label": "decision-flywheel-evaluations"
-  },
+  "updated_at": "2026-10-01T20:10:34.706503Z",
+  "closed_at": "2026-10-01T20:10:34.706467Z",
   "agent": {
     "platform": "codex",
     "model": "GPT-6",
-    "name": "Flywheel Planning",
-    "settings": {}
+    "name": "Flywheel Planning"
   },
-  "agent_assignment": null
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }
