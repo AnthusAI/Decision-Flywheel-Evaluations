@@ -36,7 +36,8 @@ decision, 2026-10-01.
    losing accuracy.
 3. **Optimize the example list (lever F).** The fixed list challenges itself
    (§3), scored on a development split drawn from the labels and never from
-   held-out data. The winner's few-shot answer becomes one more head feature.
+   held-out data. Every rubric question is then answered with the winning list
+   in the request (one request per item; Q2, decided).
 4. **Optional dynamic retrieval (lever D).** Only if `retrieval.enabled`. Each
    item gets its own retrieved examples, and that few-shot answer is a further
    feature.
@@ -69,16 +70,16 @@ A directory with three files.
 1. `load_bundle(dir)` verifies every hash and the task fingerprint. It compares
    the configured engine model with the stored one, and warns if the model Jev
    reports differs.
-2. Send **request 1**, zero-shot: the holistic question plus every rubric
-   element, in one Jev request.
-3. Send **request 2**, few-shot: the holistic question, with
-   `state={labeled_examples: fixed list, target}`.
-4. If retrieval is on, send **request 3**: the same as request 2, but with that
-   item's retrieved examples.
-5. `Score.feature_vector` turns the answers into features. `predict` returns a
+2. Send **one Jev request**: the holistic question plus every rubric element,
+   with `state={labeled_examples: fixed list, target}`.
+3. If retrieval is on, send a second request: the same, but with that item's
+   retrieved examples.
+4. `Score.feature_vector` turns the answers into features. `predict` returns a
    label, a calibrated probability and the top contributions.
 
-So the default costs **2 Jev requests per item**, and 3 with retrieval.
+So the default costs **1 Jev request per item**, and 2 with retrieval. The answer
+cache key includes the list's fingerprint, so a new list means re-asking the
+labeled set (a few hundred requests), which the owner accepted (Q2, 2026-10-01).
 
 **Reserve rule.** If a target is itself in the list, its example is replaced by
 that label's reserve. This keeps the list balanced, and it gives labeled items
@@ -398,7 +399,7 @@ A+B 0.918, baseline 0.767):
 | **F** | + fixed optimized list's few-shot answer | about 1,450 few-shot (§3.2, three rounds) |
 | **F-rand**, the control | + fixed random-balanced list, redrawn each round, same k | about 900 few-shot |
 | **A-c** | A, with L2 comments | about 800 zero-shot, plus about 6 analyst calls and ≤300 labeler calls (OpenAI) |
-| **A-c+F**, the default product | A-c elements + F feature | about 800 zero-shot; F's few-shot answers are shared, because the list does not depend on elements |
+| **A-c+F**, the default product | A-c elements, all answered with its own optimized list in the request | F's requests for its own question set, plus the steering's zero-shot top-ups |
 | D-sw / D-emb | dynamic retrieval with stop words on, or with embeddings | **$0 proxy first** (below); live only if the proxy passes |
 | A-c+F+D | head-only variant: A-c+F's elements + F + the best D | $0 once its answers are cached. **Not** an independent steering trajectory; say so |
 
@@ -435,7 +436,7 @@ significance claims.
 | Comparison | Result that changes the design |
 |---|---|
 | **F vs F-rand** (does the optimizer earn its keep?) | Within ±1 point, with an interval spanning 0: ship the plain `PrototypeBalanced` or random list as the default, shrink `improve_example_list` to a one-shot pick, and stop investing in it |
-| **A-c+F vs A-c and vs F** (do the levers add up for the fixed default?) | No gain over the better single lever: the default collapses to one lever, and two Jev requests per item are not justified |
+| **A-c+F vs A-c and vs F** (do the levers add up for the fixed default?) | No gain over the better single lever: the default collapses to one lever |
 | **A-c+F vs A+D-v1 (0.918)** (how far is the fixed default from retrieval?) | Reported only. No threshold applies: the default stays the fixed list (Q3, decided) |
 | **A-c vs A** (do explanations help?) | No gain even with leaky L2 comments: the comment path is not the bottleneck, so investigate the analyst prompt before any labeling UI work |
 | **D proxy, v2 with stop words vs v1** | v2 worse: flip the stop-word default off |
@@ -483,7 +484,7 @@ significance claims.
 - the S3 Vectors and DynamoDB adapters (design only, §4.5);
 - a second seed (only if S4 hinges on it);
 - Laya and Kev, which help only zero-shot or feature discovery;
-- the one-request variant of the bundle (Q2).
+- a two-request variant of the bundle (Q2 chose one request).
 
 ## 7. Open questions for the owner
 
@@ -492,12 +493,10 @@ significance claims.
    the analyst (Kimi-K3 vs `gpt-6-luna`)? And is there **any** real reviewer
    feedback with comments we could use? None exists on disk; every recorded
    comment is a template.
-2. **Request shape.** Should the fixed list go in its own few-shot request (2
-   Jev requests per item, clean caches; this design), or should the examples ride
-   in the same request as every rubric question?
-   - **One request** costs half as much per item.
-   - **But** the examples' labels would influence element answers, and every
-     list change would make every cached element answer stale.
+2. **Request shape. Decided (owner, 2026-10-01): one request per item**, with
+   the example list in the state together with every rubric question. This
+   reverses the earlier recommendation of a separate few-shot request. The cache
+   key includes the list fingerprint; a list change re-asks the labeled set.
 3. ~~If A+D clearly beats A-c+F, does the default change?~~ **Decided
    (owner, 2026-10-01): no.** The fixed list is the default because it is simple
    to set up and deploy; retrieval is not the default regardless of any benchmark
