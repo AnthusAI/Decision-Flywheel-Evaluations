@@ -3,7 +3,7 @@
   "title": "Build the L2 explanation labeler and wire comments into feedback",
   "description": "## Purpose\n\nBuild the L2 explanation labeler so arm A-c's analyst sees terse reviewer-style reasons, and wire comments into the harness feedback.\n\n## Scope\n\n- Labels stay the corpus reference labels for every arm; the LLM writes only the **reason**.\n- One call per labeled item that some arm got wrong, conditioned on text + correct label, never on any arm's prediction (shared across arms). **≤300 calls**, about 100 expected. Model per Q1.\n- Cache in `var/` keyed by item, label, prompt SHA-256 and model; exact replay. Text-free summaries: hashes, counts, a \"mentions topic or domain\" flag.\n- Wire comments into `unified_loop._record_feedback` (`edit_comment_value`); record which promoted element cited which comment hashes. L0 = existing template; optional L3 (full rule) offline-only as a leakage ceiling, never evidence.\n- Generate comments for the 300 labels.\n\n## Definition of done\n\nSpecs first with a fake labeler, no network: cache replay is exact, summaries are text-free, comments reach the analyst briefing, attribution recorded. Comments generated and cached. Ends at the input to **S3**. Cost: ≤300 OpenAI calls (price unverified, expected cents); 0 Jev requests.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2 (labels with explanations, caveats), §6 step 7.",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -34,10 +34,22 @@
         "model": "claude-opus-5-5",
         "name": "phase1-subagent"
       }
+    },
+    {
+      "id": "0f820b26-e65f-40a5-8ab5-245f1475efb7",
+      "author": "home",
+      "text": "Code done (Evaluations 49efdf3, 48d40de). unified_labeler.py: the simulated reviewer knows the corpus's planted convention (neutral sports talk -> positive, workplace operations -> negative; Jev-Flywheel README \"The bias in the data\") and writes a terse reason (<= 20 words, never states the rule; no comment for ~40% of labels, fixed by hash) conditioned only on text + reference label. Completion is pluggable: deterministic offline fake (Jev-Flywheel audit_corpus.py keyword cues), live gpt-6-luna via litellm with the gpt-6 shim (gated: --live --confirm, durable ledger, --max-calls <= 300 and >= the uncached need), or a refusing replay. Cache in var/ keyed by item, label, prompt SHA-256 and model, holding comments and hashes but no item text; reports are text-free (counts, comments hash, mentions-topic count). `unified_flywheel.py comments` writes the --comments JSONL. Steering records now carry comments_in_feedback and the hashes of comments the analyst's reply quoted; bundles record the same in rubric provenance. Specs: comments reach only A-c/A-c+F and appear in their analyst briefing (FlywheelHost.briefing), determinism, exact replay from cache, no dataset or comment text in outputs.\n\nSurprise: Jev-Flywheel has no hidden-rubric labeler to reuse; its recorded simulated labeler uses the uninformative template only. The hidden rubric reused here is the corpus's own planted convention.\n\nOffline twin: 300 labels -> 172 comments (128 skipped), 59 mention a topic. Remaining: the live generation (step 1 of the plan on the Phase 2 epic), then S3.\n",
+      "created_at": "2026-10-01T22:31:00.142083Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "claude-opus-5-5",
+        "name": "phase2-subagent"
+      }
     }
   ],
   "created_at": "2026-10-01T20:02:01.704685Z",
-  "updated_at": "2026-10-01T21:47:36.108471Z",
+  "updated_at": "2026-10-01T22:31:00.158979Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",

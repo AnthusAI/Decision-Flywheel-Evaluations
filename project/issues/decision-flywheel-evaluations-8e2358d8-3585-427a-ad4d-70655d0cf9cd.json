@@ -3,7 +3,7 @@
   "title": "Phase 1: fixed example list arms and the first live reading (S0-S1)",
   "description": "## Purpose\n\nPhase 1: get the first live reading of a native, optimized **fixed** example list (F) against a random fixed list (F-rand) on Jev.\n\n## Scope\n\nHarness arms F / F-rand (plus the A-c and A-c+F wiring, offline), the $0 replay check, and live round 1. Depends on core `FixedExampleList`, the Brier objective, and `improve_example_list`.\n\n## Definition of done\n\nS1 reached and the dev-100 F vs F-rand reading recorded on this epic with actual spend. Cost: ≈$0.55, ≤1,000 Jev requests, inside the 7,500-request ledger.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §3, §5.2, §6 steps 1–5.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-6d3f7611-cb20-480f-b44e-b0317754bb13`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-886c718d-c0f7-4384-81e9-7ad29677be98`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1ed56f35-629d-48d5-84c1-f9e26d038d9e`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1dc7a4b2-61d5-48ab-962e-22a55ffa6a39`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "epic",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -25,11 +25,30 @@
         "model": "claude-opus-5-5",
         "name": "phase1-subagent"
       }
+    },
+    {
+      "id": "77411d10-995b-4648-8fc8-1bf2d22a9d5e",
+      "author": "home",
+      "text": "Done (live, 2026-10-01). Live rounds 1-3 on dev-100 for 0, A, F, F-rand and A-c+F (A-c = A, no comments yet) are recorded in studies/UNIFIED_FLYWHEEL_RESULTS.md (addendum, docs commit 9718122); text-free summary studies/results/unified/flywheel-seed1.dev100.summary.json.\n\nDev-100 (accuracy / Brier):\n| Round | 0 | A | F | F-rand | A-c+F |\n| 1 | 0.74 / 0.160 | 0.74 / 0.160 | 0.78 / 0.135 | 0.76 / 0.150 | 0.78 / 0.135 |\n| 2 | 0.74 / 0.160 | 0.89 / 0.069 | 0.74 / 0.146 | 0.70 / 0.172 | 0.91 / 0.064 |\n| 3 | 0.74 / 0.160 | 0.92 / 0.059 | 0.78 / 0.139 | 0.72 / 0.153 | 0.89 / 0.079 |\n\nS1 checks: requests well-formed (0 failures in the final invocation, Jev reported jev-1.13.0 only); F's list (7372a944, the incumbent kept all three rounds) differs from F-rand's (9d4b3802 / 72fbcfcb / 0d1bfed7); the holistic answer with the list differs from zero-shot on 9-11% of items for F (not the ~20% guessed; 22% for A-c+F's round-3 random-control list); input tokens per request about 560 with the list vs about 305 zero-shot (~1.85x). Spend: about 5,700 Jev requests across the Phase 1 live invocations (ledger spend-ledger.flywheel2.json: 5,120 cumulative for the rounds-3 run). Reading: feature discovery drives the gain; the optimized list helps a little alone (0.78 vs 0.74 baseline, vs 0.72 random) and adds nothing visible on top of discovered features. Single seed, ~±9 points on dev-100.\n\nPhase 2 (harness 48d40de/4a9e39f) re-verified offline at $0 that these cached live answers replay F and F-rand exactly (all three rounds' metrics identical) and freeze them as bundles.\n",
+      "created_at": "2026-10-01T22:30:25.985628Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "claude-opus-5-5",
+        "name": "phase2-subagent"
+      }
+    },
+    {
+      "id": "c9121e35-1697-4d7a-a7b8-d1d149b333bb",
+      "author": "home",
+      "text": "All children closed; S1 reached (results in the comment above).",
+      "created_at": "2026-10-01T22:31:00.080832Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-01T20:01:32.210023Z",
-  "updated_at": "2026-10-01T21:47:35.968401Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T22:31:00.094060Z",
+  "closed_at": "2026-10-01T22:31:00.094033Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

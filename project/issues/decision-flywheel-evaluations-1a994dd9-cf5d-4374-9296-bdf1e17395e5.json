@@ -3,7 +3,7 @@
   "title": "Run live round 1 for F and F-rand and take the first reading (S1)",
   "description": "## Purpose\n\nRun live round 1 for F and F-rand on Jev and take the first F vs F-rand reading (stop S1).\n\n## Scope\n\nRound 1 (100 labels) on dev-100, arms 0 (free), F and F-rand, one Jev request per item with the list in the state (Q2). F: 3 trial lists x the labels outside every list (offline: 3 x 78 = 234), then the chosen list over its own list items and dev-100 (offline: 122). F-rand: 100 labels + 100 dev = 200. A-c / A-c+F zero-shot work waits for L2 comments (Phase 2); design §5.3 lists them in round 1, the owner's phasing moves them. No paper-600.\n\n## Cost cap\n\n≈556 requests (offline twin of the command: F 356, F-rand 200; upper bound 700), ≈$0.36 at the few-shot estimate (Appendix C); **hard cap 1,000 Jev requests** for this step inside the 7,500 cumulative ledger. Pre-approved by the owner within these caps.\n\n## Definition of done (S1)\n\nRequests well-formed; F's list differs from F-rand's; the holistic answer with the list differs from zero-shot on about 20% of items (`list_vs_zero_shot` in the summary); token multiplier about 1.9× (ledger tokens per request); dev-100 F vs F-rand accuracy/Brier and actual spend posted as a comment; humans look before Phase 2 spend.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §3.2, §5.3, §6 step 5.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -31,11 +31,23 @@
         "model": "claude-opus-5-5",
         "name": "phase1-subagent"
       }
+    },
+    {
+      "id": "57c9e6e2-b1b9-4a7e-997f-843ca4146d86",
+      "author": "home",
+      "text": "Done (live, 2026-10-01). Live rounds 1-3 on dev-100 for 0, A, F, F-rand and A-c+F (A-c = A, no comments yet) are recorded in studies/UNIFIED_FLYWHEEL_RESULTS.md (addendum, docs commit 9718122); text-free summary studies/results/unified/flywheel-seed1.dev100.summary.json.\n\nDev-100 (accuracy / Brier):\n| Round | 0 | A | F | F-rand | A-c+F |\n| 1 | 0.74 / 0.160 | 0.74 / 0.160 | 0.78 / 0.135 | 0.76 / 0.150 | 0.78 / 0.135 |\n| 2 | 0.74 / 0.160 | 0.89 / 0.069 | 0.74 / 0.146 | 0.70 / 0.172 | 0.91 / 0.064 |\n| 3 | 0.74 / 0.160 | 0.92 / 0.059 | 0.78 / 0.139 | 0.72 / 0.153 | 0.89 / 0.079 |\n\nS1 checks: requests well-formed (0 failures in the final invocation, Jev reported jev-1.13.0 only); F's list (7372a944, the incumbent kept all three rounds) differs from F-rand's (9d4b3802 / 72fbcfcb / 0d1bfed7); the holistic answer with the list differs from zero-shot on 9-11% of items for F (not the ~20% guessed; 22% for A-c+F's round-3 random-control list); input tokens per request about 560 with the list vs about 305 zero-shot (~1.85x). Spend: about 5,700 Jev requests across the Phase 1 live invocations (ledger spend-ledger.flywheel2.json: 5,120 cumulative for the rounds-3 run). Reading: feature discovery drives the gain; the optimized list helps a little alone (0.78 vs 0.74 baseline, vs 0.72 random) and adds nothing visible on top of discovered features. Single seed, ~±9 points on dev-100.\n\nPhase 2 (harness 48d40de/4a9e39f) re-verified offline at $0 that these cached live answers replay F and F-rand exactly (all three rounds' metrics identical) and freeze them as bundles.\n",
+      "created_at": "2026-10-01T22:30:25.949257Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "claude-opus-5-5",
+        "name": "phase2-subagent"
+      }
     }
   ],
   "created_at": "2026-10-01T20:01:52.956542Z",
-  "updated_at": "2026-10-01T21:47:35.980712Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T22:30:25.967739Z",
+  "closed_at": "2026-10-01T22:30:25.967704Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
