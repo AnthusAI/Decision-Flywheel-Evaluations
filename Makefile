@@ -3,6 +3,7 @@
 PYTHON ?= python
 STAGE ?= scoreboard
 MAX_RETRIES_PER_REQUEST ?= 0
+MAX_CONCURRENCY ?= 1
 DOWNLOAD_CACHE ?= .data/huggingface
 
 ifeq ($(strip $(ROWS)),)
@@ -36,7 +37,7 @@ run:
 	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || { test -z "$(ROWS)" && test -z "$(DATASET_CACHE)"; } || { test -n "$(ROWS)" && test -n "$(DATASET_CACHE)"; } || test -z "$(PREFLIGHT)" || test -z "$(LEDGER)" || test -z "$(PREREGISTRATION)" || test -z "$(OUTPUT)" || test -z "$(PROVIDER_MODEL)" || test -z "$(ATTEMPT_CEILING)" || test -z "$(MAX_NEW)" || test -z "$(BASE_URL)" || test -z "$(TIMEOUT_SECONDS)" || test -z "$(ADAPTER_REVISION)" || test -z "$(PACKAGE_REVISION)"; then \
 		echo "Usage: make run PROTOCOL=... MANIFEST=... (ROWS=fixture.json | DATASET_CACHE=.data/huggingface) PREFLIGHT=... LEDGER=... PREREGISTRATION=... OUTPUT=... PROVIDER_MODEL=... BASE_URL=https://... TIMEOUT_SECONDS=... ADAPTER_REVISION=... PACKAGE_REVISION=typesafe-sdk-0.7.1 ATTEMPT_CEILING=... MAX_NEW=... CONFIRM=--confirm"; exit 2; \
 	fi
-	$(PYTHON) -m decision_flywheel_evaluations.cli run --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" $(SOURCE_ARGS) --preflight "$(PREFLIGHT)" --ledger "$(LEDGER)" --preregistration "$(PREREGISTRATION)" --output "$(OUTPUT)" --provider-model "$(PROVIDER_MODEL)" --base-url "$(BASE_URL)" --timeout-seconds "$(TIMEOUT_SECONDS)" --adapter-revision "$(ADAPTER_REVISION)" --package-revision "$(PACKAGE_REVISION)" --attempt-ceiling "$(ATTEMPT_CEILING)" --max-new "$(MAX_NEW)" --max-retries-per-request "$(MAX_RETRIES_PER_REQUEST)" $(RETRY_FAILED) $(RECOVER_UNCERTAIN) "$(CONFIRM)"
+	$(PYTHON) -m decision_flywheel_evaluations.cli run --protocol "$(PROTOCOL)" --manifest "$(MANIFEST)" $(SOURCE_ARGS) --preflight "$(PREFLIGHT)" --ledger "$(LEDGER)" --preregistration "$(PREREGISTRATION)" --output "$(OUTPUT)" --provider-model "$(PROVIDER_MODEL)" --base-url "$(BASE_URL)" --timeout-seconds "$(TIMEOUT_SECONDS)" --adapter-revision "$(ADAPTER_REVISION)" --package-revision "$(PACKAGE_REVISION)" --attempt-ceiling "$(ATTEMPT_CEILING)" --max-new "$(MAX_NEW)" --max-retries-per-request "$(MAX_RETRIES_PER_REQUEST)" --max-concurrency "$(MAX_CONCURRENCY)" $(RETRY_FAILED) $(RECOVER_UNCERTAIN) "$(CONFIRM)"
 
 report:
 	@if test -z "$(PROTOCOL)" || test -z "$(MANIFEST)" || test -z "$(PREFLIGHT)" || test -z "$(OBSERVATIONS)" || test -z "$(OUTPUT)"; then \

@@ -44,7 +44,7 @@ async def run_collection(
     base_url: str | None = None, timeout_seconds: float | None = None,
     adapter_revision: str | None = None, package_revision: str | None = None,
     retry_failed: bool = False, recover_uncertain: bool = False, max_retries_per_request: int = 0,
-    committed_checker: CommittedChecker | None = None,
+    max_concurrency: int = 1, committed_checker: CommittedChecker | None = None,
 ) -> CollectionResult:
     """Run a bounded JEV-only collection after all non-provider gates pass.
 
@@ -59,7 +59,8 @@ async def run_collection(
         raise ValueError("max-new must be a non-negative integer")
     options = CollectionOptions(max_new_attempts=max_new_attempts, retry_failed=retry_failed,
                                 recover_uncertain=recover_uncertain,
-                                max_retries_per_request=max_retries_per_request)
+                                max_retries_per_request=max_retries_per_request,
+                                max_concurrency=max_concurrency)
     options.validate()
     protocol.validate()
     if not isinstance(plan, PreflightResult) or plan.blockers or not plan.cells:
@@ -306,7 +307,8 @@ def _command_run(args: argparse.Namespace) -> int:
                                         timeout_seconds=args.timeout_seconds, adapter_revision=args.adapter_revision,
                                         package_revision=args.package_revision, retry_failed=args.retry_failed,
                                         recover_uncertain=args.recover_uncertain,
-                                        max_retries_per_request=args.max_retries_per_request))
+                                        max_retries_per_request=args.max_retries_per_request,
+                                        max_concurrency=args.max_concurrency))
     write_observations(args.output, result.observations)
     print(f"wrote {len(result.observations)} observations; {result.new_attempts} new attempts")
     return 0
@@ -388,6 +390,8 @@ def parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--retry-failed", action="store_true")
     run_parser.add_argument("--recover-uncertain", action="store_true")
     run_parser.add_argument("--max-retries-per-request", type=int, default=0)
+    run_parser.add_argument("--max-concurrency", type=int, default=1,
+                            help="bounded number of in-flight provider requests")
     run_parser.add_argument("--confirm", action="store_true")
     run_parser.set_defaults(handler=_command_run)
     select_parser = commands.add_parser("select", help="derive a selected-global artifact from complete cached development evidence")

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import subprocess
 from dataclasses import dataclass
@@ -52,6 +53,7 @@ class CollectionOptions:
     recover_uncertain: bool = False
     max_retries_per_request: int = 0
     max_consecutive_failures: int = 25
+    max_concurrency: int = 1
 
     def validate(self) -> None:
         if (self.max_new_attempts is not None and (isinstance(self.max_new_attempts, bool)
@@ -60,7 +62,9 @@ class CollectionOptions:
             or isinstance(self.max_retries_per_request, bool)
             or not isinstance(self.max_retries_per_request, int) or self.max_retries_per_request < 0
             or isinstance(self.max_consecutive_failures, bool)
-            or not isinstance(self.max_consecutive_failures, int) or self.max_consecutive_failures < 1):
+            or not isinstance(self.max_consecutive_failures, int) or self.max_consecutive_failures < 1
+            or isinstance(self.max_concurrency, bool)
+            or not isinstance(self.max_concurrency, int) or self.max_concurrency < 1):
             raise ValueError("collection options must be explicit non-negative bounds")
         if (self.retry_failed or self.recover_uncertain) and self.max_retries_per_request < 1:
             raise ValueError("retry and recovery require an explicit positive retry bound")
@@ -113,12 +117,17 @@ async def _collect_execution(
     initial_successes = cache.successful_request_ids()
     new_attempts = 0
     consecutive_failures = 0
+    abort: list[RuntimeError] = []
+    in_flight: set[asyncio.Task] = set()
+    slots = asyncio.Semaphore(options.max_concurrency)
     models: dict[str, DecisionModel] = {}
     cells_by_physical: dict[str, list[tuple[RequestCell, Item, object]]] = {}
     for cell, target, plan in execution:
         cells_by_physical.setdefault(cell.fingerprint, []).append((cell, target, plan))
 
     for physical_id, planned in sorted(cells_by_physical.items()):
+        if abort:
+            break
         state = cache.request_state(physical_id)
         status, attempts = state.status, state.attempts
         if status == "success":
@@ -153,50 +162,81 @@ async def _collect_execution(
                 ) from None
         # Reserve atomically. A completed replay returned here is possible
         # only with a concurrent collector.
+        # Take an in-flight slot first so reserved attempts never exceed the bound.
+        await slots.acquire()
+        if abort:
+            slots.release()
+            break
         try:
             reserved = cache.reserve(physical_id, _logical_cell(planned[0][0]))
         except ValueError as error:
+            slots.release()
             if str(error) == "approved attempt ceiling exhausted":
                 continue
             raise
         if isinstance(reserved, Mapping):
+            slots.release()
             for cell, _target, _plan in planned[1:]:
                 cache.reserve(physical_id, _logical_cell(cell))
             continue
         new_attempts += 1
         cell, target, plan = planned[0]
         model = models[cell.model]
-        completed = False
-        try:
-            result = await model.decide(protocol.task, target, plan.examples)
-        except ValueError:
-            # DecisionResult validation errors represent an invalid structured
-            # provider response; keep only the safe ledger category.
-            cache.fail(reserved, "malformed-response")
-        except Exception as error:
-            # Provider exception contents must never become result provenance.
-            cache.fail(reserved, "model-failure")
-            consecutive_failures += 1
-            # Billing/auth failures and long failure streaks are systemic, not
-            # per-request: stop instead of spending the whole approved ceiling.
-            status = getattr(error, "status", None)
-            if status in {401, 402, 403}:
-                raise RuntimeError(
-                    f"provider rejected the account (HTTP {status}); stopped after {new_attempts} attempts") from None
-            if consecutive_failures >= options.max_consecutive_failures:
-                raise RuntimeError(
-                    f"stopped after {consecutive_failures} consecutive provider failures") from None
-            continue
+
+        async def attempt(physical_id=physical_id, planned=planned, reserved=reserved,
+                          target=target, plan=plan, model=model, started=new_attempts):
+            nonlocal consecutive_failures
+            try:
+                completed = False
+                try:
+                    result = await model.decide(protocol.task, target, plan.examples)
+                except ValueError:
+                    # DecisionResult validation errors represent an invalid structured
+                    # provider response; keep only the safe ledger category.
+                    cache.fail(reserved, "malformed-response")
+                except Exception as error:
+                    # Provider exception contents must never become result provenance.
+                    cache.fail(reserved, "model-failure")
+                    consecutive_failures += 1
+                    # Billing/auth failures and long failure streaks are systemic, not
+                    # per-request: stop instead of spending the whole approved ceiling.
+                    status = getattr(error, "status", None)
+                    if status in {401, 402, 403}:
+                        abort.append(RuntimeError(
+                            f"provider rejected the account (HTTP {status}); stopped after {started} attempts"))
+                    elif consecutive_failures >= options.max_consecutive_failures:
+                        abort.append(RuntimeError(
+                            f"stopped after {consecutive_failures} consecutive provider failures"))
+                    return
+                else:
+                    consecutive_failures = 0
+                    # Persistence/ledger errors are not model failures and must not try
+                    # to finalize an already-transitioned reservation a second time.
+                    completed = cache.complete(reserved, _result_payload(result)).get("status") == "success"
+                # A success is replayed into the other logical cells; a failure still
+                # exports every cell from physical ledger metadata below.
+                if completed:
+                    for other, _target, _plan in planned[1:]:
+                        cache.reserve(physical_id, _logical_cell(other))
+            finally:
+                slots.release()
+
+        # Ledger calls are synchronous; only the provider call awaits, so tasks
+        # interleave solely at that point and the bounded pool needs no locking.
+        if options.max_concurrency == 1:
+            await attempt()
         else:
-            consecutive_failures = 0
-            # Persistence/ledger errors are not model failures and must not try
-            # to finalize an already-transitioned reservation a second time.
-            completed = cache.complete(reserved, _result_payload(result)).get("status") == "success"
-        # A success is replayed into the other logical cells; a failure still
-        # exports every cell from physical ledger metadata below.
-        if completed:
-            for other, _target, _plan in planned[1:]:
-                cache.reserve(physical_id, _logical_cell(other))
+            task = asyncio.ensure_future(attempt())
+            in_flight.add(task)
+            task.add_done_callback(in_flight.discard)
+
+    if in_flight:
+        outcomes = await asyncio.gather(*in_flight, return_exceptions=True)
+        failures = [item for item in outcomes if isinstance(item, BaseException)]
+        if failures:
+            raise failures[0]
+    if abort:
+        raise abort[0]
 
     snapshot = cache.snapshot()
     observations = tuple(_observation(cell, manifest, snapshot, cell.fingerprint in initial_successes)

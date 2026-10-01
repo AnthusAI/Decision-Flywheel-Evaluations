@@ -325,6 +325,40 @@ def test_the_gate_builds_each_request_plan_exactly_once(tmp_path, monkeypatch):
     assert len(calls) == len(plan.cells)
 
 
+class _OverlapModel:
+    def __init__(self):
+        self.now = self.peak = 0
+
+    async def decide(self, task, target, _context):
+        self.now += 1
+        self.peak = max(self.peak, self.now)
+        await asyncio.sleep(0.01)
+        self.now -= 1
+        return DecisionResult("world", usage={"tokens": 3}, latency_ms=4)
+
+
+def test_bounded_concurrency_overlaps_calls_and_keeps_the_ledger_exact(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, ceiling=None)
+    model = _OverlapModel()
+    result = asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, lambda _model: model,
+                                 committed_checker=lambda *_: True,
+                                 options=CollectionOptions(max_new_attempts=plan.new_request_count,
+                                                           max_concurrency=4)))
+    assert 1 < model.peak <= 4
+    assert result.new_attempts == result.physical_attempts == plan.new_request_count
+    assert result.complete and cache.attempts_used == plan.new_request_count
+
+
+def test_concurrent_failures_stop_the_run_within_the_in_flight_bound(tmp_path):
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, ceiling=None)
+    with pytest.raises(RuntimeError, match="consecutive"):
+        asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, lambda _model: _CrashingModel(),
+                            committed_checker=lambda *_: True,
+                            options=CollectionOptions(max_new_attempts=plan.new_request_count,
+                                                      max_consecutive_failures=3, max_concurrency=2)))
+    assert 3 <= cache.attempts_used <= 3 + 2
+
+
 def test_baseexception_crash_persists_reservation_for_reopen_recovery_and_one_retry(tmp_path):
     manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, confirmed=True, ceiling=2)
     class Crash(BaseException): pass
