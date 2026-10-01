@@ -178,8 +178,8 @@ def rehydrate_manifest(
     return candidates, development, scoreboard
 
 
-def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, rows: Iterable[DatasetRow], *, stage: str = "scoreboard") -> tuple[RequestCell, ...]:
-    """Build core ContextPlans offline; returned cells expose only IDs/fingerprints/estimates."""
+def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, rows: Iterable[DatasetRow], *, stage: str = "scoreboard", plans_out: dict | None = None) -> tuple[RequestCell, ...]:
+    """Build core ContextPlans offline; pass ``plans_out`` to also keep each plan by cell id; returned cells expose only IDs/fingerprints/estimates."""
     if stage not in {"optimization", "scoreboard"}: raise ValueError("stage must be optimization or scoreboard")
     candidates, development, scoreboard = rehydrate_manifest(manifest, rows, protocol, stage=stage)
     pool = candidate_pool_fingerprint(protocol.task, candidates)
@@ -193,7 +193,7 @@ def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, 
     def cell(*, phase: str, model: str, selector: Selector, size: int, seed: int | None,
              target_id: str, plan) -> RequestCell:
         wire = plan.token_accounting.serialized_request_fingerprint
-        return RequestCell(
+        built = RequestCell(
             id=f"{phase}:{model}:{selector.value}:{size}:{seed}:{target_id}",
             fingerprint=_physical_request_fingerprint(model, manifest.revision, wire), phase=phase,
             model=model, selector=selector.value, per_label=size, draw_seed=seed, target_id=target_id,
@@ -202,6 +202,9 @@ def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, 
             task_fingerprint=protocol.task.fingerprint, dataset_revision=manifest.revision,
             display_order=protocol.display_rule,
         )
+        if plans_out is not None:
+            plans_out[built.id] = plan
+        return built
 
     cells = []
     targets = development if stage == "optimization" else scoreboard
@@ -245,7 +248,8 @@ def core_plan_fingerprints(protocol: FrozenProtocol, manifest: DatasetManifest, 
 
 def preflight(protocol: FrozenProtocol, *, development_ids: Iterable[str] = (), scoreboard_ids: Iterable[str] = (), stage: str = "scoreboard",
               cached_fingerprints: frozenset[str] = frozenset(), engine: Callable[[RequestCell], object] | None = None,
-              manifest: DatasetManifest | None = None, rows: Iterable[DatasetRow] | None = None) -> PreflightResult:
+              manifest: DatasetManifest | None = None, rows: Iterable[DatasetRow] | None = None,
+              precomputed_cells: tuple[RequestCell, ...] | None = None) -> PreflightResult:
     """Enumerate fixed cells; ``engine`` is accepted only to prove it remains unused."""
     del engine
     protocol.validate()
@@ -261,7 +265,8 @@ def preflight(protocol: FrozenProtocol, *, development_ids: Iterable[str] = (), 
         raise ValueError("development IDs must exactly match the manifest development partition")
     if supplied_scoreboard and set(supplied_scoreboard) != expected_scoreboard:
         raise ValueError("scoreboard IDs must exactly match the manifest protected partition")
-    runtime = core_plan_fingerprints(protocol, manifest, rows, stage=stage)
+    runtime = (precomputed_cells if precomputed_cells is not None
+               else core_plan_fingerprints(protocol, manifest, rows, stage=stage))
     # Physical calls are keyed solely by complete model/wire fingerprints; the
     # logical selector/draw cells retain their own provenance IDs.
     physical = {cell.fingerprint for cell in runtime}

@@ -235,10 +235,13 @@ def _validate_gates(
     protocol.validate()
     source_rows = tuple(rows)
     # Recompute the exact core wire plans before anything can construct a model.
-    expected_cells = core_plan_fingerprints(protocol, manifest, source_rows, stage=frozen_preflight.stage)
+    built_plans: dict = {}
+    expected_cells = core_plan_fingerprints(protocol, manifest, source_rows, stage=frozen_preflight.stage,
+                                            plans_out=built_plans)
     if frozen_preflight.cells != expected_cells:
         raise ValueError("frozen preflight cells do not match regenerated core plans")
-    regenerated = preflight(protocol, manifest=manifest, rows=source_rows, stage=frozen_preflight.stage)
+    regenerated = preflight(protocol, manifest=manifest, rows=source_rows, stage=frozen_preflight.stage,
+                            precomputed_cells=expected_cells)
     if frozen_preflight.checksum != regenerated.checksum:
         raise ValueError("frozen preflight checksum does not match regenerated plans")
     if approval.protocol_hash != protocol.identity or approval.preflight_checksum != frozen_preflight.checksum:
@@ -264,11 +267,12 @@ def _validate_gates(
         or stored_base != expected_approved or cache.ceiling != approval.attempt_ceiling
         or cache.attempts_used > approval.attempt_ceiling):
         raise ValueError("cache ceiling does not match explicit collection approval")
-    return _execution_plans(protocol, manifest, source_rows, frozen_preflight.cells)
+    return _execution_plans(protocol, manifest, source_rows, frozen_preflight.cells, built_plans)
 
 
 def _execution_plans(
     protocol: FrozenProtocol, manifest: DatasetManifest, rows: Sequence[DatasetRow], cells: Sequence[RequestCell],
+    built_plans: Mapping[str, object] | None = None,
 ) -> tuple[tuple[RequestCell, Item, object], ...]:
     phases = {cell.phase for cell in cells}
     if phases - {"optimization", "pilot", "scoreboard"} or len(phases) > 1:
@@ -283,22 +287,24 @@ def _execution_plans(
         target = targets.get(cell.target_id)
         if target is None:
             raise ValueError("execution cell target is not in the validated manifest")
-        selector = Selector(cell.selector)
-        if selector is Selector.ZERO:
-            policy, size = RandomBalanced(0), 0
-        elif selector is Selector.RANDOM:
-            policy, size = RandomBalanced(cell.draw_seed or 0), cell.per_label
-        elif selector is Selector.PROTOTYPE:
-            policy, size = PrototypeBalanced(), cell.per_label
-        elif selector is Selector.RETRIEVAL:
-            policy, size = PerLabelLexicalRetrieval(), cell.per_label
-        else:
-            if artifact is None:
-                raise ValueError("selected-global cell has no frozen artifact")
-            policy, size = _FrozenGlobal(artifact.ids_by_size[cell.per_label], artifact.checksum), cell.per_label
-        plan = build_context_plan(protocol.task, target, candidates, policy, budget=ContextBudget(per_label=size),
-                                  display_order=protocol.display_rule, order_seed=0,
-                                  presentation_label_order=protocol.task.labels)
+        plan = (built_plans or {}).get(cell.id)
+        if plan is None:
+            selector = Selector(cell.selector)
+            if selector is Selector.ZERO:
+                policy, size = RandomBalanced(0), 0
+            elif selector is Selector.RANDOM:
+                policy, size = RandomBalanced(cell.draw_seed or 0), cell.per_label
+            elif selector is Selector.PROTOTYPE:
+                policy, size = PrototypeBalanced(), cell.per_label
+            elif selector is Selector.RETRIEVAL:
+                policy, size = PerLabelLexicalRetrieval(), cell.per_label
+            else:
+                if artifact is None:
+                    raise ValueError("selected-global cell has no frozen artifact")
+                policy, size = _FrozenGlobal(artifact.ids_by_size[cell.per_label], artifact.checksum), cell.per_label
+            plan = build_context_plan(protocol.task, target, candidates, policy, budget=ContextBudget(per_label=size),
+                                      display_order=protocol.display_rule, order_seed=0,
+                                      presentation_label_order=protocol.task.labels)
         if (plan.token_accounting.serialized_request_fingerprint != cell.wire_fingerprint
             or _physical_request_fingerprint(cell.model, manifest.revision, plan.token_accounting.serialized_request_fingerprint) != cell.fingerprint
             or plan.example_ids != cell.example_ids or cell.task_fingerprint != protocol.task.fingerprint

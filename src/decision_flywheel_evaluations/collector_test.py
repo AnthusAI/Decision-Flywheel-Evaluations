@@ -310,6 +310,21 @@ def test_consecutive_provider_failures_stop_the_run_before_the_budget_is_spent(t
     assert cache.attempts_used == 3
 
 
+def test_the_gate_builds_each_request_plan_exactly_once(tmp_path, monkeypatch):
+    from . import collector as collector_module, preflight as preflight_module
+    manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, ceiling=None)
+    calls = []
+    real = preflight_module.build_context_plan
+    def counting(*args, **kwargs):
+        calls.append(1)
+        return real(*args, **kwargs)
+    monkeypatch.setattr(preflight_module, "build_context_plan", counting)
+    monkeypatch.setattr(collector_module, "build_context_plan", counting)
+    asyncio.run(collect(protocol, manifest, rows, plan, cache, approval, lambda _model: pytest.fail("no model"),
+                        committed_checker=lambda *_: True, options=CollectionOptions(max_new_attempts=0)))
+    assert len(calls) == len(plan.cells)
+
+
 def test_baseexception_crash_persists_reservation_for_reopen_recovery_and_one_retry(tmp_path):
     manifest, rows, protocol, plan, approval, cache = _prepared(tmp_path, confirmed=True, ceiling=2)
     class Crash(BaseException): pass
