@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "31094635-4472-41de-9f1d-e1527718ab57",
+  "issue_id": "decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-01T21:47:41.887Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "93e1be2b-ff6a-44d6-a38b-3941127ba215",
+    "comment_author": "home",
+    "agent": {
+      "platform": "claude_code",
+      "model": "claude-opus-5-5",
+      "name": "phase1-subagent"
+    }
+  }
+}

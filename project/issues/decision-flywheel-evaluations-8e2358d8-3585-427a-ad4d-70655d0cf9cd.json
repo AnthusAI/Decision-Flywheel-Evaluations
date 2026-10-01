@@ -3,7 +3,7 @@
   "title": "Phase 1: fixed example list arms and the first live reading (S0-S1)",
   "description": "## Purpose\n\nPhase 1: get the first live reading of a native, optimized **fixed** example list (F) against a random fixed list (F-rand) on Jev.\n\n## Scope\n\nHarness arms F / F-rand (plus the A-c and A-c+F wiring, offline), the $0 replay check, and live round 1. Depends on core `FixedExampleList`, the Brier objective, and `improve_example_list`.\n\n## Definition of done\n\nS1 reached and the dev-100 F vs F-rand reading recorded on this epic with actual spend. Cost: ≈$0.55, ≤1,000 Jev requests, inside the 7,500-request ledger.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §3, §5.2, §6 steps 1–5.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-6d3f7611-cb20-480f-b44e-b0317754bb13`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-886c718d-c0f7-4384-81e9-7ad29677be98`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1ed56f35-629d-48d5-84c1-f9e26d038d9e`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1dc7a4b2-61d5-48ab-962e-22a55ffa6a39`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "epic",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -13,9 +13,22 @@
     "phase-1"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "2edd8fab-6534-4e54-b458-06e02a080de5",
+      "author": "home",
+      "text": "S0 reached offline ($0). Core: Decision-Flywheel f7721c4 (FixedExampleList, Brier objective, improve_example_list) and 6da5fd3 (example_list_from_policy). Harness: a342823 (arms F, F-rand, A-c, A-c+F; one Jev request per item with the list in the state; --replay), 44590f3 (list vs zero-shot diagnostic); docs 20f405f (Q3), be49d4a (Q2). Replay check passed. Remaining: live round 1 (S1), command prepared on decision-flywheel-evaluations-1a994dd9-cf5d-4374-9296-bdf1e17395e5, not executed.",
+      "created_at": "2026-10-01T21:47:20.232597Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "claude-opus-5-5",
+        "name": "phase1-subagent"
+      }
+    }
+  ],
   "created_at": "2026-10-01T20:01:32.210023Z",
-  "updated_at": "2026-10-01T20:01:32.210044Z",
+  "updated_at": "2026-10-01T21:47:35.968401Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",
@@ -24,5 +37,8 @@
   },
   "right_now_summary": null,
   "right_now_updated_at": null,
-  "custom": {}
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

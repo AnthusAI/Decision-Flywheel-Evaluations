@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "9b1f6ecc-0aae-4754-80e6-88419275f729",
+  "issue_id": "decision-flywheel-evaluations-5e067f89-04ba-4b0e-84b3-09ae93c8127b",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-01T21:47:05.638Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "description": {
+        "from": "## Owner decision needed (Q2)\n\nDo not assume an answer. The design builds the two-request shape until the owner decides.\n\nShould the fixed example list go in its **own few-shot request** per item (2 Jev requests per item, clean caches; the design's choice), or **ride in the same request** as every rubric question?\n\n- One request halves the per-item cost.\n- But the examples' labels would influence element answers, and every list change would make every cached element answer stale.\n\n## Definition of done\n\nAnswer recorded here; the core `ClassifierBundle` story and the bundle-freeze task follow it. Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2 (Reload and classify), §7 Q2.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-7284b9aa-7c87-4bd4-b5d3-f7a67546cbdd`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+        "to": "## Decided (owner, 2026-10-01): one request per item\n\nEach item gets **one** Jev request carrying the example list in the state together with every rubric question. The answer cache key includes the list fingerprint, so a list change re-asks the labeled set (a few hundred requests; accepted). This reverses the earlier recommendation of a separate few-shot request.\n\n## The question as asked (Q2)\n\nShould the fixed example list go in its **own few-shot request** per item (2 Jev requests per item, clean caches; the design's choice), or **ride in the same request** as every rubric question?\n\n- One request halves the per-item cost.\n- But the examples' labels would influence element answers, and every list change would make every cached element answer stale.\n\n## Definition of done\n\nAnswer recorded here; the core `ClassifierBundle` story and the bundle-freeze task follow it. Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2 (Reload and classify), §7 Q2.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-7284b9aa-7c87-4bd4-b5d3-f7a67546cbdd`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository."
+      }
+    }
+  }
+}

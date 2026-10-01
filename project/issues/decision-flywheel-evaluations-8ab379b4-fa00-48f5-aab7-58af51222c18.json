@@ -1,9 +1,9 @@
 {
   "id": "decision-flywheel-evaluations-8ab379b4-fa00-48f5-aab7-58af51222c18",
   "title": "Add harness arms F, F-rand, A-c and A-c+F and pass offline end to end (S0)",
-  "description": "## Purpose\n\nAdd arms F, F-rand, A-c and A-c+F to the unified harness and run every arm offline end to end on the fake Jev.\n\n## Scope\n\n- **F:** fixed list from core `improve_example_list` (k = 4 per label + 1 reserve), its few-shot answer as one head feature.\n- **F-rand:** `RandomBalanced` fixed list redrawn each round, same k (the control).\n- **A-c:** arm A with comments passed through `_record_feedback` (`edit_comment_value`); offline uses fake comments until the L2 labeler exists.\n- **A-c+F:** A-c elements + F feature; shares F's few-shot answers.\n- Reuse `_ensure_fewshot` with a fixed-list context fingerprint. Separate few-shot request per item (design default; Q2 open).\n- New spend ledger with a **cumulative ceiling of 7,500 Jev requests**; dev-100 and paper-600 always in `protected_ids`.\n\n## Definition of done\n\nSpecs first, no network: offline run of all arms with `FakeJevCore` passes; ceiling enforced; protected IDs never enter lists or development; F and F-rand fingerprints differ. `make test` green. **Stop S0. Cost: $0.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.3, §3.2, §5.2, §6 step 3.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-886c718d-c0f7-4384-81e9-7ad29677be98`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1dc7a4b2-61d5-48ab-962e-22a55ffa6a39`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
+  "description": "## Purpose\n\nAdd arms F, F-rand, A-c and A-c+F to the unified harness and run every arm offline end to end on the fake Jev.\n\n## Scope\n\n- **Request shape (owner, Q2):** one Jev request per item with the example list in the state together with every rubric question; the answer cache key includes the list fingerprint.\n- **F:** each round: predict the new labels, `improve_example_list` (k = 4 per label + 1 reserve; incumbent, hard-demo swap, random control; incumbent keeps ties) against the labels so far, answer labels and dev-100 with the chosen list, refit the head on those answers.\n- **F-rand:** `RandomBalanced` fixed list redrawn each round (independent seed), same k (the control).\n- **A-c:** arm A with comments passed through `_record_feedback` (`edit_comment_value`); runs as A until a labeler supplies comments.\n- **A-c+F:** A-c's steering plus F's list optimization over its own question set.\n- New spend ledger with a **cumulative ceiling of 7,500 Jev requests**; dev-100 and paper-600 always in `protected_ids`.\n\n## Definition of done\n\nSpecs first, no network: offline run of all arms with `FakeJevCore` passes; ceiling enforced; protected IDs never enter lists or development; F and F-rand fingerprints differ. `make test` green. **Stop S0. Cost: $0.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.3, §3.2, §5.2, §6 step 3.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-886c718d-c0f7-4384-81e9-7ad29677be98`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-1dc7a4b2-61d5-48ab-962e-22a55ffa6a39`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -18,10 +18,18 @@
       "type": "relates-to"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1640b721-bab0-433f-a7f4-498e9e63b405",
+      "author": "home",
+      "text": "Done in a342823 and 44590f3 (core f7721c4, 6da5fd3). One Jev request per item with the list in the state and every rubric question (Q2). Offline end to end with FakeJevCore for all nine arms: make unified-flywheel-test 74 passed; make test 347 passed, 3 skipped. Ceiling and circuit breaker are the existing ledger; held-out (test) IDs are protected_ids in improve_example_list; F and F-rand lists differ every round (independent seed). Offline requests per round: F 356/456/654, F-rand 200/300/400, A-c+F 356/756/654. A-c runs as A until a labeler supplies comments (--comments JSONL).",
+      "created_at": "2026-10-01T21:47:20.266650Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-01T20:01:42.389960Z",
-  "updated_at": "2026-10-01T20:04:40.051612Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T21:47:20.277244Z",
+  "closed_at": "2026-10-01T21:47:20.277217Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

@@ -3,7 +3,7 @@
   "title": "Replay check: reproduce arms 0, A, D-v1 and A+D-v1 from cache before spending",
   "description": "## Purpose\n\nProve the new harness version reproduces earlier arms exactly from cache before any new spend.\n\n## Scope\n\nReplay 0, A, D-v1 (earlier B) and A+D-v1 (earlier A+B) from cached Jev answers and recorded analyst replies.\n\n## Definition of done\n\nPaper-600 numbers match the published 0.767 / 0.855 / 0.892 / 0.918 (and Brier/ECE) with **0 new requests**. If they do not, stop and fix the harness; live round 1 stays blocked. Gate before S1. **Cost: $0.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §6 step 4.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -18,10 +18,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "d0b1d296-fdc3-4d96-8025-8d55e5eb458e",
+      "author": "home",
+      "text": "Passed at $0 with the new harness (a342823/44590f3, working-tree core 6da5fd3), via the new --replay mode on copies of var/unified-flywheel/live-seed1-dev100-results and live-seed1 (originals untouched); 0 new requests. dev-100: all 15 arm-rounds and all contrasts identical. paper-600: 0.767 / 0.855 / 0.853 / 0.892 / 0.918 reproduced exactly (round 3), rounds 2-3 identical; one difference in round 1 A+B (Brier 0.109557 -> 0.109553, ECE 0.043056 -> 0.043024, accuracy equal), explained by one failed live request in the original run (1 evaluation row lacked an element answer, filled later in round 2), so the replay sees that answer. Not a harness change.",
+      "created_at": "2026-10-01T21:47:20.297320Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-01T20:01:47.892594Z",
-  "updated_at": "2026-10-01T20:03:02.825986Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T21:47:20.308022Z",
+  "closed_at": "2026-10-01T21:47:20.307986Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

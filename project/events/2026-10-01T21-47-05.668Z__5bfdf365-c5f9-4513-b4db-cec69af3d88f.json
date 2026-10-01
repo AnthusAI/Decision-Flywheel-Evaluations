@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "event_id": "5bfdf365-c5f9-4513-b4db-cec69af3d88f",
+  "issue_id": "decision-flywheel-evaluations-b22370aa-0cf1-4b8c-8590-05ea3128fc7c",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-01T21:47:05.668Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Owner decision needed: if dynamic retrieval beats the fixed default by 3+ points, does the default stay fixed?",
+        "to": "Owner decision: the fixed example list is the default; dynamic retrieval stays optional"
+      },
+      "description": {
+        "from": "## Owner decision needed (Q3)\n\nDo not assume an answer. The plan only **reports** the comparison.\n\nIf dynamic retrieval plus features (A+D) beats the fixed default (A-c+F) by **≥3 points** on paper-600, does the default stay fixed, or does retrieval become the default (for example for small pools)?\n\n## Definition of done\n\nAnswer recorded here once the results page exists (the owner may also answer earlier). Cost: $0.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.4, §7 Q3.",
+        "to": "## Decided (owner, 2026-10-01, Q3)\n\nThe optimized **fixed** example list is the default because it is simple to set up and deploy for inference. Dynamic retrieval is **not** the default regardless of any benchmark result, because it is harder to deploy: it needs a slow in-memory vector search at inference, or a vector store to set up, or a weaker non-semantic word match.\n\nThe earlier framing (whether a retrieval win would change the default) is moot: no comparison threshold applies. A retrieval comparison, if run, is only reported.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.4, §7 Q3."
+      }
+    }
+  }
+}
