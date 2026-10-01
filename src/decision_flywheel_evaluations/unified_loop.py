@@ -585,6 +585,9 @@ class UnifiedFlywheel:
         else:
             reply, source = self._offline_reply(round_number), "offline-fixed"
         before = workspace.scorecard().score(SCORE_NAME)
+        if self.cfg.analyst_provider == "openai":
+            from .unified_openai import allow_gpt6_token_parameter
+            allow_gpt6_token_parameter()
         outcome = run_steering(
             workspace, SCORE_NAME, provider=self.cfg.analyst_provider, model=self.cfg.analyst_model,
             allow_spend=True, client_factory=self.engines.zero_shot_factory,
