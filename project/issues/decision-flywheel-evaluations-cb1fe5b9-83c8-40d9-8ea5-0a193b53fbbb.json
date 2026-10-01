@@ -3,7 +3,7 @@
   "title": "Run at most one dynamic-retrieval variant live if its proxy justifies it",
   "description": "## Purpose\n\nRun at most one dynamic-retrieval variant live, only if the proxy justified it.\n\n## Scope\n\nThe chosen D variant: 300 labeled leave-one-out answers + paper-600 answers, then score D and A-c+F+D (head-only, not an independent steering trajectory).\n\n## Cost cap\n\n≈900 few-shot requests ≈ $0.60; **hard cap 900 Jev requests**; counts toward the 7,500 cumulative ledger. Skip entirely if S2 chose none.\n\n## Definition of done\n\nResults added to the unified results page, or a note here that no variant qualified. Cost as above.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.3 (Optional: one D variant live), §6 step 10.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -35,11 +35,18 @@
         "model": "Claude Opus 5.5",
         "name": "Flywheel Phase 3"
       }
+    },
+    {
+      "id": "aedbbadd-84b4-45fa-86ca-8f6e7aff87a2",
+      "author": "home",
+      "text": "Done 2026-10-01: ran both variants live (owner dropped the proxy threshold; comparisons are only reported). paper-600, 900 Jev requests each, 0 failures: D-embedding acc 0.915 / Brier 0.065; D-BM25 0.898 / 0.074; vs A-c+F (default) 0.850 / 0.092. Results: studies/UNIFIED_FLYWHEEL_RESULTS.md Addendum 3, studies/results/unified/phase3-d-*.json (b77df60). Retrieval stays optional; the fixed list stays the default.",
+      "created_at": "2026-10-01T23:04:01.274429Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-01T20:02:50.603461Z",
-  "updated_at": "2026-10-01T22:59:29.674448Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T23:04:01.291168Z",
+  "closed_at": "2026-10-01T23:04:01.291136Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

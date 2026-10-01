@@ -3,7 +3,7 @@
   "title": "Score the frozen arms on paper-600 through reloaded bundles (S5)",
   "description": "## Purpose\n\nScore the frozen arms on paper-600 **through reloaded bundles** (stop S5).\n\n## Scope\n\nF, F-rand, A-c, A-c+F live; 0 / A / D-v1 / A+D-v1 replayed at $0; A-c+F+D as a head-only variant only if its answers are cached (say it is not an independent trajectory). Paired bootstrap intervals for the §5.4 comparisons; no significance claims; nothing tuned on paper-600.\n\n## Cost cap\n\n≈1,200 few-shot + ≈1,200 zero-shot, ≈$1.20; **hard cap 2,400 Jev requests**; cumulative ledger ≤7,500. Pre-approved within these caps.\n\n## Definition of done\n\nAll arms scored from reloaded bundles, text-free summaries committed under `studies/results/`, spend reconciled against the ledger. **Stop S5.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2, §5.4, §6 step 10.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -31,11 +31,18 @@
         "model": "claude-opus-5-5",
         "name": "phase2-subagent"
       }
+    },
+    {
+      "id": "86559aa0-f2e9-41a1-9679-530f3ded8d2f",
+      "author": "home",
+      "text": "Done: paper-600 scored through reloaded ClassifierBundles for arms 0, A-c, F, F-rand, A-c+F (2,400 Jev requests, 0 failures); results in Addendum 2, studies/results/unified/phase2-final.paper600.summary.json (e07df1e).",
+      "created_at": "2026-10-01T23:04:01.342789Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-01T20:02:28.909200Z",
-  "updated_at": "2026-10-01T22:31:00.218495Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T23:04:01.358442Z",
+  "closed_at": "2026-10-01T23:04:01.358404Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

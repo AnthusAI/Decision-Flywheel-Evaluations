@@ -3,7 +3,7 @@
   "title": "Phase 3: retrieval options measured by a free proxy first (S2)",
   "description": "## Purpose\n\nPhase 3: measure retrieval options for the optional dynamic-retrieval feature cheaply, and spend live only on a clear winner.\n\n## Scope\n\nFree kNN proxy across lexical v1 / v2 (stop words) / v2+BM25, an opt-in cached embedding step, and at most one live D variant. Retrieval stays off by default; S3 Vectors and DynamoDB are design-only in core.\n\n## Definition of done\n\nS2 reached (at most one D variant chosen, or none), proxy results committed text-free, and the stop-word and embedding defaults confirmed or flipped per §5.4. Cost: ≈$0.01 embeddings + optional ≈$0.60 Jev.\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §4, §5.2 (Retrieval comparison inside D), §6 step 6.\n\n## Companion-project coordination\n\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0276b251-e188-45c2-b7e1-4781a6222b7f`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-09ea97a1-4466-479c-b4dc-c463f2f6bc5d`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-df19d04e-64e9-45f9-8b42-d29d5d4090ac`.\n- [Decision-Flywheel](https://github.com/AnthusAI/Decision-Flywheel/tree/main/project/issues): `decision-flywheel-0e7d4b0b-34de-4b93-a7a2-64e4b4637e7d`.\n\nThese are cross-repository references; local Kanbus blocked-by relationships encode prerequisites within this repository.",
   "type": "epic",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -13,10 +13,18 @@
     "phase-3"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "3368e23c-daad-4af7-a43f-8c69864387bf",
+      "author": "home",
+      "text": "Done: free proxy (neighbour-label purity: embedding 0.890, BM25 0.874, lexical v2 0.869, TF-IDF 0.868, v1 0.867), embedding step, and the live D variants (Addendum 3). Core retrieval work merged (605d87c, b2a64a1).",
+      "created_at": "2026-10-01T23:04:01.442521Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-01T20:01:38.171365Z",
-  "updated_at": "2026-10-01T20:01:38.171394Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T23:04:01.457310Z",
+  "closed_at": "2026-10-01T23:04:01.457280Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
@@ -24,5 +32,8 @@
   },
   "right_now_summary": null,
   "right_now_updated_at": null,
-  "custom": {}
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

@@ -3,7 +3,7 @@
   "title": "Human review of 20 labeler comments for leakage and realism (S3)",
   "description": "## Purpose\n\nHave a person check the L2 comments for leakage and realism before any analyst sees them (stop S3).\n\n## Scope\n\nA human (owner or delegate) reads 20 generated comments, sampled with a fixed seed, against the hidden convention: does any quote or paraphrase the rule too closely, and do they read like a busy reviewer?\n\n## Definition of done\n\nVerdict recorded here as a comment (pass, or revise the prompt and regenerate). No analyst call uses the comments before a pass. Cost: $0. **Stop S3.**\n\n## Design\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2 (A human checks first), §6 step 7.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "33547410-c567-4784-8f47-c05e157f0f63",
+      "author": "home",
+      "text": "Closed without doing the human read: the owner chose a simulated human consulting a hidden rubric and said development-phase ceremony is noise. A quick look at sample comments showed sensible terse reasons (sports/dry-work convention). The leakage-by-design caveat is recorded in the results.",
+      "created_at": "2026-10-01T23:04:01.375545Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-01T20:02:06.906562Z",
-  "updated_at": "2026-10-01T20:03:22.094693Z",
-  "closed_at": null,
+  "updated_at": "2026-10-01T23:04:01.392457Z",
+  "closed_at": "2026-10-01T23:04:01.392430Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
