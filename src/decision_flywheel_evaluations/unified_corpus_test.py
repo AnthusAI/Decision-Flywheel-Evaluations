@@ -32,9 +32,9 @@ def test_a_corpus_is_frozen():
         PLANTED.labels = ("a", "b")
 
 
-def test_planted_emotion_and_fomc_are_registered_and_planted_is_the_default():
-    assert CORPUS_CHOICES == ("planted", "emotion", "fomc") and DEFAULT_CORPUS == "planted"
-    assert get_corpus("planted") is PLANTED and set(CORPORA) == {"planted", "emotion", "fomc"}
+def test_planted_emotion_fomc_and_the_reviews_pair_are_registered_and_planted_is_the_default():
+    assert CORPUS_CHOICES == ("planted", "emotion", "fomc", "reviews", "reviews-merged") and DEFAULT_CORPUS == "planted"
+    assert get_corpus("planted") is PLANTED and set(CORPORA) == set(CORPUS_CHOICES)
 
 
 def test_the_rubric_fields_leave_planted_and_emotion_as_they_were():

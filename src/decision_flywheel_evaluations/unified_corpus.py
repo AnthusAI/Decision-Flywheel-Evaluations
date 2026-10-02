@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
 
@@ -39,6 +40,7 @@ from .unified_emotion import (EMOTION_CACHED_ZERO_SHOT, EMOTION_INSTRUCTIONS, EM
                               study_shaped_factory, study_zero_shot_state)
 from .unified_fomc import (FOMC_FINAL_SIZE, FOMC_LABELS, FOMC_TASK_NAME, ceiling_score_config, fomc_label_order,
                            guideline_text, load_fomc_corpus, seed_score_config, starting_rubric)
+from . import unified_reviews as reviews
 from .unified_splits import Splits, label_order, load_splits
 
 
@@ -248,7 +250,57 @@ FOMC_CORPUS = Corpus(
     stakeholder_guideline=guideline_text,
 )
 
-CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS, FOMC_CORPUS.name: FOMC_CORPUS}
+# Amazon review moderation (streaming SME plan, step 3): gold labels are the simulated SME's, S is the
+# committed one-liner, F (ceiling and stakeholder guideline) is the private policy read only when needed.
+# ``reviews-merged`` is the plan's class merge (abusive + promotional -> remove_other); which one the data
+# allows is decided from the SME labels by ``unified_reviews.should_merge``, and each refuses the other's data.
+REVIEWS_FAKE_ANALYST_ROUND1 = json.dumps({
+    "root_cause": "Offline fake analyst: whether the review is mainly about delivery or the seller may separate seller_shipping from approve.",
+    "add_elements": [{"key": "about_delivery", "question_type": "noul",
+                      "instructions": "Is the review mainly about delivery, packaging or the seller rather than the product?",
+                      "criteria": None}],
+    "retire_elements": [], "reword_elements": []})
+_REVIEWS_CUES = {
+    "approve": ("love", "great", "works", "quality", "recommend", "sturdy", "cute", "perfect", "easy", "fits"),
+    "abusive": ("crap", "idiot", "idiots", "stupid", "damn", "moron", "liar", "liars", "pissed", "shit"),
+    "promotional": ("http", "www", "exchange", "free", "sample", "discounted", "instead", "website", "email", "promo"),
+    "seller_shipping": ("seller", "shipping", "shipped", "refund", "arrived", "package", "delivery", "returned", "box", "late"),
+    "price_availability": ("cheaper", "sale", "stock", "price", "priced", "deal", "walmart", "target", "available", "dropped"),
+}
+
+
+def _reviews_corpus(merged: bool) -> Corpus:
+    labels = reviews.reviews_labels(merged)
+    cues = dict(_REVIEWS_CUES)
+    if merged:
+        cues[reviews.MERGED_LABEL] = cues["abusive"] + cues["promotional"]
+    return Corpus(
+        name="reviews-merged" if merged else "reviews",
+        labels=labels,
+        score_name=reviews.REVIEWS_TASK_NAME,
+        instructions=reviews.starting_rubric(merged),
+        fewshot_key="fewshot", fewshot_wire="reviews.fewshot", fewshot_feature_prefix="fewshot.clr",
+        knn_share_feature=f"knn.share.{labels[0]}",
+        load_splits=partial(reviews.load_reviews_corpus, merged=merged),
+        labeler_style=None, fake_labeler_hook=None, fake_jev_positive_label=None,
+        label_order_fn=partial(reviews.reviews_label_order, merged=merged),
+        multiclass_metrics=True, workspace_items_from_pool=True, fake_analyst_round1_reply=REVIEWS_FAKE_ANALYST_ROUND1,
+        fake_jev_cues=tuple((label, cues[label]) for label in labels),
+        reword_steering_prompt=True, steer_examples_phrase="the examples of each label",
+        steer_subject_phrase="the moderation decision",
+        seed_score=partial(reviews.seed_score_config, merged), zero_shot_state=study_zero_shot_state,
+        zero_shot_client=study_shaped_factory,
+        final_size=reviews.REVIEWS_FINAL_SIZE, fill_seed_answers=True,
+        ceiling_score=partial(reviews.ceiling_score_config, merged),
+        stakeholder_guideline=partial(reviews.guideline_text, merged),
+    )
+
+
+REVIEWS_CORPUS = _reviews_corpus(False)
+REVIEWS_MERGED_CORPUS = _reviews_corpus(True)
+
+CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS, FOMC_CORPUS.name: FOMC_CORPUS,
+                              REVIEWS_CORPUS.name: REVIEWS_CORPUS, REVIEWS_MERGED_CORPUS.name: REVIEWS_MERGED_CORPUS}
 DEFAULT_CORPUS = PLANTED.name
 CORPUS_CHOICES = tuple(CORPORA)
 

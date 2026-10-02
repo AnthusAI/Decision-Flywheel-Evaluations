@@ -3,8 +3,12 @@
 Items: a seeded sample of the dataset's TRAIN split outside the 1,500 items the R2 local baseline was trained on, so held-out test items stay untouched. Answers are cached in var/rubric-screen/answers.jsonl (keyed by dataset, condition, item), so reruns never pay twice. Outputs: var/rubric-screen/screen.json (text-free).
 
 `--split heldout` (hatecheck, contractnli, swda only) screens a fixed-seed 300-item slice from each dataset's test side instead; results go under "<name>@heldout". `--dry-run` loads and prints counts and request sizes without calling Jev.
+
+`reviews` (Amazon review moderation, streaming SME plan) is heldout-only: the held-out 300 and the stream 600 come from
+`unified_reviews` (private pool text + the SME cache, read-only); gold = the SME's labels; S = studies/amazon_reviews/S.txt,
+F = the private var/policy/amazon_reviews_F.txt. The label set (merged or not) is the one the SME data decides.
 """
-import argparse, collections, concurrent.futures as cf, csv, glob, hashlib, json, random, re, sys, threading
+import argparse, collections, concurrent.futures as cf, csv, functools, glob, hashlib, json, random, re, sys, threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +17,23 @@ CAP = {"1": "Macroeconomics", "5": "Labor and Employment", "13": "Social Welfare
 
 HC_FILE, CNLI_DIR, SWDA_DIR = DATA/"hatecheck/test_suite_cases.csv", DATA/"contractnli", DATA/"swda"
 NEW = ("hatecheck", "contractnli", "swda")
+REVIEWS = "reviews"
+
+@functools.lru_cache(maxsize=None)
+def _reviews():
+    """(splits, report) for the reviews corpus; nothing here writes to var/amazon-reviews/."""
+    if str(ROOT/"src") not in sys.path: sys.path.insert(0, str(ROOT/"src"))
+    from decision_flywheel_evaluations import unified_reviews
+    return unified_reviews.load_reviews_splits()
+
+def _reviews_rows(ids):
+    items = _reviews()[0].items
+    return [(i, items[i].text, items[i].reference_label) for i in ids]
+
+def _reviews_text(cond):
+    from decision_flywheel_evaluations import unified_reviews
+    merged = _reviews()[1]["merged"]
+    return unified_reviews.starting_rubric(merged) if cond.startswith("S") else unified_reviews.guideline_text(merged)
 
 def toks(text): return round(len(text.split()) * 1.3)  # same rule as candidates.json
 
@@ -96,12 +117,14 @@ def _swda():
     return pool, cand
 
 def heldout(name, n=300, seed=11):
+    if name == REVIEWS: return _reviews_rows(_reviews()[0].paper600)
     if name == "hatecheck": return _hatecheck(seed, n)[1]
     if name == "contractnli": return balanced(_contractnli("test")[0], n, seed)
     if name == "swda": return balanced(_swda()[1], n, seed)
     raise SystemExit(f"--split heldout is defined only for {', '.join(NEW)}")
 
 def load(name):
+    if name == REVIEWS: return _reviews_rows(_reviews()[0].pool)  # the stream 600: the labeled side, disjoint from held-out
     if name == "hatecheck": return _hatecheck()[0]
     if name == "contractnli": return _contractnli("train")[0]
     if name == "swda": return _swda()[0]
@@ -126,6 +149,7 @@ def split(rows, n_screen, seed):
     return pool, screen
 
 def instructions(name, cond):
+    if name == REVIEWS: return _reviews_text(cond)
     if cond.startswith("S"): return (PROMPTS/name/"S.txt").read_text().strip()
     p = PROMPTS/name/"F.txt"
     return (p if p.exists() else VAR/name/"F.txt").read_text().strip()
@@ -157,7 +181,10 @@ def main():
         if a.split == "heldout":
             pool = sorted(rows); random.Random(11).shuffle(pool); pool = pool[:1500]; screen = heldout(name)
         else: pool, screen = split(rows, a.n, seed=11)
-        labels = tuple(json.load(open(PROMPTS/name/"answer_format.json"))["options_in_fixed_order"])
+        if name == REVIEWS:
+            if a.split != "heldout": sys.exit("reviews is screened on --split heldout only")
+            labels = tuple(_reviews()[1]["labels"])
+        else: labels = tuple(json.load(open(PROMPTS/name/"answer_format.json"))["options_in_fixed_order"])
         rng = random.Random(5); shots = []
         for l in labels:
             cands = [r for r in pool if r[2] == l]; rng.shuffle(cands); shots += cands[:a.shots_per_label]
@@ -196,6 +223,8 @@ def main():
 def dry_run(a):
     """No Jev calls: counts and request sizes (instructions + item text, words x 1.3; chars/4 in brackets)."""
     for name in a.datasets.split(","):
+        if name == REVIEWS and a.split != "heldout":
+            print(name, "is screened on --split heldout only"); continue
         try:
             pool = load(name); screen = heldout(name) if a.split == "heldout" else split(pool, a.n, seed=11)[1]
         except FileNotFoundError as e:
@@ -204,12 +233,17 @@ def dry_run(a):
         if name == "hatecheck":
             _, _, dropped = _hatecheck(); extra = f" excluded_template_remainders={len(dropped)}"
         if name == "contractnli": extra = f" dropped_over_12k: train={_contractnli('train')[1]} test={_contractnli('test')[1]}"
+        if name == REVIEWS:
+            rep = _reviews()[1]
+            extra = (f" labels={rep['labels']} merged={rep['merged']} excluded_from_gold={rep['excluded_from_gold']}"
+                     f" floor_met={rep['floor_met']} natural_mix={rep['natural_mix']} sme_model={rep['sme_model']}")
         print(f"{name} split={a.split} pool={len(pool)} pool_labels={dict(sorted(collections.Counter(l for _, _, l in pool).items()))}{extra}")
         print(f"{name} screen n={len(screen)} labels={dict(sorted(collections.Counter(l for _, _, l in screen).items()))}")
         longest = max(screen, key=lambda r: len(r[1]))
         for cond in a.conditions.split(","):
             ins = instructions(name, cond)
             print(f"{name} {cond}: instructions={toks(ins)} max_request={max(toks(ins + chr(10) + t) for _, t, _ in screen)} [{(len(ins) + len(longest[1])) // 4}]")
+        print(f"{name} jev_requests_upper_bound={len(screen) * len(a.conditions.split(','))} (before the answer cache)")
 
 def one_safe(fn, row):
     try: return fn(row)
