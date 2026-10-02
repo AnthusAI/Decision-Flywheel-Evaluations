@@ -97,5 +97,69 @@
    "macro_f1": 0.738,
    "accuracy": 0.733
   }
+ },
+ "hatecheck@heldout": {
+  "n": 300,
+  "labels": [
+   "hateful",
+   "non-hateful"
+  ],
+  "gold_counts": {
+   "non-hateful": 96,
+   "hateful": 204
+  },
+  "tfidf_lr": {
+   "macro_f1": 0.722,
+   "accuracy": 0.753
+  },
+  "S": {
+   "answered": 300,
+   "macro_f1": 0.973,
+   "accuracy": 0.977
+  },
+  "F": {
+   "answered": 300,
+   "macro_f1": 0.992,
+   "accuracy": 0.993
+  },
+  "split": "heldout"
+ },
+ "swda@heldout": {
+  "n": 300,
+  "labels": [
+   "sd",
+   "sv",
+   "b",
+   "aa",
+   "qy",
+   "qy^d",
+   "ba",
+   "%"
+  ],
+  "gold_counts": {
+   "%": 38,
+   "aa": 38,
+   "b": 38,
+   "ba": 38,
+   "qy": 38,
+   "qy^d": 36,
+   "sd": 37,
+   "sv": 37
+  },
+  "tfidf_lr": {
+   "macro_f1": 0.298,
+   "accuracy": 0.337
+  },
+  "S": {
+   "answered": 300,
+   "macro_f1": 0.632,
+   "accuracy": 0.647
+  },
+  "F": {
+   "answered": 300,
+   "macro_f1": 0.648,
+   "accuracy": 0.647
+  },
+  "split": "heldout"
  }
 }
