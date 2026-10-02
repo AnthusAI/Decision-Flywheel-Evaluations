@@ -19,9 +19,17 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "25df1868-6cec-414d-aafe-a9b525e62445",
+      "author": "home",
+      "text": "R1 content committed in 2eca07e (studies/rubric_screen/prompts/{edos,fomc,cap_nyt}/): S.txt (one line), F.txt, cuts.md, answer_format.json (choice question, options in fixed order). EDOS F ~3.0k tokens committed (CC0). FOMC F ~750 tokens committed (paper CC BY 4.0). CAP-NYT F ~10.6k tokens (est.) NOT committed (codebook has no licence): stored in var/rubric-screen/cap_nyt/F.txt with sha256 b5a710e2... in cuts.md. F = S text + blank line + guideline excerpt, same labels and options. ASAP-SAS has no prompts (skipped). Left open: definition of done requires main-session review.",
+      "created_at": "2026-10-02T02:33:14.459549Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.112413Z",
-  "updated_at": "2026-10-02T01:22:52.380988Z",
+  "updated_at": "2026-10-02T02:33:14.459568Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",
