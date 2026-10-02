@@ -3,7 +3,7 @@
   "title": "R1: Write the S (one-line) and F (excerpted full guideline) prompts per candidate",
   "description": "## Purpose\n\nWrite the two screening prompts per candidate: S (one-line simplified rubric) and F (excerpted full guideline).\n\n## Scope\n\n- S: one line per dataset naming the labels with a plain one-sentence gloss (what a newcomer would write without reading the guideline). Same output format as F.\n- F: the published guideline excerpted to stay under ~25k tokens (Jev request limit ~64k total, ~32k state); keep definitions, decision rules and boundary cases first; record every cut (section, reason, tokens removed).\n- Exact wording committed under `studies/` (e.g. `studies/rubric_screening/<dataset>/{S,F}.txt` plus `cuts.md`), with sha256 recorded; labels and output format identical across S and F (compare like with like).\n- Respect licenses from R0 (do not commit guideline text whose terms forbid redistribution: store a pointer + hash instead and say so).\n\n## Definition of done\n\nPrompt files and cut logs committed for each candidate that passed R0; token counts recorded; reviewed by the main session.\n\n## Cost\n\n$0 (no model calls).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -26,11 +26,18 @@
       "text": "R1 content committed in 2eca07e (studies/rubric_screen/prompts/{edos,fomc,cap_nyt}/): S.txt (one line), F.txt, cuts.md, answer_format.json (choice question, options in fixed order). EDOS F ~3.0k tokens committed (CC0). FOMC F ~750 tokens committed (paper CC BY 4.0). CAP-NYT F ~10.6k tokens (est.) NOT committed (codebook has no licence): stored in var/rubric-screen/cap_nyt/F.txt with sha256 b5a710e2... in cuts.md. F = S text + blank line + guideline excerpt, same labels and options. ASAP-SAS has no prompts (skipped). Left open: definition of done requires main-session review.",
       "created_at": "2026-10-02T02:33:14.459549Z",
       "comment_type": "default"
+    },
+    {
+      "id": "4cc7f72f-c3cb-4688-93ca-8f903250d452",
+      "author": "home",
+      "text": "Reviewed by main session: prompts accepted (S is slightly richer than a one-liner, which makes the screen conservative).",
+      "created_at": "2026-10-02T02:36:42.179003Z",
+      "comment_type": "default"
     }
   ],
   "created_at": "2026-10-02T01:22:33.112413Z",
-  "updated_at": "2026-10-02T02:33:14.459568Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T02:36:42.194888Z",
+  "closed_at": "2026-10-02T02:36:42.194856Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

@@ -3,7 +3,7 @@
   "title": "R2: Free local headroom check: supervised baseline vs published human ceiling ($0)",
   "description": "## Purpose\n\nFree local headroom check: does the label set carry LEARNABLE signal, and how far is the human ceiling? Pass criterion (c) needs this.\n\n## Scope\n\n- Per candidate: define pool / dev / held-out splits (seeded; pool only for training and for screening items; held-out never inspected for tuning).\n- Train a local supervised baseline (e.g. TF-IDF + logistic regression) on a few hundred pool labels (report 200 / 400 / all-pool if cheap); score macro-F1 on held-out with bootstrap CI.\n- Put it next to the published inter-annotator / human ceiling from R0.\n- Requires the data locally: only datasets the owner approved for download after R0.\n\n## Definition of done\n\nTable per candidate: supervised baseline macro-F1 (CI) at each training size, human ceiling, split sizes and seeds; text-free provenance (ids, hashes) committed; comment posted here.\n\n## Cost\n\n$0: no Jev or other model calls.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "7f8f9a4a-b513-46a9-8509-3c19cdf49da4",
+      "author": "home",
+      "text": "Done 2026-10-02: free local TF-IDF+LR on 1,500 train labels, held-out 700: EDOS macro-F1 0.441, FOMC 0.574, CAP 0.690 (studies/rubric_screen/r2_local_baseline.json, 856a003).",
+      "created_at": "2026-10-02T02:36:42.146186Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.140803Z",
-  "updated_at": "2026-10-02T01:22:52.407779Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T02:36:42.162051Z",
+  "closed_at": "2026-10-02T02:36:42.162023Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
