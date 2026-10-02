@@ -3,7 +3,7 @@
   "title": "Step 2: unified_sme.py simulated SME (label, rule, reason, leak guards, cache, fake)",
   "description": "## Purpose\n\nStep 2: `unified_sme.py`, the simulated SME.\n\n## Scope\n\n- Prompt holding the full policy F; one call per item, independent of the classifier's verdict; batched labeling.\n- Output: label, rule ID, one-sentence reason (<= 25 words, about the review, not reciting policy wording), optional verbatim quote FROM THE REVIEW, or UNEXPLAINABLE/ambiguous.\n- Leak guards: reuse `unified_labeler.validate_explanation`; reject any 8-gram overlap with F; keep `MAX_RULE_REPEATS`.\n- sqlite cache shared by all arms; text-free logs.\n- Per-arm feedback built from the cached record (\"should be X because ...\" when wrong; \"correct: ...\" when right).\n- Fake SME for specs. Model: gpt-6-sol if available (verify), else gpt-6-luna (noted); analyst stays gpt-6-luna. Agreement-check hook (second pass/model on 100 items).\n\n## Definition of done\n\nSpecs beside the module pass offline (validators, leak guard, cache, fake); `make test` green; existing replays byte-identical.\n\n## Caps\n\n$0 (offline).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -20,10 +20,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "89065295-b727-43c4-a2cd-77178092659a",
+      "author": "home",
+      "text": "Done in 61ce4e6 (local, not pushed). unified_sme.py + spec (25 specs, offline) + scripts/reviews_sme.py. Policy F written in own words (1,067 words, var/policy/amazon_reviews_F.txt, sha256 9fa66176...); two Amazon help pages (Community Guidelines GLHXEX85MENUE4XF, anti-manipulation G3UA5WC5S5UUKB5G) stored under var/policy/raw/ with sha256 in studies/amazon_reviews/policy_summary.md; S.txt committed. Batched 10/call, validators (label set, rule id+label match, verbatim review quote, reason <=25 words with no 8-gram overlap with F), sqlite cache (item, policy sha, prompt sme-v1, model, pass), feedback builder with MAX_RULE_REPEATS, agreement+kappa, fake SME. Fake SME on pool 3,000: approve 2764, seller_shipping 148, abusive 47, price_availability 24, promotional 17 (keyword fake only; not the real SME's mix). NOT run live. make test 520 passed/11 skipped; unified-flywheel-test 305 passed.",
+      "created_at": "2026-10-02T19:08:48.445047Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T18:52:55.029669Z",
-  "updated_at": "2026-10-02T18:53:04.334231Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T19:08:48.478118Z",
+  "closed_at": "2026-10-02T19:08:48.478086Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

@@ -3,7 +3,7 @@
   "title": "Step 1: amazon_reviews.py loader, enriched pool builder and ID/hash manifest",
   "description": "## Purpose\n\nStep 1: `amazon_reviews.py` loader + enriched pool builder + manifest of IDs/hashes.\n\n## Scope\n\n- Load McAuley Lab Amazon Reviews 2023 for Cell_Phones_and_Accessories, Home_and_Kitchen, Toys_and_Games; 2013-2016; 15-90 words.\n- Candidate pool 3,000 enriched toward 1-2 star and keyword hits (ship/seller/refund/return/package/$/price/http/\"in exchange\"/\"discount\"); seeded.\n- Manifest of review IDs, split/index identifiers, normalized-text hashes, dataset revision. Text stays under gitignored `var/`/`.data/`.\n- Spec beside the module with ~50 synthetic reviews; no network in specs.\n\n## Definition of done\n\n`amazon_reviews_test.py` passes offline; `make test` green; planted/Emotion/FOMC replays byte-identical; no review text committed. No real download until L0 is closed (blocked-by L0).\n\n## Caps\n\n$0 (offline). Opus sub-agent builds; main session reviews and pushes.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -20,10 +20,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "7cb54cc3-4a34-41c0-adbe-0d4bdf3654b1",
+      "author": "home",
+      "text": "Done in 7c8b388 (local, not pushed). amazon_reviews.py + spec (16 specs, synthetic, no network). Download: 18 HTTP byte ranges (6 x 8 MiB per category, spread through each raw review file) at HF revision 2b6d039e, 150,994,944 bytes in gitignored .data/amazon-reviews/, each range's url/offsets/bytes/sha256 in download.json and the committed manifest. Eligible after 2013-2016 + 15-90 words + dedupe: 39,792. Pool 3,000 (seed 20261002): ratings 1:1158 2:642 3:450 4:152 5:598; strata low-kw 720, low-plain 1080, mid-kw 180, mid-plain 270, high-kw 300, high-plain 450; categories Cell 1228, Home 885, Toys 887. Natural 300 (disjoint): ratings 1:24 2:12 3:24 4:42 5:198, keyword hits 45. Text only in var/amazon-reviews/{pool,natural}.jsonl; studies/amazon_reviews/manifest.json is text-free (8-gram check vs pool: 0 overlaps).",
+      "created_at": "2026-10-02T19:08:48.427409Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T18:52:54.993970Z",
-  "updated_at": "2026-10-02T18:53:04.504417Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T19:08:48.461282Z",
+  "closed_at": "2026-10-02T19:08:48.461247Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
