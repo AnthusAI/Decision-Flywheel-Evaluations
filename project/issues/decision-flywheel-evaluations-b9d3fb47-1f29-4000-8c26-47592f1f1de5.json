@@ -3,7 +3,7 @@
   "title": "S7: Macro-F1, per-class recall, confusion matrix and paired bootstrap",
   "description": "## Purpose\n\nMetrics fit for an imbalanced 6-class test set.\n\n## Scope\n\nIn `unified_stats.py`: macro-F1 (primary), accuracy, per-class recall, confusion matrix, top-label Brier/ECE (document validity for N classes), paired bootstrap over macro-F1; optional prior-corrected readout using public train-split frequencies (pre-declared diagnostic, no held-out data).\n\n## Specs (first, beside the module)\n\nmacro-F1 and recall match hand-computed cases incl. an absent class; confusion matrix shape N x N; bootstrap seed-stable; Brier/ECE top-label definition.\n\n## Reuse\n\nexisting `unified_stats.py` helpers.\n\n## Definition of done\n\nSpecs against hand-computed values pass; planted summaries unchanged.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "f40864d4-34d5-4f08-8842-57a9fd187de1",
+      "author": "home",
+      "text": "S7 done in 61a96f0 (Evaluations repo, local, not pushed). unified_stats: macro-F1 (absent classes with no gold and no predictions are undefined and skipped; predicted-but-absent counts as F1 0), accuracy, per-class recall/precision/F1 with low_support flag (<10 items, shown not hidden), label-ordered confusion matrix, paired macro-F1 bootstrap (same seeded draw/percentile convention, 1000 resamples), multiclass_contrasts (A-c-0, F-0, F-rand-0, F-F-rand, A-c+F-0, A-c+F-max(A-c,F)) on macro_f1 and accuracy; top-label Brier/ECE kept and documented. Emotion summaries gain per-arm 'multiclass' and per-round 'multiclass_contrasts'; predictions.jsonl gains predicted/gold for Emotion only. Planted summary/predictions/run-log byte-identical (2-round, 9-arm offline comparison). Enabling fixes: labels-only 'run --corpus emotion' now works (comments / run --comments still refuse, S5); Emotion workspaces hold only Emotion pool items (previously copied planted items.jsonl); Emotion offline fake analyst no longer replays the planted topic_domain reply; run gained --per-round. Verification: make unified-flywheel-test 231 passed, make test 439 passed 10 skipped; replay copies of phase2-live-seed1 byte-identical predictions.jsonl and final-predictions.jsonl, 0 requests. Not done: optional prior-corrected readout; arm D (final-d) does not yet emit macro-F1.",
+      "created_at": "2026-10-02T02:12:30.038930Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.702198Z",
-  "updated_at": "2026-10-02T00:39:25.168852Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T02:12:30.057413Z",
+  "closed_at": "2026-10-02T02:12:30.057374Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
