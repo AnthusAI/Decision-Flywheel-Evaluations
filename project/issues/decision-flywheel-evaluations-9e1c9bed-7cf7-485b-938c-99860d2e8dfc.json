@@ -3,7 +3,7 @@
   "title": "S4: Feature-budget cap after steering; runtime steering-prompt override",
   "description": "## Purpose\n\nKeep steering within the ladder's feature budget and give non-planted corpora a neutral steering prompt.\n\n## Scope\n\nAfter steering, cap new elements to the ladder budget (n/5 at 30-199 labels, max 20 at 100-199; n/10 at 200-999): drop lowest-ranked new elements and record what was dropped. Reworded copy of `steer_scorecard.tac` under `var/` for non-planted corpora (no 'positive and negative examples'); point `jev_flywheel.steer.PROCEDURE` at it at runtime and record its sha256. Planted runs use the original file byte for byte; pinned clone cd4a4886 stays clean.\n\n## Specs (first, beside the module)\n\ncap drops lowest-ranked and records them; no-op under budget; override applied only for emotion and its sha256 recorded; planted uses the original procedure.\n\n## Reuse\n\n`feature_budget` in the clone's `fit.py` / `ladder.py` (read-only).\n\n## Definition of done\n\nCap and override specs pass; planted replays byte-identical again; clone `git status` clean.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "525d03f6-e500-4af5-a79e-8cd6d0d8a242",
+      "author": "home",
+      "text": "Done offline in commit 4bfaf85 (not pushed). Added unified_budget.py (feature-cap planner: drops whole elements from the end, never holistic; reserved features for B/A+B), Harness._cap_to_budget after steering in workspace arms (prunes workspace scorecard, refits, records feature_cap in the round output only when something was dropped), unified_steering_prompt.py (two documented exact substitutions on the pinned .tac, written under var/unified-flywheel/steering-prompts, steer.PROCEDURE and render_source default path both pointed at it for one run and restored), Corpus fields reword_steering_prompt/steer_examples_phrase/steer_subject_phrase (planted unchanged), steering_prompt sha256 in non-planted summaries only. Surprise: steer.render_source binds path=PROCEDURE at import, so patching PROCEDURE alone would not change the executed text; both are patched. Jev's own check already rejects over-budget proposals whole, so the cap is a safety net plus the reserve for few-shot arms. Results: unified specs 188 passed (was 184), make test 425 passed 8 skipped, planted replay copies (rounds 0,A-c,A-c+F x3 and final 0,A-c,F,F-rand,A-c+F) byte-identical predictions.jsonl and final-predictions.jsonl, 0 requests, clone git status clean. One existing spec edited: unified_emotion_test expected 'S4-S5' in the unsupported reason, now 'S5' (S4 no longer outstanding).",
+      "created_at": "2026-10-02T01:37:54.105686Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.558830Z",
-  "updated_at": "2026-10-02T00:39:25.104927Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T01:37:54.121567Z",
+  "closed_at": "2026-10-02T01:37:54.121535Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
