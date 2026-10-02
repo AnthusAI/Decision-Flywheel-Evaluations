@@ -1,0 +1,1 @@
+Moderate an Amazon product review: approve, or flag as abusive, promotional, seller_shipping, or price_availability.
