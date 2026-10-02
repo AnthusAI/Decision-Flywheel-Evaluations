@@ -1,0 +1,3093 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "A",
+    "A-c",
+    "A-c-shuffled",
+    "A-c-noisy",
+    "CEIL"
+  ],
+  "bundles": {
+    "0": {
+      "bundle_hash": "8adf2e08f1aa12204a83174cb783b6b74ada8f9862273c6adb313de243c6e664",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-b4da4cf0f5",
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "2b16a9f2f6c2f308be7ad9da4c56b76e6f5fc4d8fb4dc71044ca6427bc842693"
+    },
+    "A": {
+      "bundle_hash": "c6bef0e1e09bcf037df3c8c3b7de9031bd8581336a7e78370e63b8c44be90fd3",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-20a3674eac",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_pressure"
+      ],
+      "scorecard_sha256": "8ef9a75fb66b29340836aaa8de2ac20349e385624fee92fa8894298c10ed29ef"
+    },
+    "A-c": {
+      "bundle_hash": "53251d9d2a331b8c29542313de7411035992f549e41727b4bfe28f7f92bb8b87",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-04db9333f9",
+      "questions": [
+        "fomc",
+        "fomc.macroeconomic_pressure"
+      ],
+      "scorecard_sha256": "947e7128a7835e9b78aa98b0c949466a3c5d99d9d776d8f4bdc044be98ea9ab5"
+    },
+    "A-c-noisy": {
+      "bundle_hash": "6c972fc0c3a7f37cbf2f5fc6629b536adde86d7a4898d1856c13ee1d310d185d",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-3880c536bc",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_pressure"
+      ],
+      "scorecard_sha256": "554f9f1c61e7e0e5ee7eb751279560b30e25f274e778442cfbc2fbf927c5f7dc"
+    },
+    "A-c-shuffled": {
+      "bundle_hash": "ae7d2085e4ad6e4c80a4cdaacdaf90352b8b568c39f2ccdea887ecbd71436ce1",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-360be80564",
+      "questions": [
+        "fomc",
+        "fomc.economic_signal"
+      ],
+      "scorecard_sha256": "4ff2c04106511a774f04ed9d0429a95ac6b5cc8c9e198ef30d8be8abf0f393a3"
+    },
+    "CEIL": {
+      "bundle_hash": "b920abdc4da64103c68e2bb4d523141f5efb140dfe4d34068c65ff32e29e15bd",
+      "fewshot_fingerprint": null,
+      "head_fit_id": null,
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "b5a61becbef272ef4727e5c099384b00ab485568813aa78a952df1a306ce8306"
+    }
+  },
+  "decision_flywheel": {
+    "commit": "102fd5bdfa3191a1d577c9f922b011aa1929aac2",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "4fbeccd9e021ad9e32c897021ed29205b59897f622f4fa96c2d4df084d866606",
+    "n": 100,
+    "name": "dev-100"
+  },
+  "final": false,
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "2cff0f3c05011e3f6e394d84eb4c627050912f018e9d438f58c50adaf465e8ab",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.76,
+              "brier": 0.1654,
+              "ece": 0.100759,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.76,
+              "brier": 0.166228,
+              "ece": 0.056282,
+              "n": 100
+            },
+            "decision": "promoted",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-b4da4cf0f5",
+            "incumbent_served": {
+              "accuracy": 0.68,
+              "brier": 0.206632,
+              "ece": 0.13837,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [],
+            "regularization_c": 0.3,
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.64,
+            "brier": 0.224517,
+            "ece": 0.142691,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.64,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  18,
+                  5,
+                  4
+                ],
+                [
+                  4,
+                  12,
+                  7
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.615789,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.631579,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 30,
+                "recall": 0.666667,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.5,
+                "low_support": false,
+                "precision": 0.48,
+                "predicted": 25,
+                "recall": 0.521739,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.715789,
+                "low_support": false,
+                "precision": 0.755556,
+                "predicted": 45,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.more_pressure_to_tighten",
+            "economic_policy_pressure.clr.more_pressure_to_ease"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.196865,
+            "ece": 0.064853,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  2,
+                  3
+                ],
+                [
+                  4,
+                  15,
+                  4
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.697855,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.721311,
+                "low_support": false,
+                "precision": 0.647059,
+                "predicted": 34,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.625,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 25,
+                "recall": 0.652174,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.747253,
+                "low_support": false,
+                "precision": 0.829268,
+                "predicted": 41,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          },
+          "steering": {
+            "analyst_reply_sha256": "b034602fb70ecc3018a0c2323737d4beae602fc873c7718e55d0450117bd773f",
+            "analyst_source": "live",
+            "comments_in_feedback": 0,
+            "decision": "promoted",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "5f683cd5066dc81acb82784945b95a7d2dab7e0b1327401f200598032d2f43f2",
+                "key": "economic_policy_pressure",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.76,
+              "brier": 0.167428,
+              "ece": 0.10112,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.75,
+              "brier": 0.171022,
+              "ece": 0.12747,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.more_pressure_to_tighten",
+              "economic_policy_pressure.clr.more_pressure_to_ease"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-20a3674eac",
+            "incumbent_served": {
+              "accuracy": 0.77,
+              "brier": 0.153615,
+              "ece": 0.076008,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0174, below the 0.005 required",
+              "accuracy fell by 0.0200, more than the 0.0200 that 100 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 1
+          }
+        },
+        "A-c": {
+          "comments": 5,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "macroeconomic_pressure.clr.tightening_pressure",
+            "macroeconomic_pressure.clr.easing_pressure",
+            "macroeconomic_pressure.clr.mixed_or_neutral"
+          ],
+          "metrics": {
+            "accuracy": 0.73,
+            "brier": 0.193307,
+            "ece": 0.117038,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.73,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  17,
+                  4
+                ],
+                [
+                  7,
+                  10,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.725027,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.779661,
+                "low_support": false,
+                "precision": 0.71875,
+                "predicted": 32,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653846,
+                "low_support": false,
+                "precision": 0.586207,
+                "predicted": 29,
+                "recall": 0.73913,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.741573,
+                "low_support": false,
+                "precision": 0.846154,
+                "predicted": 39,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 5,
+            "arm": "A-c",
+            "cache_hits": 0,
+            "comments_sha256": "636441e8ad1751012d9b8a3ee76cf28edc3b2a7c6768327ffe22f15ac3636ef6",
+            "errors_seen": 32,
+            "forwarded": 5,
+            "model": "gpt-6-luna",
+            "new_calls": 15,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 1,
+            "unexplainable": 10,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "611c1089c55f567854281c589860669784b703262a73601f52f9005ea0d9f9d9",
+            "analyst_source": "live",
+            "comments_in_feedback": 5,
+            "decision": "promoted",
+            "elements_after": [
+              "macroeconomic_pressure"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "8af296c9ef6b0b1cda704b03b8d197b363501bba66c5e3c7179abdfaa3aeb82f",
+                "key": "macroeconomic_pressure",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.71,
+              "brier": 0.164748,
+              "ece": 0.098231,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.69,
+              "brier": 0.163545,
+              "ece": 0.112802,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "macroeconomic_pressure.clr.tightening_pressure",
+              "macroeconomic_pressure.clr.easing_pressure",
+              "macroeconomic_pressure.clr.mixed_or_neutral"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-04db9333f9",
+            "incumbent_served": {
+              "accuracy": 0.77,
+              "brier": 0.156391,
+              "ece": 0.064697,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0072, below the 0.005 required",
+              "accuracy fell by 0.0800, more than the 0.0200 that 100 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 1
+          }
+        },
+        "A-c-noisy": {
+          "comments": 5,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.hawkish",
+            "economic_policy_pressure.clr.dovish"
+          ],
+          "metrics": {
+            "accuracy": 0.69,
+            "brier": 0.215828,
+            "ece": 0.127779,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.69,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  21,
+                  3,
+                  3
+                ],
+                [
+                  4,
+                  13,
+                  6
+                ],
+                [
+                  8,
+                  7,
+                  35
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.669966,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.7,
+                "low_support": false,
+                "precision": 0.636364,
+                "predicted": 33,
+                "recall": 0.777778,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.565217,
+                "low_support": false,
+                "precision": 0.565217,
+                "predicted": 23,
+                "recall": 0.565217,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.744681,
+                "low_support": false,
+                "precision": 0.795455,
+                "predicted": 44,
+                "recall": 0.7,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 5,
+            "arm": "A-c-noisy",
+            "cache_hits": 15,
+            "comments_sha256": "d27fc7bf4b1e65eb6c7c0ece677891d6faad9e1bbe76230806e64504f0d8eccd",
+            "errors_seen": 32,
+            "forwarded": 5,
+            "model": "gpt-6-luna",
+            "new_calls": 0,
+            "noisy_replaced": 1,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 1,
+            "unexplainable": 10,
+            "variant": "noisy"
+          },
+          "steering": {
+            "analyst_reply_sha256": "52babb54c0b13f6d2f7c7bed909fff80f9816259e13a7c7212286be0ac3b5187",
+            "analyst_source": "live",
+            "comments_in_feedback": 5,
+            "decision": "promoted",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "719de3e81b14e31e2ca4d9d6a5dab9c104692a1b620b3651dd24e9d937f17bb4",
+                "key": "economic_policy_pressure",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-noisy",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.74,
+              "brier": 0.168375,
+              "ece": 0.109103,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.74,
+              "brier": 0.166773,
+              "ece": 0.092077,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.hawkish",
+              "economic_policy_pressure.clr.dovish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-3880c536bc",
+            "incumbent_served": {
+              "accuracy": 0.79,
+              "brier": 0.162509,
+              "ece": 0.085454,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0043, below the 0.005 required",
+              "accuracy fell by 0.0500, more than the 0.0200 that 100 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 1
+          }
+        },
+        "A-c-shuffled": {
+          "comments": 5,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_signal.clr.hawkish_pressure",
+            "economic_signal.clr.dovish_pressure"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.20279,
+            "ece": 0.050696,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  1,
+                  4
+                ],
+                [
+                  3,
+                  16,
+                  4
+                ],
+                [
+                  8,
+                  9,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.70389,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.733333,
+                "low_support": false,
+                "precision": 0.666667,
+                "predicted": 33,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653061,
+                "low_support": false,
+                "precision": 0.615385,
+                "predicted": 26,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.725275,
+                "low_support": false,
+                "precision": 0.804878,
+                "predicted": 41,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 5,
+            "arm": "A-c-shuffled",
+            "cache_hits": 15,
+            "comments_sha256": "09162853faf1f13f3c70289e6539b192d6d8a8cb1b561f5bbb957d027fa65024",
+            "errors_seen": 32,
+            "forwarded": 5,
+            "model": "gpt-6-luna",
+            "new_calls": 0,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 1,
+            "unexplainable": 10,
+            "variant": "shuffled"
+          },
+          "steering": {
+            "analyst_reply_sha256": "87b2f507e72b273a3e56b65efbba1048f4ebb363943d86f89bcd4ced0e9dd188",
+            "analyst_source": "live",
+            "comments_in_feedback": 5,
+            "decision": "promoted",
+            "elements_after": [
+              "economic_signal"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "846b5bd9af4c2f05c7f7d69497492d873d41b3afa3d4c5133d99a01e3197d270",
+                "key": "economic_signal",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-shuffled",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.77,
+              "brier": 0.173216,
+              "ece": 0.110071,
+              "n": 100
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.77,
+              "brier": 0.178917,
+              "ece": 0.110515,
+              "n": 100
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_signal.clr.hawkish_pressure",
+              "economic_signal.clr.dovish_pressure"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-360be80564",
+            "incumbent_served": {
+              "accuracy": 0.78,
+              "brier": 0.15809,
+              "ece": 0.072369,
+              "n": 100
+            },
+            "missing_features": 0,
+            "n_train": 100,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0208, below the 0.005 required"
+            ],
+            "regularization_c": 0.1,
+            "round": 1
+          }
+        },
+        "CEIL": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "CEIL",
+            "decision": "fixed reference (not refit)",
+            "round": 1
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.16504,
+            "ece": 0.082045,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.76,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  16,
+                  6
+                ],
+                [
+                  7,
+                  6,
+                  37
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.753196,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.793103,
+                "low_support": false,
+                "precision": 0.741935,
+                "predicted": 31,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.695652,
+                "low_support": false,
+                "precision": 0.695652,
+                "predicted": 23,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.770833,
+                "low_support": false,
+                "precision": 0.804348,
+                "predicted": 46,
+                "recall": 0.74,
+                "support": 50
+              }
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "brier": {
+            "effect": -0.027652,
+            "lower": -0.050875,
+            "upper": -0.006028
+          },
+          "ece": {
+            "effect": -0.077839,
+            "lower": -0.140636,
+            "upper": 0.039958
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "brier": {
+            "effect": -0.003558,
+            "lower": -0.017992,
+            "upper": 0.011308
+          },
+          "ece": {
+            "effect": 0.052185,
+            "lower": -0.036726,
+            "upper": 0.111929
+          }
+        }
+      },
+      "fewshot_context": "8eb5a7a27c804a187e9c36544dc78173bb9a772f6b5d9844e2a705fc220c048a",
+      "knn_context": "e02260f542b376b46e4b471adb319c6215962c05c1e6898909c2b9a28208200c",
+      "labeled_fingerprint": "720eb642cb5a789eece97af9acdd06ffaf691dcc381ed07483a18472c6db46a6",
+      "multiclass_contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "macro_f1": {
+            "effect": 0.082065,
+            "lower": 0.019487,
+            "upper": 0.147671
+          }
+        },
+        "A-c-0": {
+          "accuracy": {
+            "effect": 0.09,
+            "lower": 0.02,
+            "upper": 0.16
+          },
+          "macro_f1": {
+            "effect": 0.109237,
+            "lower": 0.032424,
+            "upper": 0.187829
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "macro_f1": {
+            "effect": 0.027172,
+            "lower": -0.021462,
+            "upper": 0.084722
+          }
+        }
+      },
+      "n_labeled": 100,
+      "round": 1
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.725,
+              "brier": 0.160637,
+              "ece": 0.069122,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.725,
+              "brier": 0.158717,
+              "ece": 0.053973,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-c2a1868cd1",
+            "incumbent_served": {
+              "accuracy": 0.73,
+              "brier": 0.157346,
+              "ece": 0.051695,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0014, below the 0.005 required"
+            ],
+            "regularization_c": 0.3,
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.64,
+            "brier": 0.224517,
+            "ece": 0.142691,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.64,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  18,
+                  5,
+                  4
+                ],
+                [
+                  4,
+                  12,
+                  7
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.615789,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.631579,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 30,
+                "recall": 0.666667,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.5,
+                "low_support": false,
+                "precision": 0.48,
+                "predicted": 25,
+                "recall": 0.521739,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.715789,
+                "low_support": false,
+                "precision": 0.755556,
+                "predicted": 45,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.more_pressure_to_tighten",
+            "economic_policy_pressure.clr.more_pressure_to_ease"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.196865,
+            "ece": 0.064853,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  2,
+                  3
+                ],
+                [
+                  4,
+                  15,
+                  4
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.697855,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.721311,
+                "low_support": false,
+                "precision": 0.647059,
+                "predicted": 34,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.625,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 25,
+                "recall": 0.652174,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.747253,
+                "low_support": false,
+                "precision": 0.829268,
+                "predicted": 41,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          },
+          "steering": {
+            "analyst_reply_sha256": "27781cd08a3914b86b46a48bf6755ee1adcce437659c87a9ccda90330180248a",
+            "analyst_source": "live",
+            "comments_in_feedback": 0,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [
+              "economic_policy_pressure"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "91568b05e2d5119692fddf2253ecfba354ce7908daf39b6b593e7d2bffba69cd",
+                "key": "economic_conditions_direction",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.735,
+              "brier": 0.159974,
+              "ece": 0.041922,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.735,
+              "brier": 0.158711,
+              "ece": 0.049717,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.more_pressure_to_tighten",
+              "economic_policy_pressure.clr.more_pressure_to_ease"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-30dd99881a",
+            "incumbent_served": {
+              "accuracy": 0.745,
+              "brier": 0.153896,
+              "ece": 0.041068,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0048, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 2
+          }
+        },
+        "A-c": {
+          "comments": 8,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "macroeconomic_pressure.clr.tightening_pressure",
+            "macroeconomic_pressure.clr.easing_pressure",
+            "macroeconomic_pressure.clr.mixed_or_neutral"
+          ],
+          "metrics": {
+            "accuracy": 0.73,
+            "brier": 0.193307,
+            "ece": 0.117038,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.73,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  17,
+                  4
+                ],
+                [
+                  7,
+                  10,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.725027,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.779661,
+                "low_support": false,
+                "precision": 0.71875,
+                "predicted": 32,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653846,
+                "low_support": false,
+                "precision": 0.586207,
+                "predicted": 29,
+                "recall": 0.73913,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.741573,
+                "low_support": false,
+                "precision": 0.846154,
+                "predicted": 39,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 8,
+            "arm": "A-c",
+            "cache_hits": 0,
+            "comments_sha256": "6728451e3f259490e3ea9d8428ab5b2fd75d0141ac1ea2cda1777bfe957932f3",
+            "errors_seen": 28,
+            "forwarded": 8,
+            "model": "gpt-6-luna",
+            "new_calls": 15,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 2,
+            "unexplainable": 7,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "5ce2fe666fee983c4fae546ae1dba414e52d6eb1bd152055e3673464c3e16136",
+            "analyst_source": "live",
+            "comments_in_feedback": 13,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "macroeconomic_pressure"
+            ],
+            "elements_before": [
+              "macroeconomic_pressure"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "041d3b8c91253ebbe0406417587a4f3b05f8b52b243cee74a501c0d2e3e35b98",
+                "key": "policy_stance_relevance",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.715,
+              "brier": 0.159732,
+              "ece": 0.05784,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.715,
+              "brier": 0.158847,
+              "ece": 0.026826,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "macroeconomic_pressure.clr.tightening_pressure",
+              "macroeconomic_pressure.clr.easing_pressure",
+              "macroeconomic_pressure.clr.mixed_or_neutral"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-6b4b5f2d03",
+            "incumbent_served": {
+              "accuracy": 0.745,
+              "brier": 0.157395,
+              "ece": 0.052222,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0015, below the 0.005 required",
+              "accuracy fell by 0.0300, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 2
+          }
+        },
+        "A-c-noisy": {
+          "comments": 7,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.hawkish",
+            "economic_policy_pressure.clr.dovish"
+          ],
+          "metrics": {
+            "accuracy": 0.69,
+            "brier": 0.215828,
+            "ece": 0.127779,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.69,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  21,
+                  3,
+                  3
+                ],
+                [
+                  4,
+                  13,
+                  6
+                ],
+                [
+                  8,
+                  7,
+                  35
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.669966,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.7,
+                "low_support": false,
+                "precision": 0.636364,
+                "predicted": 33,
+                "recall": 0.777778,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.565217,
+                "low_support": false,
+                "precision": 0.565217,
+                "predicted": 23,
+                "recall": 0.565217,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.744681,
+                "low_support": false,
+                "precision": 0.795455,
+                "predicted": 44,
+                "recall": 0.7,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 7,
+            "arm": "A-c-noisy",
+            "cache_hits": 13,
+            "comments_sha256": "794f725b882e34e929e7c60206a4c36a27c99b1fe52ebce9f032c8de2854940d",
+            "errors_seen": 25,
+            "forwarded": 7,
+            "model": "gpt-6-luna",
+            "new_calls": 2,
+            "noisy_replaced": 1,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 2,
+            "unexplainable": 8,
+            "variant": "noisy"
+          },
+          "steering": {
+            "analyst_reply_sha256": "daefbfd37277d1cbe4ce6377b1884163d8a92d8297195f7f075e39d812c539cb",
+            "analyst_source": "live",
+            "comments_in_feedback": 12,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [
+              "economic_policy_pressure"
+            ],
+            "proposed": [
+              {
+                "reword": "economic_policy_pressure"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-noisy",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.74,
+              "brier": 0.1633,
+              "ece": 0.063768,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.74,
+              "brier": 0.162048,
+              "ece": 0.058949,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.hawkish",
+              "economic_policy_pressure.clr.dovish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-73ceffc3f4",
+            "incumbent_served": {
+              "accuracy": 0.77,
+              "brier": 0.165361,
+              "ece": 0.072035,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by +0.0033, below the 0.005 required",
+              "accuracy fell by 0.0300, more than the 0.0100 that 200 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 2
+          }
+        },
+        "A-c-shuffled": {
+          "comments": 7,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_signal.clr.hawkish_pressure",
+            "economic_signal.clr.dovish_pressure"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.20279,
+            "ece": 0.050696,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  1,
+                  4
+                ],
+                [
+                  3,
+                  16,
+                  4
+                ],
+                [
+                  8,
+                  9,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.70389,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.733333,
+                "low_support": false,
+                "precision": 0.666667,
+                "predicted": 33,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653061,
+                "low_support": false,
+                "precision": 0.615385,
+                "predicted": 26,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.725275,
+                "low_support": false,
+                "precision": 0.804878,
+                "predicted": 41,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 7,
+            "arm": "A-c-shuffled",
+            "cache_hits": 13,
+            "comments_sha256": "bf5505907e035eaaac18304ec0b73a256992216d4caecaca3e6cdcef18ee3bb9",
+            "errors_seen": 26,
+            "forwarded": 7,
+            "model": "gpt-6-luna",
+            "new_calls": 2,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 2,
+            "unexplainable": 8,
+            "variant": "shuffled"
+          },
+          "steering": {
+            "analyst_reply_sha256": "985513b1fefa28f9be4f22ef058a8439485a68920a6c20b18a5e76312b6a4fbc",
+            "analyst_source": "live",
+            "comments_in_feedback": 12,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_signal"
+            ],
+            "elements_before": [
+              "economic_signal"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "68c351208dad4f1dcc5ff863ef7aeebb607696729e1cbc8e27536d5ed9ae3f7b",
+                "key": "topic_scope",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-shuffled",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.755,
+              "brier": 0.164682,
+              "ece": 0.0507,
+              "n": 200
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.755,
+              "brier": 0.164373,
+              "ece": 0.050703,
+              "n": 200
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_signal.clr.hawkish_pressure",
+              "economic_signal.clr.dovish_pressure"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-cf84a82a8b",
+            "incumbent_served": {
+              "accuracy": 0.76,
+              "brier": 0.163792,
+              "ece": 0.069664,
+              "n": 200
+            },
+            "missing_features": 0,
+            "n_train": 200,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0006, below the 0.005 required"
+            ],
+            "regularization_c": 0.1,
+            "round": 2
+          }
+        },
+        "CEIL": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "CEIL",
+            "decision": "fixed reference (not refit)",
+            "round": 2
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.16504,
+            "ece": 0.082045,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.76,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  16,
+                  6
+                ],
+                [
+                  7,
+                  6,
+                  37
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.753196,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.793103,
+                "low_support": false,
+                "precision": 0.741935,
+                "predicted": 31,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.695652,
+                "low_support": false,
+                "precision": 0.695652,
+                "predicted": 23,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.770833,
+                "low_support": false,
+                "precision": 0.804348,
+                "predicted": 46,
+                "recall": 0.74,
+                "support": 50
+              }
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "brier": {
+            "effect": -0.027652,
+            "lower": -0.050875,
+            "upper": -0.006028
+          },
+          "ece": {
+            "effect": -0.077839,
+            "lower": -0.140636,
+            "upper": 0.039958
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "brier": {
+            "effect": -0.003558,
+            "lower": -0.017992,
+            "upper": 0.011308
+          },
+          "ece": {
+            "effect": 0.052185,
+            "lower": -0.036726,
+            "upper": 0.111929
+          }
+        }
+      },
+      "fewshot_context": "8ea409b31958770a4712ca91a9eb45d78f4eea3068eafd900fbe5ae31f3928d2",
+      "knn_context": "2e9e694653264b7fad0e664ce4f9a4eb413da922df59cd4663dc2ec0fe2337d6",
+      "labeled_fingerprint": "616b0f494726c0cd7a7a5b15ab643d2bdc589a058fbef1bd73214dbe551f6d42",
+      "multiclass_contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "macro_f1": {
+            "effect": 0.082065,
+            "lower": 0.019487,
+            "upper": 0.147671
+          }
+        },
+        "A-c-0": {
+          "accuracy": {
+            "effect": 0.09,
+            "lower": 0.02,
+            "upper": 0.16
+          },
+          "macro_f1": {
+            "effect": 0.109237,
+            "lower": 0.032424,
+            "upper": 0.187829
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "macro_f1": {
+            "effect": 0.027172,
+            "lower": -0.021462,
+            "upper": 0.084722
+          }
+        }
+      },
+      "n_labeled": 200,
+      "round": 2
+    },
+    {
+      "arms": {
+        "0": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "0",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.71,
+              "brier": 0.172227,
+              "ece": 0.037583,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.71,
+              "brier": 0.171263,
+              "ece": 0.03945,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-a1cbd3383f",
+            "incumbent_served": {
+              "accuracy": 0.716667,
+              "brier": 0.170166,
+              "ece": 0.026327,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0011, below the 0.005 required",
+              "accuracy fell by 0.0067, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.3,
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.64,
+            "brier": 0.224517,
+            "ece": 0.142691,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.64,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  18,
+                  5,
+                  4
+                ],
+                [
+                  4,
+                  12,
+                  7
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.615789,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.631579,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 30,
+                "recall": 0.666667,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.5,
+                "low_support": false,
+                "precision": 0.48,
+                "predicted": 25,
+                "recall": 0.521739,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.715789,
+                "low_support": false,
+                "precision": 0.755556,
+                "predicted": 45,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          }
+        },
+        "A": {
+          "comments": 0,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.more_pressure_to_tighten",
+            "economic_policy_pressure.clr.more_pressure_to_ease"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.196865,
+            "ece": 0.064853,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  2,
+                  3
+                ],
+                [
+                  4,
+                  15,
+                  4
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.697855,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.721311,
+                "low_support": false,
+                "precision": 0.647059,
+                "predicted": 34,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.625,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 25,
+                "recall": 0.652174,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.747253,
+                "low_support": false,
+                "precision": 0.829268,
+                "predicted": 41,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          },
+          "steering": {
+            "analyst_reply_sha256": "0dd9f67e278eca45e417dc1faeb0301c6e74427afa414025cae9f4b52e9e0d79",
+            "analyst_source": "live",
+            "comments_in_feedback": 0,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [
+              "economic_policy_pressure"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "64ef8f760ac1ff68161b507965bc9594c22194e806564b9cec8b08e6320bc101",
+                "key": "explicit_policy_position",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.74,
+              "brier": 0.16602,
+              "ece": 0.041871,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.746667,
+              "brier": 0.166478,
+              "ece": 0.05251,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.more_pressure_to_tighten",
+              "economic_policy_pressure.clr.more_pressure_to_ease"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-8caaf752ae",
+            "incumbent_served": {
+              "accuracy": 0.74,
+              "brier": 0.159295,
+              "ece": 0.049301,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0072, below the 0.005 required"
+            ],
+            "regularization_c": 0.1,
+            "round": 3
+          }
+        },
+        "A-c": {
+          "comments": 6,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "macroeconomic_pressure.clr.tightening_pressure",
+            "macroeconomic_pressure.clr.easing_pressure",
+            "macroeconomic_pressure.clr.mixed_or_neutral"
+          ],
+          "metrics": {
+            "accuracy": 0.73,
+            "brier": 0.193307,
+            "ece": 0.117038,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.73,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  2,
+                  2
+                ],
+                [
+                  2,
+                  17,
+                  4
+                ],
+                [
+                  7,
+                  10,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.725027,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.779661,
+                "low_support": false,
+                "precision": 0.71875,
+                "predicted": 32,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653846,
+                "low_support": false,
+                "precision": 0.586207,
+                "predicted": 29,
+                "recall": 0.73913,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.741573,
+                "low_support": false,
+                "precision": 0.846154,
+                "predicted": 39,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 6,
+            "arm": "A-c",
+            "cache_hits": 0,
+            "comments_sha256": "784129fc2549bf007dd79048c457930ba2c80d4d0b9cdb1ff43b6f987a942f46",
+            "errors_seen": 26,
+            "forwarded": 6,
+            "model": "gpt-6-luna",
+            "new_calls": 15,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 3,
+            "unexplainable": 9,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "768b0453496041c51546a2a047858b3c5f0f348bed31fd343f2b3b8c29f6933b",
+            "analyst_source": "live",
+            "comments_in_feedback": 19,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "macroeconomic_pressure"
+            ],
+            "elements_before": [
+              "macroeconomic_pressure"
+            ],
+            "proposed": [
+              {
+                "reword": "macroeconomic_pressure"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.73,
+              "brier": 0.162875,
+              "ece": 0.032472,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.73,
+              "brier": 0.162446,
+              "ece": 0.025034,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "macroeconomic_pressure.clr.tightening_pressure",
+              "macroeconomic_pressure.clr.easing_pressure",
+              "macroeconomic_pressure.clr.mixed_or_neutral"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-4ab4e16681",
+            "incumbent_served": {
+              "accuracy": 0.743333,
+              "brier": 0.161011,
+              "ece": 0.053107,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0014, below the 0.005 required",
+              "accuracy fell by 0.0133, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 3
+          }
+        },
+        "A-c-noisy": {
+          "comments": 7,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_pressure.clr.hawkish",
+            "economic_policy_pressure.clr.dovish"
+          ],
+          "metrics": {
+            "accuracy": 0.69,
+            "brier": 0.215828,
+            "ece": 0.127779,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.69,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  21,
+                  3,
+                  3
+                ],
+                [
+                  4,
+                  13,
+                  6
+                ],
+                [
+                  8,
+                  7,
+                  35
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.669966,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.7,
+                "low_support": false,
+                "precision": 0.636364,
+                "predicted": 33,
+                "recall": 0.777778,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.565217,
+                "low_support": false,
+                "precision": 0.565217,
+                "predicted": 23,
+                "recall": 0.565217,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.744681,
+                "low_support": false,
+                "precision": 0.795455,
+                "predicted": 44,
+                "recall": 0.7,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 7,
+            "arm": "A-c-noisy",
+            "cache_hits": 12,
+            "comments_sha256": "3aa079b57ed183909663342eb974e4573274eebd5f36fa4b2a1db72437fcfe15",
+            "errors_seen": 28,
+            "forwarded": 7,
+            "model": "gpt-6-luna",
+            "new_calls": 3,
+            "noisy_replaced": 1,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 3,
+            "unexplainable": 8,
+            "variant": "noisy"
+          },
+          "steering": {
+            "analyst_reply_sha256": "6616b25eb3b1911a0d231732d917c9a87b435ca0bd77c6b71d4546a6d576f755",
+            "analyst_source": "live",
+            "comments_in_feedback": 19,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_pressure"
+            ],
+            "elements_before": [
+              "economic_policy_pressure"
+            ],
+            "proposed": [
+              {
+                "reword": "economic_policy_pressure"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-noisy",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.74,
+              "brier": 0.164962,
+              "ece": 0.065253,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.74,
+              "brier": 0.164255,
+              "ece": 0.05281,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_policy_pressure.clr.hawkish",
+              "economic_policy_pressure.clr.dovish"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-dd7e402342",
+            "incumbent_served": {
+              "accuracy": 0.753333,
+              "brier": 0.166776,
+              "ece": 0.05426,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by +0.0025, below the 0.005 required",
+              "accuracy fell by 0.0133, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 3
+          }
+        },
+        "A-c-shuffled": {
+          "comments": 7,
+          "evaluation_rows_missing_features": 0,
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_signal.clr.hawkish_pressure",
+            "economic_signal.clr.dovish_pressure"
+          ],
+          "metrics": {
+            "accuracy": 0.71,
+            "brier": 0.20279,
+            "ece": 0.050696,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.71,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  22,
+                  1,
+                  4
+                ],
+                [
+                  3,
+                  16,
+                  4
+                ],
+                [
+                  8,
+                  9,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.70389,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.733333,
+                "low_support": false,
+                "precision": 0.666667,
+                "predicted": 33,
+                "recall": 0.814815,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.653061,
+                "low_support": false,
+                "precision": 0.615385,
+                "predicted": 26,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.725275,
+                "low_support": false,
+                "precision": 0.804878,
+                "predicted": 41,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "stakeholder": {
+            "accepted": 7,
+            "arm": "A-c-shuffled",
+            "cache_hits": 13,
+            "comments_sha256": "c495cc8dc940a8de9b3faf59de42b84fc3195499f0e4865d5e5a15c4cc94022b",
+            "errors_seen": 27,
+            "forwarded": 7,
+            "model": "gpt-6-luna",
+            "new_calls": 2,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 3,
+            "unexplainable": 8,
+            "variant": "shuffled"
+          },
+          "steering": {
+            "analyst_reply_sha256": "f22a1afc9a4f5194653a2b7a85609df72bb570e0706bec8054c9e37c4b0027d8",
+            "analyst_source": "live",
+            "comments_in_feedback": 19,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_signal"
+            ],
+            "elements_before": [
+              "economic_signal"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "a904ef0a4a376b670c48fd038ea5b25d4e56477f0355a93705895856dceb533c",
+                "key": "explicit_policy_direction",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          },
+          "workspace_gate": {
+            "arm": "A-c-shuffled",
+            "calibration": "temperature",
+            "candidate_fit_head_oof": {
+              "accuracy": 0.74,
+              "brier": 0.167557,
+              "ece": 0.04968,
+              "n": 300
+            },
+            "candidate_nested_oof": {
+              "accuracy": 0.74,
+              "brier": 0.167469,
+              "ece": 0.036043,
+              "n": 300
+            },
+            "decision": "rejected",
+            "features": [
+              "self.holistic.clr.dovish",
+              "self.holistic.clr.hawkish",
+              "economic_signal.clr.hawkish_pressure",
+              "economic_signal.clr.dovish_pressure"
+            ],
+            "fewshot_features_leave_one_out_once": false,
+            "fit_id": "dh-debf5bbc07",
+            "incumbent_served": {
+              "accuracy": 0.75,
+              "brier": 0.166709,
+              "ece": 0.074333,
+              "n": 300
+            },
+            "missing_features": 0,
+            "n_train": 300,
+            "pool_features_per_fold": false,
+            "reasons": [
+              "Brier improved by -0.0008, below the 0.005 required",
+              "accuracy fell by 0.0100, more than the 0.0067 that 300 effective labels can resolve"
+            ],
+            "regularization_c": 0.1,
+            "round": 3
+          }
+        },
+        "CEIL": {
+          "evaluation_rows_missing_features": 0,
+          "gate": {
+            "arm": "CEIL",
+            "decision": "fixed reference (not refit)",
+            "round": 3
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "metrics": {
+            "accuracy": 0.76,
+            "brier": 0.16504,
+            "ece": 0.082045,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.76,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  23,
+                  1,
+                  3
+                ],
+                [
+                  1,
+                  16,
+                  6
+                ],
+                [
+                  7,
+                  6,
+                  37
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.753196,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.793103,
+                "low_support": false,
+                "precision": 0.741935,
+                "predicted": 31,
+                "recall": 0.851852,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.695652,
+                "low_support": false,
+                "precision": 0.695652,
+                "predicted": 23,
+                "recall": 0.695652,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.770833,
+                "low_support": false,
+                "precision": 0.804348,
+                "predicted": 46,
+                "recall": 0.74,
+                "support": 50
+              }
+            }
+          }
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "brier": {
+            "effect": -0.027652,
+            "lower": -0.050875,
+            "upper": -0.006028
+          },
+          "ece": {
+            "effect": -0.077839,
+            "lower": -0.140636,
+            "upper": 0.039958
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "brier": {
+            "effect": -0.003558,
+            "lower": -0.017992,
+            "upper": 0.011308
+          },
+          "ece": {
+            "effect": 0.052185,
+            "lower": -0.036726,
+            "upper": 0.111929
+          }
+        }
+      },
+      "fewshot_context": "36f39b58b7cd51a92d752702f959274d834069d8e4378442b7da48fadcada773",
+      "knn_context": "909c430df6eb3f2aa23eafa370467b6e527e120cae83acff838a4fcee1e76e30",
+      "labeled_fingerprint": "259a91be4ad289c4097b09f5db62461514a85858d64e4ff2c6a869cba5291a61",
+      "multiclass_contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.07,
+            "lower": 0.01,
+            "upper": 0.13
+          },
+          "macro_f1": {
+            "effect": 0.082065,
+            "lower": 0.019487,
+            "upper": 0.147671
+          }
+        },
+        "A-c-0": {
+          "accuracy": {
+            "effect": 0.09,
+            "lower": 0.02,
+            "upper": 0.16
+          },
+          "macro_f1": {
+            "effect": 0.109237,
+            "lower": 0.032424,
+            "upper": 0.187829
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.02,
+            "lower": -0.03,
+            "upper": 0.07
+          },
+          "macro_f1": {
+            "effect": 0.027172,
+            "lower": -0.021462,
+            "upper": 0.084722
+          }
+        }
+      },
+      "n_labeled": 300,
+      "round": 3
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "model": "gpt-6-luna",
+      "source": "rubric stakeholder: each comment arm's own errors on the round's new pool labels",
+      "supplied": 57
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "0": {
+        "total": 400,
+        "zero-shot": 400
+      },
+      "A": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "A-c": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "A-c-noisy": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "A-c-shuffled": {
+        "total": 900,
+        "zero-shot": 900
+      },
+      "CEIL": {
+        "total": 100,
+        "zero-shot": 100
+      }
+    },
+    "by_arm_round": {
+      "0": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 83480,
+            "output_tokens": 8707,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 41574,
+            "output_tokens": 4353,
+            "successes": 100
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 41330,
+            "output_tokens": 4366,
+            "successes": 100
+          }
+        }
+      },
+      "A": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 77880,
+            "output_tokens": 12459,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 116996,
+            "output_tokens": 20832,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 145682,
+            "output_tokens": 14032,
+            "successes": 400
+          }
+        }
+      },
+      "A-c": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 79880,
+            "output_tokens": 13623,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 114396,
+            "output_tokens": 12394,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 171882,
+            "output_tokens": 27303,
+            "successes": 400
+          }
+        }
+      },
+      "A-c-noisy": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 75880,
+            "output_tokens": 9789,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 124196,
+            "output_tokens": 14687,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 167182,
+            "output_tokens": 19595,
+            "successes": 400
+          }
+        }
+      },
+      "A-c-shuffled": {
+        "1": {
+          "zero-shot": {
+            "attempts": 200,
+            "failures": 0,
+            "input_tokens": 94480,
+            "output_tokens": 10672,
+            "successes": 200
+          }
+        },
+        "2": {
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 121296,
+            "output_tokens": 18500,
+            "successes": 300
+          }
+        },
+        "3": {
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 152782,
+            "output_tokens": 13141,
+            "successes": 400
+          }
+        }
+      },
+      "CEIL": {
+        "1": {
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 122332,
+            "output_tokens": 4385,
+            "successes": 100
+          }
+        }
+      }
+    },
+    "ceiling": 9500,
+    "circuit_breaker": null,
+    "cumulative_used": 4100,
+    "error_classes": {},
+    "max_new_this_invocation": 4900,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 4100,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 1,
+  "stakeholder": [
+    {
+      "accepted": 5,
+      "arm": "A-c",
+      "cache_hits": 0,
+      "comments_sha256": "636441e8ad1751012d9b8a3ee76cf28edc3b2a7c6768327ffe22f15ac3636ef6",
+      "errors_seen": 32,
+      "forwarded": 5,
+      "model": "gpt-6-luna",
+      "new_calls": 15,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 1,
+      "unexplainable": 10,
+      "variant": "as-given"
+    },
+    {
+      "accepted": 5,
+      "arm": "A-c-shuffled",
+      "cache_hits": 15,
+      "comments_sha256": "09162853faf1f13f3c70289e6539b192d6d8a8cb1b561f5bbb957d027fa65024",
+      "errors_seen": 32,
+      "forwarded": 5,
+      "model": "gpt-6-luna",
+      "new_calls": 0,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 1,
+      "unexplainable": 10,
+      "variant": "shuffled"
+    },
+    {
+      "accepted": 5,
+      "arm": "A-c-noisy",
+      "cache_hits": 15,
+      "comments_sha256": "d27fc7bf4b1e65eb6c7c0ece677891d6faad9e1bbe76230806e64504f0d8eccd",
+      "errors_seen": 32,
+      "forwarded": 5,
+      "model": "gpt-6-luna",
+      "new_calls": 0,
+      "noisy_replaced": 1,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 1,
+      "unexplainable": 10,
+      "variant": "noisy"
+    },
+    {
+      "accepted": 8,
+      "arm": "A-c",
+      "cache_hits": 0,
+      "comments_sha256": "6728451e3f259490e3ea9d8428ab5b2fd75d0141ac1ea2cda1777bfe957932f3",
+      "errors_seen": 28,
+      "forwarded": 8,
+      "model": "gpt-6-luna",
+      "new_calls": 15,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 2,
+      "unexplainable": 7,
+      "variant": "as-given"
+    },
+    {
+      "accepted": 7,
+      "arm": "A-c-shuffled",
+      "cache_hits": 13,
+      "comments_sha256": "bf5505907e035eaaac18304ec0b73a256992216d4caecaca3e6cdcef18ee3bb9",
+      "errors_seen": 26,
+      "forwarded": 7,
+      "model": "gpt-6-luna",
+      "new_calls": 2,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 2,
+      "unexplainable": 8,
+      "variant": "shuffled"
+    },
+    {
+      "accepted": 7,
+      "arm": "A-c-noisy",
+      "cache_hits": 13,
+      "comments_sha256": "794f725b882e34e929e7c60206a4c36a27c99b1fe52ebce9f032c8de2854940d",
+      "errors_seen": 25,
+      "forwarded": 7,
+      "model": "gpt-6-luna",
+      "new_calls": 2,
+      "noisy_replaced": 1,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 2,
+      "unexplainable": 8,
+      "variant": "noisy"
+    },
+    {
+      "accepted": 6,
+      "arm": "A-c",
+      "cache_hits": 0,
+      "comments_sha256": "784129fc2549bf007dd79048c457930ba2c80d4d0b9cdb1ff43b6f987a942f46",
+      "errors_seen": 26,
+      "forwarded": 6,
+      "model": "gpt-6-luna",
+      "new_calls": 15,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 3,
+      "unexplainable": 9,
+      "variant": "as-given"
+    },
+    {
+      "accepted": 7,
+      "arm": "A-c-shuffled",
+      "cache_hits": 13,
+      "comments_sha256": "c495cc8dc940a8de9b3faf59de42b84fc3195499f0e4865d5e5a15c4cc94022b",
+      "errors_seen": 27,
+      "forwarded": 7,
+      "model": "gpt-6-luna",
+      "new_calls": 2,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 3,
+      "unexplainable": 8,
+      "variant": "shuffled"
+    },
+    {
+      "accepted": 7,
+      "arm": "A-c-noisy",
+      "cache_hits": 12,
+      "comments_sha256": "3aa079b57ed183909663342eb974e4573274eebd5f36fa4b2a1db72437fcfe15",
+      "errors_seen": 28,
+      "forwarded": 7,
+      "model": "gpt-6-luna",
+      "new_calls": 3,
+      "noisy_replaced": 1,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 3,
+      "unexplainable": 8,
+      "variant": "noisy"
+    }
+  ],
+  "steering_prompt": {
+    "reworded_for_corpus": "fomc",
+    "sha256": "37d52bfcc477a194d4c734bdff710095e4153fbfd2db27b12ebff478dbced6c4",
+    "source_sha256": "5d4d46de852bc622c60daaad2ca12bc29ac419f21169002db66ebc3ca330b97e"
+  }
+}

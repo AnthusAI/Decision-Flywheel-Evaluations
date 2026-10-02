@@ -1,0 +1,1100 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "0",
+    "A",
+    "F",
+    "A-c",
+    "A-c+F",
+    "A-c-shuffled",
+    "A-c-noisy",
+    "CEIL"
+  ],
+  "bundles": {
+    "0": {
+      "bundle_hash": "8adf2e08f1aa12204a83174cb783b6b74ada8f9862273c6adb313de243c6e664",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-b4da4cf0f5",
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "2b16a9f2f6c2f308be7ad9da4c56b76e6f5fc4d8fb4dc71044ca6427bc842693"
+    },
+    "A": {
+      "bundle_hash": "c6bef0e1e09bcf037df3c8c3b7de9031bd8581336a7e78370e63b8c44be90fd3",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-20a3674eac",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_pressure"
+      ],
+      "scorecard_sha256": "8ef9a75fb66b29340836aaa8de2ac20349e385624fee92fa8894298c10ed29ef"
+    },
+    "A-c": {
+      "bundle_hash": "53251d9d2a331b8c29542313de7411035992f549e41727b4bfe28f7f92bb8b87",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-04db9333f9",
+      "questions": [
+        "fomc",
+        "fomc.macroeconomic_pressure"
+      ],
+      "scorecard_sha256": "947e7128a7835e9b78aa98b0c949466a3c5d99d9d776d8f4bdc044be98ea9ab5"
+    },
+    "A-c+F": {
+      "bundle_hash": "805f655af405d405db54994a907c737023134a09b039f16d66e637c051f2c5d6",
+      "fewshot_fingerprint": "608b4a906ca9355529fa4d3682ee9c1af37aac671c832b0d50e679bc9e3acb37",
+      "head_fit_id": "dh-835543d41f",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_implication"
+      ],
+      "scorecard_sha256": "e7a3744ded09ac3536fa20fcb5ebbf64340bd71fa87126fb1c6e03bb05a3b436"
+    },
+    "A-c-noisy": {
+      "bundle_hash": "6c972fc0c3a7f37cbf2f5fc6629b536adde86d7a4898d1856c13ee1d310d185d",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-3880c536bc",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_pressure"
+      ],
+      "scorecard_sha256": "554f9f1c61e7e0e5ee7eb751279560b30e25f274e778442cfbc2fbf927c5f7dc"
+    },
+    "A-c-shuffled": {
+      "bundle_hash": "ae7d2085e4ad6e4c80a4cdaacdaf90352b8b568c39f2ccdea887ecbd71436ce1",
+      "fewshot_fingerprint": null,
+      "head_fit_id": "dh-360be80564",
+      "questions": [
+        "fomc",
+        "fomc.economic_signal"
+      ],
+      "scorecard_sha256": "4ff2c04106511a774f04ed9d0429a95ac6b5cc8c9e198ef30d8be8abf0f393a3"
+    },
+    "CEIL": {
+      "bundle_hash": "b920abdc4da64103c68e2bb4d523141f5efb140dfe4d34068c65ff32e29e15bd",
+      "fewshot_fingerprint": null,
+      "head_fit_id": null,
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "b5a61becbef272ef4727e5c099384b00ab485568813aa78a952df1a306ce8306"
+    },
+    "F": {
+      "bundle_hash": "64b3beb557a8d3a7c262a33e56a8ad7bb2017eb9054c6351bb86ab26a2700edf",
+      "fewshot_fingerprint": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e",
+      "head_fit_id": "dh-c5245e0fd5",
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "569ba7d084685abbca08dcd1fec9b886ac9b0fed78265fafb1fae5e69a0e1aa7"
+    }
+  },
+  "decision_flywheel": {
+    "commit": "102fd5bdfa3191a1d577c9f922b011aa1929aac2",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "a3d72373a9210fe0269340b382e6abeca896a2365850613096d2b0cbc8f341ce",
+    "n": 377,
+    "name": "final-377"
+  },
+  "final": true,
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "2cff0f3c05011e3f6e394d84eb4c627050912f018e9d438f58c50adaf465e8ab",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "0": {
+          "bundle": {
+            "bundle_hash": "8adf2e08f1aa12204a83174cb783b6b74ada8f9862273c6adb313de243c6e664",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-b4da4cf0f5",
+            "questions": [
+              "fomc"
+            ],
+            "scorecard_sha256": "2b16a9f2f6c2f308be7ad9da4c56b76e6f5fc4d8fb4dc71044ca6427bc842693"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.66313,
+            "brier": 0.202137,
+            "ece": 0.088576,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.66313,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  76,
+                  8,
+                  19
+                ],
+                [
+                  14,
+                  57,
+                  15
+                ],
+                [
+                  37,
+                  34,
+                  117
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.655784,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.66087,
+                "low_support": false,
+                "precision": 0.598425,
+                "predicted": 127,
+                "recall": 0.737864,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.616216,
+                "low_support": false,
+                "precision": 0.575758,
+                "predicted": 99,
+                "recall": 0.662791,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.690265,
+                "low_support": false,
+                "precision": 0.774834,
+                "predicted": 151,
+                "recall": 0.62234,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "A": {
+          "bundle": {
+            "bundle_hash": "c6bef0e1e09bcf037df3c8c3b7de9031bd8581336a7e78370e63b8c44be90fd3",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-20a3674eac",
+            "questions": [
+              "fomc",
+              "fomc.economic_policy_pressure"
+            ],
+            "scorecard_sha256": "8ef9a75fb66b29340836aaa8de2ac20349e385624fee92fa8894298c10ed29ef"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.668435,
+            "brier": 0.196154,
+            "ece": 0.062985,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.668435,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  77,
+                  7,
+                  19
+                ],
+                [
+                  12,
+                  64,
+                  10
+                ],
+                [
+                  41,
+                  36,
+                  111
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.666995,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.660944,
+                "low_support": false,
+                "precision": 0.592308,
+                "predicted": 130,
+                "recall": 0.747573,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.663212,
+                "low_support": false,
+                "precision": 0.598131,
+                "predicted": 107,
+                "recall": 0.744186,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.676829,
+                "low_support": false,
+                "precision": 0.792857,
+                "predicted": 140,
+                "recall": 0.590426,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "A-c": {
+          "bundle": {
+            "bundle_hash": "53251d9d2a331b8c29542313de7411035992f549e41727b4bfe28f7f92bb8b87",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-04db9333f9",
+            "questions": [
+              "fomc",
+              "fomc.macroeconomic_pressure"
+            ],
+            "scorecard_sha256": "947e7128a7835e9b78aa98b0c949466a3c5d99d9d776d8f4bdc044be98ea9ab5"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.68435,
+            "brier": 0.192497,
+            "ece": 0.067255,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.68435,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  77,
+                  7,
+                  19
+                ],
+                [
+                  11,
+                  65,
+                  10
+                ],
+                [
+                  36,
+                  36,
+                  116
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.681738,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.678414,
+                "low_support": false,
+                "precision": 0.620968,
+                "predicted": 124,
+                "recall": 0.747573,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.670103,
+                "low_support": false,
+                "precision": 0.601852,
+                "predicted": 108,
+                "recall": 0.755814,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.696697,
+                "low_support": false,
+                "precision": 0.8,
+                "predicted": 145,
+                "recall": 0.617021,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "A-c+F": {
+          "bundle": {
+            "bundle_hash": "805f655af405d405db54994a907c737023134a09b039f16d66e637c051f2c5d6",
+            "fewshot_fingerprint": "608b4a906ca9355529fa4d3682ee9c1af37aac671c832b0d50e679bc9e3acb37",
+            "head_fit_id": "dh-835543d41f",
+            "questions": [
+              "fomc",
+              "fomc.economic_policy_implication"
+            ],
+            "scorecard_sha256": "e7a3744ded09ac3536fa20fcb5ebbf64340bd71fa87126fb1c6e03bb05a3b436"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.679045,
+            "brier": 0.188825,
+            "ece": 0.05926,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.679045,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  73,
+                  13,
+                  17
+                ],
+                [
+                  11,
+                  64,
+                  11
+                ],
+                [
+                  30,
+                  39,
+                  119
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.672307,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.672811,
+                "low_support": false,
+                "precision": 0.640351,
+                "predicted": 114,
+                "recall": 0.708738,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.633663,
+                "low_support": false,
+                "precision": 0.551724,
+                "predicted": 116,
+                "recall": 0.744186,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.710448,
+                "low_support": false,
+                "precision": 0.809524,
+                "predicted": 147,
+                "recall": 0.632979,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "A-c-noisy": {
+          "bundle": {
+            "bundle_hash": "6c972fc0c3a7f37cbf2f5fc6629b536adde86d7a4898d1856c13ee1d310d185d",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-3880c536bc",
+            "questions": [
+              "fomc",
+              "fomc.economic_policy_pressure"
+            ],
+            "scorecard_sha256": "554f9f1c61e7e0e5ee7eb751279560b30e25f274e778442cfbc2fbf927c5f7dc"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.681698,
+            "brier": 0.200717,
+            "ece": 0.064186,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.681698,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  79,
+                  6,
+                  18
+                ],
+                [
+                  11,
+                  61,
+                  14
+                ],
+                [
+                  41,
+                  30,
+                  117
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.678747,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.675214,
+                "low_support": false,
+                "precision": 0.603053,
+                "predicted": 131,
+                "recall": 0.76699,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.666667,
+                "low_support": false,
+                "precision": 0.628866,
+                "predicted": 97,
+                "recall": 0.709302,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.694362,
+                "low_support": false,
+                "precision": 0.785235,
+                "predicted": 149,
+                "recall": 0.62234,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "A-c-shuffled": {
+          "bundle": {
+            "bundle_hash": "ae7d2085e4ad6e4c80a4cdaacdaf90352b8b568c39f2ccdea887ecbd71436ce1",
+            "fewshot_fingerprint": null,
+            "head_fit_id": "dh-360be80564",
+            "questions": [
+              "fomc",
+              "fomc.economic_signal"
+            ],
+            "scorecard_sha256": "4ff2c04106511a774f04ed9d0429a95ac6b5cc8c9e198ef30d8be8abf0f393a3"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.671088,
+            "brier": 0.1941,
+            "ece": 0.083883,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.671088,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  78,
+                  9,
+                  16
+                ],
+                [
+                  11,
+                  64,
+                  11
+                ],
+                [
+                  41,
+                  36,
+                  111
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.668973,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.669528,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 130,
+                "recall": 0.757282,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.65641,
+                "low_support": false,
+                "precision": 0.587156,
+                "predicted": 109,
+                "recall": 0.744186,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.680982,
+                "low_support": false,
+                "precision": 0.804348,
+                "predicted": 138,
+                "recall": 0.590426,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "CEIL": {
+          "bundle": {
+            "bundle_hash": "b920abdc4da64103c68e2bb4d523141f5efb140dfe4d34068c65ff32e29e15bd",
+            "fewshot_fingerprint": null,
+            "head_fit_id": null,
+            "questions": [
+              "fomc"
+            ],
+            "scorecard_sha256": "b5a61becbef272ef4727e5c099384b00ab485568813aa78a952df1a306ce8306"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.697613,
+            "brier": 0.180862,
+            "ece": 0.133455,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.697613,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  70,
+                  10,
+                  23
+                ],
+                [
+                  7,
+                  56,
+                  23
+                ],
+                [
+                  28,
+                  23,
+                  137
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.683874,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.673077,
+                "low_support": false,
+                "precision": 0.666667,
+                "predicted": 105,
+                "recall": 0.679612,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.64,
+                "low_support": false,
+                "precision": 0.629213,
+                "predicted": 89,
+                "recall": 0.651163,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.738544,
+                "low_support": false,
+                "precision": 0.748634,
+                "predicted": 183,
+                "recall": 0.728723,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        },
+        "F": {
+          "bundle": {
+            "bundle_hash": "64b3beb557a8d3a7c262a33e56a8ad7bb2017eb9054c6351bb86ab26a2700edf",
+            "fewshot_fingerprint": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e",
+            "head_fit_id": "dh-c5245e0fd5",
+            "questions": [
+              "fomc"
+            ],
+            "scorecard_sha256": "569ba7d084685abbca08dcd1fec9b886ac9b0fed78265fafb1fae5e69a0e1aa7"
+          },
+          "failures": 0,
+          "metrics": {
+            "accuracy": 0.657825,
+            "brier": 0.199619,
+            "ece": 0.05528,
+            "n": 377
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.657825,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  73,
+                  10,
+                  20
+                ],
+                [
+                  10,
+                  58,
+                  18
+                ],
+                [
+                  36,
+                  35,
+                  117
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.65121,
+            "n": 377,
+            "per_class": {
+              "dovish": {
+                "f1": 0.657658,
+                "low_support": false,
+                "precision": 0.613445,
+                "predicted": 119,
+                "recall": 0.708738,
+                "support": 103
+              },
+              "hawkish": {
+                "f1": 0.613757,
+                "low_support": false,
+                "precision": 0.563107,
+                "predicted": 103,
+                "recall": 0.674419,
+                "support": 86
+              },
+              "neutral": {
+                "f1": 0.682216,
+                "low_support": false,
+                "precision": 0.754839,
+                "predicted": 155,
+                "recall": 0.62234,
+                "support": 188
+              }
+            }
+          },
+          "requests": 377,
+          "unscored": 0
+        }
+      },
+      "contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.005305,
+            "lower": -0.02122,
+            "upper": 0.029178
+          },
+          "brier": {
+            "effect": -0.005982,
+            "lower": -0.018172,
+            "upper": 0.005708
+          },
+          "ece": {
+            "effect": -0.025591,
+            "lower": -0.065556,
+            "upper": 0.015542
+          }
+        },
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": -0.005305,
+            "lower": -0.03183,
+            "upper": 0.023873
+          },
+          "brier": {
+            "baseline_arm": "A-c",
+            "effect": -0.003672,
+            "lower": -0.016144,
+            "upper": 0.00874
+          },
+          "ece": {
+            "baseline_arm": "F",
+            "effect": 0.00398,
+            "lower": -0.047821,
+            "upper": 0.037745
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.015915,
+            "lower": -0.005305,
+            "upper": 0.037135
+          },
+          "brier": {
+            "effect": -0.003657,
+            "lower": -0.009655,
+            "upper": 0.002556
+          },
+          "ece": {
+            "effect": 0.004269,
+            "lower": -0.030707,
+            "upper": 0.038833
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": -0.005305,
+            "lower": -0.039788,
+            "upper": 0.029178
+          },
+          "brier": {
+            "effect": -0.002518,
+            "lower": -0.015631,
+            "upper": 0.010479
+          },
+          "ece": {
+            "effect": -0.033296,
+            "lower": -0.067104,
+            "upper": 0.017862
+          }
+        }
+      },
+      "multiclass_contrasts": {
+        "A-0": {
+          "accuracy": {
+            "effect": 0.005305,
+            "lower": -0.02122,
+            "upper": 0.029178
+          },
+          "macro_f1": {
+            "effect": 0.011212,
+            "lower": -0.014112,
+            "upper": 0.036999
+          }
+        },
+        "A-c+F-0": {
+          "accuracy": {
+            "effect": 0.015915,
+            "lower": -0.015915,
+            "upper": 0.050398
+          },
+          "macro_f1": {
+            "effect": 0.016524,
+            "lower": -0.017853,
+            "upper": 0.052553
+          }
+        },
+        "A-c+F-max(A-c,F)": {
+          "accuracy": {
+            "baseline_arm": "A-c",
+            "effect": -0.005305,
+            "lower": -0.03183,
+            "upper": 0.023873
+          },
+          "macro_f1": {
+            "baseline_arm": "A-c",
+            "effect": -0.009431,
+            "lower": -0.03721,
+            "upper": 0.019182
+          }
+        },
+        "A-c-0": {
+          "accuracy": {
+            "effect": 0.02122,
+            "lower": -0.01061,
+            "upper": 0.050398
+          },
+          "macro_f1": {
+            "effect": 0.025954,
+            "lower": -0.003793,
+            "upper": 0.055931
+          }
+        },
+        "A-c-A": {
+          "accuracy": {
+            "effect": 0.015915,
+            "lower": -0.005305,
+            "upper": 0.037135
+          },
+          "macro_f1": {
+            "effect": 0.014743,
+            "lower": -0.00617,
+            "upper": 0.036304
+          }
+        },
+        "F-0": {
+          "accuracy": {
+            "effect": -0.005305,
+            "lower": -0.039788,
+            "upper": 0.029178
+          },
+          "macro_f1": {
+            "effect": -0.004574,
+            "lower": -0.041391,
+            "upper": 0.030029
+          }
+        }
+      },
+      "round": "final",
+      "scored_through": "reloaded bundles"
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "source": "none (A-c runs as A)",
+      "supplied": 0
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "0": {
+        "bundle": 377,
+        "total": 377
+      },
+      "A": {
+        "bundle": 377,
+        "total": 377
+      },
+      "A-c": {
+        "bundle": 377,
+        "total": 377
+      },
+      "A-c+F": {
+        "bundle": 377,
+        "total": 377
+      },
+      "A-c-noisy": {
+        "bundle": 377,
+        "total": 377
+      },
+      "A-c-shuffled": {
+        "bundle": 377,
+        "total": 377
+      },
+      "CEIL": {
+        "bundle": 377,
+        "total": 377
+      },
+      "F": {
+        "bundle": 377,
+        "total": 377
+      }
+    },
+    "by_arm_round": {
+      "0": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 155926,
+            "output_tokens": 16433,
+            "successes": 377
+          }
+        }
+      },
+      "A": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 145370,
+            "output_tokens": 23487,
+            "successes": 377
+          }
+        }
+      },
+      "A-c": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 149140,
+            "output_tokens": 25710,
+            "successes": 377
+          }
+        }
+      },
+      "A-c+F": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 403992,
+            "output_tokens": 34512,
+            "successes": 377
+          }
+        }
+      },
+      "A-c-noisy": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 141600,
+            "output_tokens": 18434,
+            "successes": 377
+          }
+        }
+      },
+      "A-c-shuffled": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 176661,
+            "output_tokens": 20105,
+            "successes": 377
+          }
+        }
+      },
+      "CEIL": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 459411,
+            "output_tokens": 16509,
+            "successes": 377
+          }
+        }
+      },
+      "F": {
+        "final": {
+          "bundle": {
+            "attempts": 377,
+            "failures": 0,
+            "input_tokens": 378733,
+            "output_tokens": 16420,
+            "successes": 377
+          }
+        }
+      }
+    },
+    "ceiling": 9500,
+    "circuit_breaker": null,
+    "cumulative_used": 3016,
+    "error_classes": {},
+    "max_new_this_invocation": 3016,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 3016,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 1,
+  "steering_prompt": {
+    "reworded_for_corpus": "fomc",
+    "sha256": "37d52bfcc477a194d4c734bdff710095e4153fbfd2db27b12ebff478dbced6c4",
+    "source_sha256": "5d4d46de852bc622c60daaad2ca12bc29ac419f21169002db66ebc3ca330b97e"
+  }
+}

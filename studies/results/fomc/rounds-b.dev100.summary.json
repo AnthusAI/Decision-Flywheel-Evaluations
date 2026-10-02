@@ -1,0 +1,1337 @@
+{
+  "analyst": {
+    "model": "gpt-6-luna",
+    "provider": "openai",
+    "replies": "live (recorded for replay)"
+  },
+  "arms": [
+    "F",
+    "A-c+F"
+  ],
+  "bundles": {
+    "A-c+F": {
+      "bundle_hash": "805f655af405d405db54994a907c737023134a09b039f16d66e637c051f2c5d6",
+      "fewshot_fingerprint": "608b4a906ca9355529fa4d3682ee9c1af37aac671c832b0d50e679bc9e3acb37",
+      "head_fit_id": "dh-835543d41f",
+      "questions": [
+        "fomc",
+        "fomc.economic_policy_implication"
+      ],
+      "scorecard_sha256": "e7a3744ded09ac3536fa20fcb5ebbf64340bd71fa87126fb1c6e03bb05a3b436"
+    },
+    "F": {
+      "bundle_hash": "64b3beb557a8d3a7c262a33e56a8ad7bb2017eb9054c6351bb86ab26a2700edf",
+      "fewshot_fingerprint": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e",
+      "head_fit_id": "dh-c5245e0fd5",
+      "questions": [
+        "fomc"
+      ],
+      "scorecard_sha256": "569ba7d084685abbca08dcd1fec9b886ac9b0fed78265fafb1fae5e69a0e1aa7"
+    }
+  },
+  "decision_flywheel": {
+    "commit": "102fd5bdfa3191a1d577c9f922b011aa1929aac2",
+    "dirty": false,
+    "path": "/Users/home/Projects/Decision-Flywheel/src",
+    "pinned": false,
+    "source": "working-tree"
+  },
+  "engine": "jev:jev-1.13.0",
+  "evaluation_slice": {
+    "fingerprint": "4fbeccd9e021ad9e32c897021ed29205b59897f622f4fa96c2d4df084d866606",
+    "n": 100,
+    "name": "dev-100"
+  },
+  "final": false,
+  "harness": "unified-flywheel-1",
+  "jev_flywheel": {
+    "clone": "var/jev-flywheel-cd4a4886",
+    "commit": "cd4a4886028d518c4dc20c88608bb05cbc6bf370"
+  },
+  "label_order_sha256": "2cff0f3c05011e3f6e394d84eb4c627050912f018e9d438f58c50adaf465e8ab",
+  "mode": "live",
+  "per_round": [
+    {
+      "arms": {
+        "A-c+F": {
+          "comments": 5,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 132
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.72,
+              "brier": 0.185401,
+              "ece": 0.095372,
+              "n": 100
+            },
+            "fit_id": "dh-a2d2951194",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_implication.clr.dovish",
+            "economic_policy_implication.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-1521",
+              "fomc-train-1733",
+              "fomc-train-1524",
+              "fomc-train-1427",
+              "fomc-train-718",
+              "fomc-train-1594",
+              "fomc-train-188",
+              "fomc-train-1950",
+              "fomc-train-734",
+              "fomc-train-1111",
+              "fomc-train-1792",
+              "fomc-train-1102"
+            ],
+            "fingerprint": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+            "incumbent_source": "prototype-seed",
+            "n_development": 68,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-730",
+              "fomc-train-348",
+              "fomc-train-1957"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.735294,
+                "brier": 0.138074
+              },
+              "incumbent": {
+                "accuracy": 0.705882,
+                "brier": 0.131027
+              },
+              "random-control": {
+                "accuracy": 0.647059,
+                "brier": 0.156317
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "f659e443e37afbaf72e2f0a629cbca7229c3f75e9a481981b6b5ce4116f3f621",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "aa60d2b04bf0894d23ca8ab02453764ec80c8274e34e8b3b005c5996226f3287"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.18,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.65,
+            "brier": 0.195412,
+            "ece": 0.119614,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.65,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  19,
+                  2,
+                  6
+                ],
+                [
+                  4,
+                  15,
+                  4
+                ],
+                [
+                  10,
+                  9,
+                  31
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.642299,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.633333,
+                "low_support": false,
+                "precision": 0.575758,
+                "predicted": 33,
+                "recall": 0.703704,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.612245,
+                "low_support": false,
+                "precision": 0.576923,
+                "predicted": 26,
+                "recall": 0.652174,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.681319,
+                "low_support": false,
+                "precision": 0.756098,
+                "predicted": 41,
+                "recall": 0.62,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 32,
+          "stakeholder": {
+            "accepted": 5,
+            "arm": "A-c+F",
+            "cache_hits": 15,
+            "comments_sha256": "636441e8ad1751012d9b8a3ee76cf28edc3b2a7c6768327ffe22f15ac3636ef6",
+            "errors_seen": 32,
+            "forwarded": 5,
+            "model": "gpt-6-luna",
+            "new_calls": 0,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 1,
+            "unexplainable": 10,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "58cc729a27f29e6ee2927593697b179115659bae380ee2069aef7bff997a8eef",
+            "analyst_source": "live",
+            "comments_in_feedback": 5,
+            "decision": "promoted",
+            "elements_after": [
+              "economic_policy_implication"
+            ],
+            "elements_before": [],
+            "proposed": [
+              {
+                "instructions_sha256": "d21c59025a6aefe7d003293e4749c458a9b7d68a63421a50c0dfd1e91989a14c",
+                "key": "economic_policy_implication",
+                "question_type": "choice"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 1,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 132
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.73,
+              "brier": 0.176315,
+              "ece": 0.083375,
+              "n": 100
+            },
+            "fit_id": "dh-b4da4cf0f5",
+            "missing_features": 0,
+            "n_train": 100
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-1521",
+              "fomc-train-1733",
+              "fomc-train-1524",
+              "fomc-train-1427",
+              "fomc-train-718",
+              "fomc-train-1594",
+              "fomc-train-188",
+              "fomc-train-1950",
+              "fomc-train-734",
+              "fomc-train-1111",
+              "fomc-train-1792",
+              "fomc-train-1102"
+            ],
+            "fingerprint": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+            "incumbent_source": "prototype-seed",
+            "n_development": 68,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-730",
+              "fomc-train-348",
+              "fomc-train-1957"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.735294,
+                "brier": 0.138074
+              },
+              "incumbent": {
+                "accuracy": 0.705882,
+                "brier": 0.131027
+              },
+              "random-control": {
+                "accuracy": 0.647059,
+                "brier": 0.156317
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "f659e443e37afbaf72e2f0a629cbca7229c3f75e9a481981b6b5ce4116f3f621",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "aa60d2b04bf0894d23ca8ab02453764ec80c8274e34e8b3b005c5996226f3287"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.18,
+            "n": 200
+          },
+          "metrics": {
+            "accuracy": 0.6,
+            "brier": 0.211148,
+            "ece": 0.112311,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.6,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  19,
+                  3,
+                  5
+                ],
+                [
+                  5,
+                  9,
+                  9
+                ],
+                [
+                  10,
+                  8,
+                  32
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.569407,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.622951,
+                "low_support": false,
+                "precision": 0.558824,
+                "predicted": 34,
+                "recall": 0.703704,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.418605,
+                "low_support": false,
+                "precision": 0.45,
+                "predicted": 20,
+                "recall": 0.391304,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.666667,
+                "low_support": false,
+                "precision": 0.695652,
+                "predicted": 46,
+                "recall": 0.64,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 32
+        }
+      },
+      "contrasts": {},
+      "fewshot_context": "8eb5a7a27c804a187e9c36544dc78173bb9a772f6b5d9844e2a705fc220c048a",
+      "knn_context": "e02260f542b376b46e4b471adb319c6215962c05c1e6898909c2b9a28208200c",
+      "labeled_fingerprint": "720eb642cb5a789eece97af9acdd06ffaf691dcc381ed07483a18472c6db46a6",
+      "multiclass_contrasts": {},
+      "n_labeled": 100,
+      "round": 1
+    },
+    {
+      "arms": {
+        "A-c+F": {
+          "comments": 7,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.705,
+              "brier": 0.16802,
+              "ece": 0.050249,
+              "n": 200
+            },
+            "fit_id": "dh-2be255e00e",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_implication.clr.dovish",
+            "economic_policy_implication.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-1521",
+              "fomc-train-1733",
+              "fomc-train-1524",
+              "fomc-train-1427",
+              "fomc-train-718",
+              "fomc-train-1594",
+              "fomc-train-188",
+              "fomc-train-1950",
+              "fomc-train-734",
+              "fomc-train-1111",
+              "fomc-train-1792",
+              "fomc-train-1102"
+            ],
+            "fingerprint": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+            "incumbent_source": "given",
+            "n_development": 164,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-730",
+              "fomc-train-348",
+              "fomc-train-1957"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.646341,
+                "brier": 0.177825
+              },
+              "incumbent": {
+                "accuracy": 0.646341,
+                "brier": 0.165077
+              },
+              "random-control": {
+                "accuracy": 0.621951,
+                "brier": 0.192049
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "920d910bb2d128fbae543c674beeedb938f157f0d77af43d943e315b25193381",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "3ddbdd2446b5f12c2eaeedb939fd6c5a25d1a8e0e12f0358c8e022b7a030ea5a"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.1733,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.66,
+            "brier": 0.192117,
+            "ece": 0.080734,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.66,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  20,
+                  2,
+                  5
+                ],
+                [
+                  4,
+                  14,
+                  5
+                ],
+                [
+                  9,
+                  9,
+                  32
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.648551,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.666667,
+                "low_support": false,
+                "precision": 0.606061,
+                "predicted": 33,
+                "recall": 0.740741,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.583333,
+                "low_support": false,
+                "precision": 0.56,
+                "predicted": 25,
+                "recall": 0.608696,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.695652,
+                "low_support": false,
+                "precision": 0.761905,
+                "predicted": 42,
+                "recall": 0.64,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 31,
+          "stakeholder": {
+            "accepted": 7,
+            "arm": "A-c+F",
+            "cache_hits": 8,
+            "comments_sha256": "4dc40f594a31e18c12bda8c0decec32fff113717e4c53f4aadd47ce68b717cfa",
+            "errors_seen": 31,
+            "forwarded": 7,
+            "model": "gpt-6-luna",
+            "new_calls": 7,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 2,
+            "unexplainable": 8,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "2c55b820b47f4404efdaba6c1ee1c0dd420edc56208aa05636acf18f7c777942",
+            "analyst_source": "live",
+            "comments_in_feedback": 12,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_implication"
+            ],
+            "elements_before": [
+              "economic_policy_implication"
+            ],
+            "proposed": [
+              {
+                "instructions_sha256": "2a3b7157f596fe7a877a773a34e2efa73e4c548aa6e06254c9544fe381471b47",
+                "key": "direct_policy_content",
+                "question_type": "noul"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 2,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 0
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.715,
+              "brier": 0.175285,
+              "ece": 0.046774,
+              "n": 200
+            },
+            "fit_id": "dh-c2a1868cd1",
+            "missing_features": 0,
+            "n_train": 200
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-1521",
+              "fomc-train-1733",
+              "fomc-train-1524",
+              "fomc-train-1427",
+              "fomc-train-718",
+              "fomc-train-1594",
+              "fomc-train-188",
+              "fomc-train-1950",
+              "fomc-train-734",
+              "fomc-train-1111",
+              "fomc-train-1792",
+              "fomc-train-1102"
+            ],
+            "fingerprint": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+            "incumbent_source": "given",
+            "n_development": 164,
+            "promoted": false,
+            "reason": "kept the incumbent: no challenger cleared the promotion rule",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-730",
+              "fomc-train-348",
+              "fomc-train-1957"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.670732,
+                "brier": 0.164874
+              },
+              "incumbent": {
+                "accuracy": 0.658537,
+                "brier": 0.162279
+              },
+              "random-control": {
+                "accuracy": 0.621951,
+                "brier": 0.192859
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "c4eec78581c1bc5278528e3384c78d60f5c886cc63706bb9e46d4c68179359c5",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "3ddbdd2446b5f12c2eaeedb939fd6c5a25d1a8e0e12f0358c8e022b7a030ea5a"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "incumbent"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.1733,
+            "n": 300
+          },
+          "metrics": {
+            "accuracy": 0.61,
+            "brier": 0.221882,
+            "ece": 0.092855,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.61,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  19,
+                  3,
+                  5
+                ],
+                [
+                  4,
+                  11,
+                  8
+                ],
+                [
+                  9,
+                  10,
+                  31
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.590576,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.644068,
+                "low_support": false,
+                "precision": 0.59375,
+                "predicted": 32,
+                "recall": 0.703704,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.468085,
+                "low_support": false,
+                "precision": 0.458333,
+                "predicted": 24,
+                "recall": 0.478261,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.659574,
+                "low_support": false,
+                "precision": 0.704545,
+                "predicted": 44,
+                "recall": 0.62,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 29
+        }
+      },
+      "contrasts": {},
+      "fewshot_context": "8ea409b31958770a4712ca91a9eb45d78f4eea3068eafd900fbe5ae31f3928d2",
+      "knn_context": "2e9e694653264b7fad0e664ce4f9a4eb413da922df59cd4663dc2ec0fe2337d6",
+      "labeled_fingerprint": "616b0f494726c0cd7a7a5b15ab643d2bdc589a058fbef1bd73214dbe551f6d42",
+      "multiclass_contrasts": {},
+      "n_labeled": 200,
+      "round": 2
+    },
+    {
+      "arms": {
+        "A-c+F": {
+          "comments": 5,
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 135
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.723333,
+              "brier": 0.168866,
+              "ece": 0.042443,
+              "n": 300
+            },
+            "fit_id": "dh-835543d41f",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish",
+            "economic_policy_implication.clr.dovish",
+            "economic_policy_implication.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-1521",
+              "fomc-train-1733",
+              "fomc-train-739",
+              "fomc-train-1125",
+              "fomc-train-718",
+              "fomc-train-1594",
+              "fomc-train-1219",
+              "fomc-train-19",
+              "fomc-train-734",
+              "fomc-train-1111",
+              "fomc-train-1416",
+              "fomc-train-1954"
+            ],
+            "fingerprint": "608b4a906ca9355529fa4d3682ee9c1af37aac671c832b0d50e679bc9e3acb37",
+            "incumbent_source": "given",
+            "n_development": 265,
+            "promoted": true,
+            "reason": "promoted hard-swap: brier gain 0.011533",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-730",
+              "fomc-train-348",
+              "fomc-train-1957"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.683019,
+                "brier": 0.150853
+              },
+              "incumbent": {
+                "accuracy": 0.664151,
+                "brier": 0.162386
+              },
+              "random-control": {
+                "accuracy": 0.683019,
+                "brier": 0.157325
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "608b4a906ca9355529fa4d3682ee9c1af37aac671c832b0d50e679bc9e3acb37",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "hard-swap"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.1775,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.68,
+            "brier": 0.181739,
+            "ece": 0.101567,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.68,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  19,
+                  2,
+                  6
+                ],
+                [
+                  3,
+                  15,
+                  5
+                ],
+                [
+                  8,
+                  8,
+                  34
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.669152,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.666667,
+                "low_support": false,
+                "precision": 0.633333,
+                "predicted": 30,
+                "recall": 0.703704,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.625,
+                "low_support": false,
+                "precision": 0.6,
+                "predicted": 25,
+                "recall": 0.652174,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.715789,
+                "low_support": false,
+                "precision": 0.755556,
+                "predicted": 45,
+                "recall": 0.68,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 23,
+          "stakeholder": {
+            "accepted": 5,
+            "arm": "A-c+F",
+            "cache_hits": 12,
+            "comments_sha256": "af8b678ef1b535005a161ee7b11807cb1021a9209e58b3ad5f1f8d53316b435c",
+            "errors_seen": 23,
+            "forwarded": 5,
+            "model": "gpt-6-luna",
+            "new_calls": 3,
+            "prompt_version": "rubric-stakeholder-v1",
+            "rejected": {},
+            "repeat_capped": 0,
+            "round": 3,
+            "unexplainable": 10,
+            "variant": "as-given"
+          },
+          "steering": {
+            "analyst_reply_sha256": "a49bede135a6863055842c9d3ea281b18ac0b8d8b0cfe6e91de28703977150c2",
+            "analyst_source": "live",
+            "comments_in_feedback": 17,
+            "decision": "rejected_by_metrics",
+            "elements_after": [
+              "economic_policy_implication"
+            ],
+            "elements_before": [
+              "economic_policy_implication"
+            ],
+            "proposed": [
+              {
+                "reword": "economic_policy_implication"
+              }
+            ],
+            "reply_cites_comments": [],
+            "round": 3,
+            "scorecard_version": 2
+          }
+        },
+        "F": {
+          "evaluation_rows_missing_features": 0,
+          "fill": {
+            "failures": 0,
+            "requests": 135
+          },
+          "head": {
+            "decision": "refit",
+            "fit_head_oof": {
+              "accuracy": 0.72,
+              "brier": 0.174333,
+              "ece": 0.040565,
+              "n": 300
+            },
+            "fit_id": "dh-c5245e0fd5",
+            "missing_features": 0,
+            "n_train": 300
+          },
+          "head_features": [
+            "self.holistic.clr.dovish",
+            "self.holistic.clr.hawkish"
+          ],
+          "list": {
+            "example_ids": [
+              "fomc-train-632",
+              "fomc-train-1174",
+              "fomc-train-1733",
+              "fomc-train-987",
+              "fomc-train-535",
+              "fomc-train-994",
+              "fomc-train-1157",
+              "fomc-train-726",
+              "fomc-train-1491",
+              "fomc-train-420",
+              "fomc-train-1126",
+              "fomc-train-878"
+            ],
+            "fingerprint": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e",
+            "incumbent_source": "given",
+            "n_development": 265,
+            "promoted": true,
+            "reason": "promoted random-control: brier gain 0.006460",
+            "requests_not_prefetched": 0,
+            "reserve_ids": [
+              "fomc-train-1914",
+              "fomc-train-1302",
+              "fomc-train-763"
+            ],
+            "scores": {
+              "hard-swap": {
+                "accuracy": 0.667925,
+                "brier": 0.161216
+              },
+              "incumbent": {
+                "accuracy": 0.660377,
+                "brier": 0.163772
+              },
+              "random-control": {
+                "accuracy": 0.686792,
+                "brier": 0.157312
+              }
+            },
+            "trial_fingerprints": {
+              "hard-swap": "236e36e9b95b68573e64bad1e765832830776cd4504ab1efa4ce1da49380d1b1",
+              "incumbent": "3bd4f3a4e2d4a1e20693fe3f00b4c379c6b3bf86f4df67b91baf3ba9a123cf5e",
+              "random-control": "a4e12455bcba3ab0e2e995939f1d8a7824242c476472a3a20120afb0f68b0e1e"
+            },
+            "trial_status": {
+              "hard-swap": {
+                "failures": [],
+                "status": "completed"
+              },
+              "incumbent": {
+                "failures": [],
+                "status": "completed"
+              },
+              "random-control": {
+                "failures": [],
+                "status": "completed"
+              }
+            },
+            "winner": "random-control"
+          },
+          "list_vs_zero_shot": {
+            "choice_differs_rate": 0.12,
+            "n": 400
+          },
+          "metrics": {
+            "accuracy": 0.62,
+            "brier": 0.214854,
+            "ece": 0.097472,
+            "n": 100
+          },
+          "multiclass": {
+            "absent_classes": [],
+            "accuracy": 0.62,
+            "confusion_matrix": {
+              "columns": "predicted",
+              "counts": [
+                [
+                  19,
+                  5,
+                  3
+                ],
+                [
+                  4,
+                  10,
+                  9
+                ],
+                [
+                  7,
+                  10,
+                  33
+                ]
+              ],
+              "labels": [
+                "dovish",
+                "hawkish",
+                "neutral"
+              ],
+              "rows": "gold"
+            },
+            "low_support_classes": [],
+            "low_support_threshold": 10,
+            "macro_f1": 0.59269,
+            "n": 100,
+            "per_class": {
+              "dovish": {
+                "f1": 0.666667,
+                "low_support": false,
+                "precision": 0.633333,
+                "predicted": 30,
+                "recall": 0.703704,
+                "support": 27
+              },
+              "hawkish": {
+                "f1": 0.416667,
+                "low_support": false,
+                "precision": 0.4,
+                "predicted": 25,
+                "recall": 0.434783,
+                "support": 23
+              },
+              "neutral": {
+                "f1": 0.694737,
+                "low_support": false,
+                "precision": 0.733333,
+                "predicted": 45,
+                "recall": 0.66,
+                "support": 50
+              }
+            }
+          },
+          "new_labels_wrong": 25
+        }
+      },
+      "contrasts": {},
+      "fewshot_context": "36f39b58b7cd51a92d752702f959274d834069d8e4378442b7da48fadcada773",
+      "knn_context": "909c430df6eb3f2aa23eafa370467b6e527e120cae83acff838a4fcee1e76e30",
+      "labeled_fingerprint": "259a91be4ad289c4097b09f5db62461514a85858d64e4ff2c6a869cba5291a61",
+      "multiclass_contrasts": {},
+      "n_labeled": 300,
+      "round": 3
+    }
+  ],
+  "policies": {
+    "bootstrap": {
+      "resamples": 1000,
+      "seed": 0
+    },
+    "comments": {
+      "model": "gpt-6-luna",
+      "source": "rubric stakeholder: each comment arm's own errors on the round's new pool labels",
+      "supplied": 17
+    },
+    "fewshot": {
+      "display_order": "canonical",
+      "fingerprint": "9a25d4e34dde52d3e8026ce0036b4ecb15fecaf310736b62d05ab26a64e3c4b3",
+      "per_label": 4,
+      "policy": "per-label-lexical-retrieval"
+    },
+    "fixed_list": {
+      "dev_max": null,
+      "development": "labels so far outside every trial list",
+      "head": "refit each round on the chosen list's answers (no extra gate)",
+      "min_brier_gain": 0.005,
+      "optimizer": "improve_example_list (incumbent, hard-swap, random-control)",
+      "per_label": 4,
+      "policy": "fixed-example-list",
+      "request": "one Jev request per item: examples in state + every rubric question"
+    },
+    "gate": {
+      "candidate_metrics": "nested per-fold out-of-fold",
+      "fit_seed": 0,
+      "folds": 5,
+      "min_brier_gain": 0.005
+    },
+    "knn": {
+      "fingerprint": "f45bdb2993b0542473eb68ffebebd14ed390437e22b674ba36950561a4a1cdec",
+      "k": 8,
+      "top": 4
+    }
+  },
+  "replay": false,
+  "requests": {
+    "by_arm": {
+      "A-c+F": {
+        "list": 1529,
+        "total": 2329,
+        "zero-shot": 800
+      },
+      "F": {
+        "list": 1529,
+        "total": 1529
+      }
+    },
+    "by_arm_round": {
+      "A-c+F": {
+        "1": {
+          "list": {
+            "attempts": 336,
+            "failures": 0,
+            "input_tokens": 333053,
+            "output_tokens": 17116,
+            "successes": 336
+          },
+          "zero-shot": {
+            "attempts": 100,
+            "failures": 0,
+            "input_tokens": 42648,
+            "output_tokens": 5109,
+            "successes": 100
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 428,
+            "failures": 0,
+            "input_tokens": 475980,
+            "output_tokens": 28649,
+            "successes": 428
+          },
+          "zero-shot": {
+            "attempts": 300,
+            "failures": 0,
+            "input_tokens": 114596,
+            "output_tokens": 10106,
+            "successes": 300
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 765,
+            "failures": 0,
+            "input_tokens": 793669,
+            "output_tokens": 55306,
+            "successes": 765
+          },
+          "zero-shot": {
+            "attempts": 400,
+            "failures": 0,
+            "input_tokens": 175582,
+            "output_tokens": 20397,
+            "successes": 400
+          }
+        }
+      },
+      "F": {
+        "1": {
+          "list": {
+            "attempts": 336,
+            "failures": 0,
+            "input_tokens": 329693,
+            "output_tokens": 14681,
+            "successes": 336
+          }
+        },
+        "2": {
+          "list": {
+            "attempts": 428,
+            "failures": 0,
+            "input_tokens": 454426,
+            "output_tokens": 18643,
+            "successes": 428
+          }
+        },
+        "3": {
+          "list": {
+            "attempts": 765,
+            "failures": 0,
+            "input_tokens": 750325,
+            "output_tokens": 33416,
+            "successes": 765
+          }
+        }
+      }
+    },
+    "ceiling": 9500,
+    "circuit_breaker": null,
+    "cumulative_used": 3858,
+    "error_classes": {},
+    "max_new_this_invocation": 7300,
+    "models_reported": [
+      "jev-1.13.0"
+    ],
+    "new_this_invocation": 3858,
+    "used_before_this_invocation": 0
+  },
+  "rounds": 3,
+  "seed": 1,
+  "stakeholder": [
+    {
+      "accepted": 5,
+      "arm": "A-c+F",
+      "cache_hits": 15,
+      "comments_sha256": "636441e8ad1751012d9b8a3ee76cf28edc3b2a7c6768327ffe22f15ac3636ef6",
+      "errors_seen": 32,
+      "forwarded": 5,
+      "model": "gpt-6-luna",
+      "new_calls": 0,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 1,
+      "unexplainable": 10,
+      "variant": "as-given"
+    },
+    {
+      "accepted": 7,
+      "arm": "A-c+F",
+      "cache_hits": 8,
+      "comments_sha256": "4dc40f594a31e18c12bda8c0decec32fff113717e4c53f4aadd47ce68b717cfa",
+      "errors_seen": 31,
+      "forwarded": 7,
+      "model": "gpt-6-luna",
+      "new_calls": 7,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 2,
+      "unexplainable": 8,
+      "variant": "as-given"
+    },
+    {
+      "accepted": 5,
+      "arm": "A-c+F",
+      "cache_hits": 12,
+      "comments_sha256": "af8b678ef1b535005a161ee7b11807cb1021a9209e58b3ad5f1f8d53316b435c",
+      "errors_seen": 23,
+      "forwarded": 5,
+      "model": "gpt-6-luna",
+      "new_calls": 3,
+      "prompt_version": "rubric-stakeholder-v1",
+      "rejected": {},
+      "repeat_capped": 0,
+      "round": 3,
+      "unexplainable": 10,
+      "variant": "as-given"
+    }
+  ],
+  "steering_prompt": {
+    "reworded_for_corpus": "fomc",
+    "sha256": "37d52bfcc477a194d4c734bdff710095e4153fbfd2db27b12ebff478dbced6c4",
+    "source_sha256": "5d4d46de852bc622c60daaad2ca12bc29ac419f21169002db66ebc3ca330b97e"
+  }
+}
