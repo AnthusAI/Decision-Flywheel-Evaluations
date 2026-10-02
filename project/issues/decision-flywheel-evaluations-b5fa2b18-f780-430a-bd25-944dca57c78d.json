@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-b5fa2b18-f780-430a-bd25-944dca57c78d",
+  "title": "Owner decision needed: which rubric dataset after R3?",
+  "description": "## Owner decision needed\n\n**Which dataset do we use for the simulated-stakeholder experiment?** Asked after R3, with the screening table. Options: one of EDOS-B / ASAP-SAS / CAP subset / FOMC (or the fallback Gab Hate Corpus), or none (stop the initiative if no candidate passes (a)-(c)).\n\n## Definition of done\n\nOwner's answer recorded as a comment (verbatim), this issue closed, R5 unblocked.\n\n## Cost\n\n$0.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "decision"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-db51df9c-5fe0-458d-91d1-a2edbc144ba3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:33.190255Z",
+  "updated_at": "2026-10-02T01:22:52.478984Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

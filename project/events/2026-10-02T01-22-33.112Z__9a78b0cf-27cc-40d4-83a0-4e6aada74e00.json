@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "9a78b0cf-27cc-40d4-83a0-4e6aada74e00",
+  "issue_id": "decision-flywheel-evaluations-8c808916-7a44-4839-85b0-b8f09692756a",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:33.112Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "R1: Write the S (one-line) and F (excerpted full guideline) prompts per candidate",
+    "description": "## Purpose\n\nWrite the two screening prompts per candidate: S (one-line simplified rubric) and F (excerpted full guideline).\n\n## Scope\n\n- S: one line per dataset naming the labels with a plain one-sentence gloss (what a newcomer would write without reading the guideline). Same output format as F.\n- F: the published guideline excerpted to stay under ~25k tokens (Jev request limit ~64k total, ~32k state); keep definitions, decision rules and boundary cases first; record every cut (section, reason, tokens removed).\n- Exact wording committed under `studies/` (e.g. `studies/rubric_screening/<dataset>/{S,F}.txt` plus `cuts.md`), with sha256 recorded; labels and output format identical across S and F (compare like with like).\n- Respect licenses from R0 (do not commit guideline text whose terms forbid redistribution: store a pointer + hash instead and say so).\n\n## Definition of done\n\nPrompt files and cut logs committed for each candidate that passed R0; token counts recorded; reviewed by the main session.\n\n## Cost\n\n$0 (no model calls).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "2c06fb9b-50f8-41c4-8020-359cef309bb9",
+  "issue_id": "decision-flywheel-evaluations-874f5635-3195-47cf-9237-e221b08f6b56",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:33.216Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "R4: Simulated-stakeholder design and offline fake (quote-validated, UNEXPLAINABLE, noisy/shuffled)",
+    "description": "## Purpose\n\nDesign the simulated stakeholder and build its offline fake. Dataset-agnostic; can proceed after R0 in parallel with screening.\n\n## Design\n\n- **Sees:** the item text, Jev's verdict, the gold label, and the full guideline (not the excerpt limit of F if it fits the stakeholder model's context).\n- **Outputs:** one sentence \"should be G because [rule]\" + rule ID (section/rule identifier in the guideline) + a verbatim guideline quote <= 30 words, validated by exact string match against the guideline text (after whitespace normalization); reject on mismatch.\n- **Rejects:** explanations that only restate the label, and text-specific claims that are not a rule (validator + prompt instruction).\n- **May answer UNEXPLAINABLE:** logged as a label-noise estimate, NOT fed forward to the analyst.\n- **Model:** a different model family from Jev and from the analyst (owner to confirm the model before R6).\n- **Per round:** 10-20 errors, from the pool only; cap repeats per rule ID (e.g. <= 3 per round) so one rule cannot dominate.\n- **Noisy variant:** ~20% of explanations replaced by vague (\"seems off\") or wrong-rule explanations, seeded and logged.\n- **Shuffled variant:** explanations permuted across items (each attached to a wrong item), seeded.\n\n## Specs (first, beside the module)\n\nprompt contains item, verdict, gold, guideline; quote validator accepts verbatim and rejects paraphrase; restated-label and text-specific outputs rejected; UNEXPLAINABLE logged and not forwarded; per-rule repeat cap enforced; noisy and shuffled variants deterministic for a seed; offline fake produces valid outputs from a tiny fixture guideline.\n\n## Reuse\n\n`unified_labeler.py` (`labeler_prompt`, `wants_comment`) and the Emotion S5 design (decision-flywheel-evaluations-5e9ab3cf-fecc-4fda-9ea4-d3dfe2f003c1).\n\n## Definition of done\n\nSpecs pass offline under `make test`; design note committed; Sonnet agent builds, main session reviews.\n\n## Cost\n\n$0 (offline, no network).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-7e7c83b5-204d-403e-b0d6-dbe3a3662e7b",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "decision-flywheel-evaluations-7e7c83b5-204d-403e-b0d6-dbe3a3662e7b",
+  "title": "Simulated-stakeholder build and live runs on the chosen dataset (R4-R7)",
+  "description": "## Purpose\n\nBuild and run the simulated-stakeholder experiment on the dataset the owner picks after R3: a stakeholder LLM holding the real full guideline explains Jev's errors against gold labels; the flywheel (feature discovery from explanations + optimized fixed few-shot list) starts from the one-line rubric S. Tasks R4-R7.\n\n## Arms\n\nlabels-only; simulated-stakeholder explanations; SHUFFLED explanations (attached to wrong items: shows content matters); noisy stakeholder (~20% vague/wrong); start = S; F = ceiling.\n\n## Metric\n\nFraction of the S-to-F gap recovered over rounds (macro-F1), and number of explanations needed; paired bootstrap CIs. If F does not beat S, report the gap relative to the human ceiling / supervised baseline instead and say so.\n\n## Cost\n\nR4/R5 $0 (offline). R6 + everything else in the initiative: cap ~$10 total.\n\n## Definition of done\n\nR7 published with caveats.",
+  "type": "epic",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-8baf2860-6f8b-469a-b3d3-541d395495b8",
+  "labels": [
+    "roadmap",
+    "rubric-dataset"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:21.640855Z",
+  "updated_at": "2026-10-02T01:22:57.110705Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

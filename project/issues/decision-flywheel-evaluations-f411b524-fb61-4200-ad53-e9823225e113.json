@@ -1,0 +1,36 @@
+{
+  "id": "decision-flywheel-evaluations-f411b524-fb61-4200-ad53-e9823225e113",
+  "title": "R7: Publish rubric-dataset simulation results with caveats",
+  "description": "## Purpose\n\nPublish the rubric-dataset simulation results.\n\n## Content\n\nGap recovered over rounds per arm; explanations needed; shuffled and noisy controls; F ceiling and human ceiling; UNEXPLAINABLE rate; spend.\n\n## Caveats (must appear)\n\n- The stakeholder is SIMULATED: an LLM holding the guideline is a tidy compressor of it. Supports \"a rubric written for humans can be transmitted as a few explanations tied to errors\"; does NOT show real stakeholders explain this well, consistently or cheaply.\n- Dataset-specific: license limits, contamination risk (publication year), subsetting if any, human-ceiling noise.\n- One seed; development phase, exploratory.\n\n## Definition of done\n\nAddendum in `studies/UNIFIED_FLYWHEEL_RESULTS.md` (or a sibling results doc); decision recorded on whether to pilot the explanation channel with real reviewers; issues closed with evidence.\n\n## Cost\n\n$0.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-7e7c83b5-204d-403e-b0d6-dbe3a3662e7b",
+  "labels": [
+    "roadmap",
+    "rubric-dataset"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-f1d4a3a1-f4ce-4ed4-820d-3dc36faa9d32",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:33.313274Z",
+  "updated_at": "2026-10-02T01:22:52.596822Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

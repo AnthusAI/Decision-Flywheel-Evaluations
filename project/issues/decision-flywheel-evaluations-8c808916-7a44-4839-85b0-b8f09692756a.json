@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-8c808916-7a44-4839-85b0-b8f09692756a",
+  "title": "R1: Write the S (one-line) and F (excerpted full guideline) prompts per candidate",
+  "description": "## Purpose\n\nWrite the two screening prompts per candidate: S (one-line simplified rubric) and F (excerpted full guideline).\n\n## Scope\n\n- S: one line per dataset naming the labels with a plain one-sentence gloss (what a newcomer would write without reading the guideline). Same output format as F.\n- F: the published guideline excerpted to stay under ~25k tokens (Jev request limit ~64k total, ~32k state); keep definitions, decision rules and boundary cases first; record every cut (section, reason, tokens removed).\n- Exact wording committed under `studies/` (e.g. `studies/rubric_screening/<dataset>/{S,F}.txt` plus `cuts.md`), with sha256 recorded; labels and output format identical across S and F (compare like with like).\n- Respect licenses from R0 (do not commit guideline text whose terms forbid redistribution: store a pointer + hash instead and say so).\n\n## Definition of done\n\nPrompt files and cut logs committed for each candidate that passed R0; token counts recorded; reviewed by the main session.\n\n## Cost\n\n$0 (no model calls).",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-b57e63fc-3c25-44dc-abdd-f78cd6a0d911",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:33.112413Z",
+  "updated_at": "2026-10-02T01:22:52.380988Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

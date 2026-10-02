@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "fd38eee0-6e33-426f-8489-bdb79ad0c355",
+  "issue_id": "decision-flywheel-evaluations-8307cd21-e8e4-40e4-b112-1c6fad22a8f6",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:33.140Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "R2: Free local headroom check: supervised baseline vs published human ceiling ($0)",
+    "description": "## Purpose\n\nFree local headroom check: does the label set carry LEARNABLE signal, and how far is the human ceiling? Pass criterion (c) needs this.\n\n## Scope\n\n- Per candidate: define pool / dev / held-out splits (seeded; pool only for training and for screening items; held-out never inspected for tuning).\n- Train a local supervised baseline (e.g. TF-IDF + logistic regression) on a few hundred pool labels (report 200 / 400 / all-pool if cheap); score macro-F1 on held-out with bootstrap CI.\n- Put it next to the published inter-annotator / human ceiling from R0.\n- Requires the data locally: only datasets the owner approved for download after R0.\n\n## Definition of done\n\nTable per candidate: supervised baseline macro-F1 (CI) at each training size, human ceiling, split sizes and seeds; text-free provenance (ids, hashes) committed; comment posted here.\n\n## Cost\n\n$0: no Jev or other model calls.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

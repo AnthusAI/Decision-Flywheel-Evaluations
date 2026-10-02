@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "7166ff1b-cb57-47db-bc1b-bc6635553563",
+  "issue_id": "decision-flywheel-evaluations-f1d4a3a1-f4ce-4ed4-820d-3dc36faa9d32",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:33.276Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "R6: Live runs: labels-only, stakeholder, shuffled, noisy; S start, F ceiling (initiative cap ~$10)",
+    "description": "## Purpose\n\nLive runs on the chosen dataset.\n\n## Arms\n\n- labels-only (analyst sees which items were wrong, no reasons);\n- simulated-stakeholder explanations (R4);\n- SHUFFLED explanations (attached to wrong items: shows content matters);\n- noisy stakeholder (~20% vague/wrong);\n- starting point S (one-line rubric) and F (excerpted full guideline) as ceiling.\n\nRounds of 10-20 explained errors from the pool; scored on dev each round; final slice only after an owner go.\n\n## Metric\n\nFraction of the S-to-F gap recovered (macro-F1) per arm per round, and number of explanations needed to reach it; paired bootstrap CIs; per-class recall; UNEXPLAINABLE rate (label-noise estimate).\n\n## Stops\n\nStage it (round 1 -> owner look -> remaining rounds -> owner go -> final slice). Fresh ledger per stage; `--max-new-requests` = printed bound; circuit breaker on.\n\n## Definition of done\n\nAll arms scored on the final slice; text-free results committed; comment with the table.\n\n## Cost\n\n**Cap ~$10 for the whole initiative** (R3 + R6 Jev, stakeholder and analyst calls).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-7e7c83b5-204d-403e-b0d6-dbe3a3662e7b",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

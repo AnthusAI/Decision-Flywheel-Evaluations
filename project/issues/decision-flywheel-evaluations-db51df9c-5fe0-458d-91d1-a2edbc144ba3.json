@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-db51df9c-5fe0-458d-91d1-a2edbc144ba3",
+  "title": "R3: Live screening on Jev, S/F x 4 + S+8-shot on top 2 (~1,200 req, cap ~$1) -> STOP: owner picks",
+  "description": "## Purpose\n\nLive screening on Jev to apply pass rules (a) and (c), with F as an informative ceiling, then **STOP: owner picks the dataset**.\n\n## Scope\n\n- ~120 stratified items per candidate, drawn only from the pool split (fixed seed, ids recorded).\n- 4 candidates x 2 conditions (S, F) = ~960 Jev requests (~$0.5 at ~$0.4-0.6 per 1,000).\n- Then S + 8 fixed few-shot examples (from the pool, disjoint from the 120) on the top 2 candidates: ~240 requests (~$0.12).\n- Macro-F1, accuracy, per-class recall, paired bootstrap CIs (S vs F, S vs S+8, Jev-S vs supervised baseline on the same items where possible).\n- Fresh ledger; `--max-new-requests` = printed bound; circuit breaker on; failures tallied by error class.\n\n## Definition of done\n\nScreening table (license, guideline, human ceiling, supervised baseline, Jev-S, Jev-F, Jev-S+8) with pass/fail on (a)-(c) per candidate and a recommendation; text-free results committed; **STOP: owner picks the dataset** (or none). Record the decision on the \"Owner decision\" task.\n\n## Cost\n\n~1,200 Jev requests; **hard cap ~$1**.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-8c808916-7a44-4839-85b0-b8f09692756a",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-8307cd21-e8e4-40e4-b112-1c6fad22a8f6",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:33.167113Z",
+  "updated_at": "2026-10-02T01:22:52.454754Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

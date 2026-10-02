@@ -1,0 +1,49 @@
+{
+  "id": "decision-flywheel-evaluations-8baf2860-6f8b-469a-b3d3-541d395495b8",
+  "title": "Rubric-dataset simulation: teach a published rubric to Jev with the flywheel",
+  "description": "## Purpose\n\nTest whether a rubric written for HUMAN annotators can be taught to Jev through the flywheel, as a few stakeholder explanations tied to specific misclassifications, starting from a one-line simplified rubric. Sibling of the Emotion initiative (decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463); the Emotion labels-only run continues separately and is NOT replaced.\n\nOwner approval (2026-10-01): \"a very good idea, yes, where some rubric is published. Jev won't necessarily pay attention to that rubric at first but we can teach the rubric to Jev using our flywheel over time.\"\n\n## Background\n\nThe stakeholder-explanation loop (a stakeholder spots a misclassification and explains why; an analyst turns that into new rubric questions; the system also optimizes a fixed few-shot list) cannot be evaluated on a static data-only dataset such as Emotion. So we look for a REAL labeled dataset whose gold labels were produced by humans under a PUBLISHED annotation guideline / codebook / rubric, and SIMULATE the stakeholder with an LLM that holds the real full rubric, sees the classifier's mistakes against the gold labels and explains them by consulting the rubric. The starting classifier only has a one-line simplified rubric (condition S).\n\n## Claim supported (and not supported)\n\nSupports: a rubric written for humans can be transmitted to the system as a few explanations tied to specific errors. Does NOT prove that real stakeholders explain this well, consistently or cheaply: an LLM holding the guideline is a tidy compressor of it. Mitigation: a noisy-stakeholder arm (~20% vague or wrong explanations) and a shuffled-explanations control.\n\n## Candidates (Opus consult; verify in R0)\n\n1. **EDOS, SemEval-2023 Task 10 subtask B**: 4 sexism categories (threats, derogation, animosity, prejudiced discussion), labelled on items already marked sexist; ~4.8k usable of 20k. License CC0 (verified). github.com/rewire-online/edos. Taxonomy with definitions/examples in the paper/appendix. Annotators trained with expert adjudication (UNVERIFIED).\n2. **ASAP-SAS short-answer scoring**, one prompt, scores 0-3, ~1,700 train + ~550 test; each item has a key-element scoring rubric. License: Kaggle competition terms only (UNVERIFIED). 2013 data: contamination risk.\n3. **Comparative Agendas Project policy topics** (US bills or NYT headlines) restricted to 5-8 confusable topics; ~50-page codebook. License and exact codebook length UNVERIFIED; subsetting is artificial.\n4. **FOMC hawkish/dovish \"Trillion Dollar Words\"** (gtfintechlab), ~2.5k sentences. CC BY-NC 4.0 (verified; non-commercial). Rubric is a short table, so the S-to-F gap may be small.\n\nFallback: Gab Hate Corpus (CC BY 4.0, multi-label, low agreement: noise ceiling). Weak fits, skip: Measuring Hate Speech, ASAP 2.0 / PERSUADE, HateCheck (diagnostic only), CUAD / ContractNLI, MIMIC.\n\n## Screening rule (owner refinement)\n\nJev may NOT pay attention to the published rubric at first, so \"the full guideline in the prompt scores much higher\" is NOT the pass rule; the experiment is whether the flywheel teaches it over time. A dataset passes if:\n- (a) Jev with a ONE-LINE simplified rubric (condition S) scores clearly below the dataset's reported inter-annotator / human ceiling;\n- (b) a real published guideline exists and its nuance is plausibly not carried by one line;\n- (c) the labels carry LEARNABLE signal: a FREE local supervised baseline (e.g. TF-IDF + logistic regression trained on a few hundred pool labels, no Jev calls) beats Jev-S by a clear margin on held-out items.\n\nThe full-guideline condition F (excerpted to stay under ~25k tokens; Jev request limit ~64k total, ~32k state) is recorded as an INFORMATIVE ceiling/diagnostic, not a gate.\n\n## Budget\n\nScreening: ~120 stratified items per candidate drawn only from the pool split; 4 candidates x 2 conditions (S, F) = ~960 Jev requests (~$0.5 at ~$0.4-0.6 per 1,000), plus S + 8 fixed few-shot examples on the top 2 (~240 requests, ~$0.12): under $1 of Jev. Macro-F1 with paired bootstrap CIs. **Whole initiative cap ~$10** (Jev + simulated stakeholder + analyst).\n\n## Plan\n\nR0 licenses + guideline text -> R1 S/F prompts and R2 free headroom check -> R3 live screening -> **STOP: owner picks the dataset** -> R5 corpus + harness build (R4 simulated-stakeholder design and fake can proceed after R0) -> R6 live runs (arms: labels-only, simulated-stakeholder explanations, shuffled explanations, noisy stakeholder; start S; F as ceiling) -> R7 publish with caveats. Primary metric: fraction of the S-to-F gap recovered over rounds, and number of explanations needed.\n\n## Working rules (owner)\n\n- Planning/filing by Opus; builds by Sonnet sub-agents; the main session reviews diffs and runs live stages.\n- Small iterations; development phase; no preregistration ceremony.\n- Owner stop points before more is spent (first: dataset choice after R3); ask the owner one plain question at a time, at the top of a message.\n- Jev spend authorized within the stated caps. No downloads without the owner saying so.\n- Kanbus right_now summaries stay disabled.\n- Scoreboard discipline (AGENTS.md): pool / dev / final partitions disjoint; nothing tuned or inspected on held-out items; record provenance, not private dataset text.\n\n## Decisions needed\n\n1. **After R3: which dataset** (or none, if no candidate passes (a)-(c)).\n2. After R0: whether to accept Kaggle (ASAP-SAS) / CAP terms and approve the listed downloads.\n3. Before R6: simulated-stakeholder model (must be a different model family from Jev and the analyst).\n\n## Definition of done\n\nR7 published: fraction of the S-to-F gap recovered per arm over rounds, explanations needed, shuffled and noisy controls, with caveats; decision recorded on whether the explanation channel is worth piloting with real reviewers.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)\n- Sibling: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463 (Emotion, labels-only; continues)",
+  "type": "initiative",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [
+    "roadmap",
+    "rubric-dataset"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463",
+      "type": "relates-to"
+    }
+  ],
+  "comments": [
+    {
+      "id": "e3537a58-09a9-4769-b1f3-a17d5ae35e47",
+      "author": "home",
+      "text": "Owner approval and refinement (2026-10-01). Approval: \"a very good idea, yes, where some rubric is published. Jev won't necessarily pay attention to that rubric at first but we can teach the rubric to Jev using our flywheel over time.\" Refinement: the screening pass rule is NOT \"full guideline in the prompt scores much higher\". A dataset passes if (a) Jev-S (one-line rubric) is clearly below the reported human ceiling, (b) a real published guideline exists whose nuance one line plausibly does not carry, (c) a free local supervised baseline (TF-IDF + logistic regression on a few hundred pool labels) beats Jev-S clearly on held-out items. Condition F (excerpted full guideline, <= ~25k tokens) is recorded as an informative ceiling, not a gate. The Emotion labels-only initiative (f5a0ef0e) continues separately and is not replaced.\n\nDecisions needed: (1) after R3, which dataset (or none) - tracked in \"Owner decision needed: which rubric dataset after R3?\"; (2) after R0, accept Kaggle (ASAP-SAS) / CAP terms and approve the listed downloads; (3) before R6, the simulated-stakeholder model (different family from Jev and the analyst).\n\nChain: R0 -> {R1, R2} -> R3 -> STOP (owner decision) -> R5 -> R6 -> R7; R4 blocked only by R0 and feeds R5.\n",
+      "created_at": "2026-10-02T01:23:05.527354Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "claude_code",
+        "model": "Claude Opus 5.5",
+        "name": "Rubric Planning"
+      }
+    }
+  ],
+  "created_at": "2026-10-02T01:22:14.589445Z",
+  "updated_at": "2026-10-02T01:23:05.527379Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

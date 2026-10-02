@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "9dd4d949-6689-4fc6-9e00-24a411046c51",
+  "issue_id": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:21.618Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Screen rubric datasets and pick one (R0-R3) -> STOP: owner picks",
+    "description": "## Purpose\n\nScreen 4 candidate datasets whose gold labels were made under a published guideline, and pick one (owner decision) for the simulated-stakeholder experiment. Tasks R0-R3, ending at **STOP: owner picks the dataset**.\n\n## Pass rule\n\n(a) Jev-S (one-line rubric) clearly below the reported human ceiling; (b) a real published guideline whose nuance one line plausibly does not carry; (c) a free local supervised baseline beats Jev-S by a clear margin on held-out items. Condition F (excerpted full guideline, <= ~25k tokens) is an informative ceiling, not a gate.\n\n## Cost\n\nR0-R2 $0; R3 ~1,200 Jev requests, cap ~$1.\n\n## Definition of done\n\nScreening table per candidate (license, guideline, human ceiling, supervised baseline, Jev-S, Jev-F, Jev-S+8-shot on top 2, macro-F1 with paired bootstrap CIs, pass/fail on (a)-(c)) attached to R3; owner decision recorded.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-8baf2860-6f8b-469a-b3d3-541d395495b8",
+    "labels": [
+      "roadmap",
+      "rubric-dataset"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

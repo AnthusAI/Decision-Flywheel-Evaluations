@@ -1,0 +1,45 @@
+{
+  "id": "decision-flywheel-evaluations-4c9b342a-bff7-4618-b85b-ee936cb97315",
+  "title": "R5: Corpus + harness build for the chosen dataset (reuse Emotion Corpus/multi-class plumbing)",
+  "description": "## Purpose\n\nCorpus + harness build for the dataset the owner picks after R3.\n\n## Scope\n\n- Add a corpus entry to the frozen `Corpus` config (Emotion S1) with the chosen dataset's labels and the S starting rubric from R1.\n- Loader from the manifest/cache with pool / dev / final slices (`seeded_slices`), stratified label order, leakage asserts (Emotion S2 pattern).\n- Multi-class plumbing (N-1 few-shot/kNN features, real probabilities) and macro-F1 metrics/paired bootstrap from Emotion S3/S4/S6/S7; reuse, do not fork.\n- Wire the R4 stakeholder (and its noisy / shuffled variants) as the comments source for the explanation arms; UNEXPLAINABLE excluded from feedback.\n- Offline dry run of all R6 arms with fakes; planted replays stay byte-identical.\n\n## Specs\n\nloader splits disjoint and stable for a seed; corpus labels flow through every binary-constant site; explanation arms receive stakeholder comments, labels-only arm receives none; shuffled arm comments never attach to their source item; dry run completes all arms.\n\n## Definition of done\n\n`make test` and the unified target pass; offline dry run artifacts produced; Sonnet agents build in small steps, main session reviews diffs. Request upper bounds printed for each R6 stage.\n\n## Cost\n\n$0 (offline).",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-7e7c83b5-204d-403e-b0d6-dbe3a3662e7b",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-b5fa2b18-f780-430a-bd25-944dca57c78d",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-874f5635-3195-47cf-9237-e221b08f6b56",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-114680ea-ba66-4a67-93b8-e710d39f9005",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:22:33.247837Z",
+  "updated_at": "2026-10-02T01:23:12.188119Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Rubric Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "6f5e5eb2-b5ea-4e26-a30c-8c2f0107c2d1",
+  "issue_id": "decision-flywheel-evaluations-b57e63fc-3c25-44dc-abdd-f78cd6a0d911",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T01:22:33.086Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "R0: Verify licenses/terms and locate guideline text for the 4 candidates (read-only, no downloads)",
+    "description": "## Purpose\n\nRead-only research: verify the license / terms of the 4 candidates and locate the published guideline text for each. No downloads without the owner saying so.\n\n## Scope\n\nFor each of EDOS (subtask B), ASAP-SAS (one prompt), CAP policy topics (US bills or NYT headlines, 5-8 confusable topics), FOMC hawkish/dovish (gtfintechlab) and the fallback Gab Hate Corpus:\n- license / terms of use, with source URL and date checked; mark VERIFIED or UNVERIFIED. **Flag** Kaggle competition terms (ASAP-SAS) and CAP terms explicitly: can we use, store hashes and publish aggregate results?\n- where the guideline / codebook / rubric lives (paper appendix, repo file, PDF), its approximate length in tokens, and whether it is the guideline actually given to annotators;\n- the reported inter-annotator agreement or human ceiling, and on which split/metric;\n- split sizes and label distribution for the subset we would use; contamination notes (publication year, likely in pretraining);\n- annotator process (EDOS training + expert adjudication is UNVERIFIED: verify).\n- **Download list for the owner:** what would need downloading (dataset files, guideline PDFs), from where, and size. Do not download.\n\n## Definition of done\n\nA comment on this issue with one table row per candidate (license + status, guideline location + length, human ceiling, sizes, contamination, download list with sizes) and a recommendation of which to carry into R1-R3. Owner asked about the download list before R1/R2 fetch anything.\n\n## Cost\n\n$0. No Jev or other model calls, no downloads.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-888b3c46-3df3-4512-a318-c45f348d0c20",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}

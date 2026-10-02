@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "6e0d1240-b67d-466f-bad6-94b459c6f3ca",
+  "issue_id": "decision-flywheel-evaluations-8baf2860-6f8b-469a-b3d3-541d395495b8",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-02T01:23:05.527Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "e3537a58-09a9-4769-b1f3-a17d5ae35e47",
+    "comment_author": "home",
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Rubric Planning"
+    }
+  }
+}
