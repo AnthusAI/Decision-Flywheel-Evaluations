@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "427ef2dc-e0a5-4b52-a9ea-695217fb260d",
+  "issue_id": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:17:02.924Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Live Emotion run on Jev and results (L0-L4)",
+        "to": "Live Emotion run on Jev and results (labels-only L1-L3; optional L0, L4, L5)"
+      }
+    }
+  }
+}

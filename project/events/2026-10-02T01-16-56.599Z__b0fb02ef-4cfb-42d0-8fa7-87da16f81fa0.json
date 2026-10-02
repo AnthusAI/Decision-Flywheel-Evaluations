@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "event_id": "b0fb02ef-4cfb-42d0-8fa7-87da16f81fa0",
+  "issue_id": "decision-flywheel-evaluations-3a7f83bc-b8b2-4dc7-9e49-ae56eb13cb27",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:16:56.599Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "L0: Generate Emotion labeler comments live (gpt-6-luna, cap ~500 calls)",
+        "to": "Optional L0: generate simulated stakeholder comments (gpt-6-luna, cap ~500 calls)"
+      },
+      "description": {
+        "from": "## Purpose\n\nProduce the labeler explanations that feed A-c.\n\n## Scope\n\nOpenAI gpt-6-luna with the S5 style over the ~450 pool labels (3 x 150); text-free storage of outputs.\n\n## Request bound and cost cap\n\n~450 labels; cap ~500 calls. Cap: < $0.50. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nComment present on most items; spot-check a few for invented rules.\n\n## Definition of done\n\nComments cached for all rounds; actual calls and spend recorded here.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+        "to": "## Purpose\n\nOPTIONAL, after the labels-only stages (L3). Generate SIMULATED stakeholder explanations (S5 style; the model knows the gold label) that feed A-c in L5. Owner clarification (2026-10-01): a static labeled dataset has no stakeholder explanations; explanations are how stakeholders communicate a rubric by example over time. Reported as simulated, never as a property of the dataset.\n\n## Scope\n\nOpenAI gpt-6-luna with the S5 style over the ~450 pool labels (3 x 150); text-free storage of outputs.\n\n## Request bound and cost cap\n\n~450 labels; cap ~500 calls. Cap: < $0.50. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nComment present on most items; spot-check a few for invented rules.\n\n## Definition of done\n\nComments cached for all rounds; actual calls and spend recorded here.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)"
+      },
+      "priority": {
+        "from": 1,
+        "to": 3
+      },
+      "labels": {
+        "from": [
+          "roadmap",
+          "emotion-corpus",
+          "live-spend"
+        ],
+        "to": [
+          "roadmap",
+          "emotion-corpus",
+          "live-spend",
+          "optional"
+        ]
+      }
+    }
+  }
+}

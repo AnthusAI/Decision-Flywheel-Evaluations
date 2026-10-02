@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "event_id": "57a1ff0a-6259-4099-a042-a56e4fcd84a7",
+  "issue_id": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:17:13.483Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "Offline build: Emotion corpus, multi-class plumbing, labeler and metrics (S1-S8)",
+        "to": "Offline build: Emotion corpus, multi-class plumbing and metrics (S1-S8; S5 optional)"
+      }
+    }
+  }
+}

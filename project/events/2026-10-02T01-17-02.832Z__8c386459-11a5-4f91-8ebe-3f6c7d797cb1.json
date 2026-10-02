@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "event_id": "8c386459-11a5-4f91-8ebe-3f6c7d797cb1",
+  "issue_id": "decision-flywheel-evaluations-2848f4f2-dafe-450d-a2c8-9108d0ab5d4c",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:17:02.832Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "labels": {
+        "from": [],
+        "to": [
+          "roadmap",
+          "emotion-corpus",
+          "live-spend",
+          "optional"
+        ]
+      }
+    }
+  }
+}

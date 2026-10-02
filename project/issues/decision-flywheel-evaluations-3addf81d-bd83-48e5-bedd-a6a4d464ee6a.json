@@ -1,7 +1,7 @@
 {
   "id": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
-  "title": "Offline build: Emotion corpus, multi-class plumbing, labeler and metrics (S1-S8)",
-  "description": "## Purpose\n\nMake the unified harness run the Emotion corpus offline at $0, with the planted corpus still the default and byte-identical.\n\n## Scope\n\nS1 corpus config + replays; S2 Emotion loader/slices/stratified label order; S3 multi-class plumbing; S4 feature-budget cap + steering-prompt override; S5 Emotion labeler + fake; S6 cached zero-shot import + hash-equality spec; S7 macro-F1 metrics; S8 main-session dry run, replays, tests, push. Each step: spec first, no network, one Opus agent, reviewed by the main session. Pinned Jev-Flywheel clone `var/jev-flywheel-cd4a4886/` is read-only.\n\n## Definition of done\n\nBoth planted replays (`var/unified-flywheel/phase2-live-seed1`, `seed2-live`) byte-identical after S1 and after S4; offline Emotion dry run with fakes passes (all arms, 3 x 150); `make test` and `make unified-flywheel-test` green; pushed.\n\n## Cost cap\n\n$0 (no live calls).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "title": "Offline build: Emotion corpus, multi-class plumbing and metrics (S1-S8; S5 optional)",
+  "description": "## Purpose\n\nMake the unified harness run the Emotion corpus offline at $0, with the planted corpus still the default and byte-identical.\n\n## Scope\n\nS1 corpus config + replays; S2 Emotion loader/slices/stratified label order; S3 multi-class plumbing; S4 feature-budget cap + steering-prompt override; S5 (optional, P3, after S8) simulated-stakeholder labeler + fake for the optional L5 experiment; S6 cached zero-shot import + hash-equality spec; S7 macro-F1 metrics; S8 main-session dry run, replays, tests, push. Each step: spec first, no network, one Opus agent, reviewed by the main session. Pinned Jev-Flywheel clone `var/jev-flywheel-cd4a4886/` is read-only.\n\n## Definition of done\n\nBoth planted replays (`var/unified-flywheel/phase2-live-seed1`, `seed2-live`) byte-identical after S1 and after S4; offline Emotion dry run with fakes passes (all arms, 3 x 150); `make test` and `make unified-flywheel-test` green; pushed.\n\n## Cost cap\n\n$0 (no live calls).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "epic",
   "status": "open",
   "priority": 1,
@@ -16,7 +16,7 @@
   "dependencies": [],
   "comments": [],
   "created_at": "2026-10-02T00:39:24.342911Z",
-  "updated_at": "2026-10-02T00:39:24.342940Z",
+  "updated_at": "2026-10-02T01:17:13.483377Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",

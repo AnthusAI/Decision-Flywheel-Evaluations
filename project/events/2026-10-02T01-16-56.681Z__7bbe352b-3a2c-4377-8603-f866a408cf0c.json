@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "event_id": "7bbe352b-3a2c-4377-8603-f866a408cf0c",
+  "issue_id": "decision-flywheel-evaluations-c6ccc366-51bb-423b-b78b-0dc4fc707d6f",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:16:56.681Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "L2: Live rounds 2-3 for all arms on dev-100 (bound ~7,000) -> STOP 2",
+        "to": "L2: Live rounds 2-3, labels-only arms on dev-100 (bound ~7,000) -> STOP 2"
+      },
+      "description": {
+        "from": "## Purpose\n\nComplete the dev curves and freeze the arms.\n\n## Scope\n\nRounds 2-3 (150 labels each), all arms on dev-100; freeze bundles; nothing chosen on the final slice.\n\n## Request bound and cost cap\n\nBound ~7,000 Jev requests (use the printed bound). Cap: ~$7 worst case; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 2** (owner looks): dev curves per arm and round; whether the feature cap fired every round.\n\n## Definition of done\n\nDev curves table; frozen bundles; actual and cumulative spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+        "to": "## Purpose\n\nComplete the dev curves and freeze the arms.\n\n## Scope\n\nRounds 2-3 (150 labels each), labels-only arms 0, A, F, F-rand, A+F on dev-100 (A/A+F = A-c/A-c+F with empty comments; no comment generation); freeze bundles; nothing chosen on the final slice.\n\n## Request bound and cost cap\n\nBound ~7,000 Jev requests (use the printed bound). Cap: ~$7 worst case; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 2** (owner looks): dev curves per arm and round; whether the feature cap fired every round.\n\n## Definition of done\n\nDev curves table; frozen bundles; actual and cumulative spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "id": "decision-flywheel-evaluations-d3ecf1e6-b686-4ee6-ae83-b2e19c0e4d83",
-  "title": "L1: Live round 1 for all arms on dev-100 (bound ~2,450) -> STOP 1",
-  "description": "## Purpose\n\nFirst live reading of arms 0, A-c, F, F-rand and A-c+F on Emotion.\n\n## Scope\n\nRound 1 (150 labels), all arms scored on dev-100.\n\n## Request bound and cost cap\n\nBound ~2,450 Jev requests (use the printed bound). Cap: ~$2.50. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 1** (owner looks): are A-c's elements sensible; did the feature cap fire; did the labeler comment on most items. No L2 until the owner says go.\n\n## Definition of done\n\nDev-100 table per arm (macro-F1, acc, per-class recall); elements and dropped elements listed; actual spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "title": "L1: Live round 1, labels-only arms 0/A/F/F-rand/A+F on dev-100 (bound ~2,450) -> STOP 1",
+  "description": "## Purpose\n\nFirst live reading of the labels-only arms 0, A, F, F-rand and A+F on Emotion (A and A+F = harness A-c and A-c+F with an EMPTY comments input; no comment generation). Tests labels-only learning from disagreements; no stakeholder explanations exist in this dataset.\n\n## Scope\n\nRound 1 (150 labels), all arms scored on dev-100.\n\n## Request bound and cost cap\n\nBound ~2,450 Jev requests (use the printed bound). Cap: ~$2.50 (no labeler calls; analyst only). Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 1** (owner looks): are A's elements (from disagreements only) sensible; did the feature cap fire. No L2 until the owner says go.\n\n## Definition of done\n\nDev-100 table per arm (macro-F1, acc, per-class recall); elements and dropped elements listed; actual spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
   "status": "open",
   "priority": 1,
@@ -15,13 +15,13 @@
   ],
   "dependencies": [
     {
-      "target": "decision-flywheel-evaluations-3a7f83bc-b8b2-4dc7-9e49-ae56eb13cb27",
+      "target": "decision-flywheel-evaluations-114680ea-ba66-4a67-93b8-e710d39f9005",
       "type": "blocked-by"
     }
   ],
   "comments": [],
   "created_at": "2026-10-02T00:39:24.836495Z",
-  "updated_at": "2026-10-02T00:39:25.242754Z",
+  "updated_at": "2026-10-02T01:16:56.918728Z",
   "closed_at": null,
   "agent": {
     "platform": "claude_code",

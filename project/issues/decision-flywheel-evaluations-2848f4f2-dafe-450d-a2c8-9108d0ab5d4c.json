@@ -1,0 +1,46 @@
+{
+  "id": "decision-flywheel-evaluations-2848f4f2-dafe-450d-a2c8-9108d0ab5d4c",
+  "title": "L5: simulated-explanations run of A-c on dev-100 + final slice (bound ~1,600 + final), optional",
+  "description": "## Purpose\n\nOPTIONAL, separate, clearly labeled experiment: measure the value of rubric communication with SIMULATED stakeholder feedback. Not a property of the dataset; the headline is the labels-only run (L1-L3).\n\n## Scope\n\nHarness arm A-c with the L0 simulated comments, 3 rounds x 150 on dev-100, then the frozen bundle on the final slice. Compare with labels-only A from L1-L3.\n\n## Request bound and cost cap\n\nBound ~1,600 (dev) + ~600 (final slice) Jev requests (use the printed bound). Cap: ~$2.20; cumulative (incl. L0) must stay <= $10. Fresh ledger; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class.\n\n## Definition of done\n\nA-c (simulated explanations) vs A (labels only) on dev curves and final slice with paired bootstrap; reported as simulated in the publish addendum.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 3,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "live-spend",
+    "optional"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-86d165fe-dcb2-417f-8422-84dc535007d3",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-5e9ab3cf-fecc-4fda-9ea4-d3dfe2f003c1",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-3a7f83bc-b8b2-4dc7-9e49-ae56eb13cb27",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T01:16:57.007379Z",
+  "updated_at": "2026-10-02T01:17:02.902755Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

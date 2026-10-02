@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "event_id": "47c5c839-c932-4342-8370-2d7a7096bb43",
+  "issue_id": "decision-flywheel-evaluations-86d165fe-dcb2-417f-8422-84dc535007d3",
+  "event_type": "field_updated",
+  "occurred_at": "2026-10-02T01:16:56.721Z",
+  "actor_id": "home",
+  "payload": {
+    "changes": {
+      "title": {
+        "from": "L3: Score 4 frozen arms on the final slice (bound ~2,400; owner go required)",
+        "to": "L3: Score 4 labels-only frozen arms on the final slice (bound ~2,400; owner go required)"
+      },
+      "description": {
+        "from": "## Purpose\n\nThe headline comparison on the disjoint final slice.\n\n## Scope\n\nA-c, F, F-rand, A-c+F through reloaded bundles on the final slice; arm 0 free from cache. Only after the owner's explicit go.\n\n## Request bound and cost cap\n\nBound ~2,400 Jev requests (use the printed bound). Cap: ~$2.40; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nOwner go recorded in a comment before the run; cumulative spend checked against $10.\n\n## Definition of done\n\nFinal table: macro-F1, acc, per-class recall, confusion matrix, top-label Brier/ECE, paired bootstrap vs arm 0 and vs 0.649.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+        "to": "## Purpose\n\nThe headline comparison on the disjoint final slice: labels-only learning from disagreements.\n\n## Scope\n\nA, F, F-rand, A+F (A/A+F = A-c/A-c+F frozen with empty comments) through reloaded bundles on the final slice; arm 0 free from cache. Only after the owner's explicit go.\n\n## Request bound and cost cap\n\nBound ~2,400 Jev requests (use the printed bound). Cap: ~$2.40; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nOwner go recorded in a comment before the run; cumulative spend checked against $10.\n\n## Definition of done\n\nFinal table: macro-F1, acc, per-class recall, confusion matrix, top-label Brier/ECE, paired bootstrap vs arm 0 and vs 0.649.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)"
+      }
+    }
+  }
+}
