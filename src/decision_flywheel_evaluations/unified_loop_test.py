@@ -260,3 +260,88 @@ def test_the_six_label_diagnostic_reports_top_label_agreement_and_mean_total_var
     assert got["n"] == 2 and got["choice_differs_rate"] == 0.5 and got["top_label_agreement_rate"] == 0.5
     assert got["mean_total_variation"] == pytest.approx((0.0 + (5 / 6)) / 2, abs=1e-4)
     assert "mean_abs_p_positive_difference" not in got
+
+
+# ---- the feature-budget cap and the steering-prompt override (plan step S4) --------------------
+
+def _a_arm_state(flywheel):
+    from jev_flywheel.workspace import Workspace
+
+    from .unified_loop import ArmState
+
+    workspace = Workspace(flywheel.run_dir / "workspaces" / "A")
+    workspace._cache = flywheel.cache
+    return ArmState("A", workspace.scorecard().score("Sentiment"), workspace)
+
+
+def _labeled(flywheel):
+    return [i for batch in flywheel.batches for i in batch]
+
+
+@pytest.fixture(scope="module")
+def cap_run(tmp_path_factory):
+    return _run(tmp_path_factory.mktemp("unified-cap"), "cap", arms=("A",))
+
+
+def test_the_planted_summary_carries_neither_a_feature_cap_nor_a_steering_prompt_key(small_run):
+    _, summary, _ = small_run
+    blob = json.dumps(summary)
+    assert "feature_cap" not in blob and "steering_prompt" not in blob
+
+
+def test_a_head_within_the_ladder_budget_is_left_untouched(cap_run):
+    flywheel, summary, _ = cap_run
+    state = _a_arm_state(flywheel)
+    version, features = state.workspace.version, list(state.workspace.scorecard().score("Sentiment").decision.features)
+    out = {"steering": {"elements_before": ["topic_domain"], "elements_after": ["topic_domain", "hedged"]}}
+    flywheel._cap_to_budget("A", state, _labeled(flywheel), out)
+    assert "feature_cap" not in out and state.workspace.version == version
+    assert state.workspace.scorecard().score("Sentiment").decision.features == features
+
+
+def test_an_over_budget_head_drops_the_newest_element_records_it_text_free_and_refits(cap_run, monkeypatch):
+    import dataclasses
+
+    from jev_flywheel import ladder
+
+    flywheel, _, _ = cap_run
+    real = ladder.tier_for
+    monkeypatch.setattr(ladder, "tier_for", lambda n, *a: dataclasses.replace(real(n, *a), features_per_n_effective=25))
+    state = _a_arm_state(flywheel)
+    version = state.workspace.version
+    assert len(state.workspace.scorecard().score("Sentiment").decision.features) == 4
+    out = {"steering": {"elements_before": ["topic_domain"], "elements_after": ["topic_domain", "hedged"]}}
+    flywheel._cap_to_budget("A", state, _labeled(flywheel), out)
+    assert out["feature_cap"] == {
+        "n_labeled": 80, "budget": 3, "reserved_features": 0, "features_before": 4, "features_after": 3,
+        "reason": "over the capability-ladder feature budget", "refit": "fitted",
+        "dropped": [{"key": "hedged", "features": 1, "new_this_round": True}]}
+    score = state.workspace.scorecard().score("Sentiment")
+    assert state.workspace.version == version + 1 and [e.key for e in score.elements] == ["topic_domain"]
+    assert score.decision.features == ["self.holistic.clr.positive", "topic_domain.clr.sports_or_recreation",
+                                       "topic_domain.clr.business_or_workplace"]
+    assert score.decision.weights and score.decision.provenance
+    assert "text" not in json.dumps(out["feature_cap"]).replace("n_labeled", "")
+    # the pruned head fits, so asking again changes nothing (and the cap is deterministic)
+    again = {"steering": out["steering"]}
+    flywheel._cap_to_budget("A", state, _labeled(flywheel), again)
+    assert "feature_cap" not in again and state.workspace.version == version + 1
+
+
+def test_features_the_arm_adds_after_steering_are_reserved_against_the_budget(tmp_path, monkeypatch):
+    import dataclasses
+
+    from jev_flywheel import ladder
+
+    flywheel, _, _ = _run(tmp_path, "reserve", arms=("A",))
+    real = ladder.tier_for
+    state = _a_arm_state(flywheel)
+    out = {"steering": {"elements_before": ["topic_domain"], "elements_after": ["topic_domain", "hedged"]}}
+    # 80 labels at 16 per feature: budget 5. Four features plus the one few-shot feature A+B adds fits.
+    monkeypatch.setattr(ladder, "tier_for", lambda n, *a: dataclasses.replace(real(n, *a), features_per_n_effective=16))
+    flywheel._cap_to_budget("A+B", state, _labeled(flywheel), out)
+    assert "feature_cap" not in out
+    # At 20 per feature the budget is 4: four features plus the reserved one is over, so the newest element goes.
+    monkeypatch.setattr(ladder, "tier_for", lambda n, *a: dataclasses.replace(real(n, *a), features_per_n_effective=20))
+    flywheel._cap_to_budget("A+B", state, _labeled(flywheel), out)
+    assert [d["key"] for d in out["feature_cap"]["dropped"]] == ["hedged"] and out["feature_cap"]["reserved_features"] == 1

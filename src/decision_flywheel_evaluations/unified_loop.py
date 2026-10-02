@@ -105,7 +105,9 @@ from .unified_knn import (PoolEntry, context_fingerprint, knn_policy_fingerprint
                           knn_rows, retrieval_policy_fingerprint)
 from .unified_spend import (CountingAsyncClient, CountingSyncClient, SpendLedger,
                             concurrency_slots)
+from .unified_budget import plan_feature_cap
 from .unified_corpus import PLANTED, Corpus
+from .unified_steering_prompt import original_procedure_sha256, steering_procedure, write_reworded_procedure
 from .unified_splits import (Splits, assert_labels_from_pool, assert_retrieval_pool_clean,
                              assert_target_excluded, fingerprint_ids, label_order, load_splits,
                              round_batches)
@@ -728,14 +730,16 @@ class UnifiedFlywheel:
         if self.cfg.analyst_provider == "openai":
             from .unified_openai import allow_gpt6_token_parameter
             allow_gpt6_token_parameter()
-        outcome = run_steering(
-            workspace, self.corpus.score_name, provider=self.cfg.analyst_provider, model=self.cfg.analyst_model,
-            allow_spend=True, client_factory=self.engines.zero_shot_factory,
-            # The scripted human approves what the gate already passed; spend is bounded by
-            # the ledger's ceiling, not by the procedure's price prompt.
-            hitl_handler=ScriptedApprover((), default=True),
-            mock_replies=None if reply is None else [reply, reply],
-            max_auto_requests=10 ** 6, max_revisions=1)
+        # Non-planted corpora run the reworded procedure for this call only (planted: the pinned file, untouched).
+        with steering_procedure(self.corpus, self.cfg.clone):
+            outcome = run_steering(
+                workspace, self.corpus.score_name, provider=self.cfg.analyst_provider, model=self.cfg.analyst_model,
+                allow_spend=True, client_factory=self.engines.zero_shot_factory,
+                # The scripted human approves what the gate already passed; spend is bounded by
+                # the ledger's ceiling, not by the procedure's price prompt.
+                hitl_handler=ScriptedApprover((), default=True),
+                mock_replies=None if reply is None else [reply, reply],
+                max_auto_requests=10 ** 6, max_revisions=1)
         self.ledger.raise_if_tripped()
         raw = outcome.analyst_reply if reply is None else reply
         if self.cfg.live and source == "live" and raw:
@@ -757,6 +761,60 @@ class UnifiedFlywheel:
                 "elements_before": [e.key for e in before.elements],
                 "elements_after": [e.key for e in after.elements],
                 "scorecard_version": workspace.version}
+
+    def _cap_to_budget(self, arm: str, state: ArmState, labeled: Sequence[str], out: Dict[str, Any]) -> None:
+        """After steering: drop elements until the head the arm will fit fits the ladder's feature budget.
+
+        A no-op (nothing written, no key added to the round's output) when the head already fits, which
+        is always the case for the planted corpus. Otherwise the lowest-ranked newest elements are removed
+        from the workspace scorecard (``unified_budget`` states the rule), the pruned head is refit, and
+        ``out["feature_cap"]`` records what was dropped (keys and counts only).
+        """
+        from jev_flywheel.ladder import tier_for
+        from jev_flywheel.proposal import HOLISTIC_KEYS
+
+        workspace = state.workspace
+        n = len(labeled)
+        tier = tier_for(n)
+        if tier.name == "hold":
+            return
+        budget = tier.feature_budget(n)
+        card = workspace.scorecard()
+        score = card.score(self.corpus.score_name)
+        reserved = len(self.corpus.fewshot_features) if arm in FEWSHOT_ARMS else 0
+        reserved += len(self.corpus.knn_features) if arm in KNN_ARMS else 0
+        steering = out.get("steering") or {}
+        new_keys = set(steering.get("elements_after", [])) - set(steering.get("elements_before", []))
+        plan = plan_feature_cap(score.decision.features, [e.key for e in score.elements], budget=budget,
+                                reserved=reserved, protected=HOLISTIC_KEYS, new_keys=new_keys)
+        record = plan.record(n_labeled=n, budget=budget)
+        if record is None:
+            return
+        dropped = {d.key for d in plan.dropped}
+        pruned = Scorecard.from_config(card.to_config())
+        pruned_score = pruned.score(self.corpus.score_name)
+        pruned_score.elements = [e for e in pruned_score.elements if e.key not in dropped]
+        decision = pruned_score.decision
+        decision.features = [f for f in decision.features if f.split(".", 1)[0] not in dropped]
+        decision.model, decision.weights = "multinomial_logistic", {}
+        decision.positive_class, decision.threshold = None, 0.0
+        decision.calibration = decision.provenance = None
+        # Refit the pruned head now so the workspace never holds a head without weights.
+        template = candidate_template(pruned_score, fewshot=False, knn=False, corpus=self.corpus)
+        rows = self._rows(template, labeled, labeled)
+        training = training_set(template, labeled, self.labels, rows, "zero-shot")
+        try:
+            result = fit_head(training, template, folds=self.cfg.folds, seed=self.cfg.fit_seed)
+        except LadderRefusal as refusal:
+            record["refit"] = f"refused: {refusal}"
+            result = None
+        if result is not None and result.fitted:
+            workspace.commit_scorecard(with_fit(pruned, self.corpus.score_name, result), kind="steer",
+                                       provenance={"feature_cap": record, "fit_id": result.provenance.get("fit_id")})
+            record["refit"] = "fitted"
+        elif result is not None:
+            record["refit"] = "held"
+        out["feature_cap"] = record
 
     # ---- one round -----------------------------------------------------------------------
 
@@ -820,6 +878,7 @@ class UnifiedFlywheel:
                                                     with_comments=arm in COMMENT_ARMS)
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
+            self._cap_to_budget(arm, state, labeled, out)
             ws_score = workspace.scorecard().score(self.corpus.score_name)
             ws_head, ws_gate, ws_fit = self._gate(arm, round_number, candidate_template(ws_score, fewshot=False, knn=False, corpus=self.corpus),
                                                   ws_score, labeled)
@@ -923,6 +982,7 @@ class UnifiedFlywheel:
                                                     with_comments=arm in COMMENT_ARMS)
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
+            self._cap_to_budget(arm, state, labeled, out)
             base = workspace.scorecard().score(self.corpus.score_name)
         template = candidate_template(base, fewshot=False, knn=False, corpus=self.corpus)
         questions = template.questions()
@@ -1135,6 +1195,10 @@ class UnifiedFlywheel:
             "bundles": self.bundles,
             "requests": self.ledger.summary(),
         }
+        if self.corpus.reword_steering_prompt:   # planted summaries gain no key
+            _, sha = write_reworded_procedure(self.corpus, self.cfg.clone)
+            summary["steering_prompt"] = {"sha256": sha, "source_sha256": original_procedure_sha256(self.cfg.clone),
+                                          "reworded_for_corpus": self.corpus.name}
         _assert_text_free(summary, self.splits)
         self.run_dir.mkdir(parents=True, exist_ok=True)
         prefix = "final-" if self.cfg.final else ""   # a final run never overwrites the rounds' outputs

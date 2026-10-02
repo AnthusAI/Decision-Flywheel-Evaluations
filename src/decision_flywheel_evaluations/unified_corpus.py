@@ -55,6 +55,12 @@ class Corpus:
     label_order_fn: Callable[[Splits, int], Tuple[str, ...]] = planted_label_order   # the fixed labeling order
     unsupported_reason: Optional[str] = None   # set while the corpus lacks plumbing a run needs; runs refuse with it
     fake_jev_cues: Tuple[Tuple[str, Tuple[str, ...]], ...] = ()   # (label, keywords) pairs the offline fake Jev leans on; () = binary planted fake
+    # The pinned steering procedure speaks of "the positive and negative examples" and "sentiment"; a corpus
+    # that is not about sentiment sets ``reword_steering_prompt`` and the harness swaps in a reworded copy
+    # for the run (see ``unified_steering_prompt``). PLANTED keeps the pinned file byte for byte.
+    reword_steering_prompt: bool = False
+    steer_examples_phrase: str = "the examples of each label"   # replaces "the positive and negative examples"
+    steer_subject_phrase: str = "the labeled property"          # replaces "sentiment" in "not about sentiment"
 
     def __post_init__(self) -> None:
         if self.knn_share_feature is not None and self.knn_share_feature != f"knn.share.{self.labels[0]}":
@@ -126,8 +132,8 @@ PLANTED = Corpus(
 )
 
 # The multi-class few-shot / kNN naming, probabilities and fake-Jev cues exist (plan step S3); the
-# labeler (S5) and the steering prompt / feature budget (S4) do not, so runs and comment generation
-# still refuse Emotion with this reason.
+# labeler (S5) does not, so runs and comment generation still refuse Emotion with that reason. The
+# steering-prompt override and the feature-budget cap (S4) exist (unified_steering_prompt, unified_budget).
 EMOTION_FAKE_JEV_CUES = (
     ("sadness", ("sad", "depressed", "miserable", "lonely", "grief", "heartbroken", "unhappy", "hopeless", "gloomy", "hurt")),
     ("joy", ("happy", "glad", "delighted", "cheerful", "thrilled", "excited", "joyful", "pleased", "blessed", "proud")),
@@ -146,8 +152,9 @@ EMOTION_CORPUS = Corpus(
     load_splits=load_emotion_corpus,
     labeler_style=None, fake_labeler_hook=None, fake_jev_positive_label=None,
     label_order_fn=emotion_label_order,
-    unsupported_reason="the explanation labeler and the steering prompt / feature budget are not built yet (plan steps S4-S5)",
+    unsupported_reason="the explanation labeler is not built yet (plan step S5)",
     fake_jev_cues=EMOTION_FAKE_JEV_CUES,
+    reword_steering_prompt=True, steer_examples_phrase="the examples of each label", steer_subject_phrase="the emotion",
 )
 
 CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS}
