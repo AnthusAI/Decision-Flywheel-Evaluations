@@ -1,0 +1,55 @@
+Classify whether this short text is hate speech: hateful (attacks, insults or threatens people because of their group, such as race, religion, gender or sexuality) or non-hateful (anything else).
+
+ANNOTATION GUIDE (excerpt): Röttger, Vidgen, Nguyen, Waseem, Margetts and Pierrehumbert (2021), "HateCheck: Functional Tests for Hate Speech Detection Models", ACL 2021, Section 1 (definition), Sections 2.3-2.4 and Table 1 (the 29 functional tests). Published at aclanthology.org/2021.acl-long.4 (CC BY 4.0).
+
+Definition of hate speech. We draw on previous definitions of hate speech as well as recent typologies of abusive content to define hate speech as abuse that is targeted at a protected group or at its members for being a part of that group. We define protected groups based on age, disability, gender identity, familial status, pregnancy, race, national or ethnic origins, religion, sex or sexual orientation, which broadly reflects international legal consensus (particularly the UK's 2010 Equality Act, the US 1964 Civil Rights Act and the EU's Charter of Fundamental Rights). Based on these definitions, we approach hate speech detection as the binary classification of content as either hateful or non-hateful.
+
+Functional tests. 18 functional tests for hateful content cover distinct expressions of hate. The other 11 functional tests for non-hateful content cover contrastive non-hate, i.e. content which shares linguistic features with hateful expressions. Every non-hateful test case is a direct contrast to a hateful test case, making only minimal changes. For instance, "I love immigrants" (F19: positive statements using a protected group identifier) directly contrasts "I hate immigrants" (F1: strong negative emotions explicitly expressed about a protected group).
+
+Distinct expressions of hate: derogatory hate speech (F1-4) and hate expressed through threatening language (F5/6); hate expressed using slurs (F7) and profanity (F10); hate expressed through pronoun reference (F12/13), negation (F14) and phrasing variants, specifically questions and opinions (F16/17); hate containing spelling variations such as missing characters or leet speak (F25-29).
+
+Contrastive non-hate: non-hateful contrasts for slurs, particularly slur homonyms and reclaimed slurs (F8/9), as well as for profanity (F11); non-hateful contrasts that use negation, i.e. negated hate (F15); non-hateful contrasts around protected group identifiers (F18/19); contrasts in which hate speech is quoted or referenced to non-hateful effect, specifically counter speech, i.e. direct responses to hate speech which seek to act against it (F20/21); non-hateful contrasts which target out-of-scope entities such as objects (F22-24) rather than a protected group.
+
+Protected groups covered by the test cases: women (gender), trans people (gender identity), gay people (sexual orientation), black people (race), disabled people (disability), Muslims (religion) and immigrants (national origin). [IDENTITY] stands for a protected group identifier and [SLUR] for a slur.
+
+Table 1: functional tests, example test cases and gold label.
+Derogation
+F1: Expression of strong negative emotions (explicit). "I hate [IDENTITY]." "You [IDENTITY] make me sick." -> hateful
+F2: Description using very negative attributes (explicit). "[IDENTITY] are disgusting." "All [IDENTITY] like them are vile." -> hateful
+F3: Dehumanisation (explicit). "[IDENTITY] are scum." "[IDENTITY] are a pest." -> hateful
+F4: Implicit derogation. "[IDENTITY] belong in a zoo." "I'd rather die than date [IDENTITY]." -> hateful
+Threatening language
+F5: Direct threat. "I am going to shoot the next [IDENTITY] I see." -> hateful
+F6: Threat as normative statement. "We should get rid of [IDENTITY] once and for all." -> hateful
+Slur usage
+F7: Hate expressed using slur. "You are just a [SLUR] to me." -> hateful
+F8: Non-hateful homonyms of slurs. "I had this queer feeling we were being watched." -> non-hateful
+F9: Reclaimed slurs. "I'm the freshest n*gga in the room." -> non-hateful
+Profanity usage
+F10: Hate expressed using profanity. "These [IDENTITY] should shut the f*ck up once and for all." -> hateful
+F11: Non-hateful use of profanity. "I wish someone could get me the f*ck out of here." -> non-hateful
+Pronoun reference
+F12: Hate expressed through reference in subsequent clauses. "I have met many [IDENTITY] and I hate every single one of them." -> hateful
+F13: Hate expressed through reference in subsequent sentences. "Of course they are stupid. They are just [IDENTITY] after all." -> hateful
+Negation
+F14: Hate expressed using negated positive statement. "[IDENTITY] lives do not matter." -> hateful
+F15: Non-hate expressed using negated hateful statement. "No [IDENTITY] deserves to die." "We shouldn't let [IDENTITY] suffer." -> non-hateful
+Phrasing
+F16: Hate phrased as a question. "Why is it that all [IDENTITY] are repulsive?" -> hateful
+F17: Hate phrased as an opinion. "I think that [IDENTITY] should all be killed." -> hateful
+Non-hate grp. ident.
+F18: Neutral statements using protected group identifiers. "We are a group of [IDENTITY]." "I live with two [IDENTITY]." -> non-hateful
+F19: Positive statements using protected group identifiers. "I love [IDENTITY]." "[IDENTITY] are great." -> non-hateful
+Counter speech
+F20: Denouncements of hate that quote it. "Statements like '[IDENTITY] are scum' are deeply hurtful." -> non-hateful
+F21: Denouncements of hate that make direct reference to it. "You have to stop calling [IDENTITY] disgusting." -> non-hateful
+Abuse against non-prot. targets
+F22: Abuse targeted at objects. "I really can't stand cauliflower." "All cocktails like these are vile" -> non-hateful
+F23: Abuse targeted at individuals (not as member of a prot. group). "You make me sick." "I will hurt you." -> non-hateful
+F24: Abuse targeted at non-protected groups (e.g. professions). "Artists are parasites to our society." "Death to all capitalists." -> non-hateful
+Spelling variations
+F25: Swaps of adjacent characters. "I haet [IDENTITY]." -> hateful
+F26: Missing characters. "[IDENTITY] are a cancr." -> hateful
+F27: Missing word boundaries. "Deathto all [IDENTITY]." -> hateful
+F28: Added spaces between chars. "I want to k i l l all [IDENTITY]." -> hateful
+F29: Leet speak spellings. "[IDENTITY] lives aren't worth sh1t." -> hateful

@@ -1,0 +1,1 @@
+Read the non-disclosure agreement (NDA) and decide how it relates to the hypothesis: Entailment (the contract says the hypothesis holds), Contradiction (the contract says the opposite), or NotMentioned (the contract does not address it).

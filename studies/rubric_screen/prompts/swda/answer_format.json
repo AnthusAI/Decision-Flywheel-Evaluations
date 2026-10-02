@@ -1,0 +1,34 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "sd",
+  "sv",
+  "b",
+  "aa",
+  "qy",
+  "qy^d",
+  "ba",
+  "%"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/swda/S.txt",
+ "instructions_S_sha256": "d061db8e6ef9f62be73509d15a0f5bc94cc86b65fc1b1a8d1cb24ab055f368f3",
+ "instructions_F_file": "var/rubric-screen/swda/F.txt (NOT committed)",
+ "instructions_F_sha256": "60d9518d7dd22ddb4b9748baa428ed4759f25d79e20b807bda06ecf1f53033e4",
+ "F_committed": false,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 58,
+ "F_words": 5985,
+ "F_tokens_est": 7780,
+ "dataset_label_to_option": {
+  "sd (incl. sd^e, sd(^q), sd^t, sd^r ...)": "sd",
+  "sv (incl. fx, sv(^q), sv^t ...)": "sv",
+  "b (incl. b^r)": "b",
+  "aa (incl. aa^r)": "aa",
+  "qy (incl. qr, qy^g, qy^t, qy^r ...)": "qy",
+  "qy^d": "qy^d",
+  "ba (incl. fe, ba^r)": "ba",
+  "% (incl. %*)": "%"
+ },
+ "tag_rule": "clustered SWBD-DAMSL tag per coders manual 1c (cgpotts/swda damsl_act_tag); raw tags containing '@' or a double label (',' ';') are excluded; see cuts.md"
+}

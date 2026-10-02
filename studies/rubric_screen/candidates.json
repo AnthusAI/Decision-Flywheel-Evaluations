@@ -322,9 +322,313 @@
    "flags_unverified": [
     "everything: licence, rubric text, agreement, counts"
    ]
+  },
+  "hatecheck": {
+   "verdict": "usable (risk: S may already be high, small S-to-F gap)",
+   "checked": "2026-10-02",
+   "screen_rule": "owner-approved re-screen rule (2026-10-02): held-out 300 (test side, fixed seed 11); Jev F macro-F1 >= ~0.80 and S >= ~10 points lower",
+   "license": {
+    "text": "repo licence CC BY 4.0 (GitHub licence metadata 'CC-BY-4.0'; LICENSE file 'Attribution 4.0 International')",
+    "url": "https://github.com/paul-rottger/hatecheck-data",
+    "verified": true,
+    "note": "repo was renamed from paul-rottger/hate-functional-tests"
+   },
+   "paper": {
+    "title": "HateCheck: Functional Tests for Hate Speech Detection Models",
+    "url": "https://aclanthology.org/2021.acl-long.4/",
+    "paper_license": "CC BY 4.0 (ACL Anthology)"
+   },
+   "downloaded": [
+    {
+     "file": "hatecheck/test_suite_cases.csv",
+     "bytes": 664630,
+     "sha256": "ecf0dc1e93fccc90b6f880e632b19e635c0f0a68b3157915a9e20b6938f121cf"
+    },
+    {
+     "file": "hatecheck/test_suite_annotations.csv",
+     "bytes": 565975,
+     "sha256": "93aa6f760f2d311cfbce26881f0e5eea3ad8b4e095e1916f9f14a6c749f15231"
+    },
+    {
+     "file": "hatecheck/LICENSE",
+     "bytes": 18656,
+     "sha256": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94"
+    },
+    {
+     "file": "hatecheck/README.md",
+     "bytes": 2744,
+     "sha256": "4b609fe3c0978c03d70c6db19eafb5cd74664c69608a6a7a4de5a6cfff4f2531"
+    },
+    {
+     "file": "hatecheck/hatecheck_acl2021.pdf",
+     "bytes": 355693,
+     "sha256": "7517aa2fd0b43dac0acefdd86cd4833ec6d05592966ff17502d16cb963308d6a"
+    }
+   ],
+   "text_field": "test_case",
+   "label_field": "label_gold",
+   "labels": [
+    "hateful",
+    "non-hateful"
+   ],
+   "items_total": 3728,
+   "counts_total": {
+    "hateful": 2563,
+    "non-hateful": 1165
+   },
+   "functional_tests": 29,
+   "split": {
+    "official": "none",
+    "heldout": "300 cases, largest-remainder proportional by functional test, whole templates only (no template in both pool and held-out), templates that are Table 1 examples kept out of held-out, seed 11",
+    "heldout_counts": {
+     "hateful": 204,
+     "non-hateful": 96
+    },
+    "pool": 3339,
+    "pool_counts": {
+     "hateful": 2285,
+     "non-hateful": 1054
+    },
+    "excluded_template_remainders": 89,
+    "contrastive_share_heldout": 0.32,
+    "contrastive_share_all": 0.3125,
+    "over_represents_contrastive": false
+   },
+   "guideline": {
+    "url": "https://aclanthology.org/2021.acl-long.4.pdf",
+    "where": "Section 1 definition, Sections 2.3-2.4, Table 1",
+    "F_words": 928,
+    "F_tokens_est": 1206,
+    "F_committed": true,
+    "given_to_annotators": "unverified: annotator instructions not published; F is the authors' gold-label specification"
+   },
+   "annotation_process": {
+    "annotators": "10 trained annotators (all with prior hate speech annotation experience), 5 per case, onboarding + 100-case test with feedback (Appendix A data statement)",
+    "verified": true
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": {
+     "fleiss_kappa": 0.93,
+     "scope": "all 3,901 generated cases before exclusion"
+    },
+    "verified": true,
+    "source": "paper Section 2.5",
+    "derived_from_data": {
+     "note": "our computation on test_suite_annotations.csv",
+     "share_of_annotator_labels_matching_gold": 0.987,
+     "majority_matches_gold": "3728/3728 (by construction: cases with <4/5 agreement were excluded)"
+    }
+   },
+   "contamination": "public since 2021, widely used LLM safety benchmark; very likely in pretraining",
+   "flags_unverified": [
+    "annotator-facing instructions not published",
+    "S-to-F gap may be small: modern LLMs handle most functional tests from a one-line definition",
+    "item text contains slurs and explicit hate"
+   ]
+  },
+  "contractnli": {
+   "verdict": "blocked here: download sits behind a clickwrap 'Terms and Conditions of Use' that I may not accept for the user; also thin guideline and no published agreement",
+   "checked": "2026-10-02",
+   "screen_rule": "owner-approved re-screen rule (2026-10-02): held-out 300 (test side, fixed seed 11); Jev F macro-F1 >= ~0.80 and S >= ~10 points lower",
+   "license": {
+    "text": "'Our dataset is released under CC BY 4.0' (dataset page); download section adds Hitachi America 'Terms and Conditions of Use' granting rights under CC BY 4.0, accepted 'By clicking DOWNLOAD'",
+    "url": "https://stanfordnlp.github.io/contract-nli/",
+    "verified": true
+   },
+   "paper": {
+    "title": "ContractNLI: A Dataset for Document-level Natural Language Inference for Contracts",
+    "url": "https://aclanthology.org/2021.findings-emnlp.164/",
+    "paper_license": "CC BY 4.0 (ACL Anthology)"
+   },
+   "dataset_url": "https://stanfordnlp.github.io/contract-nli/resources/contract-nli.zip",
+   "downloaded": [
+    {
+     "file": "contractnli/contractnli_findings2021.pdf",
+     "bytes": 1118938,
+     "sha256": "a60bfb31fb5d9b5aa7697715380e241a47704049913f0b8dd3c48401fd2bccd3"
+    }
+   ],
+   "not_downloaded": [
+    "contract-nli.zip (terms acceptance needed from the user; unzip into .data/rubric-screen/contractnli/)"
+   ],
+   "labels": [
+    "Entailment",
+    "Contradiction",
+    "NotMentioned"
+   ],
+   "documents": {
+    "train": 423,
+    "dev": 61,
+    "test": 123
+   },
+   "pairs_per_document": 17,
+   "split": {
+    "official": "train/dev/test by document",
+    "heldout": "300 from official test, label round-robin, seed 11; docs over 12k tokens (words x 1.3) dropped, not truncated; gold spans never used",
+    "counts": "not computed (data not downloaded)"
+   },
+   "guideline": {
+    "url": "https://aclanthology.org/2021.findings-emnlp.164.pdf",
+    "where": "Sections 2.1-2.2, 4 (negation by exception), Appendix A.1.1, Table 10",
+    "F_words": 667,
+    "F_tokens_est": 867,
+    "F_committed": true,
+    "note": "authors' example-oriented annotation guideline was not released (checked repo stanfordnlp/contract-nli: only LICENSE, site files, contract-nli.zip)"
+   },
+   "annotation_process": {
+    "annotators": "one primary annotator (computational linguistics researcher) plus 2 MTurk workers for span coverage; primary annotator set NLI labels",
+    "verified": true,
+    "source": "paper Appendix A.1.1"
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": null,
+    "verified_not_published_in_paper": true
+   },
+   "contamination": "public since 2021; LegalBench and other suites include it",
+   "flags_unverified": [
+    "zip layout (loader globs **/train.json and **/test.json per the documented JSON schema)",
+    "label counts and how many docs exceed 12k tokens (paper Table 2: train max 11,503 BERT subword tokens, so few if any)"
+   ]
+  },
+  "swda": {
+   "verdict": "usable (risk: F likely below 0.80; the manual itself calls sd/sv the main source of interlabeler error)",
+   "checked": "2026-10-02",
+   "screen_rule": "owner-approved re-screen rule (2026-10-02): held-out 300 (test side, fixed seed 11); Jev F macro-F1 >= ~0.80 and S >= ~10 points lower",
+   "license": {
+    "text": "HF dataset card (cgpotts/swda): 'This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.' cgpotts/swda GitHub LICENSE file is GPL v2 (covers the code)",
+    "url": "https://huggingface.co/datasets/cgpotts/swda",
+    "other_urls": [
+     "https://github.com/cgpotts/swda"
+    ],
+    "verified": true,
+    "caveat": "no licence statement found on the original web.stanford.edu/~jurafsky/ws97 page; transcripts derive from LDC Switchboard-1 (LDC97S62)"
+   },
+   "dataset_url": "https://github.com/cgpotts/swda/raw/master/swda.zip",
+   "downloaded": [
+    {
+     "file": "swda/swda.zip",
+     "bytes": 14449197,
+     "sha256": "0a08b8dd3992b446c8a920cacf7d246abe1e8a092a1ef7b5a2ed0352de9ccad2"
+    },
+    {
+     "file": "swda/LICENSE",
+     "bytes": 18026,
+     "sha256": "39db8f9acf036595a2566ea3fe560bc7bd65d8749f088e0f4a4ef2f8a6cb4b34"
+    },
+    {
+     "file": "swda/README.md",
+     "bytes": 6441,
+     "sha256": "08c1cb05199c591bc22c69d66596ed3a5a760378afc2a4ee31979187965f37b4"
+    },
+    {
+     "file": "swda/swda_reader.py",
+     "bytes": 18605,
+     "sha256": "aa81380546f3adc46a097f0f788f6595042baf8476e1a4f90262e8a2fa7bb317"
+    },
+    {
+     "file": "swda/hf_swda.py",
+     "bytes": 24535,
+     "sha256": "d022e4d4d7ea7b64881d818ab148c190767397c0328a77b36ce3b45e30bfb010"
+    },
+    {
+     "file": "swda/test_split.txt",
+     "bytes": 94,
+     "sha256": "ce74a2ea11c5b1f7e585c527094f3bcd565d8586a3bea4015aeb8b43ddbec8b9"
+    },
+    {
+     "file": "swda/train_split.txt",
+     "bytes": 5574,
+     "sha256": "b29fa1d73d1f4a0cb560844bf43084ce3507c35e11fc1fde940d946484643c8e"
+    },
+    {
+     "file": "swda/dev_split.txt",
+     "bytes": 1499,
+     "sha256": "557af363be3c6f56067660bc174bab8b9e7cdd1ab9bd39343b72098b32b05eda"
+    },
+    {
+     "file": "swda/manual.august1.html",
+     "bytes": 128281,
+     "sha256": "0cceae7059f7c2f0e862deb50c1a293c2b053b389f6fe36e3c0e7236148c4d56"
+    },
+    {
+     "file": "swda/stolcke2000.pdf",
+     "bytes": 361057,
+     "sha256": "3b1e08157a3695f195a6923fd77e65cb4b946ba79932066b23c9ba3d7129cca6"
+    }
+   ],
+   "labels": [
+    "sd",
+    "sv",
+    "b",
+    "aa",
+    "qy",
+    "qy^d",
+    "ba",
+    "%"
+   ],
+   "tag_mapping": "see prompts/swda/cuts.md (manual 1c clustering; '@' and double labels excluded)",
+   "split": {
+    "by_conversation": true,
+    "heldout": "300 utterances from the 19 standard test conversations (Stolcke et al. 2000), tag round-robin, seed 11",
+    "heldout_counts": {
+     "%": 38,
+     "aa": 38,
+     "b": 38,
+     "ba": 38,
+     "qy": 38,
+     "qy^d": 36,
+     "sd": 37,
+     "sv": 37
+    },
+    "pool_conversations": 1136,
+    "pool_utterances": 173687,
+    "pool_counts": {
+     "%": 15190,
+     "aa": 10924,
+     "b": 37533,
+     "ba": 4688,
+     "qy": 4643,
+     "qy^d": 1181,
+     "sd": 73821,
+     "sv": 25707
+    },
+    "note": "qy^d has only 36 eligible utterances in the test conversations, all used"
+   },
+   "guideline": {
+    "url": "https://web.stanford.edu/~jurafsky/ws97/manual.august1.html",
+    "words_full": 17386,
+    "tokens_est_full": 22602,
+    "F_words": 5985,
+    "F_tokens_est": 7780,
+    "F_committed": false,
+    "F_location": "var/rubric-screen/swda/F.txt",
+    "F_sha256": "60d9518d7dd22ddb4b9748baa428ed4759f25d79e20b807bda06ecf1f53033e4",
+    "given_to_annotators": true,
+    "evidence": "it is the coders manual used for labeling"
+   },
+   "annotation_process": {
+    "annotators": "eight linguistics graduate students at CU Boulder, three months in 1997",
+    "verified": true,
+    "source": "Stolcke et al. 2000, Section 2.2"
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": {
+     "percent": 0.84,
+     "kappa": 0.8,
+     "scope": "42-label clustered tag set"
+    },
+    "verified": true,
+    "source": "Stolcke et al. 2000 (arXiv cs/0006023) Section 2.2"
+   },
+   "contamination": "public since late 1990s; widely used DA benchmark",
+   "flags_unverified": [
+    "agreement is for 42 tags overall, not per tag or for this 8-tag subset",
+    "manual licence (none stated): F not committed"
+   ]
   }
  },
  "not_researched": [
   "Gab Hate Corpus fallback (outside the four assigned candidates)"
- ]
+ ],
+ "checked_rescreen": "2026-10-02"
 }

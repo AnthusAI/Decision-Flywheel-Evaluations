@@ -1,0 +1,1 @@
+Classify whether this short text is hate speech: hateful (attacks, insults or threatens people because of their group, such as race, religion, gender or sexuality) or non-hateful (anything else).

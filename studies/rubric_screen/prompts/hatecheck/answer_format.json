@@ -1,0 +1,21 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "hateful",
+  "non-hateful"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/hatecheck/S.txt",
+ "instructions_S_sha256": "218d00a49c99c38c0f0b4e4143d4babea8beaf326218eb67f163d608471e51fb",
+ "instructions_F_file": "studies/rubric_screen/prompts/hatecheck/F.txt",
+ "instructions_F_sha256": "178b40084f28bd46db4bbf17a65fb047b99223921e1da0a3115b87e263425e71",
+ "F_committed": true,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 29,
+ "F_words": 928,
+ "F_tokens_est": 1206,
+ "dataset_label_to_option": {
+  "hateful": "hateful",
+  "non-hateful": "non-hateful"
+ }
+}

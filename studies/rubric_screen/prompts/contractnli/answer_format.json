@@ -1,0 +1,23 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "Entailment",
+  "Contradiction",
+  "NotMentioned"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/contractnli/S.txt",
+ "instructions_S_sha256": "59985a63eafcddfe079ee53abb66f7dd00413abeb0c47a46b60b2c9c2ae8426b",
+ "instructions_F_file": "studies/rubric_screen/prompts/contractnli/F.txt",
+ "instructions_F_sha256": "9b22fd6fb26a37f0d858d2365912185e9bbc22d5b6ea22d60f96411e1fd9abb4",
+ "F_committed": true,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 34,
+ "F_words": 667,
+ "F_tokens_est": 867,
+ "dataset_label_to_option": {
+  "Entailment": "Entailment",
+  "Contradiction": "Contradiction",
+  "NotMentioned": "NotMentioned"
+ }
+}
