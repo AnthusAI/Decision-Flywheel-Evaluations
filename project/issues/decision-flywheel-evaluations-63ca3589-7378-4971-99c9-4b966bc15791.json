@@ -3,7 +3,7 @@
   "title": "L0: Owner confirms Amazon Reviews 2023 license/terms",
   "description": "## Owner decision needed\n\n**Do you accept the McAuley Lab \"Amazon Reviews 2023\" (Hugging Face `McAuley-Lab/Amazon-Reviews-2023`) license/terms for this internal study, and approve the download?** The dataset card asks only for citation; license is UNVERIFIED. Also: may we store Amazon Community Guidelines / customer-review help pages under `var/policy/raw/` (not redistributed; commit only sha256 + own-words summary)?\n\n## Scope\n\nRead-only check of the dataset card / terms and the guideline pages; summarize for the owner. No download until the owner says yes.\n\n## Definition of done\n\nOwner's answer recorded verbatim as a comment; this issue closed; step 1 (loader) data work unblocked. If the owner says no: stop and pick another domain (epic \"What result changes what we build\").\n\n## Cost\n\n$0.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -15,10 +15,18 @@
     "decision"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "128f8871-b8e2-4a24-96ed-7b31a5bc8d8e",
+      "author": "home",
+      "text": "Owner approved downloading a ~3,000-review research sample of Amazon Reviews 2023 (no stated license; citation requested), kept out of git (2026-10-02).",
+      "created_at": "2026-10-02T18:54:19.765601Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T18:52:46.288743Z",
-  "updated_at": "2026-10-02T18:52:46.288785Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T18:54:19.782615Z",
+  "closed_at": "2026-10-02T18:54:19.782567Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
@@ -26,5 +34,8 @@
   },
   "right_now_summary": null,
   "right_now_updated_at": null,
-  "custom": {}
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }
