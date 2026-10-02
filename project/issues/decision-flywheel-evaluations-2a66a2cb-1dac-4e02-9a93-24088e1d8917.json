@@ -3,7 +3,7 @@
   "title": "S6: Import cached zero-shot test answers with a hash-equality spec",
   "description": "## Purpose\n\nMake arm 0 free by reusing the cached Jev zero-shot answers.\n\n## Scope\n\nSeed holistic question byte-identical to the static study's (wording, `choice` type, criteria order); import rows from `.data/dev/emotion.scoreboard2.sqlite` (jev-1.13.0) with `AnswerCache.put_hashed`. Pool items still cost requests.\n\n## Specs (first, beside the module)\n\nseed question hash equals the cached rows' hash; import writes under the same keys; re-import is a no-op.\n\n## Reuse\n\n`AnswerCache.put_hashed`.\n\n## Definition of done\n\nHash-equality spec passes on the real cache (skipped cleanly if the cache is absent); import is idempotent. If hashes differ, record it (arm 0 then costs ~$0.60 more on the final slice).\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "a4987884-08de-4705-b452-1dce916298a8",
+      "author": "home",
+      "text": "Done in 9c6dd4b. Soundness verified offline: the static zero-shot request is {state:{labeled_examples:[],target:{text}}, questions:{'emotion': choice body, labels in order}}; all 2,000 recorded state fingerprints reproduce exactly (sha256 of that compact JSON). The harness differed (name 'Emotion', state {text}, no Emotion seed score existed), so Emotion corpus now uses score name 'emotion', a seed score with the study's exact question, and a zero-shot client wrapper sending the study's state shape (planted untouched). Importer unified_import.py wire-checks every item, refuses other model versions, is idempotent and text-free. Real file: 2,000 zero:0 cells, all test ids present, 2,000/2,000 wire matches, 0 mismatches. Request bound left unchanged (conservative; arm 0 was already 0 and A-c/F eval requests are new-question/list requests, not holistic). Pool items still paid live.",
+      "created_at": "2026-10-02T01:52:36.644149Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.656352Z",
-  "updated_at": "2026-10-02T01:16:56.814975Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T01:52:36.663333Z",
+  "closed_at": "2026-10-02T01:52:36.663302Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
