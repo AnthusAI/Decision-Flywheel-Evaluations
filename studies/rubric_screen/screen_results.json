@@ -1,0 +1,101 @@
+{
+ "edos": {
+  "n": 120,
+  "labels": [
+   "1. threats, plans to harm and incitement",
+   "2. derogation",
+   "3. animosity",
+   "4. prejudiced discussions"
+  ],
+  "gold_counts": {
+   "1. threats, plans to harm and incitement": 30,
+   "2. derogation": 30,
+   "3. animosity": 30,
+   "4. prejudiced discussions": 30
+  },
+  "tfidf_lr": {
+   "macro_f1": 0.415,
+   "accuracy": 0.425
+  },
+  "S": {
+   "answered": 120,
+   "macro_f1": 0.654,
+   "accuracy": 0.65
+  },
+  "F": {
+   "answered": 120,
+   "macro_f1": 0.658,
+   "accuracy": 0.675
+  },
+  "S+shots": {
+   "answered": 120,
+   "macro_f1": 0.612,
+   "accuracy": 0.6
+  }
+ },
+ "fomc": {
+  "n": 120,
+  "labels": [
+   "dovish",
+   "hawkish",
+   "neutral"
+  ],
+  "gold_counts": {
+   "dovish": 40,
+   "hawkish": 40,
+   "neutral": 40
+  },
+  "tfidf_lr": {
+   "macro_f1": 0.53,
+   "accuracy": 0.533
+  },
+  "S": {
+   "answered": 120,
+   "macro_f1": 0.613,
+   "accuracy": 0.617
+  },
+  "F": {
+   "answered": 120,
+   "macro_f1": 0.743,
+   "accuracy": 0.742
+  },
+  "S+shots": {
+   "answered": 120,
+   "macro_f1": 0.679,
+   "accuracy": 0.683
+  }
+ },
+ "cap_nyt": {
+  "n": 120,
+  "labels": [
+   "Macroeconomics",
+   "Labor and Employment",
+   "Social Welfare",
+   "Community Development and Housing Issues",
+   "Banking, Finance, and Domestic Commerce",
+   "Foreign Trade"
+  ],
+  "gold_counts": {
+   "Banking, Finance, and Domestic Commerce": 20,
+   "Community Development and Housing Issues": 20,
+   "Foreign Trade": 20,
+   "Labor and Employment": 20,
+   "Macroeconomics": 20,
+   "Social Welfare": 20
+  },
+  "tfidf_lr": {
+   "macro_f1": 0.619,
+   "accuracy": 0.608
+  },
+  "S": {
+   "answered": 120,
+   "macro_f1": 0.738,
+   "accuracy": 0.733
+  },
+  "F": {
+   "answered": 120,
+   "macro_f1": 0.738,
+   "accuracy": 0.733
+  }
+ }
+}

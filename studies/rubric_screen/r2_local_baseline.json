@@ -1,0 +1,42 @@
+{
+ "edos": {
+  "pool": 1500,
+  "test": 700,
+  "test_labels": {
+   "3. animosity": 242,
+   "2. derogation": 328,
+   "4. prejudiced discussions": 66,
+   "1. threats, plans to harm and incitement": 64
+  },
+  "tfidf_lr_macro_f1": 0.441,
+  "tfidf_lr_acc": 0.514,
+  "majority_acc": 0.469
+ },
+ "fomc": {
+  "pool": 1500,
+  "test": 496,
+  "test_labels": {
+   "dovish": 135,
+   "neutral": 247,
+   "hawkish": 114
+  },
+  "tfidf_lr_macro_f1": 0.574,
+  "tfidf_lr_acc": 0.601,
+  "majority_acc": 0.498
+ },
+ "cap_nyt": {
+  "pool": 1500,
+  "test": 700,
+  "test_labels": {
+   "5": 61,
+   "15": 252,
+   "1": 201,
+   "18": 56,
+   "14": 76,
+   "13": 54
+  },
+  "tfidf_lr_macro_f1": 0.69,
+  "tfidf_lr_acc": 0.731,
+  "majority_acc": 0.36
+ }
+}
