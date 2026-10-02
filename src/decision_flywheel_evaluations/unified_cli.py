@@ -177,7 +177,15 @@ def _comments(path: Optional[Path]) -> Optional[Dict[str, str]]:
     return {str(row["item_id"]): str(row["comment"]) for row in rows if row.get("comment")}
 
 
+def _require_corpus_ready(name: str, what: str) -> None:
+    try:
+        get_corpus(name).require_ready(what)
+    except NotImplementedError as error:
+        raise UsageError(str(error)) from None
+
+
 def run(args: argparse.Namespace) -> Dict:
+    _require_corpus_ready(args.corpus, "a flywheel run")
     arms = parse_arms(args.arms)
     eval_n = 600 if args.final else 100
     bound = upper_bound(args, arms)
@@ -239,9 +247,10 @@ def check_comment_gates(args: argparse.Namespace, needed: int) -> None:
 
 def comments(args: argparse.Namespace) -> Dict:
     """Comments for the first rounds x per-round labels of the seeded order; prints a text-free report."""
+    _require_corpus_ready(args.corpus, "comment generation")
     from . import unified_labeler as labeler
     from .unified_spend import SpendLedger
-    from .unified_splits import DEV_SLICE_SIZE, label_order
+    from .unified_splits import DEV_SLICE_SIZE
 
     if not args.live and (args.confirm or args.spend_ledger or args.max_calls is not None):
         raise UsageError("live-only options were given without --live; refusing to guess")
@@ -251,7 +260,7 @@ def comments(args: argparse.Namespace) -> Dict:
         check_comment_gates(args, 0)   # every static gate, before any data is read
     identity = unified_env.verify_clone(args.clone)
     splits = get_corpus(args.corpus).load(Path(identity.path) / "fixtures", dev_size=DEV_SLICE_SIZE)
-    order = label_order(splits.pool, args.seed)[:args.rounds * args.per_round]
+    order = get_corpus(args.corpus).label_order_fn(splits, args.seed)[:args.rounds * args.per_round]
     items = [labeler.LabelerItem(i, splits.items[i].text, splits.items[i].reference_label) for i in order]
     model = args.model or (labeler.DEFAULT_MODEL if (args.live or args.replay) else labeler.FAKE_MODEL)
     cache = labeler.CommentCache(args.cache)

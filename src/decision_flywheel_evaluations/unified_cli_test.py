@@ -195,6 +195,13 @@ def test_the_corpus_defaults_to_planted_for_runs_and_comments():
 
 def test_an_unregistered_corpus_is_rejected_by_the_parser(capsys):
     with pytest.raises(SystemExit):
-        parser().parse_args(["run", "--corpus", "emotion"])
-    assert "invalid choice: 'emotion'" in capsys.readouterr().err
+        parser().parse_args(["run", "--corpus", "nonesuch"])
+    assert "invalid choice: 'nonesuch'" in capsys.readouterr().err
 
+
+
+def test_selecting_the_emotion_corpus_on_a_run_or_comments_fails_with_a_clear_error(capsys):
+    assert unified_cli.main(["run", "--corpus", "emotion"]) == 2
+    assert "corpus 'emotion' cannot run a flywheel run yet" in capsys.readouterr().err
+    assert unified_cli.main(["comments", "--corpus", "emotion", "--out", "c.jsonl"]) == 2
+    assert "corpus 'emotion' cannot run comment generation yet" in capsys.readouterr().err

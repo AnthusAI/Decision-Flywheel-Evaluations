@@ -29,11 +29,11 @@ def test_a_corpus_is_frozen():
         PLANTED.labels = ("a", "b")
 
 
-def test_only_planted_is_registered_and_it_is_the_default():
-    assert CORPUS_CHOICES == ("planted",) and DEFAULT_CORPUS == "planted"
-    assert get_corpus("planted") is PLANTED and CORPORA == {"planted": PLANTED}
+def test_planted_and_emotion_are_registered_and_planted_is_the_default():
+    assert CORPUS_CHOICES == ("planted", "emotion") and DEFAULT_CORPUS == "planted"
+    assert get_corpus("planted") is PLANTED and set(CORPORA) == {"planted", "emotion"}
 
 
 def test_an_unknown_corpus_is_rejected_with_the_choices_named():
-    with pytest.raises(UnknownCorpus, match="unknown corpus 'emotion'.*planted"):
-        get_corpus("emotion")
+    with pytest.raises(UnknownCorpus, match="unknown corpus 'nonesuch'.*planted"):
+        get_corpus("nonesuch")

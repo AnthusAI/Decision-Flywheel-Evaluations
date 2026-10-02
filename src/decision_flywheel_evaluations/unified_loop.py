@@ -196,6 +196,7 @@ class RunConfig:
     embedding_cache: Optional[Path] = None         # arm D embedding: default run_dir/embeddings.jsonl
 
     def validate(self) -> None:
+        self.corpus.require_ready("a flywheel run")
         unknown = set(self.arms) - set(ARMS + FINAL_ONLY_ARMS)
         if unknown or not self.arms:
             raise HarnessError(f"unknown arms {sorted(unknown)}; choose from {ARMS + FINAL_ONLY_ARMS}")
@@ -415,7 +416,7 @@ class UnifiedFlywheel:
         self.task = self.corpus.task()
         self.splits = self.corpus.load(self.fixtures, dev_size=cfg.dev_size)
         self.slice_name, self.eval_ids = self.splits.evaluation_slice(final=cfg.final)
-        self.order = label_order(self.splits.pool, cfg.seed)
+        self.order = self.corpus.label_order_fn(self.splits, cfg.seed)
         self.batches = round_batches(self.order, rounds=cfg.rounds, per_round=cfg.per_round)
         self.labels = {i: self.splits.items[i].reference_label for i in self.splits.pool}
         self.ledger = ledger or SpendLedger(cfg.spend_ledger, cfg.request_ceiling, max_new=cfg.max_new_requests,
