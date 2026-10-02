@@ -107,6 +107,7 @@ from .unified_spend import (CountingAsyncClient, CountingSyncClient, SpendLedger
                             concurrency_slots)
 from .unified_budget import plan_feature_cap
 from .unified_corpus import PLANTED, Corpus
+from .unified_import import ZeroShotImportError, import_zero_shot
 from .unified_steering_prompt import original_procedure_sha256, steering_procedure, write_reworded_procedure
 from .unified_splits import (Splits, assert_labels_from_pool, assert_retrieval_pool_clean,
                              assert_target_excluded, fingerprint_ids, label_order, load_splits,
@@ -457,6 +458,9 @@ class UnifiedFlywheel:
             if cfg.replay:
                 engines = engines or replay_engines(cfg, self.ledger)
             engines = engines or offline_engines(cfg, self.splits, self.ledger, fake_core)
+        if self.corpus.zero_shot_client is not None:
+            # Send a zero-shot request in the shape the corpus's cached answers were collected under.
+            engines = replace(engines, zero_shot_factory=self.corpus.zero_shot_client(engines.zero_shot_factory))
         self.engines = engines
         self.run_dir = Path(cfg.run_dir)
         self._prepare_run_dir()
@@ -465,7 +469,8 @@ class UnifiedFlywheel:
         self.list_answers = ListAnswers(self.run_dir / "list-answers.jsonl", self.task,
                                         {i: item.text for i, item in self.splits.items.items()}, self.labels,
                                         self.engines.zero_shot_factory, concurrency=cfg.max_concurrency)
-        self.v1 = Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
+        self.v1 = self.corpus.seed_scorecard() or Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
+        self.zero_shot_import = self._import_cached_zero_shot()
         self.events: List[Dict[str, Any]] = []
         self.results: Dict[int, Dict[str, List[ItemResult]]] = {}
         self.fewshot_diagnostics: Dict[int, Dict[str, Any]] = {}
@@ -489,6 +494,8 @@ class UnifiedFlywheel:
 
     def _shared_cache(self) -> AnswerCache:
         path = self.run_dir / "answers.jsonl"
+        if not path.exists() and self.corpus.seed_score is not None:
+            path.touch()   # the fixtures' answers belong to the planted corpus; this corpus seeds its own
         if not path.exists():
             reference = Scorecard.from_yaml((self.fixtures / "scorecards" / "reference_full.yaml").read_text())
             staging = AnswerCache(path.with_suffix(".staging"))
@@ -508,11 +515,39 @@ class UnifiedFlywheel:
         # One AnswerCache object for every arm: answers are keyed per question body, so arms
         # that ask the same question share one answer (and one request) instead of two.
         workspace._cache = self.cache
-        seed = Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
-        workspace.commit_scorecard(seed, kind="seed", provenance={"source": "fixtures/v1.yaml"})
+        if self.corpus.seed_score is not None:
+            workspace.commit_scorecard(self.corpus.seed_scorecard(), kind="seed",
+                                       provenance={"source": f"corpus:{self.corpus.name}"})
+        else:
+            seed = Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
+            workspace.commit_scorecard(seed, kind="seed", provenance={"source": "fixtures/v1.yaml"})
         return workspace
 
     # ---- answers and rows ----------------------------------------------------------------
+
+    def _import_cached_zero_shot(self) -> Optional[Dict[str, Any]]:
+        """Seed the answer cache with the corpus's already-paid zero-shot answers for the evaluation slices.
+
+        Only against the real engine's identity (a live run or its replay), never next to the offline fake.
+        Sends nothing. The import is wire-checked item by item (see ``unified_import``); an item whose
+        recorded request differs from what this harness would send is NOT imported, and that is an error.
+        """
+        path = self.corpus.cached_zero_shot
+        if path is None or self.engines.mode != "live":
+            return None
+        path = path if path.is_absolute() else Path(__file__).resolve().parents[2] / path
+        if not path.is_file():
+            return {"source": "absent", "imported": 0}
+        holistic = self.v1.questions()[self.corpus.score_name]
+        ids = sorted(set(self.splits.dev100) | set(self.splits.paper600))
+        report = import_zero_shot(
+            self.cache, path, name=self.corpus.score_name, question=holistic, item_ids=ids,
+            expected_model=self.cfg.provider_model, state_fn=self.corpus.zero_shot_state,
+            texts={i: self.splits.items[i].text for i in ids})
+        if report.wire_mismatches:
+            raise HarnessError(f"{report.wire_mismatches} cached zero-shot answers were collected under a different "
+                               "request than this harness sends; refusing to reuse them")
+        return {"source": str(self.corpus.cached_zero_shot), **report.as_dict()}
 
     def _jev_item(self, item_id: str) -> JevItem:
         return JevItem(id=item_id, text=self.splits.items[item_id].text)
@@ -1195,6 +1230,8 @@ class UnifiedFlywheel:
             "bundles": self.bundles,
             "requests": self.ledger.summary(),
         }
+        if self.zero_shot_import is not None:    # planted summaries gain no key
+            summary["zero_shot_import"] = self.zero_shot_import
         if self.corpus.reword_steering_prompt:   # planted summaries gain no key
             _, sha = write_reworded_procedure(self.corpus, self.cfg.clone)
             summary["steering_prompt"] = {"sha256": sha, "source_sha256": original_procedure_sha256(self.cfg.clone),

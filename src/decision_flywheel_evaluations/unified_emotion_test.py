@@ -125,7 +125,7 @@ def test_the_emotion_corpus_is_registered_with_its_labels_and_the_stratified_ord
     corpus = get_corpus("emotion")
     assert CORPORA["emotion"] is corpus and corpus.labels == EMOTION.labels == EMOTION_LABELS
     assert corpus.label_order_fn is emotion_label_order
-    assert corpus.score_name == "Emotion"
+    assert corpus.score_name == "emotion"   # the static study's task name (S6: wire-identical zero-shot request)
     assert corpus.instructions.startswith("Choose exactly one emotion label.")
     assert tuple(corpus.task().labels) == EMOTION_LABELS
 

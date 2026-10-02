@@ -43,6 +43,56 @@ EMOTION_INSTRUCTIONS = (
     "Choose exactly one emotion label. Use labeled_examples as examples of the intended categories. "
     "Classify only target.text; do not classify the examples themselves.")
 
+# The static study's DecisionTask name, which is also the wire name of its one question
+# (``questions={"emotion": ...}``). The harness's holistic seed question uses the same name, so the
+# zero-shot request it sends is the one the cached answers were collected under.
+EMOTION_TASK_NAME = "emotion"
+EMOTION_CACHED_ZERO_SHOT = Path(".data") / "dev" / "emotion.scoreboard2.sqlite"
+
+
+def study_zero_shot_state(text: str) -> dict:
+    """The state the static study sent for a zero-shot item: core ``JevAdapter.decide`` with an empty context."""
+    return {"labeled_examples": [], "target": {"text": text}}
+
+
+def emotion_seed_score_config() -> dict:
+    """The Emotion seed score: Jev's own holistic answer, nothing else (the analogue of ``fixtures/v1.yaml``).
+
+    The question is exactly the static study's: type ``choice``, its instructions, and the six options in
+    label order. The hand-written head reproduces Jev's own distribution: with centered-log-ratio features
+    for every label but the last, the logit of label c is ``clr_c`` and the last label's logit is minus the
+    sum of the others (the clr sums to zero), so the softmax equals the clipped Jev distribution.
+    """
+    features = [f"self.holistic.clr.{label}" for label in EMOTION_LABELS[:-1]]
+    weights = {label: {feature: 1.0} for label, feature in zip(EMOTION_LABELS[:-1], features)}
+    weights[EMOTION_LABELS[-1]] = {feature: -1.0 for feature in features}
+    return {"name": EMOTION_TASK_NAME, "key": EMOTION_TASK_NAME, "question_type": "choice",
+            "instructions": EMOTION_INSTRUCTIONS, "criteria": {label: None for label in EMOTION_LABELS},
+            "decision": {"model": "multinomial_logistic", "classes": list(EMOTION_LABELS), "features": features,
+                         "parameters": {"weights": weights}}}
+
+
+class StudyShapedZeroShotClient:
+    """Wraps an async ``system_one`` client so a zero-shot ``{"text": t}`` state goes out in the static study's shape.
+
+    ``JevSession`` (pinned, read-only) always sends ``state={"text": text}``; the static study sent
+    ``{"labeled_examples": [], "target": {"text": text}}``. States that already carry a target (the
+    fixed-list and few-shot requests) pass through unchanged.
+    """
+
+    def __init__(self, inner):
+        self.inner = inner
+
+    async def system_one(self, *, state, questions):
+        if "target" not in state and set(state) == {"text"}:
+            state = study_zero_shot_state(state["text"])
+        return await self.inner.system_one(state=state, questions=questions)
+
+
+def study_shaped_factory(factory):
+    return lambda: StudyShapedZeroShotClient(factory())
+
+
 Row = Tuple[str, str, str]   # (id, reference label, text)
 
 

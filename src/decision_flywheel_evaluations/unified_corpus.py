@@ -25,7 +25,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
 
-from .unified_emotion import EMOTION_INSTRUCTIONS, EMOTION_LABELS, emotion_label_order, load_emotion_corpus
+from .unified_emotion import (EMOTION_CACHED_ZERO_SHOT, EMOTION_INSTRUCTIONS, EMOTION_LABELS, EMOTION_TASK_NAME,
+                              emotion_label_order, emotion_seed_score_config, load_emotion_corpus,
+                              study_shaped_factory, study_zero_shot_state)
 from .unified_splits import Splits, label_order, load_splits
 
 
@@ -61,6 +63,12 @@ class Corpus:
     reword_steering_prompt: bool = False
     steer_examples_phrase: str = "the examples of each label"   # replaces "the positive and negative examples"
     steer_subject_phrase: str = "the labeled property"          # replaces "sentiment" in "not about sentiment"
+    # Reusing answers a static study already paid for (see ``unified_import``). All four are None for PLANTED,
+    # which keeps the pinned fixture scorecard, the plain ``{"text": t}`` zero-shot state and no import.
+    seed_score: Optional[Callable[[], Dict[str, Any]]] = None   # the seed score's config, in place of fixtures/v1.yaml
+    zero_shot_state: Optional[Callable[[str], Dict[str, Any]]] = None   # the state a zero-shot request carries
+    zero_shot_client: Optional[Callable[[Callable], Callable]] = None   # wraps the zero-shot client factory to send that state
+    cached_zero_shot: Optional[Path] = None   # repo-relative sqlite of the static study's zero-shot answers
 
     def __post_init__(self) -> None:
         if self.knn_share_feature is not None and self.knn_share_feature != f"knn.share.{self.labels[0]}":
@@ -112,6 +120,14 @@ class Corpus:
 
         return DecisionTask(self.score_name, self.labels, self.instructions)
 
+    def seed_scorecard(self) -> Any:
+        """The scorecard the run starts from when the corpus defines its own seed score (else None)."""
+        if self.seed_score is None:
+            return None
+        from jev_flywheel.scorecard import Scorecard
+
+        return Scorecard.from_config({"name": self.score_name, "version": 1, "scores": [self.seed_score()]})
+
     def load(self, fixtures: Path, *, dev_size: int) -> Splits:
         return self.load_splits(fixtures, dev_size=dev_size)
 
@@ -145,7 +161,7 @@ EMOTION_FAKE_JEV_CUES = (
 EMOTION_CORPUS = Corpus(
     name="emotion",
     labels=EMOTION_LABELS,
-    score_name="Emotion",
+    score_name=EMOTION_TASK_NAME,   # "emotion": the static study's task name, so its zero-shot requests are reproducible
     instructions=EMOTION_INSTRUCTIONS,
     fewshot_key="fewshot", fewshot_wire="emotion.fewshot", fewshot_feature_prefix="fewshot.clr",
     knn_share_feature="knn.share.sadness",
@@ -155,6 +171,8 @@ EMOTION_CORPUS = Corpus(
     unsupported_reason="the explanation labeler is not built yet (plan step S5)",
     fake_jev_cues=EMOTION_FAKE_JEV_CUES,
     reword_steering_prompt=True, steer_examples_phrase="the examples of each label", steer_subject_phrase="the emotion",
+    seed_score=emotion_seed_score_config, zero_shot_state=study_zero_shot_state,
+    zero_shot_client=study_shaped_factory, cached_zero_shot=EMOTION_CACHED_ZERO_SHOT,
 )
 
 CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS}
