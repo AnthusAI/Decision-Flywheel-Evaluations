@@ -186,3 +186,15 @@ def test_arm_d_refuses_before_loading_anything_when_misused(nothing_may_load):
 def test_the_retriever_must_be_a_known_variant():
     with pytest.raises(SystemExit):
         parser().parse_args(["run", "--arms", "D", "--final", "--retriever", "tfidf"])
+
+
+def test_the_corpus_defaults_to_planted_for_runs_and_comments():
+    assert parser().parse_args(["run"]).corpus == "planted"
+    assert parser().parse_args(["comments", "--out", "c.jsonl"]).corpus == "planted"
+
+
+def test_an_unregistered_corpus_is_rejected_by_the_parser(capsys):
+    with pytest.raises(SystemExit):
+        parser().parse_args(["run", "--corpus", "emotion"])
+    assert "invalid choice: 'emotion'" in capsys.readouterr().err
+

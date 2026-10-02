@@ -81,7 +81,6 @@ from decision_flywheel.bundle import ClassifierBundle, load_bundle
 from decision_flywheel.budget import ContextBudget, build_context_plan
 from decision_flywheel.context import FixedExampleList, PerLabelLexicalRetrieval
 from decision_flywheel.example_list import improve_example_list, plan_example_list_round
-from decision_flywheel.models import DecisionTask
 from decision_flywheel.models import Item as DFItem
 from decision_flywheel.models import LabeledItem
 from jev_flywheel.answers import AnswerCache, import_answers_jsonl, question_hash
@@ -102,11 +101,12 @@ from .unified_bundles import BUNDLE_ARMS, CachedJevClient, ScoreRubric, bundle_d
 from .unified_fake_jev import FAKE_MODEL, FakeJevAsync, FakeJevCore, FakeJevSync, text_key
 from .unified_lists import ListAnswers, ListModel, random_list
 from .unified_retrieval import D_ARM, RETRIEVERS
-from .unified_knn import (KNN_FEATURES, PoolEntry, context_fingerprint, knn_policy_fingerprint,
+from .unified_knn import (PoolEntry, context_fingerprint, knn_policy_fingerprint,
                           knn_rows, retrieval_policy_fingerprint)
 from .unified_spend import (CountingAsyncClient, CountingSyncClient, SpendLedger,
                             concurrency_slots)
-from .unified_splits import (LABELS, Splits, assert_labels_from_pool, assert_retrieval_pool_clean,
+from .unified_corpus import PLANTED, Corpus
+from .unified_splits import (Splits, assert_labels_from_pool, assert_retrieval_pool_clean,
                              assert_target_excluded, fingerprint_ids, label_order, load_splits,
                              round_batches)
 from .unified_stats import ItemResult, contrasts, summarize
@@ -121,18 +121,20 @@ COMMENT_ARMS = frozenset({"A-c", "A-c+F"})
 LIST_ARMS = frozenset({"F", "F-rand", "A-c+F"})
 FEWSHOT_ARMS = frozenset({"B", "A+B"})
 KNN_ARMS = frozenset({"B-local"})
-SCORE_NAME = "Sentiment"
+# The planted corpus's values, kept under their old names for callers and specs that predate
+# ``unified_corpus``; a run reads its own ``cfg.corpus`` instead.
+SCORE_NAME = PLANTED.score_name
 PLAN_REQUEST_CEILING = 9500
 DEFAULT_ANALYST_PROVIDER = "openai"
 DEFAULT_ANALYST_MODEL = "gpt-6-luna"
-TASK = DecisionTask(SCORE_NAME, LABELS, "What is the overall sentiment of this text?")
-FEWSHOT_KEY = "fewshot"
-FEWSHOT_WIRE = "sentiment.fewshot"
-FEWSHOT_FEATURE = "fewshot.clr.positive"
+TASK = PLANTED.task()
+FEWSHOT_KEY = PLANTED.fewshot_key
+FEWSHOT_WIRE = PLANTED.fewshot_wire
+FEWSHOT_FEATURE = PLANTED.fewshot_feature
 FEWSHOT_PER_LABEL = 4
 DISPLAY_ORDER = "canonical"
 FEWSHOT_QUESTION = build_question(question_type="choice", instructions=TASK.instructions,
-                                  criteria={label: None for label in LABELS})
+                                  criteria={label: None for label in PLANTED.labels})
 
 # Offline analyst replies. Round 1 replays the recorded Kimi-K3 reply that Jev-Flywheel's
 # simulated-labeler recording promoted (it proposes `topic_domain`); later rounds use fixed
@@ -167,6 +169,7 @@ class RunConfig:
     live: bool = False
     replay: bool = False
     dev_size: int = 100
+    corpus: Corpus = PLANTED
     request_ceiling: int = PLAN_REQUEST_CEILING
     max_new_requests: Optional[int] = None
     spend_ledger: Optional[Path] = None
@@ -228,7 +231,8 @@ def offline_engines(cfg: RunConfig, splits: Splits, ledger: SpendLedger,
     """The fake Jev behind the same counting clients a live run uses."""
     if core is None:
         planted = {text_key(item.text): item.reference_label for item in splits.items.values()}
-        core = FakeJevCore(planted=planted, strength=cfg.fake_signal_strength)
+        core = FakeJevCore(planted=planted, positive_label=cfg.corpus.fake_jev_positive_label,
+                           strength=cfg.fake_signal_strength)
     slots = concurrency_slots(cfg.max_concurrency)
     adapter = JevAdapter(CountingSyncClient(lambda: FakeJevSync(core), ledger, slots),
                          configuration=JevConfiguration(model=FAKE_MODEL))
@@ -293,20 +297,20 @@ def live_engines(cfg: RunConfig, ledger: SpendLedger) -> Engines:  # pragma: no 
 
 # ---- heads and features ---------------------------------------------------------------------
 
-def zero_shot_questions(score: Score) -> Dict[str, Dict[str, Any]]:
+def zero_shot_questions(score: Score, corpus: Corpus = PLANTED) -> Dict[str, Dict[str, Any]]:
     """The questions Jev answers zero-shot for this score: everything but the few-shot element."""
-    return {name: q for name, q in score.questions().items() if name != FEWSHOT_WIRE}
+    return {name: q for name, q in score.questions().items() if name != corpus.fewshot_wire}
 
 
-def uses_fewshot(score: Score) -> bool:
-    return any(spec.key == FEWSHOT_KEY for spec in score.elements)
+def uses_fewshot(score: Score, corpus: Corpus = PLANTED) -> bool:
+    return any(spec.key == corpus.fewshot_key for spec in score.elements)
 
 
 def uses_knn(score: Score) -> bool:
     return bool(score.decision) and any(f.startswith("knn.") for f in score.decision.features)
 
 
-def candidate_template(base: Score, *, fewshot: bool, knn: bool) -> Score:
+def candidate_template(base: Score, *, fewshot: bool, knn: bool, corpus: Corpus = PLANTED) -> Score:
     """The arm's candidate head: the base score's features plus the arm's injected ones.
 
     Built from config without ``validate``: ``knn.*`` names do not refer to a Jev element, so
@@ -315,13 +319,13 @@ def candidate_template(base: Score, *, fewshot: bool, knn: bool) -> Score:
     """
     template = Score.from_config(base.to_config())
     features = [f for f in template.decision.features
-                if not f.startswith("knn.") and f != FEWSHOT_FEATURE]
+                if not f.startswith("knn.") and f != corpus.fewshot_feature]
     if fewshot:
-        template.elements = [e for e in template.elements if e.key != FEWSHOT_KEY] + [
-            ElementSpec(FEWSHOT_KEY, "choice", TASK.instructions, {label: None for label in LABELS})]
-        features.append(FEWSHOT_FEATURE)
+        template.elements = [e for e in template.elements if e.key != corpus.fewshot_key] + [
+            ElementSpec(corpus.fewshot_key, "choice", corpus.instructions, {label: None for label in corpus.labels})]
+        features.append(corpus.fewshot_feature)
     if knn:
-        features.extend(KNN_FEATURES)
+        features.extend(corpus.knn_features)
     decision = template.decision
     decision.features = features
     decision.model, decision.weights = "multinomial_logistic", {}
@@ -407,7 +411,9 @@ class UnifiedFlywheel:
         self.cfg = cfg
         self.fixtures = Path(cfg.clone) / "fixtures"
         self.decision_flywheel = unified_env.ensure_decision_flywheel()
-        self.splits = load_splits(self.fixtures, dev_size=cfg.dev_size)
+        self.corpus = cfg.corpus
+        self.task = self.corpus.task()
+        self.splits = self.corpus.load(self.fixtures, dev_size=cfg.dev_size)
         self.slice_name, self.eval_ids = self.splits.evaluation_slice(final=cfg.final)
         self.order = label_order(self.splits.pool, cfg.seed)
         self.batches = round_batches(self.order, rounds=cfg.rounds, per_round=cfg.per_round)
@@ -429,7 +435,7 @@ class UnifiedFlywheel:
         self._prepare_run_dir()
         self.cache = self._shared_cache()
         self.fewshot_cache = AnswerCache(self.run_dir / "fewshot-answers.jsonl")
-        self.list_answers = ListAnswers(self.run_dir / "list-answers.jsonl", TASK,
+        self.list_answers = ListAnswers(self.run_dir / "list-answers.jsonl", self.task,
                                         {i: item.text for i, item in self.splits.items.items()}, self.labels,
                                         self.engines.zero_shot_factory, concurrency=cfg.max_concurrency)
         self.v1 = Scorecard.from_yaml((self.fixtures / "scorecards" / "v1.yaml").read_text())
@@ -496,12 +502,14 @@ class UnifiedFlywheel:
 
     def _fewshot_context(self, labeled: Sequence[str]) -> str:
         return context_fingerprint(retrieval_policy_fingerprint(), labeled, per_label=FEWSHOT_PER_LABEL,
-                                   display_order=DISPLAY_ORDER, task=TASK.fingerprint,
+                                   display_order=DISPLAY_ORDER, task=self.task.fingerprint,
                                    engine=self.engines.identity)
 
-    @staticmethod
-    def _fewshot_key(context: str) -> Dict[str, Any]:
-        return {**FEWSHOT_QUESTION, "context_fingerprint": context}
+    def _fewshot_key(self, context: str) -> Dict[str, Any]:
+        question = FEWSHOT_QUESTION if self.corpus is PLANTED else build_question(
+            question_type="choice", instructions=self.corpus.instructions,
+            criteria={label: None for label in self.corpus.labels})
+        return {**question, "context_fingerprint": context}
 
     def _ensure_fewshot(self, targets: Sequence[str], labeled: Sequence[str]) -> Dict[str, int]:
         assert_labels_from_pool(labeled, self.splits)
@@ -509,7 +517,7 @@ class UnifiedFlywheel:
         context = self._fewshot_context(labeled)
         key = self._fewshot_key(context)
         qhash = question_hash(key)
-        missing = [t for t in targets if self.fewshot_cache.get(t, FEWSHOT_WIRE, key) is None]
+        missing = [t for t in targets if self.fewshot_cache.get(t, self.corpus.fewshot_wire, key) is None]
         if not missing:
             return {"requests": 0, "failures": 0}
         candidates = [LabeledItem(DFItem(i, {"text": self.splits.items[i].text}), self.labels[i])
@@ -520,14 +528,14 @@ class UnifiedFlywheel:
         async def one(target_id: str) -> None:
             nonlocal failures
             target = DFItem(target_id, {"text": self.splits.items[target_id].text})
-            plan = build_context_plan(TASK, target, candidates, policy,
+            plan = build_context_plan(self.task, target, candidates, policy,
                                       budget=ContextBudget(per_label=FEWSHOT_PER_LABEL),
                                       display_order=DISPLAY_ORDER, order_seed=0,
-                                      presentation_label_order=TASK.labels)
+                                      presentation_label_order=self.task.labels)
             assert_target_excluded(target_id, plan.example_ids)
             assert_retrieval_pool_clean(plan.example_ids, self.splits)
             try:
-                result = await self.engines.fewshot_adapter.decide(TASK, target, plan.examples)
+                result = await self.engines.fewshot_adapter.decide(self.task, target, plan.examples)
             except Exception:  # noqa: BLE001 - counted by the ledger; a gap is reported, not fatal
                 failures += 1
                 return
@@ -535,7 +543,7 @@ class UnifiedFlywheel:
             answer = {"type": "choice", "choice": result.label, "probabilities": probabilities,
                       "confidence": result.confidence if result.confidence is not None
                       else probabilities.get(result.label)}
-            self.fewshot_cache.put_hashed(target_id, FEWSHOT_WIRE, qhash, answer, result.model)
+            self.fewshot_cache.put_hashed(target_id, self.corpus.fewshot_wire, qhash, answer, result.model)
 
         async def all_of_them() -> None:
             await asyncio.gather(*(one(t) for t in missing))
@@ -545,20 +553,20 @@ class UnifiedFlywheel:
         return {"requests": len(missing), "failures": failures}
 
     def _answers(self, ids: Sequence[str], score: Score, labeled: Sequence[str]) -> Dict[str, Dict[str, Any]]:
-        answers = self.cache.bulk_partial_answers(ids, zero_shot_questions(score))
-        if uses_fewshot(score):
+        answers = self.cache.bulk_partial_answers(ids, zero_shot_questions(score, self.corpus))
+        if uses_fewshot(score, self.corpus):
             key = self._fewshot_key(self._fewshot_context(labeled))
             for item_id in ids:
-                found = self.fewshot_cache.get(item_id, FEWSHOT_WIRE, key)
+                found = self.fewshot_cache.get(item_id, self.corpus.fewshot_wire, key)
                 if found is not None:
-                    answers[item_id][FEWSHOT_WIRE] = found
+                    answers[item_id][self.corpus.fewshot_wire] = found
         return answers
 
     def _knn(self, targets: Sequence[str], pool_ids: Sequence[str]) -> Dict[str, Dict[str, float]]:
         assert_retrieval_pool_clean(pool_ids, self.splits)
         pool = [PoolEntry(i, self.splits.items[i].text, self.labels[i]) for i in sorted(pool_ids)]
         return knn_rows({t: self.splits.items[t].text for t in targets}, pool,
-                        k=self.cfg.knn_k, top=self.cfg.knn_top)
+                        k=self.cfg.knn_k, top=self.cfg.knn_top, corpus=self.corpus)
 
     def _rows(self, score: Score, ids: Sequence[str], labeled: Sequence[str],
               knn_pool: Optional[Sequence[str]] = None) -> Dict[str, Dict[str, float]]:
@@ -596,7 +604,7 @@ class UnifiedFlywheel:
 
     def _gate(self, arm: str, round_number: int, template: Score, incumbent: Score,
               labeled: Sequence[str]) -> Tuple[Score, Dict[str, Any], Optional[Any]]:
-        context = self._fewshot_context(labeled) if uses_fewshot(template) else "zero-shot"
+        context = self._fewshot_context(labeled) if uses_fewshot(template, self.corpus) else "zero-shot"
         rows = self._rows(template, labeled, labeled)
         training = training_set(template, labeled, self.labels, rows, context)
         record: Dict[str, Any] = {"arm": arm, "round": round_number, "features": list(template.decision.features),
@@ -625,7 +633,7 @@ class UnifiedFlywheel:
             "candidate_fit_head_oof": _summary_dict(result.metrics),
             "incumbent_served": _summary_dict(incumbent_summary),
             "pool_features_per_fold": uses_knn(template),
-            "fewshot_features_leave_one_out_once": uses_fewshot(template),
+            "fewshot_features_leave_one_out_once": uses_fewshot(template, self.corpus),
         })
         if comparison.promote:
             return head_from_fit(template, result), record, result
@@ -638,7 +646,7 @@ class UnifiedFlywheel:
                          with_comments: bool = False) -> int:
         """Feedback for the new labels; returns how many carried a labeler comment."""
         card = workspace.scorecard()
-        score = card.score(SCORE_NAME)
+        score = card.score(self.corpus.score_name)
         questions = card.questions()
         commented = 0
         for item_id in batch:
@@ -651,10 +659,10 @@ class UnifiedFlywheel:
             comment = (self.cfg.comments or {}).get(item_id) if with_comments else None
             commented += int(bool(comment))
             workspace.add_feedback(FeedbackItem(
-                id=f"fb-{item_id}-s{self.cfg.seed}-r{round_number}", item_id=item_id, score_name=SCORE_NAME,
+                id=f"fb-{item_id}-s{self.cfg.seed}-r{round_number}", item_id=item_id, score_name=self.corpus.score_name,
                 initial_answer_value=value, final_answer_value=label, edit_comment_value=comment or None,
                 is_agreement=agrees(value, label), editor_name="scripted-labeler",
-                cache_key=f"{item_id}:{SCORE_NAME}:v{workspace.version}", label_source=LABEL_SOURCE_FINAL,
+                cache_key=f"{item_id}:{self.corpus.score_name}:v{workspace.version}", label_source=LABEL_SOURCE_FINAL,
                 metadata={"propensity": 1.0, "selection_policy": "seeded-uniform-order",
                           "shown_confidence": confidence, "round": round_number}))
         return commented
@@ -691,12 +699,12 @@ class UnifiedFlywheel:
                 raise HarnessError(f"replay has no recorded analyst reply for arm {arm} round {round_number}")
         else:
             reply, source = self._offline_reply(round_number), "offline-fixed"
-        before = workspace.scorecard().score(SCORE_NAME)
+        before = workspace.scorecard().score(self.corpus.score_name)
         if self.cfg.analyst_provider == "openai":
             from .unified_openai import allow_gpt6_token_parameter
             allow_gpt6_token_parameter()
         outcome = run_steering(
-            workspace, SCORE_NAME, provider=self.cfg.analyst_provider, model=self.cfg.analyst_model,
+            workspace, self.corpus.score_name, provider=self.cfg.analyst_provider, model=self.cfg.analyst_model,
             allow_spend=True, client_factory=self.engines.zero_shot_factory,
             # The scripted human approves what the gate already passed; spend is bounded by
             # the ledger's ceiling, not by the procedure's price prompt.
@@ -710,7 +718,7 @@ class UnifiedFlywheel:
                 handle.write(json.dumps({"arm": arm, "seed": self.cfg.seed, "round": round_number,
                                          "provider": self.cfg.analyst_provider, "model": self.cfg.analyst_model,
                                          "reply": raw}) + "\n")
-        after = workspace.scorecard().score(SCORE_NAME)
+        after = workspace.scorecard().score(self.corpus.score_name)
         comments = [c for i, c in sorted((self.cfg.comments or {}).items())
                     if arm in COMMENT_ARMS and i in self._labeled_so_far] if self.cfg.comments else []
         cited = sorted({hashlib.sha256(c.encode()).hexdigest() for c in comments
@@ -743,7 +751,7 @@ class UnifiedFlywheel:
             return self.run_final()
         arms = [a for a in ARMS if a in self.cfg.arms]   # B before A+B: A+B reuses B's few-shot cache
         states: Dict[str, ArmState] = {}
-        v1_score = self.v1.score(SCORE_NAME)
+        v1_score = self.v1.score(self.corpus.score_name)
         for arm in arms:
             workspace = self._workspace(arm) if arm in WORKSPACE_ARMS else None
             states[arm] = ArmState(arm, Score.from_config(v1_score.to_config()), workspace)
@@ -787,14 +795,14 @@ class UnifiedFlywheel:
                                                     with_comments=arm in COMMENT_ARMS)
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
-            ws_score = workspace.scorecard().score(SCORE_NAME)
-            ws_head, ws_gate, ws_fit = self._gate(arm, round_number, candidate_template(ws_score, fewshot=False, knn=False),
+            ws_score = workspace.scorecard().score(self.corpus.score_name)
+            ws_head, ws_gate, ws_fit = self._gate(arm, round_number, candidate_template(ws_score, fewshot=False, knn=False, corpus=self.corpus),
                                                   ws_score, labeled)
             if ws_fit is not None:
-                workspace.commit_scorecard(with_fit(workspace.scorecard(), SCORE_NAME, ws_fit), kind="fit",
+                workspace.commit_scorecard(with_fit(workspace.scorecard(), self.corpus.score_name, ws_fit), kind="fit",
                                            provenance=ws_fit.provenance)
             out["workspace_gate"] = ws_gate
-            ws_score = workspace.scorecard().score(SCORE_NAME)
+            ws_score = workspace.scorecard().score(self.corpus.score_name)
             self._step(arm, round_number, "zero-shot", "fill-evaluation-slice",
                        lambda: self._fill_zero_shot(self.eval_ids, workspace.scorecard().questions()))
             if arm in ("A", "A-c"):
@@ -806,8 +814,8 @@ class UnifiedFlywheel:
             if round_number not in self.fewshot_diagnostics:
                 self.fewshot_diagnostics[round_number] = self._fewshot_diagnostic(labeled)
         if arm not in ("A", "A-c"):
-            base = state.workspace.scorecard().score(SCORE_NAME) if state.workspace else self.v1.score(SCORE_NAME)
-            template = candidate_template(base, fewshot=arm in FEWSHOT_ARMS, knn=arm in KNN_ARMS)
+            base = state.workspace.scorecard().score(self.corpus.score_name) if state.workspace else self.v1.score(self.corpus.score_name)
+            template = candidate_template(base, fewshot=arm in FEWSHOT_ARMS, knn=arm in KNN_ARMS, corpus=self.corpus)
             state.head, gate, _ = self._gate(arm, round_number, template, state.head, labeled)
             out["gate"] = gate
         out["head_features"] = list(state.head.decision.features)
@@ -845,16 +853,16 @@ class UnifiedFlywheel:
         rows = self._labeled_rows(labeled)
         settings = dict(incumbent=state.example_list, hard_demo_ids=hard_demos, per_label=self.cfg.list_per_label,
                         seed=round_number, dev_max=self.cfg.list_dev_max)
-        plan = plan_example_list_round(TASK, rows, **settings)
+        plan = plan_example_list_round(self.task, rows, **settings)
         development = [row.item.id for row in plan.development]
         for _, fixed in plan.trials:   # prefetch concurrently; the search then reads the cache
             self._list_fill(fixed, development, questions)
-        model = ListModel(self.list_answers, questions, SCORE_NAME, [fixed for _, fixed in plan.trials],
+        model = ListModel(self.list_answers, questions, self.corpus.score_name, [fixed for _, fixed in plan.trials],
                           self.engines.identity)
         result = asyncio.run(improve_example_list(
-            TASK, rows, model, max_model_calls=len(plan.trials) * len(development),
+            self.task, rows, model, max_model_calls=len(plan.trials) * len(development),
             min_brier_gain=self.cfg.min_brier_gain, protected_ids=self.splits.test,
-            presentation_label_order=TASK.labels, **settings))   # the order ListAnswers presents in
+            presentation_label_order=self.task.labels, **settings))   # the order ListAnswers presents in
         self.ledger.raise_if_tripped()
         record = {"winner": result.winner_trial, "promoted": result.promoted, "reason": result.reason,
                   "incumbent_source": plan.incumbent_source, "n_development": len(development),
@@ -880,7 +888,7 @@ class UnifiedFlywheel:
                            key=lambda i: (-predictions[i][1], i))
             out["new_labels_wrong"] = len(wrong)
         # 2. A-c+F: the analyst reads the feedback (with comments) and may add a question.
-        base = self.v1.score(SCORE_NAME)
+        base = self.v1.score(self.corpus.score_name)
         if state.workspace is not None:
             workspace = state.workspace
             existing = workspace.scorecard().questions()
@@ -890,12 +898,12 @@ class UnifiedFlywheel:
                                                     with_comments=arm in COMMENT_ARMS)
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
-            base = workspace.scorecard().score(SCORE_NAME)
-        template = candidate_template(base, fewshot=False, knn=False)
+            base = workspace.scorecard().score(self.corpus.score_name)
+        template = candidate_template(base, fewshot=False, knn=False, corpus=self.corpus)
         questions = template.questions()
         # 3. Choose the example list against the labels so far.
         if arm == "F-rand":
-            chosen = random_list(TASK, self._labeled_rows(labeled), per_label=self.cfg.list_per_label,
+            chosen = random_list(self.task, self._labeled_rows(labeled), per_label=self.cfg.list_per_label,
                                  seed=F_RAND_SEED_OFFSET + round_number)
             out["list"] = {"winner": "random", "seed": F_RAND_SEED_OFFSET + round_number}
         else:
@@ -934,11 +942,11 @@ class UnifiedFlywheel:
 
     def _list_diagnostic(self, ids: Sequence[str], fixed: FixedExampleList) -> Dict[str, Any]:
         """S1's check: how often the holistic answer with the list differs from zero-shot (text-free)."""
-        holistic = {SCORE_NAME: self.v1.questions()[SCORE_NAME]}
+        holistic = {self.corpus.score_name: self.v1.questions()[self.corpus.score_name]}
         with_list = self.list_answers.answers(ids, holistic, fixed)
         zero = self.cache.bulk_partial_answers(ids, holistic)
-        pairs = [(with_list[i][SCORE_NAME], zero[i][SCORE_NAME]) for i in ids
-                 if SCORE_NAME in with_list[i] and SCORE_NAME in zero[i]]
+        pairs = [(with_list[i][self.corpus.score_name], zero[i][self.corpus.score_name]) for i in ids
+                 if self.corpus.score_name in with_list[i] and self.corpus.score_name in zero[i]]
         changed = sum(a.get("choice") != b.get("choice") for a, b in pairs)
         return {"n": len(pairs), "choice_differs_rate": round(changed / len(pairs), 4) if pairs else None}
 
@@ -959,17 +967,17 @@ class UnifiedFlywheel:
     def _fewshot_diagnostic(self, labeled: Sequence[str]) -> Dict[str, Any]:
         """D0's check that few-shot answers differ from zero-shot: text-free rates only."""
         key = self._fewshot_key(self._fewshot_context(labeled))
-        holistic = self.v1.questions()[SCORE_NAME]
+        holistic = self.v1.questions()[self.corpus.score_name]
         changed, gaps, n = 0, [], 0
         for item_id in list(labeled) + list(self.eval_ids):
-            few = self.fewshot_cache.get(item_id, FEWSHOT_WIRE, key)
-            zero = self.cache.get(item_id, SCORE_NAME, holistic)
+            few = self.fewshot_cache.get(item_id, self.corpus.fewshot_wire, key)
+            zero = self.cache.get(item_id, self.corpus.score_name, holistic)
             if few is None or zero is None:
                 continue
             n += 1
             changed += int(few.get("choice") != zero.get("choice"))
-            gaps.append(abs(float((few.get("probabilities") or {}).get(LABELS[0], 0.0))
-                            - float((zero.get("probabilities") or {}).get(LABELS[0], 0.0))))
+            gaps.append(abs(float((few.get("probabilities") or {}).get(self.corpus.labels[0], 0.0))
+                            - float((zero.get("probabilities") or {}).get(self.corpus.labels[0], 0.0))))
         return {"n": n, "choice_differs_rate": round(changed / n, 4) if n else None,
                 "mean_abs_p_positive_difference": round(sum(gaps) / n, 4) if n else None}
 
@@ -982,7 +990,7 @@ class UnifiedFlywheel:
         decision = state.head.decision
         provenance = decision.provenance or {}
         bundle = ClassifierBundle(
-            TASK, ScoreRubric.dump(state.head), ScoreRubric(state.head), examples=fixed, example_rows=rows,
+            self.task, ScoreRubric.dump(state.head), ScoreRubric(state.head), examples=fixed, example_rows=rows,
             engine={"adapter": "jev", "configured_model": self.cfg.provider_model,
                     "model_identity": self.engines.identity, "reported_model": self.cfg.provider_model},
             head={"features": list(decision.features), "classes": list(decision.classes), "model": decision.model,
@@ -1012,7 +1020,7 @@ class UnifiedFlywheel:
         path = bundle_dir(self.run_dir, arm, self.cfg.rounds)
         if not path.exists():
             raise HarnessError(f"no frozen bundle for arm {arm} at round {self.cfg.rounds}; run the rounds first")
-        return load_bundle(path, TASK, ScoreRubric.parse, configured_model=self.cfg.provider_model)
+        return load_bundle(path, self.task, ScoreRubric.parse, configured_model=self.cfg.provider_model)
 
     def classify_with_bundle(self, bundle: ClassifierBundle, ids: Sequence[str],
                              client_factory: Optional[Callable[[], Any]] = None) -> Dict[str, Any]:

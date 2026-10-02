@@ -28,13 +28,15 @@ from typing import Dict, List, Mapping, Sequence, Tuple
 
 from decision_flywheel.context import PerLabelLexicalRetrieval, _tokens
 
-from .unified_splits import LABELS, assert_target_excluded
+from .unified_corpus import PLANTED, Corpus
+from .unified_splits import assert_target_excluded
 
 KNN_POLICY = {"name": "knn-lexical-unbalanced", "version": "1", "k": 8, "top": 4,
               "similarity": "per-label-lexical-retrieval cosine token-set overlap"}
-SHARE_FEATURE = "knn.share.positive"
-TOP_FEATURES = tuple(f"knn.top4.{label}" for label in LABELS)
-KNN_FEATURES = (SHARE_FEATURE, *TOP_FEATURES)
+# The planted corpus's feature names, kept for callers and specs that predate ``unified_corpus``.
+SHARE_FEATURE = PLANTED.knn_share_feature
+TOP_FEATURES = PLANTED.knn_top_features
+KNN_FEATURES = PLANTED.knn_features
 
 
 @dataclass(frozen=True)
@@ -82,7 +84,8 @@ def ranked_neighbours(target_id: str, target_text: str,
 
 
 def knn_features(target_id: str, target_text: str, pool: Sequence[PoolEntry], *,
-                 k: int = 8, top: int = 4) -> Tuple[Dict[str, float], Tuple[str, ...]]:
+                 k: int = 8, top: int = 4,
+                 corpus: Corpus = PLANTED) -> Tuple[Dict[str, float], Tuple[str, ...]]:
     """The B-local features for one item, and the IDs of the k neighbours used."""
     ranked = ranked_neighbours(target_id, target_text, pool)
     if len(ranked) < k:
@@ -91,18 +94,18 @@ def knn_features(target_id: str, target_text: str, pool: Sequence[PoolEntry], *,
     assert_target_excluded(target_id, [entry.id for _, entry in nearest])
     total = sum(sim for sim, _ in nearest)
     if total > 0:
-        share = sum(sim for sim, entry in nearest if entry.label == LABELS[0]) / total
+        share = sum(sim for sim, entry in nearest if entry.label == corpus.labels[0]) / total
     else:  # no lexical overlap at all: fall back to the unweighted vote of the k
-        share = sum(1 for _, entry in nearest if entry.label == LABELS[0]) / k
-    features = {SHARE_FEATURE: share}
-    for label, name in zip(LABELS, TOP_FEATURES):
+        share = sum(1 for _, entry in nearest if entry.label == corpus.labels[0]) / k
+    features = {corpus.knn_share_feature: share}
+    for label, name in zip(corpus.labels, corpus.knn_top_features):
         sims = [sim for sim, entry in ranked if entry.label == label][:top]
         features[name] = sum(sims) / len(sims) if sims else 0.0
     return features, tuple(entry.id for _, entry in nearest)
 
 
 def knn_rows(targets: Mapping[str, str], pool: Sequence[PoolEntry], *, k: int = 8,
-             top: int = 4) -> Dict[str, Dict[str, float]]:
+             top: int = 4, corpus: Corpus = PLANTED) -> Dict[str, Dict[str, float]]:
     """Features for many targets against one pool (leave-one-out for pool members)."""
-    return {target_id: knn_features(target_id, text, pool, k=k, top=top)[0]
+    return {target_id: knn_features(target_id, text, pool, k=k, top=top, corpus=corpus)[0]
             for target_id, text in targets.items()}

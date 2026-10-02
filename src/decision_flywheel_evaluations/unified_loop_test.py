@@ -228,3 +228,9 @@ def test_knn_feature_rows_are_leave_one_out_for_labeled_items(small_run):
     without = flywheel._rows(template, labeled[:1], labeled[1:])[labeled[0]]
     assert row == without
     assert feature_row(template, {}, None) == {}
+
+
+def test_the_run_config_defaults_to_the_planted_corpus():
+    from .unified_corpus import PLANTED
+
+    assert RunConfig(clone=".", run_dir=".").corpus is PLANTED

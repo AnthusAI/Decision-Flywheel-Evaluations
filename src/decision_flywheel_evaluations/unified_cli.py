@@ -31,6 +31,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from . import unified_env
+from .unified_corpus import CORPUS_CHOICES, DEFAULT_CORPUS, get_corpus
 from .unified_spend import final_d_upper_bound, final_upper_bound, request_upper_bound
 
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")
@@ -57,6 +58,8 @@ def parser() -> argparse.ArgumentParser:
     commands.add_parser("check-env", help="verify the clone, Decision-Flywheel and scikit-learn/Tactus; spends nothing")
 
     run = commands.add_parser("run", help="run the unified loop (offline with a fake Jev unless --live)")
+    run.add_argument("--corpus", choices=CORPUS_CHOICES, default=DEFAULT_CORPUS,
+                     help="the corpus to run on (labels, task wording, loader); default " + DEFAULT_CORPUS)
     run.add_argument("--run-dir", type=Path, default=None)
     run.add_argument("--clone", type=Path, default=None)
     run.add_argument("--seed", type=int, default=1)
@@ -94,6 +97,8 @@ def parser() -> argparse.ArgumentParser:
     comments = commands.add_parser("comments", help="write the simulated reviewer's reasons for the labeled items")
     comments.add_argument("--out", type=Path, required=True, help="JSONL of {item_id, comment} for run --comments")
     comments.add_argument("--cache", type=Path, default=DEFAULT_RUN_ROOT / "labeler-cache.jsonl")
+    comments.add_argument("--corpus", choices=CORPUS_CHOICES, default=DEFAULT_CORPUS,
+                          help="the corpus whose labeled items get comments; default " + DEFAULT_CORPUS)
     comments.add_argument("--clone", type=Path, default=None)
     comments.add_argument("--seed", type=int, default=1)
     comments.add_argument("--rounds", type=int, default=3)
@@ -202,7 +207,7 @@ def run(args: argparse.Namespace) -> Dict:
     mode = "live" if args.live else "offline"
     run_dir = args.run_dir or DEFAULT_RUN_ROOT / f"{mode}-seed{args.seed}"
     cfg = RunConfig(
-        clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, arms=arms,
+        corpus=get_corpus(args.corpus), clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, arms=arms,
         final=args.final, live=args.live, replay=args.replay, request_ceiling=args.request_ceiling,
         max_new_requests=args.max_new_requests, spend_ledger=args.spend_ledger,
         max_concurrency=args.max_concurrency, max_consecutive_failures=args.max_consecutive_failures,
@@ -236,7 +241,7 @@ def comments(args: argparse.Namespace) -> Dict:
     """Comments for the first rounds x per-round labels of the seeded order; prints a text-free report."""
     from . import unified_labeler as labeler
     from .unified_spend import SpendLedger
-    from .unified_splits import label_order, load_splits
+    from .unified_splits import DEV_SLICE_SIZE, label_order
 
     if not args.live and (args.confirm or args.spend_ledger or args.max_calls is not None):
         raise UsageError("live-only options were given without --live; refusing to guess")
@@ -245,7 +250,7 @@ def comments(args: argparse.Namespace) -> Dict:
     if args.live:
         check_comment_gates(args, 0)   # every static gate, before any data is read
     identity = unified_env.verify_clone(args.clone)
-    splits = load_splits(Path(identity.path) / "fixtures")
+    splits = get_corpus(args.corpus).load(Path(identity.path) / "fixtures", dev_size=DEV_SLICE_SIZE)
     order = label_order(splits.pool, args.seed)[:args.rounds * args.per_round]
     items = [labeler.LabelerItem(i, splits.items[i].text, splits.items[i].reference_label) for i in order]
     model = args.model or (labeler.DEFAULT_MODEL if (args.live or args.replay) else labeler.FAKE_MODEL)

@@ -28,7 +28,6 @@ DEV_SLICE_SIZE = 100
 PAPER_SLICE_SIZE = 600
 LABEL_ORDER_SEED = "unified-flywheel-label-order-v1"
 RECORDED_EXTRA_ANSWERS = Path("recordings") / "simulated-labeler" / "extra_answers.jsonl.gz"
-LABELS = ("positive", "negative")
 
 
 class LeakageError(AssertionError):

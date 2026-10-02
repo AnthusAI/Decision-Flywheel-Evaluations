@@ -199,16 +199,17 @@ def run_final_d(flywheel) -> Dict[str, Any]:
 
     from . import unified_env
     from .unified_bundles import text_free
-    from .unified_loop import (DISPLAY_ORDER, HARNESS_VERSION, SCORE_NAME, TASK, HarnessError, _assert_text_free,
+    from .unified_loop import (DISPLAY_ORDER, HARNESS_VERSION, HarnessError, _assert_text_free,
                                _summary_dict, candidate_template, feature_row, head_from_fit, serve, training_set)
 
     cfg, splits, ledger = flywheel.cfg, flywheel.splits, flywheel.ledger
+    TASK, SCORE_NAME = flywheel.task, flywheel.corpus.score_name
     variant = cfg.retriever
     labeled = [i for batch in flywheel.batches for i in batch]
     eval_ids = list(flywheel.eval_ids)
 
     bundle = flywheel.load_arm_bundle(SOURCE_ARM)
-    template = candidate_template(bundle.rubric.score, fewshot=False, knn=False)
+    template = candidate_template(bundle.rubric.score, fewshot=False, knn=False, corpus=flywheel.corpus)
     questions = template.questions()
 
     embedder = embedder_for(live=cfg.live, replay=cfg.replay) if variant == "embedding" else None
