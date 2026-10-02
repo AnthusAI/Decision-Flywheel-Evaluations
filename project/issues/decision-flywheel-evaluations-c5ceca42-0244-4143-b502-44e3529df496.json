@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-c5ceca42-0244-4143-b502-44e3529df496",
+  "title": "Generate bios labeler comments live (gpt-6-luna, cap 300 calls)",
+  "description": "## Purpose\n\nGenerate the bios labeler comments for the 300 labels.\n\n## Scope\n\nOpenAI gpt-6-luna, text-cue-only reasons with the forbidden-word filter; replay check ($0) must match.\n\n## Cost cap\n\nHard cap 300 calls (expected about 300), 0 Jev.\n\n## Definition of done\n\nComments file with dropped-comment count; replay identical.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-e27119c5-443d-4f44-967d-919150ab798b",
+  "labels": [
+    "roadmap",
+    "bios-corpus",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-369489c2-d285-48a3-8913-1cbf01ec4095",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-f3dba255-2a5f-4b06-8b67-6794731f7273",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:20:37.694669Z",
+  "updated_at": "2026-10-02T00:20:38.145139Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Bios Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

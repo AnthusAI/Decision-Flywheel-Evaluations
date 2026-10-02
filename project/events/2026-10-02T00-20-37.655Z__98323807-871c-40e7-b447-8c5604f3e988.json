@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "98323807-871c-40e7-b447-8c5604f3e988",
+  "issue_id": "decision-flywheel-evaluations-369489c2-d285-48a3-8913-1cbf01ec4095",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.655Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Offline dry run of the bios pipeline and $0 baseline replay",
+    "description": "## Purpose\n\nProve the whole bios pipeline offline and reproduce the free rows from cache before any spend.\n\n## Scope\n\nDry run of comments, rounds 1-3 for all arms and the final through reloaded bundles with fake engines; $0 replay of baselines from cached Jev answers; the gate prints the exact request counts for every live stage; planted-bias replays still pass.\n\n## Definition of done\n\nDry-run summaries and gate counts posted as a comment with the exact live commands; every live stage's gate count within its cap. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.3, §6",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

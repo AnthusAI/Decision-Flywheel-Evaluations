@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "ab905141-0f13-4822-bca6-25097e8e12ac",
+  "issue_id": "decision-flywheel-evaluations-39ad0fd7-93b9-478a-b93d-e229433909eb",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.716Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Run live rounds 1-3 on dev-100 + twins (cap 5,000 Jev)",
+    "description": "## Purpose\n\nRun rounds 1-3 on dev-100 (+ twins) for arms 0, A-c, F, F-rand and A-c+F, plus the F-raw vs F-neutralized comparison.\n\n## Scope\n\n100 labels per round, one seed; guards on; analyst proposals and screen rejections logged; skew checks reported. Freeze bundles and write the final protocol before any FINAL request.\n\n## Cost cap\n\nHard cap 5,000 Jev requests (about $2-3), including about 1,000 for F-raw vs F-neutralized (about $0.5).\n\n## Definition of done\n\nDev-100 table (accuracy, Brier, flips, |delta P|) per arm and round; proposals and rejections listed; actual spend; frozen bundles.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.2; [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-e27119c5-443d-4f44-967d-919150ab798b",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

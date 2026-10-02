@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "9c3bdee0-997f-437c-a8d4-509c8c60cabe",
+  "issue_id": "decision-flywheel-evaluations-982d557e-bb79-497b-9be0-1cbd9b5d0aa4",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.766Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Optional: dynamic retrieval D with masked keys on FINAL (cap 2,000 Jev)",
+    "description": "## Purpose\n\nOptionally measure dynamic retrieval (D) on bios with pronoun-masked retrieval keys.\n\n## Scope\n\nOne variant (embedding or BM25, chosen by the free masked kNN proxy) on FINAL + twins; skip if the proxy shows no gain or the ledger has no room.\n\n## Cost cap\n\nHard cap 2,000 Jev requests (about $0.8-1.2), and only if the cumulative ledger stays at most 15,000; otherwise owner approval first.\n\n## Definition of done\n\nD row with twin metrics added to the final summary, or a comment saying why it was skipped.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md) (Addendum 3)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 3,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-e27119c5-443d-4f44-967d-919150ab798b",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

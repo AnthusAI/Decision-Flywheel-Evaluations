@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "664d87bc-6b3f-4c67-b327-e8000363d241",
+  "issue_id": "decision-flywheel-evaluations-b3a13ef5-4212-41a2-88c6-d662785c3801",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.504Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Parametrize the unified harness per corpus; planted-bias replays keep passing",
+    "description": "## Purpose\n\nParametrize the unified harness per corpus so bios runs alongside the default planted-bias corpus.\n\n## Scope\n\nA corpus spec (items, labels, splits, rubric seed, prompts, twin pairing) selected by a CLI option; planted-bias remains the default with unchanged behaviour. Starting point depends on the owner's resume-vs-restart answer. Corpus fixtures in Jev-Flywheel are read-only.\n\n## Definition of done\n\nSpecs for both corpora; all existing planted-bias replays reproduce byte-identical summaries; `make test` green. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §6",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

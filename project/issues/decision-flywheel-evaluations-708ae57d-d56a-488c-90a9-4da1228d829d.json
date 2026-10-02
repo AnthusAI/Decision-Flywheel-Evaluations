@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-708ae57d-d56a-488c-90a9-4da1228d829d",
+  "title": "Score reloaded bundles on FINAL 1,000 + 1,000 twins (cap 8,000 Jev)",
+  "description": "## Purpose\n\nScore the frozen round-3 bundles on FINAL (1,000 test items + 1,000 twins) through reloaded bundles.\n\n## Scope\n\nArms 0, A-c, F, F-rand, A-c+F; no rounds run; arm 0 from cached J0 answers if the dry run confirms the cache matches, otherwise F-rand runs on the 1,000 originals only to stay within the cap.\n\n## Cost cap\n\nHard cap 8,000 Jev requests (about $3.2-4.8); cumulative ledger at most 15,000.\n\n## Definition of done\n\nFinal summary (text-free) with accuracy, Brier, ECE, twin metrics and paired intervals next to the free and published rows; actual spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §5.4; [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-e27119c5-443d-4f44-967d-919150ab798b",
+  "labels": [
+    "roadmap",
+    "bios-corpus",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-39ad0fd7-93b9-478a-b93d-e229433909eb",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:20:37.737214Z",
+  "updated_at": "2026-10-02T00:20:38.184335Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Bios Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

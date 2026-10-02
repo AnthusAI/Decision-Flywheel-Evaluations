@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "0d397317-37e2-4c71-9a50-5b9e62ae877b",
+  "issue_id": "decision-flywheel-evaluations-e27119c5-443d-4f44-967d-919150ab798b",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.675Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Live bios run on Jev and results",
+    "description": "## Purpose\n\nRun the approved bios plan live on Jev and publish the result.\n\n## Scope\n\nLabeler comments, rounds 1-3, final through reloaded bundles, optional D, write-up. Each stage has its own new ledger file and gate caps.\n\n## Definition of done\n\nResults published and the decision rules answered.\n\n## Cost cap\n\nCumulative Jev ceiling 15,000 requests (about $6-9) across all stages; about 300 gpt-6-luna calls. Anything above needs new owner approval.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-d1e156f2-deff-4d20-ad61-fcb8ffb20533",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

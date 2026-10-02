@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "b5990ddc-d2ee-485f-a625-f14ec5855932",
+  "issue_id": "decision-flywheel-evaluations-d1e156f2-deff-4d20-ad61-fcb8ffb20533",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-02T00:20:44.458Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "11171dc7-3ec1-4d86-a1b4-4021767f036d",
+    "comment_author": "home",
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

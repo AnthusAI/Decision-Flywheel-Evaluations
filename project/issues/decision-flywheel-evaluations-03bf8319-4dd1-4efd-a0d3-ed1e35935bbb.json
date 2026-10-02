@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-03bf8319-4dd1-4efd-a0d3-ed1e35935bbb",
+  "title": "Report free baselines and published reference rows",
+  "description": "## Purpose\n\nReport free baselines so live arms are judged against what costs nothing.\n\n## Scope\n\nRefit-only on cached J0 answers (about 0.81), J0 twin-averaging, B-local kNN with masked keys, plus the published J0/J1/J2 reference rows (accuracy and flip rate) cited with their source.\n\n## Definition of done\n\nRows on dev-100 and FINAL in the same summary format as the arms. Cost: $0.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 2,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+  "labels": [
+    "roadmap",
+    "bios-corpus",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-fd6217d7-12d9-45f8-a6bd-981a88afc5b6",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-b28a23af-1044-4f60-962d-4a1733d892c3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:20:37.633812Z",
+  "updated_at": "2026-10-02T00:20:37.966889Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Bios Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "78e6c2e5-d0d5-418e-afc5-0670c0f955ac",
+  "issue_id": "decision-flywheel-evaluations-2428695c-d89b-4883-b30d-2e2b361e5a7c",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.610Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Build the bios labeler with forbidden-word filter and offline fake",
+    "description": "## Purpose\n\nGive the bios rounds a labeler whose comments cite text cues only, never gender.\n\n## Scope\n\nTerse text-cue-only reasons; gender words, pronouns, titles and names forbidden in the prompt and filtered after; dropped comments counted; offline fake labeler for specs; cache by hash; live mode opt-in with a call cap. Labels stay the real ground truth (labeler only explains).\n\n## Definition of done\n\nSpecs with the fake labeler; the filter catches planted gendered reasons; dropped count reported. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-e5e6b038-f89d-4b7f-b9be-b01f9d2a8bad",
+  "title": "Add gender-skew check, analyst-proposal screen and list-selection constraint",
+  "description": "## Purpose\n\nDetect and refuse gender proxies in what the flywheel learns.\n\n## Scope\n\n(1) Free within-class gender-skew check on the labeled set and on the chosen example list; (2) analyst-proposal screen rejecting title/gender/pronoun/name-like questions, every rejection logged; (3) the same constraint during fixed-list selection. The full 2% swap-twin promotion gate is optional and skipped unless cheap.\n\n## Definition of done\n\nSpecs: a planted \"Mr./Ms. rather than Dr.\" proposal is rejected and logged; a skewed list is flagged; skew numbers appear in the summary. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2, §5",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+  "labels": [
+    "roadmap",
+    "bios-corpus",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-b3a13ef5-4212-41a2-88c6-d662785c3801",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-b28a23af-1044-4f60-962d-4a1733d892c3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:20:37.587867Z",
+  "updated_at": "2026-10-02T00:20:37.930998Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Bios Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

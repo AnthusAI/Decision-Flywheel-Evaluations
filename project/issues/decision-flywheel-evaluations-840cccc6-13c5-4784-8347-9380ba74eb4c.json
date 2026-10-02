@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+  "title": "Offline build: bios corpus, gender metrics, guards and labeler",
+  "description": "## Purpose\n\nMake the unified harness run the bios corpus offline, with gender-sensitivity metrics and guards, at $0.\n\n## Scope\n\nCorpus parametrization, dedupe/leakage assertions, twin metrics, gender-cue guards, bios labeler with offline fake, free baselines, offline dry run and $0 replay. The planted-bias corpus stays the default and its replays keep passing.\n\n## Definition of done\n\nOffline dry run passes end to end on bios with fake engines; $0 baseline replay reproduces the free rows; `make test` green.\n\n## Cost cap\n\n$0 (no live calls).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "epic",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-d1e156f2-deff-4d20-ad61-fcb8ffb20533",
+  "labels": [
+    "roadmap",
+    "bios-corpus",
+    "offline"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-02T00:20:37.462691Z",
+  "updated_at": "2026-10-02T00:20:37.462719Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Bios Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

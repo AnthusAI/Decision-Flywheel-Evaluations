@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "d52c7ffd-2826-4df6-bb66-ec862c6f63b1",
+  "issue_id": "decision-flywheel-evaluations-f3dba255-2a5f-4b06-8b67-6794731f7273",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.484Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Owner decision needed: approve bios plan, resume or restart the partial build, second seed?",
+    "description": "## Purpose\n\nGet the owner's three decisions before any build resumes or any money is spent on the bios corpus.\n\n## Decisions needed\n\n1. **Approve the plan, scope and size** in the initiative: one seed, 3 x 100-label rounds on dev-100 (+ twins), FINAL = 1,000 test items + 1,000 twins, twin scoring on, guards on, cumulative cap 15,000 Jev requests (about $6-9) plus about 300 gpt-6-luna labeler calls.\n2. **Resume or restart the partial build.** An earlier agent started the corpus parametrization and was stopped before finishing. Its changes are UNCOMMITTED in the working tree: new `unified_corpus.py` / `unified_gender.py` (+ specs) and edits to `unified_cli`, `unified_knn`, `unified_labeler`, `unified_lists`, `unified_loop`, `unified_retrieval`, `unified_splits` (+ some specs). Options: (a) resume from it after review and green tests; (b) discard and restart from the last commit. Nobody touches those files until this is decided.\n3. **Second seed?** Default: no; only if the owner asks (would roughly double live spend).\n\n## Definition of done\n\nAnswers recorded as a comment here; dependent tasks unblocked or rescoped. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "owner-decision"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

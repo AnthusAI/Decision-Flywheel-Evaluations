@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "8c9e1be0-189b-4b04-ba6a-2e398bcce50e",
+  "issue_id": "decision-flywheel-evaluations-fd6217d7-12d9-45f8-a6bd-981a88afc5b6",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:20:37.546Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Add twin scoring and gender-sensitivity metrics",
+    "description": "## Purpose\n\nScore every arm's gender sensitivity on counterfactual twins next to accuracy, Brier and ECE.\n\n## Scope\n\nTwin scoring on by default for bios: flip rate, mean |delta P|, recall gap by gender in both classes, courtesy-title subset if cheap. Note flip rates are lower bounds (names/titles survive swapping). Paired intervals as in the first study.\n\n## Definition of done\n\nMetrics computed from fixtures with fake answers in specs and written into text-free summaries. Cost: $0.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-840cccc6-13c5-4784-8347-9380ba74eb4c",
+    "labels": [
+      "roadmap",
+      "bios-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}

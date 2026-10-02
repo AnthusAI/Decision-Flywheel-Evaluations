@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "76946551-fe95-42b8-9620-aaf396737d54",
+  "issue_id": "decision-flywheel-evaluations-d1e156f2-deff-4d20-ad61-fcb8ffb20533",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:19:43.749Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Second corpus: Bias in Bios (surgeon vs physician)",
+    "description": "## Purpose\n\nTest the Unified Decision Flywheel on a real second corpus, Bias in Bios surgeon vs physician, and measure accuracy together with gender sensitivity.\n\n## Corpus\n\nJev-Flywheel `bios_gender` study fixtures (`Jev-Flywheel/fixtures/bios`, read-only): 8,000 items = pool 4,000, test 2,000, gender-swapped counterfactual twins 2,000; labels surgeon / physician; cached Jev answers (`answers.jsonl.gz`). Same task as the Biased-Decisions benchmark.\n\n## Arms\n\n0 baseline; A-c feature discovery from the labeler's explanations; F optimized fixed list; F-rand control; A-c+F (default product); D optional dynamic retrieval (masked keys).\n\n## What is known (read-only Opus consult)\n\n- Original bios loop on Jev: +1.5 accuracy points only (J0 0.785 -> J1 0.800), mostly from the refit; gender flip rate rose 1.05% -> 1.73% (all three J1 seeds promoted a courtesy-title proxy); J2's invariance gate halved flips mostly by promoting nothing. Large gains in the docs were on Laya / twin-averaging.\n- Pool: women 77% physicians, men 38%, so pronouns in shown examples or retrieval keys are a label shortcut.\n- Test items were scored in earlier studies (not pristine); 19 test bios share a 100-char prefix with a pool bio, 2 are exact duplicates; names/titles survive swapping, so flip rates are lower bounds.\n- Labels are real ground truth with the title sentence removed, so an LLM labeler can confabulate and write gendered reasons.\n\n## Proposed design (NOT yet approved by the owner)\n\nOne seed; 3 rounds x 100 labels; dev-100 (+ twins) for rounds; FINAL = fixed-seed 1,000 test items disjoint from dev-100 + their 1,000 twins (`--final-size`); twin scoring on by default; gender-cue guards; free baselines; live total under 15,000 Jev requests (about $6-9) plus about 300 OpenAI gpt-6-luna labeler calls. Second seed only if the owner asks.\n\n## Decision rules\n\n- A-c not beating refit-only by about 2 points: the planted-bias gains do not transfer to real labels.\n- F or D raising accuracy but also gender sensitivity (e.g. 2x J0 flips): protected-attribute neutralization becomes a product requirement, or those arms stay off for sensitive decisions.\n- Analyst proposing title/gender questions: the proposal screen ships as a product feature.\n\n## Definition of done\n\nFinal slice scored through reloaded bundles with accuracy, Brier, ECE and twin metrics next to the free baselines and published J0/J1/J2 rows; one-page write-up in `studies/`; each decision rule answered.\n\n## Cost cap\n\nCumulative Jev ledger ceiling 15,000 requests (about $6-9); about 300 labeler calls. Nothing live until the owner-decision task is closed.\n\n## Links\n\n- Design: [DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md)\n- First corpus results: [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)\n- Predecessor: decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959",
+    "issue_type": "initiative",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": null,
+    "labels": [
+      "roadmap",
+      "bios-corpus"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Bios Planning"
+    }
+  }
+}
