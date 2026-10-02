@@ -3,7 +3,7 @@
   "title": "Mask pronouns in retrieval keys and neutralize example texts (switch, default on)",
   "description": "## Purpose\n\nStop pronouns from becoming a label shortcut in shown examples and retrieval keys.\n\n## Scope\n\nPronoun-masked retrieval keys (always on for bios); pronoun-neutralized example texts with an on/off switch (default on) so F-raw vs F-neutralized can be compared live.\n\n## Definition of done\n\nSpecs show masked keys and neutralized examples contain no gendered pronouns; the switch is recorded in the bundle and run manifest. Cost: $0 (live comparison budgeted in the rounds task, about $0.5).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §2",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "3003a1e1-5df3-4c5e-abb8-00426bf80b54",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.436128Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.567811Z",
-  "updated_at": "2026-10-02T00:20:37.866768Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.448774Z",
+  "closed_at": "2026-10-02T00:39:37.448743Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-114680ea-ba66-4a67-93b8-e710d39f9005",
+  "title": "S8: Main-session offline dry run, planted replays, tests and push",
+  "description": "## Purpose\n\nReview the offline build and make it the base for live stages.\n\n## Scope\n\nMain session: offline dry run on Emotion with fakes (all arms, 3 rounds x 150); both planted replays; review diffs of S1-S7; `make test` and `make unified-flywheel-test UF_PYTHON=/Users/home/Projects/Jev-Flywheel/.venv312/bin/python`; push.\n\n## Specs (first, beside the module)\n\nnone new (runs the S1-S7 specs and replays).\n\n## Reuse\n\neverything from S1-S7.\n\n## Definition of done\n\nDry run passes; replays byte-identical; both test targets green; pushed; printed request bounds per stage recorded here.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-b9d3fb47-1f29-4000-8c26-47592f1f1de5",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.745894Z",
+  "updated_at": "2026-10-02T00:39:25.191617Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

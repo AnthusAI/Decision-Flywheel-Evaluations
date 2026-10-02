@@ -3,7 +3,7 @@
   "title": "Report free baselines and published reference rows",
   "description": "## Purpose\n\nReport free baselines so live arms are judged against what costs nothing.\n\n## Scope\n\nRefit-only on cached J0 answers (about 0.81), J0 twin-averaging, B-local kNN with masked keys, plus the published J0/J1/J2 reference rows (accuracy and flip rate) cited with their source.\n\n## Definition of done\n\nRows on dev-100 and FINAL in the same summary format as the arms. Cost: $0.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 2,
   "assignee": null,
   "creator": null,
@@ -23,10 +23,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "740d89f9-ea52-441a-ad86-946420c46ec7",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.332760Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.633812Z",
-  "updated_at": "2026-10-02T00:20:37.966889Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.341664Z",
+  "closed_at": "2026-10-02T00:39:37.341629Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

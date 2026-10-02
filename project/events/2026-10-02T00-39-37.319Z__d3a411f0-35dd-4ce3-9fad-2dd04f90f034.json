@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "d3a411f0-35dd-4ce3-9fad-2dd04f90f034",
+  "issue_id": "decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463",
+  "event_type": "comment_added",
+  "occurred_at": "2026-10-02T00:39:37.319Z",
+  "actor_id": "home",
+  "payload": {
+    "comment_id": "044ec60c-2696-4a45-9357-8b9f451518d9",
+    "comment_author": "home",
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

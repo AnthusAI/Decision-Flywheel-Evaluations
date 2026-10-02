@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "060bd196-04dd-435f-816d-76dae7374e50",
+  "issue_id": "decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:11.104Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Unified flywheel on real Emotion data",
+    "description": "## Purpose\n\nTest the Unified Decision Flywheel (feature discovery from explanations, optimized fixed few-shot list, optional dynamic retrieval) on a REAL dataset where Jev starts weak, so the flywheel has something real to learn. The planted sports-vs-work corpus proved the machine works (A-c 0.83-0.87, A-c+F 0.85, D 0.89-0.92); real data was never tried. Replaces the Bias in Bios initiative (dropped: Jev already ~0.79, original loop +1.5 pts with a worse flip rate).\n\n## Corpus\n\n`dair-ai/emotion`, 6 classes (anger, fear, joy, love, sadness, surprise). Jev alone: zero-shot macro-F1 0.509 / acc 0.5915; best static retrieval (64/label) 0.649 / 0.694. Prepared: `studies/manifests/emotion.json`, HF cache `.data/huggingface/dair-ai___emotion`; Jev zero-shot answers for all 2,000 test items cached (`.data/dev/emotion.scoreboard2.sqlite`, jev-1.13.0), so the baseline is free.\n\n## Approach\n\nParametrize `src/decision_flywheel_evaluations/unified_*.py` by a frozen `Corpus` config and `--corpus {planted,emotion}`; planted stays the default, byte-identical. 3 rounds x 150 labels from the pool; arms scored on dev-100 each round; nothing chosen on the final slice. Arms: 0 (free via cache), A-c, F, F-rand, A-c+F; optional D on the final slice only. Macro-F1 primary.\n\n## Working rules (owner)\n\n- Opus agents file plans in Kanbus (`kbs` only) before any build; builds are offline, small reviewed steps by Opus agents; the main session reviews, pushes and runs live stages.\n- Small iterations (150 labels/round), development phase, no preregistration ceremony. Jev spend authorized within stated caps.\n- Stop points where the owner looks before more is spent; ask the owner one plain question at a time, at the top of a message.\n- Kanbus right_now summaries stay disabled in both repos.\n\n## Cost cap\n\n**Hard cumulative cap $10.** Upper bound ~13,000 Jev requests (~$1 per 1,000 few-shot requests; worst case ~$8); labeler (OpenAI gpt-6-luna) < $0.50. Real spend lower because of caching.\n\n## Caveats (carry into the results)\n\n- Emotion test items were exposed in earlier project work: exploratory, not confirmatory.\n- Labels came from hashtags: no consistent hidden rubric; noise ceiling (~0.7 plausible).\n- The labeler's reasons are rationalizations by a model that knows the answer.\n- One seed. \"surprise\" is ~3.6% of test (dev-100 holds ~3-4): report per-class recall.\n\n## What result changes what we build\n\n- A-c+F does not beat ~0.649 macro-F1 (best static retrieval) on the final slice: report that the flywheel does not close the gap on noisy real labels; stop.\n- D clearly wins: dynamic retrieval becomes the default for multi-class tasks.\n- F does not beat F-rand again: drop the list optimizer in favour of a random fixed list.\n- The feature cap fires every round: larger rounds or one combined few-shot feature.\n- Cached answers cannot be reused (hash mismatch): arm 0 costs ~$0.60 more on the final slice.\n\n## Definition of done\n\nFinal slice scored for the arms with macro-F1, accuracy, per-class recall, confusion matrix, top-label Brier/ECE and paired bootstrap next to the free baselines; addendum in `studies/UNIFIED_FLYWHEEL_RESULTS.md` with the caveats; each rule above answered.\n\nApproved plan: `~/.claude/plans/i-put-you-in-sprightly-penguin.md` (owner-approved 2026-10-01).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)\n- Predecessor: decision-flywheel-evaluations-258cd418-2a73-447b-9c78-5073fbf42959\n- Superseded: decision-flywheel-evaluations-d1e156f2-deff-4d20-ad61-fcb8ffb20533",
+    "issue_type": "initiative",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": null,
+    "labels": [
+      "roadmap",
+      "emotion-corpus"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

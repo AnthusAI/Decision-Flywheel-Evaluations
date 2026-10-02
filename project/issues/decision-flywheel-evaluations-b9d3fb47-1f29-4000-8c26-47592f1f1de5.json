@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-b9d3fb47-1f29-4000-8c26-47592f1f1de5",
+  "title": "S7: Macro-F1, per-class recall, confusion matrix and paired bootstrap",
+  "description": "## Purpose\n\nMetrics fit for an imbalanced 6-class test set.\n\n## Scope\n\nIn `unified_stats.py`: macro-F1 (primary), accuracy, per-class recall, confusion matrix, top-label Brier/ECE (document validity for N classes), paired bootstrap over macro-F1; optional prior-corrected readout using public train-split frequencies (pre-declared diagnostic, no held-out data).\n\n## Specs (first, beside the module)\n\nmacro-F1 and recall match hand-computed cases incl. an absent class; confusion matrix shape N x N; bootstrap seed-stable; Brier/ECE top-label definition.\n\n## Reuse\n\nexisting `unified_stats.py` helpers.\n\n## Definition of done\n\nSpecs against hand-computed values pass; planted summaries unchanged.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-2a66a2cb-1dac-4e02-9a93-24088e1d8917",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.702198Z",
+  "updated_at": "2026-10-02T00:39:25.168852Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

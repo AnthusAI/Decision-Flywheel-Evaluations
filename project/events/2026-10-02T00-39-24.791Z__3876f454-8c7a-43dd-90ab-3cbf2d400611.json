@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "3876f454-8c7a-43dd-90ab-3cbf2d400611",
+  "issue_id": "decision-flywheel-evaluations-3a7f83bc-b8b2-4dc7-9e49-ae56eb13cb27",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.791Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "L0: Generate Emotion labeler comments live (gpt-6-luna, cap ~500 calls)",
+    "description": "## Purpose\n\nProduce the labeler explanations that feed A-c.\n\n## Scope\n\nOpenAI gpt-6-luna with the S5 style over the ~450 pool labels (3 x 150); text-free storage of outputs.\n\n## Request bound and cost cap\n\n~450 labels; cap ~500 calls. Cap: < $0.50. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nComment present on most items; spot-check a few for invented rules.\n\n## Definition of done\n\nComments cached for all rounds; actual calls and spend recorded here.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

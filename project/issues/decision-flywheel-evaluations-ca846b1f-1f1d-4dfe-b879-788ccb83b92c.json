@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-ca846b1f-1f1d-4dfe-b879-788ccb83b92c",
+  "title": "Optional L4: dynamic retrieval D on the final slice (bound ~700)",
+  "description": "## Purpose\n\nCheck whether dynamic retrieval clearly wins on multi-class.\n\n## Scope\n\nArm D on the final slice only; only if the owner asks and the cumulative cap allows.\n\n## Request bound and cost cap\n\nBound ~700 Jev requests (use the printed bound). Cap: ~$0.70; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\nOwner go recorded; cumulative spend checked.\n\n## Definition of done\n\nD row added to the final table with the paired bootstrap.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 3,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-86d165fe-dcb2-417f-8422-84dc535007d3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.974254Z",
+  "updated_at": "2026-10-02T00:39:25.305392Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

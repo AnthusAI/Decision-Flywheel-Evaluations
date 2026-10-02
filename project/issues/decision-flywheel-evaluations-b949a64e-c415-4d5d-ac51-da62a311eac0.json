@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+  "title": "Live Emotion run on Jev and results (L0-L4)",
+  "description": "## Purpose\n\nRun the staged live experiment on Jev and publish the results.\n\n## Scope\n\nL0 labeler comments (OpenAI gpt-6-luna, cap ~500 calls); L1 round 1 all arms -> STOP 1; L2 rounds 2-3 -> STOP 2; L3 final slice for 4 arms after the owner's go; L4 optional D on the final slice; results/publish. New ledger per stage; each stage runs with `--max-new-requests` equal to its printed bound.\n\n## Cost cap\n\n**Hard cumulative cap $10** across all stages (upper bound ~13,000 Jev requests, worst case ~$8; labeler < $0.50). Nothing live before S8 is closed.\n\n## Definition of done\n\nAll required stages run within their bounds, results published, issues closed with evidence.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "epic",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "live-spend"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.383491Z",
+  "updated_at": "2026-10-02T00:39:24.383517Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

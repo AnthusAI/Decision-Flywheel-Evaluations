@@ -3,7 +3,7 @@
   "title": "Generate bios labeler comments live (gpt-6-luna, cap 300 calls)",
   "description": "## Purpose\n\nGenerate the bios labeler comments for the 300 labels.\n\n## Scope\n\nOpenAI gpt-6-luna, text-cue-only reasons with the forbidden-word filter; replay check ($0) must match.\n\n## Cost cap\n\nHard cap 300 calls (expected about 300), 0 Jev.\n\n## Definition of done\n\nComments file with dropped-comment count; replay identical.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §1.2",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -23,10 +23,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c310b9d5-863d-47db-9281-965fa40c80a1",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.677155Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.694669Z",
-  "updated_at": "2026-10-02T00:20:38.145139Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.688431Z",
+  "closed_at": "2026-10-02T00:39:37.688400Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

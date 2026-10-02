@@ -1,0 +1,36 @@
+{
+  "id": "decision-flywheel-evaluations-9373d3d6-f36f-4789-94ec-a02b2bc627ef",
+  "title": "Publish the Emotion results and answer the decision rules",
+  "description": "## Purpose\n\nPublish what the Emotion run shows and decide what to build next.\n\n## Scope\n\nText-free summaries plus an addendum in `studies/UNIFIED_FLYWHEEL_RESULTS.md`: final table next to the free baselines (0.509 zero-shot, 0.649 best static retrieval), dev curves, per-class recall, actual spend, and the caveats (exposed test items, hashtag-label noise ceiling, rationalizing labeler, one seed, labeler limits). Answer each 'what result changes what we build' rule on the initiative.\n\n## Definition of done\n\nAddendum committed and pushed; each rule answered in a comment on the initiative; Kanbus issues closed with evidence.\n\n## Cost\n\n$0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+  "labels": [
+    "roadmap",
+    "emotion-corpus"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-86d165fe-dcb2-417f-8422-84dc535007d3",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:25.027654Z",
+  "updated_at": "2026-10-02T00:39:25.332958Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

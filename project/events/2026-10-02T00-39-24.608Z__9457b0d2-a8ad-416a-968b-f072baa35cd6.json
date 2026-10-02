@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "9457b0d2-a8ad-416a-968b-f072baa35cd6",
+  "issue_id": "decision-flywheel-evaluations-5e9ab3cf-fecc-4fda-9ea4-d3dfe2f003c1",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.608Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "S5: Emotion labeler style and offline fake",
+    "description": "## Purpose\n\nAn honest third labeler style for Emotion explanations.\n\n## Scope\n\nInput: text, gold label, one committed line of public definition per class. Output: <= 20 words quoting the words that point to the label, or 'subtle; closest cue is ...'; no invented rules. Offline fake uses a small per-emotion lexicon. Limits stated for the results.\n\n## Specs (first, beside the module)\n\nprompt contains text, gold label and the 6 definitions; output length <= 20 words; fake quotes a lexicon cue or the 'subtle' form; planted styles unchanged.\n\n## Reuse\n\n`labeler_prompt`, `wants_comment` in `unified_labeler.py`.\n\n## Definition of done\n\nPrompt and fake specs pass offline; definitions committed.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

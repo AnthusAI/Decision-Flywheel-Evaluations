@@ -3,7 +3,7 @@
   "title": "Optional: dynamic retrieval D with masked keys on FINAL (cap 2,000 Jev)",
   "description": "## Purpose\n\nOptionally measure dynamic retrieval (D) on bios with pronoun-masked retrieval keys.\n\n## Scope\n\nOne variant (embedding or BM25, chosen by the free masked kNN proxy) on FINAL + twins; skip if the proxy shows no gain or the ledger has no room.\n\n## Cost cap\n\nHard cap 2,000 Jev requests (about $0.8-1.2), and only if the cumulative ledger stays at most 15,000; otherwise owner approval first.\n\n## Definition of done\n\nD row with twin metrics added to the final summary, or a comment saying why it was skipped.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md) (Addendum 3)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 3,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "e43548b6-0b7d-41f7-96a7-4ca2734ddbfc",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.649591Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.766742Z",
-  "updated_at": "2026-10-02T00:20:38.202900Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.658797Z",
+  "closed_at": "2026-10-02T00:39:37.658760Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

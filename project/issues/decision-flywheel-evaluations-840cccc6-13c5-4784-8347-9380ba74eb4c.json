@@ -3,7 +3,7 @@
   "title": "Offline build: bios corpus, gender metrics, guards and labeler",
   "description": "## Purpose\n\nMake the unified harness run the bios corpus offline, with gender-sensitivity metrics and guards, at $0.\n\n## Scope\n\nCorpus parametrization, dedupe/leakage assertions, twin metrics, gender-cue guards, bios labeler with offline fake, free baselines, offline dry run and $0 replay. The planted-bias corpus stays the default and its replays keep passing.\n\n## Definition of done\n\nOffline dry run passes end to end on bios with fake engines; $0 baseline replay reproduces the free rows; `make test` green.\n\n## Cost cap\n\n$0 (no live calls).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "epic",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -14,10 +14,18 @@
     "offline"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "8660ae70-b0cb-43a5-83f8-a9233a42cd13",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.704800Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.462691Z",
-  "updated_at": "2026-10-02T00:20:37.462719Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.713647Z",
+  "closed_at": "2026-10-02T00:39:37.713617Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
@@ -25,5 +33,8 @@
   },
   "right_now_summary": null,
   "right_now_updated_at": null,
-  "custom": {}
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
 }

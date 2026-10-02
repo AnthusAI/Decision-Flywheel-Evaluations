@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "8ea059a6-f884-413d-89cf-6881d530b61d",
+  "issue_id": "decision-flywheel-evaluations-d3ecf1e6-b686-4ee6-ae83-b2e19c0e4d83",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.836Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "L1: Live round 1 for all arms on dev-100 (bound ~2,450) -> STOP 1",
+    "description": "## Purpose\n\nFirst live reading of arms 0, A-c, F, F-rand and A-c+F on Emotion.\n\n## Scope\n\nRound 1 (150 labels), all arms scored on dev-100.\n\n## Request bound and cost cap\n\nBound ~2,450 Jev requests (use the printed bound). Cap: ~$2.50. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 1** (owner looks): are A-c's elements sensible; did the feature cap fire; did the labeler comment on most items. No L2 until the owner says go.\n\n## Definition of done\n\nDev-100 table per arm (macro-F1, acc, per-class recall); elements and dropped elements listed; actual spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

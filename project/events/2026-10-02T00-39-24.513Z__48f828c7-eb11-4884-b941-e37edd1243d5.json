@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "48f828c7-eb11-4884-b941-e37edd1243d5",
+  "issue_id": "decision-flywheel-evaluations-e2107695-2263-4be9-bbfe-c93cdff6e1de",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.513Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "S3: Multi-class plumbing (N-1 features, real probabilities, fake Jev)",
+    "description": "## Purpose\n\nRemove the binary assumptions so all arms work for 6 classes.\n\n## Scope\n\nFew-shot and kNN features use N-1 values from the corpus labels (`unified_loop.py` TASK / FEWSHOT_FEATURE, `unified_knn.py`); `_fewshot_diagnostic` multi-class; `ScoreRubric.predict` in `unified_bundles.py` passes real probabilities; fake Jev with one cue per class.\n\n## Specs (first, beside the module)\n\nN-1 feature names for 6 labels; probabilities sum to 1 and match the head; fake Jev returns the cued class; planted path unchanged.\n\n## Reuse\n\n`knn_feature_names`, `unified_fake_jev`.\n\n## Definition of done\n\nPlanted behaviour unchanged (replays byte-identical); 6-class specs pass.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

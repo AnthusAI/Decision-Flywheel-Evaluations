@@ -3,7 +3,7 @@
   "title": "Parametrize the unified harness per corpus; planted-bias replays keep passing",
   "description": "## Purpose\n\nParametrize the unified harness per corpus so bios runs alongside the default planted-bias corpus.\n\n## Scope\n\nA corpus spec (items, labels, splits, rubric seed, prompts, twin pairing) selected by a CLI option; planted-bias remains the default with unchanged behaviour. Starting point depends on the owner's resume-vs-restart answer. Corpus fixtures in Jev-Flywheel are read-only.\n\n## Definition of done\n\nSpecs for both corpora; all existing planted-bias replays reproduce byte-identical summaries; `make test` green. Cost: $0.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md) §6",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "8efff0e3-674b-4403-b4de-87712518029d",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.464803Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.504186Z",
-  "updated_at": "2026-10-02T00:20:37.811551Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.473024Z",
+  "closed_at": "2026-10-02T00:39:37.473002Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

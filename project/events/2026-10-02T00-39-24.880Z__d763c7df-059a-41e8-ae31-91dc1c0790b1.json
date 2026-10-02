@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "d763c7df-059a-41e8-ae31-91dc1c0790b1",
+  "issue_id": "decision-flywheel-evaluations-c6ccc366-51bb-423b-b78b-0dc4fc707d6f",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.880Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "L2: Live rounds 2-3 for all arms on dev-100 (bound ~7,000) -> STOP 2",
+    "description": "## Purpose\n\nComplete the dev curves and freeze the arms.\n\n## Scope\n\nRounds 2-3 (150 labels each), all arms on dev-100; freeze bundles; nothing chosen on the final slice.\n\n## Request bound and cost cap\n\nBound ~7,000 Jev requests (use the printed bound). Cap: ~$7 worst case; cumulative must stay <= $10. Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 2** (owner looks): dev curves per arm and round; whether the feature cap fired every round.\n\n## Definition of done\n\nDev curves table; frozen bundles; actual and cumulative spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-b949a64e-c415-4d5d-ac51-da62a311eac0",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

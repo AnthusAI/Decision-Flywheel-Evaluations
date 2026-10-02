@@ -3,7 +3,7 @@
   "title": "Add twin scoring and gender-sensitivity metrics",
   "description": "## Purpose\n\nScore every arm's gender sensitivity on counterfactual twins next to accuracy, Brier and ECE.\n\n## Scope\n\nTwin scoring on by default for bios: flip rate, mean |delta P|, recall gap by gender in both classes, courtesy-title subset if cheap. Note flip rates are lower bounds (names/titles survive swapping). Paired intervals as in the first study.\n\n## Definition of done\n\nMetrics computed from fixtures with fake answers in specs and written into text-free summaries. Cost: $0.\n\n## Links\n\n[UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c987cfa8-60ed-4499-bcaf-299b1267818a",
+      "author": "home",
+      "text": "Superseded (owner, 2026-10-01): Bias in Bios dropped because Jev already scores ~0.79 there and the original loop gained only +1.5 pts with a worse flip rate. Replaced by the Emotion plan: decision-flywheel-evaluations-f5a0ef0e-054c-4e2f-9a50-bcc8724d2463.",
+      "created_at": "2026-10-02T00:39:37.544357Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:20:37.546823Z",
-  "updated_at": "2026-10-02T00:20:37.848365Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:39:37.553147Z",
+  "closed_at": "2026-10-02T00:39:37.553117Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

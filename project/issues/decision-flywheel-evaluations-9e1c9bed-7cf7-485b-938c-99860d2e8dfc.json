@@ -1,0 +1,37 @@
+{
+  "id": "decision-flywheel-evaluations-9e1c9bed-7cf7-485b-938c-99860d2e8dfc",
+  "title": "S4: Feature-budget cap after steering; runtime steering-prompt override",
+  "description": "## Purpose\n\nKeep steering within the ladder's feature budget and give non-planted corpora a neutral steering prompt.\n\n## Scope\n\nAfter steering, cap new elements to the ladder budget (n/5 at 30-199 labels, max 20 at 100-199; n/10 at 200-999): drop lowest-ranked new elements and record what was dropped. Reworded copy of `steer_scorecard.tac` under `var/` for non-planted corpora (no 'positive and negative examples'); point `jev_flywheel.steer.PROCEDURE` at it at runtime and record its sha256. Planted runs use the original file byte for byte; pinned clone cd4a4886 stays clean.\n\n## Specs (first, beside the module)\n\ncap drops lowest-ranked and records them; no-op under budget; override applied only for emotion and its sha256 recorded; planted uses the original procedure.\n\n## Reuse\n\n`feature_budget` in the clone's `fit.py` / `ladder.py` (read-only).\n\n## Definition of done\n\nCap and override specs pass; planted replays byte-identical again; clone `git status` clean.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-e2107695-2263-4be9-bbfe-c93cdff6e1de",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.558830Z",
+  "updated_at": "2026-10-02T00:39:25.104927Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

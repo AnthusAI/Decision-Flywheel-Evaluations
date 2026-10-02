@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "ba0c777a-6a9e-40d7-8665-438c3f1c9968",
+  "issue_id": "decision-flywheel-evaluations-a8bfcc93-3c58-43c4-8d7e-0bfa2a08f013",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.467Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "S2: Emotion loader, dev-100 and final slices, stratified label order",
+    "description": "## Purpose\n\nLoad Emotion from the committed manifest and local HF cache and lay out leakage-free slices.\n\n## Scope\n\nLoader from `studies/manifests/emotion.json` + `.data/huggingface/dair-ai___emotion` (ids `train-N` / `test-N`); dev-100 and a disjoint final slice from test via `seeded_slices`; pool from train; stratified `label_order` (seeded shuffle within label, round-robin across labels) so every 150-label round has >= 25 per class; leakage asserts (pool/dev/final disjoint by id and text hash).\n\n## Specs (first, beside the module)\n\nids follow `train-N` / `test-N`; slices disjoint and seed-stable; each round >= 25 per class; leakage assert fires on an injected overlap.\n\n## Reuse\n\n`seeded_slices`, `round_batches`.\n\n## Definition of done\n\nSpecs pass offline with a fixture; manifest revision and slice ids recorded; no dataset text committed.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

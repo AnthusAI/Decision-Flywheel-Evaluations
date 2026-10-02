@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "acec48bb-c3ee-4a63-a66e-97d1cee22330",
+  "issue_id": "decision-flywheel-evaluations-114680ea-ba66-4a67-93b8-e710d39f9005",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T00:39:24.745Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "S8: Main-session offline dry run, planted replays, tests and push",
+    "description": "## Purpose\n\nReview the offline build and make it the base for live stages.\n\n## Scope\n\nMain session: offline dry run on Emotion with fakes (all arms, 3 rounds x 150); both planted replays; review diffs of S1-S7; `make test` and `make unified-flywheel-test UF_PYTHON=/Users/home/Projects/Jev-Flywheel/.venv312/bin/python`; push.\n\n## Specs (first, beside the module)\n\nnone new (runs the S1-S7 specs and replays).\n\n## Reuse\n\neverything from S1-S7.\n\n## Definition of done\n\nDry run passes; replays byte-identical; both test targets green; pushed; printed request bounds per stage recorded here.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+    "labels": [
+      "roadmap",
+      "emotion-corpus",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Emotion Planning"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "decision-flywheel-evaluations-77a83520-3d70-43eb-9eec-f2c24f0159c1",
+  "title": "S1: Add the Corpus config with PLANTED; planted replays stay byte-identical",
+  "description": "## Purpose\n\nIntroduce a frozen `Corpus` config so the harness can run more than the planted corpus.\n\n## Scope\n\nNew `unified_corpus.py` with the `PLANTED` corpus (labels, task, few-shot feature names, rubric seed, prompts); `unified_splits` / `unified_loop` / `unified_cli` read from it; `--corpus {planted,emotion}` flag, planted default. Start from committed state (a4391f2); no bios code.\n\n## Specs (first, beside the module)\n\n`PLANTED` equals the current constants; CLI defaults to planted; unknown corpus rejected; replay byte-identity (cross-module, `tests/`).\n\n## Reuse\n\n`unified_splits.load_splits`, `TASK` in `unified_loop.py`.\n\n## Definition of done\n\nBoth planted replays (`var/unified-flywheel/phase2-live-seed1`, `seed2-live`) reproduce byte-identically; `make test` green.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-3addf81d-bd83-48e5-bedd-a6a4d464ee6a",
+  "labels": [
+    "roadmap",
+    "emotion-corpus",
+    "offline"
+  ],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-02T00:39:24.424287Z",
+  "updated_at": "2026-10-02T00:39:24.424311Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Emotion Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
