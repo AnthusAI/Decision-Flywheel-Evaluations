@@ -16,11 +16,17 @@ N-label conventions (two labels reproduce the old binary names exactly):
 * the offline fake Jev can answer an N-option choice question from ``fake_jev_cues``, a per-label keyword
   lexicon (a test double: its numbers mean nothing about Jev).
 
-``CORPORA`` is the registry behind ``--corpus``. ``planted`` is the default; ``emotion`` is registered with its loader and stratified order but still
-refuses runs (see ``unsupported_reason``). Further corpora are added by registering them here.
+``CORPORA`` is the registry behind ``--corpus``. ``planted`` is the default; ``emotion`` runs LABELS-ONLY (no
+comments are generated or read) but refuses anything that needs the explanation labeler until it exists
+(see ``labeler_unsupported_reason``). Further corpora are added by registering them here.
+
+Readiness has two levels: ``unsupported_reason`` blocks every run (``require_ready``), and
+``labeler_unsupported_reason`` blocks only what needs the explanation labeler, i.e. ``comments`` generation
+and a run that is handed comments (``require_labeler``).
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
@@ -56,6 +62,10 @@ class Corpus:
     fake_jev_positive_label: Optional[str]   # the label the offline fake Jev leans toward
     label_order_fn: Callable[[Splits, int], Tuple[str, ...]] = planted_label_order   # the fixed labeling order
     unsupported_reason: Optional[str] = None   # set while the corpus lacks plumbing a run needs; runs refuse with it
+    labeler_unsupported_reason: Optional[str] = None   # set while there is no explanation labeler: comments and comment-fed runs refuse
+    multiclass_metrics: bool = False   # also report macro-F1, per-class recall and the confusion matrix (planted: no, byte-identical)
+    workspace_items_from_pool: bool = False   # arm workspaces hold this corpus's POOL items, not the pinned fixtures' items.jsonl
+    fake_analyst_round1_reply: Optional[str] = None   # offline fake analyst's round-1 reply (None: the clone's planted recording)
     fake_jev_cues: Tuple[Tuple[str, Tuple[str, ...]], ...] = ()   # (label, keywords) pairs the offline fake Jev leans on; () = binary planted fake
     # The pinned steering procedure speaks of "the positive and negative examples" and "sentiment"; a corpus
     # that is not about sentiment sets ``reword_steering_prompt`` and the harness swaps in a reworded copy
@@ -78,6 +88,12 @@ class Corpus:
     def require_ready(self, what: str = "this command") -> None:
         if self.unsupported_reason:
             raise NotImplementedError(f"corpus {self.name!r} cannot run {what} yet: {self.unsupported_reason}")
+
+    def require_labeler(self, what: str = "this command") -> None:
+        """Refuse what needs the explanation labeler (comments) when the corpus has none yet."""
+        self.require_ready(what)
+        if self.labeler_unsupported_reason:
+            raise NotImplementedError(f"corpus {self.name!r} cannot run {what} yet: {self.labeler_unsupported_reason}")
 
     def _need(self, value: Any, what: str) -> Any:
         if value is None:
@@ -148,8 +164,15 @@ PLANTED = Corpus(
 )
 
 # The multi-class few-shot / kNN naming, probabilities and fake-Jev cues exist (plan step S3); the
-# labeler (S5) does not, so runs and comment generation still refuse Emotion with that reason. The
-# steering-prompt override and the feature-budget cap (S4) exist (unified_steering_prompt, unified_budget).
+# labeler (S5) does not, so comment generation and runs handed comments refuse Emotion with that reason,
+# while labels-only runs (no comments) work. The steering-prompt override and the feature-budget cap (S4)
+# exist (unified_steering_prompt, unified_budget).
+EMOTION_FAKE_ANALYST_ROUND1 = json.dumps({
+    "root_cause": "Offline fake analyst: strong bodily reactions may separate fear and surprise from sadness.",
+    "add_elements": [{"key": "bodily_reaction", "question_type": "noul",
+                      "instructions": "Does the text describe a strong bodily reaction such as trembling, tears or a racing heart?",
+                      "criteria": None}],
+    "retire_elements": [], "reword_elements": []})
 EMOTION_FAKE_JEV_CUES = (
     ("sadness", ("sad", "depressed", "miserable", "lonely", "grief", "heartbroken", "unhappy", "hopeless", "gloomy", "hurt")),
     ("joy", ("happy", "glad", "delighted", "cheerful", "thrilled", "excited", "joyful", "pleased", "blessed", "proud")),
@@ -168,7 +191,8 @@ EMOTION_CORPUS = Corpus(
     load_splits=load_emotion_corpus,
     labeler_style=None, fake_labeler_hook=None, fake_jev_positive_label=None,
     label_order_fn=emotion_label_order,
-    unsupported_reason="the explanation labeler is not built yet (plan step S5)",
+    labeler_unsupported_reason="the explanation labeler is not built yet (plan step S5)",
+    multiclass_metrics=True, workspace_items_from_pool=True, fake_analyst_round1_reply=EMOTION_FAKE_ANALYST_ROUND1,
     fake_jev_cues=EMOTION_FAKE_JEV_CUES,
     reword_steering_prompt=True, steer_examples_phrase="the examples of each label", steer_subject_phrase="the emotion",
     seed_score=emotion_seed_score_config, zero_shot_state=study_zero_shot_state,

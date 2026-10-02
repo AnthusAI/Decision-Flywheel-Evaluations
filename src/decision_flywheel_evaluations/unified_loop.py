@@ -86,7 +86,7 @@ from decision_flywheel.models import LabeledItem
 from jev_flywheel.answers import AnswerCache, import_answers_jsonl, question_hash
 from jev_flywheel.evaluate import summarize as jev_summarize
 from jev_flywheel.fit import TrainingSet, compare, fit_head, with_fit
-from jev_flywheel.items import LABEL_SOURCE_FINAL, FeedbackItem, agrees
+from jev_flywheel.items import LABEL_SOURCE_FINAL, FeedbackItem, agrees, normalize_label
 from jev_flywheel.items import Item as JevItem
 from jev_flywheel.jev import JevSession, fingerprint
 from jev_flywheel.ladder import LadderRefusal
@@ -112,7 +112,7 @@ from .unified_steering_prompt import original_procedure_sha256, steering_procedu
 from .unified_splits import (Splits, assert_labels_from_pool, assert_retrieval_pool_clean,
                              assert_target_excluded, fingerprint_ids, label_order, load_splits,
                              round_batches)
-from .unified_stats import ItemResult, contrasts, summarize
+from .unified_stats import ItemResult, contrasts, multiclass_contrasts, multiclass_summary, summarize
 
 HARNESS_VERSION = "unified-flywheel-1"
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")     # the first study; still the default
@@ -200,6 +200,8 @@ class RunConfig:
 
     def validate(self) -> None:
         self.corpus.require_ready("a flywheel run")
+        if self.comments:   # labels-only runs (no comments) never touch the labeler
+            self.corpus.require_labeler("a flywheel run with labeler comments")
         unknown = set(self.arms) - set(ARMS + FINAL_ONLY_ARMS)
         if unknown or not self.arms:
             raise HarnessError(f"unknown arms {sorted(unknown)}; choose from {ARMS + FINAL_ONLY_ARMS}")
@@ -503,12 +505,28 @@ class UnifiedFlywheel:
             os.replace(path.with_suffix(".staging"), path)
         return AnswerCache(path)
 
+    def _write_workspace_items(self, path: Path) -> None:
+        """The workspace's ``items.jsonl``: the pinned fixtures' items for planted; this corpus's POOL items otherwise.
+
+        The host reads item text from here for the labeled items (the analyst's briefing, the mismatch
+        examples, the top-up of new elements), so a corpus with its own items must not inherit another
+        corpus's file. Pool items only: held-out items (the test split, so dev-100 and paper-600) never
+        enter a workspace, and the gold label reaches it only as feedback, not in the item metadata.
+        """
+        if not self.corpus.workspace_items_from_pool:
+            shutil.copyfile(self.fixtures / "items.jsonl", path)
+            return
+        with path.open("w", encoding="utf-8") as handle:
+            for item_id in self.splits.pool:
+                handle.write(json.dumps({"id": item_id, "text": self.splits.items[item_id].text,
+                                         "metadata": {"split": "pool"}}, sort_keys=True) + "\n")
+
     def _workspace(self, arm: str) -> Workspace:
         root = self.run_dir / "workspaces" / arm.replace("+", "plus")
         if root.exists():
             shutil.rmtree(root)
         root.mkdir(parents=True)
-        shutil.copyfile(self.fixtures / "items.jsonl", root / "items.jsonl")
+        self._write_workspace_items(root / "items.jsonl")
         (root / "workspace.json").write_text(json.dumps({"engine": "jev", "answers": "shared"}) + "\n")
         (root / "answers.jsonl").symlink_to(self.run_dir / "answers.jsonl")
         workspace = Workspace(root)
@@ -745,6 +763,8 @@ class UnifiedFlywheel:
     def _offline_reply(self, round_number: int) -> str:
         if self.cfg.analyst_replies and round_number in self.cfg.analyst_replies:
             return self.cfg.analyst_replies[round_number]
+        if round_number == 1 and self.corpus.fake_analyst_round1_reply is not None:
+            return self.corpus.fake_analyst_round1_reply   # not the planted corpus's recorded topic_domain reply
         if round_number == 1:
             script = json.loads((self.fixtures / "recordings" / "simulated-labeler" / "script.json").read_text())
             return next(step["analyst_reply"] for step in script["steps"] if step["op"] == "steer")
@@ -890,6 +910,10 @@ class UnifiedFlywheel:
                 round_record["arms"][arm] = self._run_arm(arm, states[arm], round_number, batch, labeled)
             round_record["contrasts"] = contrasts(self.results[round_number], resamples=self.cfg.bootstrap_resamples,
                                                   seed=self.cfg.bootstrap_seed)
+            if self.corpus.multiclass_metrics:   # planted summaries gain no key
+                round_record["multiclass_contrasts"] = multiclass_contrasts(
+                    self.results[round_number], self.corpus.labels, resamples=self.cfg.bootstrap_resamples,
+                    seed=self.cfg.bootstrap_seed)
             if round_number in self.fewshot_diagnostics:
                 round_record["fewshot_vs_zero_shot"] = self.fewshot_diagnostics[round_number]
             rounds_out.append(round_record)
@@ -941,6 +965,7 @@ class UnifiedFlywheel:
         results, coverage = self._score(state.head, labeled)
         self.results[round_number][arm] = results
         out["metrics"] = summarize(results)
+        self._add_multiclass(out, results)
         out["evaluation_rows_missing_features"] = coverage
         self.ledger.raise_if_tripped()
         return out
@@ -1056,6 +1081,7 @@ class UnifiedFlywheel:
         results, coverage = self._score(state.head, labeled, fixed=state.example_list, list_arm=True)
         self.results[round_number][arm] = results
         out["metrics"] = summarize(results)
+        self._add_multiclass(out, results)
         out["evaluation_rows_missing_features"] = coverage
         self.ledger.raise_if_tripped()
         return out
@@ -1070,6 +1096,10 @@ class UnifiedFlywheel:
         changed = sum(a.get("choice") != b.get("choice") for a, b in pairs)
         return {"n": len(pairs), "choice_differs_rate": round(changed / len(pairs), 4) if pairs else None}
 
+    def _add_multiclass(self, out: Dict[str, Any], results: Sequence[ItemResult]) -> None:
+        if self.corpus.multiclass_metrics:   # planted summaries gain no key
+            out["multiclass"] = multiclass_summary(results, self.corpus.labels)
+
     def _score(self, head: Score, labeled: Sequence[str], *, fixed: Optional[FixedExampleList] = None,
                list_arm: bool = False) -> Tuple[List[ItemResult], int]:
         rows = (self._list_rows(head, self.eval_ids, fixed) if list_arm
@@ -1080,8 +1110,10 @@ class UnifiedFlywheel:
             if any(name not in row for name in head.decision.features):
                 missing += 1
             value, confidence = serve(head, row)
-            correct = int(agrees(value, self.splits.items[item_id].reference_label))
-            results.append(ItemResult(item_id, confidence, correct))
+            gold = self.splits.items[item_id].reference_label
+            correct = int(agrees(value, gold))
+            labels = (normalize_label(value), normalize_label(gold)) if self.corpus.multiclass_metrics else (None, None)
+            results.append(ItemResult(item_id, confidence, correct, *labels))
         return results, missing
 
     def _fewshot_diagnostic(self, labeled: Sequence[str]) -> Dict[str, Any]:
@@ -1182,12 +1214,17 @@ class UnifiedFlywheel:
                 decision = done["results"].get(item_id)
                 if decision is None:
                     continue
-                correct = int(agrees(decision.label, self.splits.items[item_id].reference_label))
-                rows.append(ItemResult(item_id, float(decision.confidence or 0.0), correct))
+                gold = self.splits.items[item_id].reference_label
+                correct = int(agrees(decision.label, gold))
+                labels = ((normalize_label(decision.label), normalize_label(gold))
+                          if self.corpus.multiclass_metrics else (None, None))
+                rows.append(ItemResult(item_id, float(decision.confidence or 0.0), correct, *labels))
             final[arm] = rows
             out[arm] = {"bundle": text_free(bundle.manifest()), "metrics": summarize(rows),
                         "unscored": len(self.eval_ids) - len(rows), "requests": done["requests"],
                         "failures": done["failures"]}
+            if self.corpus.multiclass_metrics and rows:   # planted summaries gain no key
+                out[arm]["multiclass"] = multiclass_summary(rows, self.corpus.labels)
         if self.cfg.replay and self.ledger.new_attempts:
             raise HarnessError(f"replay needed {self.ledger.new_attempts} uncached answers; it is not a pure replay")
         complete = {arm: rows for arm, rows in final.items() if len(rows) == len(self.eval_ids)}
@@ -1195,6 +1232,9 @@ class UnifiedFlywheel:
         self.bundles = {arm: entry["bundle"] for arm, entry in out.items()}
         record = {"round": "final", "scored_through": "reloaded bundles", "arms": out,
                   "contrasts": contrasts(complete, resamples=self.cfg.bootstrap_resamples, seed=self.cfg.bootstrap_seed)}
+        if self.corpus.multiclass_metrics:   # planted summaries gain no key
+            record["multiclass_contrasts"] = multiclass_contrasts(
+                complete, self.corpus.labels, resamples=self.cfg.bootstrap_resamples, seed=self.cfg.bootstrap_seed)
         return self._finish([record])
 
     def _finish(self, rounds_out: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -1246,8 +1286,10 @@ class UnifiedFlywheel:
             for round_number, by_arm in sorted(self.results.items()):
                 for arm, rows in by_arm.items():
                     for row in rows:
+                        extra = {} if row.predicted is None else {"predicted": row.predicted, "gold": row.gold}
                         handle.write(json.dumps({"round": round_number, "arm": arm, "item_id": row.item_id,
-                                                 "confidence": round(row.confidence, 6), "correct": row.correct}) + "\n")
+                                                 "confidence": round(row.confidence, 6), "correct": row.correct,
+                                                 **extra}) + "\n")
         return summary
 
 

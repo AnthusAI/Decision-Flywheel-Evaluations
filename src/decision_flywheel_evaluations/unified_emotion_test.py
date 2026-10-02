@@ -136,13 +136,23 @@ def test_the_planted_corpus_keeps_the_original_label_order_function():
     assert PLANTED.unsupported_reason is None
 
 
-def test_the_emotion_corpus_names_its_n_minus_one_features_but_still_refuses_runs_until_the_labeler_exists():
+def test_the_emotion_corpus_names_its_n_minus_one_features_and_runs_labels_only_but_refuses_the_labeler_until_it_exists():
     corpus = get_corpus("emotion")
-    assert corpus.unsupported_reason and "S5" in corpus.unsupported_reason
-    with pytest.raises(NotImplementedError, match="emotion"):
-        corpus.require_ready("a flywheel run")
+    assert corpus.unsupported_reason is None
+    corpus.require_ready("a flywheel run")   # labels-only runs need no labeler
+    assert corpus.labeler_unsupported_reason and "S5" in corpus.labeler_unsupported_reason
+    with pytest.raises(NotImplementedError, match="emotion.*S5"):
+        corpus.require_labeler("comment generation")
+    assert PLANTED.labeler_unsupported_reason is None
+    PLANTED.require_labeler("comment generation")
     assert corpus.fewshot_features == tuple(f"fewshot.clr.{label}" for label in EMOTION_LABELS[:-1])
     assert len(corpus.knn_features) == 5 + 6
+
+
+def test_only_the_emotion_corpus_reports_multiclass_metrics_and_keeps_its_own_workspace_items():
+    assert get_corpus("emotion").multiclass_metrics and get_corpus("emotion").workspace_items_from_pool
+    assert not PLANTED.multiclass_metrics and not PLANTED.workspace_items_from_pool
+    assert PLANTED.fake_analyst_round1_reply is None
 
 
 def test_the_task_wording_is_the_one_the_static_emotion_study_froze():

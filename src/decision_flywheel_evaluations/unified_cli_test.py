@@ -200,8 +200,25 @@ def test_an_unregistered_corpus_is_rejected_by_the_parser(capsys):
 
 
 
-def test_selecting_the_emotion_corpus_on_a_run_or_comments_fails_with_a_clear_error(capsys):
-    assert unified_cli.main(["run", "--corpus", "emotion"]) == 2
-    assert "corpus 'emotion' cannot run a flywheel run yet" in capsys.readouterr().err
+def test_emotion_comments_and_comment_fed_runs_refuse_clearly_until_the_labeler_exists(capsys, tmp_path):
+    comments_file = tmp_path / "c.jsonl"
+    comments_file.write_text("")
+    assert unified_cli.main(["run", "--corpus", "emotion", "--comments", str(comments_file)]) == 2
+    assert "corpus 'emotion' cannot run a flywheel run with --comments yet" in capsys.readouterr().err
     assert unified_cli.main(["comments", "--corpus", "emotion", "--out", "c.jsonl"]) == 2
     assert "corpus 'emotion' cannot run comment generation yet" in capsys.readouterr().err
+
+
+def test_a_labels_only_emotion_run_is_not_refused_at_the_corpus_gate(nothing_may_load):
+    """Without --comments the corpus gate passes; the run proceeds to load the environment (blocked here)."""
+    with pytest.raises(AssertionError, match="live gate"):
+        unified_cli.run(parser().parse_args(["run", "--corpus", "emotion"]))
+
+
+def test_per_round_defaults_to_100_and_feeds_the_request_upper_bound():
+    args = parser().parse_args(["run", "--arms", "0,A-c", "--rounds", "3"])
+    assert args.per_round == 100
+    base = unified_cli.upper_bound(args, parse_arms(args.arms))["total"]
+    bigger = unified_cli.upper_bound(parser().parse_args(["run", "--arms", "0,A-c", "--rounds", "3", "--per-round", "150"]),
+                                     parse_arms("0,A-c"))["total"]
+    assert bigger > base

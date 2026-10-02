@@ -64,6 +64,8 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--clone", type=Path, default=None)
     run.add_argument("--seed", type=int, default=1)
     run.add_argument("--rounds", type=int, default=3)
+    run.add_argument("--per-round", type=int, default=100,
+                     help="labels taken per round (default 100; the Emotion plan uses 150)")
     run.add_argument("--arms", default=",".join(UNIFIED_ARMS),
                      help="comma-separated subset of " + ",".join(ARMS) + "; or D alone with --final")
     run.add_argument("--retriever", choices=RETRIEVERS, default=None,
@@ -153,14 +155,14 @@ def upper_bound(args: argparse.Namespace, arms: tuple) -> Dict[str, int]:
             raise UsageError("arm D is final-only: run the rounds first, then --final --arms D --retriever ...")
         if args.retriever is None:
             raise UsageError(f"arm D needs --retriever ({','.join(RETRIEVERS)})")
-        return final_d_upper_bound(n_labeled=args.rounds * 100, eval_n=600)
+        return final_d_upper_bound(n_labeled=args.rounds * args.per_round, eval_n=600)
     if args.retriever is not None or args.embedding_cache is not None:
         raise UsageError("--retriever and --embedding-cache apply only to arm D")
     if args.final:
         if set(arms) - set(BUNDLE_ARMS):
             raise UsageError(f"--final scores frozen bundles; choose arms from {','.join(BUNDLE_ARMS)}")
         return final_upper_bound(arms, eval_n=600)
-    return request_upper_bound(arms, rounds=args.rounds, per_round=100, eval_n=100)
+    return request_upper_bound(arms, rounds=args.rounds, per_round=args.per_round, eval_n=100)
 
 
 def _offline_replies(path: Optional[Path]) -> Optional[Dict[int, str]]:
@@ -177,15 +179,18 @@ def _comments(path: Optional[Path]) -> Optional[Dict[str, str]]:
     return {str(row["item_id"]): str(row["comment"]) for row in rows if row.get("comment")}
 
 
-def _require_corpus_ready(name: str, what: str) -> None:
+def _require_corpus_ready(name: str, what: str, *, needs_labeler: bool = False) -> None:
+    corpus = get_corpus(name)
     try:
-        get_corpus(name).require_ready(what)
+        (corpus.require_labeler if needs_labeler else corpus.require_ready)(what)
     except NotImplementedError as error:
         raise UsageError(str(error)) from None
 
 
 def run(args: argparse.Namespace) -> Dict:
     _require_corpus_ready(args.corpus, "a flywheel run")
+    if args.comments is not None:   # labels-only runs need no labeler; handing it comments does
+        _require_corpus_ready(args.corpus, "a flywheel run with --comments", needs_labeler=True)
     arms = parse_arms(args.arms)
     eval_n = 600 if args.final else 100
     bound = upper_bound(args, arms)
@@ -215,7 +220,7 @@ def run(args: argparse.Namespace) -> Dict:
     mode = "live" if args.live else "offline"
     run_dir = args.run_dir or DEFAULT_RUN_ROOT / f"{mode}-seed{args.seed}"
     cfg = RunConfig(
-        corpus=get_corpus(args.corpus), clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, arms=arms,
+        corpus=get_corpus(args.corpus), clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, per_round=args.per_round, arms=arms,
         final=args.final, live=args.live, replay=args.replay, request_ceiling=args.request_ceiling,
         max_new_requests=args.max_new_requests, spend_ledger=args.spend_ledger,
         max_concurrency=args.max_concurrency, max_consecutive_failures=args.max_consecutive_failures,
@@ -247,7 +252,7 @@ def check_comment_gates(args: argparse.Namespace, needed: int) -> None:
 
 def comments(args: argparse.Namespace) -> Dict:
     """Comments for the first rounds x per-round labels of the seeded order; prints a text-free report."""
-    _require_corpus_ready(args.corpus, "comment generation")
+    _require_corpus_ready(args.corpus, "comment generation", needs_labeler=True)
     from . import unified_labeler as labeler
     from .unified_spend import SpendLedger
     from .unified_splits import DEV_SLICE_SIZE
@@ -283,6 +288,17 @@ def comments(args: argparse.Namespace) -> Dict:
     return report
 
 
+def _macro(arm_entry: Dict) -> Dict:
+    """Macro-F1 for the printed summary; only multi-class corpora carry it (planted output is unchanged)."""
+    return {"macro_f1": arm_entry["multiclass"]["macro_f1"]} if "multiclass" in arm_entry else {}
+
+
+def _macro_contrasts(entry: Dict) -> Dict:
+    return {"multiclass_contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
+                                     for name, by_metric in entry["multiclass_contrasts"].items()}
+            } if "multiclass_contrasts" in entry else {}
+
+
 def compact(summary: Dict) -> Dict:
     """The few numbers worth printing: metrics and requests per arm per round."""
     if summary.get("final_d"):
@@ -302,9 +318,10 @@ def compact(summary: Dict) -> Dict:
         return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "final": True,
                 "arms": {arm: {**{k: v["metrics"][k] for k in ("accuracy", "brier", "ece")},
                                "bundle": v["bundle"]["bundle_hash"][:12], "requests": v["requests"],
-                               "unscored": v["unscored"]} for arm, v in entry["arms"].items()},
+                               "unscored": v["unscored"], **_macro(v)} for arm, v in entry["arms"].items()},
                 "contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
                               for name, by_metric in entry["contrasts"].items()},
+                **_macro_contrasts(entry),
                 "requests_this_invocation": summary["requests"]["new_this_invocation"],
                 "upper_bound_requests": summary.get("upper_bound_requests")}
     rounds = []
@@ -314,10 +331,11 @@ def compact(summary: Dict) -> Dict:
             "arms": {arm: {**{k: entry["arms"][arm]["metrics"][k] for k in ("accuracy", "brier", "ece")},
                            "gate": (entry["arms"][arm].get("gate") or entry["arms"][arm].get("workspace_gate") or {}).get("decision"),
                            "steer": (entry["arms"][arm].get("steering") or {}).get("decision"),
-                           "features": len(entry["arms"][arm]["head_features"])}
+                           "features": len(entry["arms"][arm]["head_features"]), **_macro(entry["arms"][arm])}
                      for arm in entry["arms"]},
             "contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
                           for name, by_metric in entry["contrasts"].items()},
+            **_macro_contrasts(entry),
         })
     requests = summary["requests"]
     return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "rounds": rounds,

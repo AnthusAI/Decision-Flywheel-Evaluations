@@ -345,3 +345,12 @@ def test_features_the_arm_adds_after_steering_are_reserved_against_the_budget(tm
     monkeypatch.setattr(ladder, "tier_for", lambda n, *a: dataclasses.replace(real(n, *a), features_per_n_effective=20))
     flywheel._cap_to_budget("A+B", state, _labeled(flywheel), out)
     assert [d["key"] for d in out["feature_cap"]["dropped"]] == ["hedged"] and out["feature_cap"]["reserved_features"] == 1
+
+
+def test_the_planted_summary_and_predictions_carry_no_multiclass_keys(small_run):
+    flywheel, summary, _ = small_run
+    for round_ in summary["per_round"]:
+        assert "multiclass_contrasts" not in round_
+        assert all("multiclass" not in entry for entry in round_["arms"].values())
+    rows = [json.loads(line) for line in (flywheel.run_dir / "predictions.jsonl").read_text().splitlines()]
+    assert rows and all(set(row) == {"round", "arm", "item_id", "confidence", "correct"} for row in rows)
