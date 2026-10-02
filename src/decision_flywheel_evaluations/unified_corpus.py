@@ -16,6 +16,9 @@ N-label conventions (two labels reproduce the old binary names exactly):
 * the offline fake Jev can answer an N-option choice question from ``fake_jev_cues``, a per-label keyword
   lexicon (a test double: its numbers mean nothing about Jev).
 
+``fomc`` (rubric-dataset initiative) starts from a one-line rubric, has a ceiling arm (``CEIL``, the full
+guideline) and generates its explanations inside the loop from a simulated stakeholder.
+
 ``CORPORA`` is the registry behind ``--corpus``. ``planted`` is the default; ``emotion`` runs LABELS-ONLY (no
 comments are generated or read) but refuses anything that needs the explanation labeler until it exists
 (see ``labeler_unsupported_reason``). Further corpora are added by registering them here.
@@ -34,6 +37,8 @@ from typing import Any, Callable, Dict, Optional, Tuple
 from .unified_emotion import (EMOTION_CACHED_ZERO_SHOT, EMOTION_INSTRUCTIONS, EMOTION_LABELS, EMOTION_TASK_NAME,
                               emotion_label_order, emotion_seed_score_config, load_emotion_corpus,
                               study_shaped_factory, study_zero_shot_state)
+from .unified_fomc import (FOMC_FINAL_SIZE, FOMC_LABELS, FOMC_TASK_NAME, ceiling_score_config, fomc_label_order,
+                           guideline_text, load_fomc_corpus, seed_score_config, starting_rubric)
 from .unified_splits import Splits, label_order, load_splits
 
 
@@ -79,6 +84,11 @@ class Corpus:
     zero_shot_state: Optional[Callable[[str], Dict[str, Any]]] = None   # the state a zero-shot request carries
     zero_shot_client: Optional[Callable[[Callable], Callable]] = None   # wraps the zero-shot client factory to send that state
     cached_zero_shot: Optional[Path] = None   # repo-relative sqlite of the static study's zero-shot answers
+    # Rubric corpora (FOMC). All default to the old behaviour.
+    final_size: int = 600                      # the held-out FINAL slice's size (the request bound needs it before loading)
+    fill_seed_answers: bool = False            # no shipped seed answers: arm 0 asks the seed question of labels + slice
+    ceiling_score: Optional[Callable[[], Dict[str, Any]]] = None   # arm CEIL's question (the full guideline)
+    stakeholder_guideline: Optional[Callable[[], str]] = None      # the rubric stakeholder's guideline (in-loop comments)
 
     def __post_init__(self) -> None:
         if self.knn_share_feature is not None and self.knn_share_feature != f"knn.share.{self.labels[0]}":
@@ -144,6 +154,12 @@ class Corpus:
 
         return Scorecard.from_config({"name": self.score_name, "version": 1, "scores": [self.seed_score()]})
 
+    def ceiling_scorecard(self) -> Any:
+        from jev_flywheel.scorecard import Scorecard
+
+        config = self._need(self.ceiling_score, "ceiling question")()
+        return Scorecard.from_config({"name": self.score_name, "version": 1, "scores": [config]})
+
     def load(self, fixtures: Path, *, dev_size: int) -> Splits:
         return self.load_splits(fixtures, dev_size=dev_size)
 
@@ -199,7 +215,40 @@ EMOTION_CORPUS = Corpus(
     zero_shot_client=study_shaped_factory, cached_zero_shot=EMOTION_CACHED_ZERO_SHOT,
 )
 
-CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS}
+# FOMC (rubric-dataset initiative): starts from the one-line rubric S; CEIL asks the full guideline F;
+# the explanation arms get the in-loop rubric stakeholder (``unified_labeler.RubricStakeholder``), so
+# ``comments`` files are not used. Zero-shot requests go out in the R3 screen's state shape.
+FOMC_FAKE_ANALYST_ROUND1 = json.dumps({
+    "root_cause": "Offline fake analyst: the direction of inflation or prices may separate hawkish from dovish.",
+    "add_elements": [{"key": "prices_rising", "question_type": "noul",
+                      "instructions": "Does the sentence say that inflation, energy prices or house prices are rising?",
+                      "criteria": None}],
+    "retire_elements": [], "reword_elements": []})
+FOMC_FAKE_JEV_CUES = (
+    ("dovish", ("easing", "accommodative", "lower", "decline", "declined", "weak", "weaker", "slack", "subdued", "decrease")),
+    ("hawkish", ("tightening", "inflation", "higher", "rising", "increase", "increased", "strong", "stronger", "firming", "pressures")),
+    ("neutral", ("unchanged", "maintained", "mixed", "moderate", "reaffirmed", "sustained", "stable", "balanced", "members", "committee")),
+)
+FOMC_CORPUS = Corpus(
+    name="fomc",
+    labels=FOMC_LABELS,
+    score_name=FOMC_TASK_NAME,
+    instructions=starting_rubric(),
+    fewshot_key="fewshot", fewshot_wire="fomc.fewshot", fewshot_feature_prefix="fewshot.clr",
+    knn_share_feature="knn.share.dovish",
+    load_splits=load_fomc_corpus,
+    labeler_style="rubric-stakeholder", fake_labeler_hook="guideline-keyword-rule", fake_jev_positive_label=None,
+    label_order_fn=fomc_label_order,
+    multiclass_metrics=True, workspace_items_from_pool=True, fake_analyst_round1_reply=FOMC_FAKE_ANALYST_ROUND1,
+    fake_jev_cues=FOMC_FAKE_JEV_CUES,
+    reword_steering_prompt=True, steer_examples_phrase="the examples of each label",
+    steer_subject_phrase="the monetary policy stance",
+    seed_score=seed_score_config, zero_shot_state=study_zero_shot_state, zero_shot_client=study_shaped_factory,
+    final_size=FOMC_FINAL_SIZE, fill_seed_answers=True, ceiling_score=ceiling_score_config,
+    stakeholder_guideline=guideline_text,
+)
+
+CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS, FOMC_CORPUS.name: FOMC_CORPUS}
 DEFAULT_CORPUS = PLANTED.name
 CORPUS_CHOICES = tuple(CORPORA)
 

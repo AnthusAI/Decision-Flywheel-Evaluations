@@ -183,3 +183,15 @@ def test_failures_are_tallied_by_error_class_and_status_without_message_text():
 def test_arm_d_needs_one_request_per_labeled_item_and_per_evaluation_item():
     assert final_d_upper_bound(n_labeled=300, eval_n=600) == {"D": 900, "total": 900}
     assert final_d_upper_bound(n_labeled=80, eval_n=600)["total"] == 680
+
+
+def test_without_shipped_seed_answers_the_bound_adds_the_seed_question_over_every_label_and_the_slice_once():
+    cached = request_upper_bound(["0", "A-c"], rounds=3, per_round=100, eval_n=100)
+    uncached = request_upper_bound(["0", "A-c"], rounds=3, per_round=100, eval_n=100, seed_answers_cached=False)
+    assert uncached["seed-question"] == 300 + 100 and uncached["total"] == cached["total"] + 400
+    assert "seed-question" not in cached
+
+
+def test_the_explanation_controls_cost_what_a_c_costs_and_the_ceiling_one_request_per_slice_item():
+    bound = request_upper_bound(["A-c", "A-c-shuffled", "A-c-noisy", "CEIL"], rounds=3, per_round=100, eval_n=100)
+    assert bound["A-c"] == bound["A-c-shuffled"] == bound["A-c-noisy"] and bound["CEIL"] == 100

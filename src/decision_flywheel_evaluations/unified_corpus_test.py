@@ -32,9 +32,23 @@ def test_a_corpus_is_frozen():
         PLANTED.labels = ("a", "b")
 
 
-def test_planted_and_emotion_are_registered_and_planted_is_the_default():
-    assert CORPUS_CHOICES == ("planted", "emotion") and DEFAULT_CORPUS == "planted"
-    assert get_corpus("planted") is PLANTED and set(CORPORA) == {"planted", "emotion"}
+def test_planted_emotion_and_fomc_are_registered_and_planted_is_the_default():
+    assert CORPUS_CHOICES == ("planted", "emotion", "fomc") and DEFAULT_CORPUS == "planted"
+    assert get_corpus("planted") is PLANTED and set(CORPORA) == {"planted", "emotion", "fomc"}
+
+
+def test_the_rubric_fields_leave_planted_and_emotion_as_they_were():
+    for corpus in (PLANTED, EMOTION_CORPUS):
+        assert (corpus.final_size, corpus.fill_seed_answers, corpus.ceiling_score, corpus.stakeholder_guideline) == (
+            600, False, None, None)
+
+
+def test_the_fomc_corpus_starts_from_the_one_line_rubric_with_three_labels_in_fixed_order():
+    fomc = get_corpus("fomc")
+    assert fomc.labels == ("dovish", "hawkish", "neutral") and fomc.multiclass_metrics
+    assert fomc.instructions == fomc.seed_score()["instructions"] != fomc.ceiling_score()["instructions"]
+    assert fomc.stakeholder_guideline() == fomc.ceiling_score()["instructions"]
+    assert fomc.fill_seed_answers and fomc.final_size == 377
 
 
 def test_an_unknown_corpus_is_rejected_with_the_choices_named():

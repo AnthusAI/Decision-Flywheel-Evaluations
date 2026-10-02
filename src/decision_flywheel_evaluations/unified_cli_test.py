@@ -222,3 +222,56 @@ def test_per_round_defaults_to_100_and_feeds_the_request_upper_bound():
     bigger = unified_cli.upper_bound(parser().parse_args(["run", "--arms", "0,A-c", "--rounds", "3", "--per-round", "150"]),
                                      parse_arms("0,A-c"))["total"]
     assert bigger > base
+
+
+FOMC_ARMS = "0,A,A-c,A-c-shuffled,A-c-noisy,F,A-c+F,CEIL"
+FOMC_LIVE = ["run", "--corpus", "fomc", "--live", "--confirm", "--arms", FOMC_ARMS, "--rounds", "3",
+             "--spend-ledger", "jev.json", "--request-ceiling", "9500", "--max-new-requests", "9500",
+             "--provider-model", "jev-1.13.0", "--stakeholder-ledger", "stakeholder.json", "--stakeholder-max-calls", "180"]
+
+
+def test_fomc_bounds_count_the_seed_question_and_the_final_slice_of_377():
+    rounds = unified_cli.upper_bound(parser().parse_args(["run", "--corpus", "fomc", "--arms", FOMC_ARMS]),
+                                     parse_arms(FOMC_ARMS))
+    assert rounds["seed-question"] == 300 + 100 and rounds["CEIL"] == 100
+    final = unified_cli.upper_bound(parser().parse_args(["run", "--corpus", "fomc", "--final", "--arms", FOMC_ARMS]),
+                                    parse_arms(FOMC_ARMS))
+    assert final == {**{arm: 377 for arm in parse_arms(FOMC_ARMS)}, "total": 377 * 8}
+
+
+def test_the_stakeholder_bound_is_15_explanations_per_round_per_explanation_arm():
+    args = parser().parse_args(FOMC_LIVE)
+    assert unified_cli.stakeholder_upper_bound(args, parse_arms(FOMC_ARMS)) == 4 * 3 * 15
+
+
+@pytest.mark.parametrize("missing", ["--stakeholder-ledger", "--stakeholder-max-calls"])
+def test_a_live_fomc_run_with_explanation_arms_needs_the_stakeholder_ledger_and_cap(missing, nothing_may_load):
+    with pytest.raises(UsageError, match="stakeholder"):
+        unified_cli.run(parser().parse_args(_without(FOMC_LIVE, missing)))
+
+
+def test_a_stakeholder_cap_below_the_bound_is_refused(nothing_may_load):
+    argv = [t if t != "180" else "179" for t in FOMC_LIVE]
+    with pytest.raises(UsageError, match="stakeholder"):
+        unified_cli.run(parser().parse_args(argv))
+
+
+def test_stakeholder_options_without_live_are_refused(nothing_may_load):
+    with pytest.raises(UsageError, match="live-only"):
+        unified_cli.run(parser().parse_args(["run", "--corpus", "fomc", "--stakeholder-max-calls", "10"]))
+
+
+def test_fomc_takes_its_explanations_from_the_loop_not_a_comments_file(capsys, tmp_path):
+    comments_file = tmp_path / "c.jsonl"
+    comments_file.write_text("")
+    assert unified_cli.main(["run", "--corpus", "fomc", "--comments", str(comments_file)]) == 2
+    assert "inside the run" in capsys.readouterr().err
+    assert unified_cli.main(["comments", "--corpus", "fomc", "--out", "c.jsonl"]) == 2
+    assert "inside the run" in capsys.readouterr().err
+
+
+def test_the_explanation_controls_and_the_ceiling_are_refused_for_the_planted_corpus(capsys):
+    assert unified_cli.main(["run", "--arms", "0,A-c-shuffled"]) == 2
+    assert "stakeholder" in capsys.readouterr().err
+    assert unified_cli.main(["run", "--arms", "0,CEIL"]) == 2
+    assert "ceiling" in capsys.readouterr().err

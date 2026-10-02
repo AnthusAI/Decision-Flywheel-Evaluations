@@ -49,6 +49,7 @@ class Splits:
     test: Tuple[str, ...]
     paper600: Tuple[str, ...]
     dev100: Tuple[str, ...]
+    final_name: str = "paper-600"   # the name the held-out final slice is reported under
 
     def held_out(self) -> frozenset:
         return frozenset(self.test)
@@ -56,7 +57,7 @@ class Splits:
     def evaluation_slice(self, *, final: bool) -> Tuple[str, Tuple[str, ...]]:
         """The slice a run scores. paper-600 only behind an explicit ``final``."""
         if final:
-            return "paper-600", self.paper600
+            return self.final_name, self.paper600
         return "dev-100", self.dev100
 
 

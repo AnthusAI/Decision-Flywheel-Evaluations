@@ -21,6 +21,11 @@ calls OpenAI only with ``--live --confirm``; offline it uses a fake hashing embe
 ``comments`` writes the simulated reviewer's reasons for the labeled items (``unified_labeler``):
 offline with a deterministic fake by default, ``--replay`` from the cache, or ``--live --confirm``
 against OpenAI with a durable call ledger capped at 300 calls.
+
+``--corpus fomc`` gets its explanations INSIDE the run instead (``unified_labeler.RubricStakeholder``):
+each explanation arm's own errors on the round's new labels, at most 15 per round per arm. Offline that
+is a deterministic fake, ``--replay`` reads ``<run-dir>/stakeholder-cache.jsonl``, and ``--live`` asks
+gpt-6-luna only with ``--stakeholder-ledger`` and a ``--stakeholder-max-calls`` covering the bound.
 """
 from __future__ import annotations
 
@@ -35,8 +40,10 @@ from .unified_corpus import CORPUS_CHOICES, DEFAULT_CORPUS, get_corpus
 from .unified_spend import final_d_upper_bound, final_upper_bound, request_upper_bound
 
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")
-ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
-BUNDLE_ARMS = ("0", "A", "A-c", "F", "F-rand", "A-c+F")
+ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F", "A-c-shuffled", "A-c-noisy", "CEIL")
+BUNDLE_ARMS = ("0", "A", "A-c", "F", "F-rand", "A-c+F", "A-c-shuffled", "A-c-noisy", "CEIL")
+EXPLANATION_ARMS = ("A-c", "A-c+F", "A-c-shuffled", "A-c-noisy")
+STAKEHOLDER_CONTROL_ARMS = ("A-c-shuffled", "A-c-noisy")
 D_ARM = "D"                                     # final-only, optional (unified_retrieval)
 RETRIEVERS = ("embedding", "bm25", "lexical-v2", "lexical-v1")
 PLAN_REQUEST_CEILING = 9500
@@ -95,6 +102,10 @@ def parser() -> argparse.ArgumentParser:
     live.add_argument("--base-url", default=None)
     live.add_argument("--timeout-seconds", type=float, default=30.0)
     live.add_argument("--max-consecutive-failures", type=int, default=25)
+    live.add_argument("--stakeholder-ledger", type=Path, default=None,
+                      help="fomc explanation arms: the stakeholder's durable call counter (separate from Jev's)")
+    live.add_argument("--stakeholder-max-calls", type=int, default=None,
+                      help="fomc explanation arms: per-invocation stakeholder call cap (>= the printed bound)")
 
     comments = commands.add_parser("comments", help="write the simulated reviewer's reasons for the labeled items")
     comments.add_argument("--out", type=Path, required=True, help="JSONL of {item_id, comment} for run --comments")
@@ -126,6 +137,35 @@ def parse_arms(text: str) -> tuple:
     return tuple(a for a in ARMS if a in arms)
 
 
+def needs_stakeholder(args: argparse.Namespace, arms: tuple) -> bool:
+    return (get_corpus(args.corpus).stakeholder_guideline is not None and not args.final
+            and bool(set(arms) & set(EXPLANATION_ARMS)))
+
+
+def stakeholder_upper_bound(args: argparse.Namespace, arms: tuple) -> int:
+    """The most stakeholder calls a fresh run could make: 15 per round per explanation arm."""
+    from .unified_labeler import MAX_EXPLAINED_PER_ROUND
+
+    if not needs_stakeholder(args, arms):
+        return 0
+    return len(set(arms) & set(EXPLANATION_ARMS)) * args.rounds * MAX_EXPLAINED_PER_ROUND
+
+
+def check_stakeholder_gates(args: argparse.Namespace, arms: tuple) -> None:
+    from .unified_labeler import LABELER_CALL_CEILING
+
+    if not needs_stakeholder(args, arms):
+        return
+    if args.stakeholder_ledger is None:
+        raise UsageError("a live run with explanation arms needs --stakeholder-ledger, the stakeholder's call counter")
+    cap = args.stakeholder_max_calls
+    if cap is None or not 0 <= cap <= LABELER_CALL_CEILING:
+        raise UsageError(f"a live run with explanation arms needs --stakeholder-max-calls between 0 and {LABELER_CALL_CEILING}")
+    needed = stakeholder_upper_bound(args, arms)
+    if needed > cap:
+        raise UsageError(f"the stakeholder may need up to {needed} calls; --stakeholder-max-calls {cap} is lower")
+
+
 def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict[str, int]:
     """Every live gate, checked before any data is loaded or any client is constructed."""
     if getattr(args, "replay", False):
@@ -142,6 +182,7 @@ def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict
         raise UsageError("--live needs --max-new-requests between 0 and --request-ceiling")
     if args.analyst_replies is not None:
         raise UsageError("--analyst-replies is for offline runs; live runs replay their own recorded replies")
+    check_stakeholder_gates(args, arms)
     bound = upper_bound(args, arms)
     if bound["total"] > args.max_new_requests:
         raise UsageError(f"this run may need up to {bound['total']} requests ({bound}); "
@@ -150,19 +191,21 @@ def check_live_gates(args: argparse.Namespace, arms: tuple, eval_n: int) -> Dict
 
 
 def upper_bound(args: argparse.Namespace, arms: tuple) -> Dict[str, int]:
+    corpus = get_corpus(args.corpus)
     if D_ARM in arms:
         if not args.final:
             raise UsageError("arm D is final-only: run the rounds first, then --final --arms D --retriever ...")
         if args.retriever is None:
             raise UsageError(f"arm D needs --retriever ({','.join(RETRIEVERS)})")
-        return final_d_upper_bound(n_labeled=args.rounds * args.per_round, eval_n=600)
+        return final_d_upper_bound(n_labeled=args.rounds * args.per_round, eval_n=corpus.final_size)
     if args.retriever is not None or args.embedding_cache is not None:
         raise UsageError("--retriever and --embedding-cache apply only to arm D")
     if args.final:
         if set(arms) - set(BUNDLE_ARMS):
             raise UsageError(f"--final scores frozen bundles; choose arms from {','.join(BUNDLE_ARMS)}")
-        return final_upper_bound(arms, eval_n=600)
-    return request_upper_bound(arms, rounds=args.rounds, per_round=args.per_round, eval_n=100)
+        return final_upper_bound(arms, eval_n=corpus.final_size)
+    return request_upper_bound(arms, rounds=args.rounds, per_round=args.per_round, eval_n=100,
+                               seed_answers_cached=not corpus.fill_seed_answers)
 
 
 def _offline_replies(path: Optional[Path]) -> Optional[Dict[int, str]]:
@@ -192,14 +235,22 @@ def run(args: argparse.Namespace) -> Dict:
     if args.comments is not None:   # labels-only runs need no labeler; handing it comments does
         _require_corpus_ready(args.corpus, "a flywheel run with --comments", needs_labeler=True)
     arms = parse_arms(args.arms)
-    eval_n = 600 if args.final else 100
+    corpus = get_corpus(args.corpus)
+    if corpus.stakeholder_guideline is not None and args.comments is not None:
+        raise UsageError(f"corpus {corpus.name!r} generates its explanations inside the run; --comments is not used")
+    if set(arms) & set(STAKEHOLDER_CONTROL_ARMS) and corpus.stakeholder_guideline is None:
+        raise UsageError(f"arms {','.join(STAKEHOLDER_CONTROL_ARMS)} need the in-loop rubric stakeholder (--corpus fomc)")
+    if "CEIL" in arms and corpus.ceiling_score is None:
+        raise UsageError(f"corpus {corpus.name!r} defines no ceiling question for arm CEIL")
+    eval_n = corpus.final_size if args.final else 100
     bound = upper_bound(args, arms)
     if args.final and args.run_dir is None:
         raise UsageError("--final needs the --run-dir whose last round froze the bundles")
     if args.live:
         check_live_gates(args, arms, eval_n)
     else:
-        if args.confirm or args.spend_ledger or args.max_new_requests is not None:
+        if (args.confirm or args.spend_ledger or args.max_new_requests is not None or args.stakeholder_ledger
+                or args.stakeholder_max_calls is not None):
             raise UsageError("live-only options were given without --live; refusing to guess")
         if bool(args.provider_model) != bool(args.replay):
             raise UsageError("--provider-model without --live is only for --replay, and --replay needs it")
@@ -219,6 +270,7 @@ def run(args: argparse.Namespace) -> Dict:
 
     mode = "live" if args.live else "offline"
     run_dir = args.run_dir or DEFAULT_RUN_ROOT / f"{mode}-seed{args.seed}"
+    stakeholder = _stakeholder(args, arms, Path(run_dir)) if needs_stakeholder(args, arms) else None
     cfg = RunConfig(
         corpus=get_corpus(args.corpus), clone=Path(identity.path), run_dir=Path(run_dir), seed=args.seed, rounds=args.rounds, per_round=args.per_round, arms=arms,
         final=args.final, live=args.live, replay=args.replay, request_ceiling=args.request_ceiling,
@@ -228,10 +280,35 @@ def run(args: argparse.Namespace) -> Dict:
         analyst_replies=_offline_replies(args.analyst_replies), comments=_comments(args.comments),
         provider_model=args.provider_model or "fake-jev-0", base_url=args.base_url,
         timeout_seconds=args.timeout_seconds, bootstrap_resamples=args.bootstrap_resamples,
-        retriever=args.retriever, embedding_cache=args.embedding_cache)
+        retriever=args.retriever, embedding_cache=args.embedding_cache, stakeholder=stakeholder)
     summary = UnifiedFlywheel(cfg).run()
     summary["upper_bound_requests"] = bound
+    if stakeholder is not None:
+        summary["upper_bound_stakeholder_calls"] = stakeholder_upper_bound(args, arms)
+        if stakeholder.ledger is not None:
+            summary["stakeholder_ledger"] = {k: v for k, v in stakeholder.ledger.summary().items()
+                                             if k in ("ceiling", "cumulative_used", "new_this_invocation")}
     return summary
+
+
+def _stakeholder(args: argparse.Namespace, arms: tuple, run_dir: Path):
+    """The rubric stakeholder: fake offline, cache-only on replay, gpt-6-luna live (after every gate)."""
+    from . import unified_labeler as labeler
+    from .unified_spend import SpendLedger
+
+    corpus = get_corpus(args.corpus)
+    ledger = None
+    if args.live:
+        ledger = SpendLedger(args.stakeholder_ledger, labeler.LABELER_CALL_CEILING, max_new=args.stakeholder_max_calls,
+                             max_consecutive_failures=5, run_label=f"stakeholder-seed{args.seed}")
+        complete, model = labeler.openai_completion(labeler.DEFAULT_MODEL), labeler.DEFAULT_MODEL
+    elif args.replay:
+        complete, model = labeler.refusing_completion, labeler.DEFAULT_MODEL
+    else:
+        complete, model = labeler.fake_stakeholder_completion, labeler.STAKEHOLDER_FAKE_MODEL
+    return labeler.RubricStakeholder(corpus.stakeholder_guideline(), corpus.labels, complete, model=model,
+                                     cache=labeler.CommentCache(run_dir / "stakeholder-cache.jsonl"),
+                                     ledger=ledger, seed=args.seed)
 
 
 def check_comment_gates(args: argparse.Namespace, needed: int) -> None:
@@ -253,6 +330,8 @@ def check_comment_gates(args: argparse.Namespace, needed: int) -> None:
 def comments(args: argparse.Namespace) -> Dict:
     """Comments for the first rounds x per-round labels of the seeded order; prints a text-free report."""
     _require_corpus_ready(args.corpus, "comment generation", needs_labeler=True)
+    if get_corpus(args.corpus).stakeholder_guideline is not None:
+        raise UsageError(f"corpus {args.corpus!r} generates its explanations inside the run (run --corpus {args.corpus})")
     from . import unified_labeler as labeler
     from .unified_spend import SpendLedger
     from .unified_splits import DEV_SLICE_SIZE
@@ -299,6 +378,12 @@ def _macro_contrasts(entry: Dict) -> Dict:
             } if "multiclass_contrasts" in entry else {}
 
 
+def _explained(arm_entry: Dict) -> Dict:
+    """Stakeholder counts for the printed summary; only stakeholder runs carry them."""
+    record = arm_entry.get("stakeholder")
+    return {"explained": {k: record[k] for k in ("forwarded", "unexplainable", "new_calls")}} if record else {}
+
+
 def compact(summary: Dict) -> Dict:
     """The few numbers worth printing: metrics and requests per arm per round."""
     if summary.get("final_d"):
@@ -331,16 +416,21 @@ def compact(summary: Dict) -> Dict:
             "arms": {arm: {**{k: entry["arms"][arm]["metrics"][k] for k in ("accuracy", "brier", "ece")},
                            "gate": (entry["arms"][arm].get("gate") or entry["arms"][arm].get("workspace_gate") or {}).get("decision"),
                            "steer": (entry["arms"][arm].get("steering") or {}).get("decision"),
-                           "features": len(entry["arms"][arm]["head_features"]), **_macro(entry["arms"][arm])}
+                           "features": len(entry["arms"][arm]["head_features"]), **_macro(entry["arms"][arm]),
+                           **_explained(entry["arms"][arm])}
                      for arm in entry["arms"]},
             "contrasts": {name: {m: [v["effect"], v["lower"], v["upper"]] for m, v in by_metric.items()}
                           for name, by_metric in entry["contrasts"].items()},
             **_macro_contrasts(entry),
         })
     requests = summary["requests"]
-    return {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "rounds": rounds,
-            "requests_by_arm": requests["by_arm"], "requests_this_invocation": requests["new_this_invocation"],
-            "upper_bound_requests": summary.get("upper_bound_requests")}
+    out = {"mode": summary["mode"], "slice": summary["evaluation_slice"]["name"], "rounds": rounds,
+           "requests_by_arm": requests["by_arm"], "requests_this_invocation": requests["new_this_invocation"],
+           "upper_bound_requests": summary.get("upper_bound_requests")}
+    for key in ("upper_bound_stakeholder_calls", "stakeholder_ledger"):   # stakeholder runs only
+        if key in summary:
+            out[key] = summary[key]
+    return out
 
 
 def main(argv: Optional[List[str]] = None) -> int:

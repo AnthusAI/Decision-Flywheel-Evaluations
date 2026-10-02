@@ -50,6 +50,14 @@ labeler supplies comments (``RunConfig.comments``, see ``unified_labeler``), A-c
 like A. Each steering record notes how many comments the arm's feedback carried and the hashes of
 those the analyst's reply quoted.
 
+**Rubric corpora (FOMC).** With ``RunConfig.stakeholder`` set, each comment arm's feedback for the
+round's new labels carries the stakeholder's explanations of THAT arm's own errors (at most 15, most
+confident first, pool items only), produced inside the round (``unified_labeler.RubricStakeholder``).
+A-c-shuffled and A-c-noisy are A-c whose forwarded explanations are deranged across items or ~20%
+degraded (transforms in ``unified_labeler``, no loop of their own). Arm 0 asks the seed question itself
+when no fixtures ship its answers (``Corpus.fill_seed_answers``); CEIL asks the corpus's ceiling question
+(the full guideline) of the evaluation slice and serves Jev's own distribution, never refit.
+
 **Bundles.** At the end of every run the arms 0, A, A-c, F, F-rand and A-c+F are frozen as core
 ``ClassifierBundle`` directories (``run_dir/bundles/<arm>/round-<n>``; private, under ``var/``) and
 the summary records their hashes. ``final=True`` runs no rounds: it reloads the bundles of the
@@ -116,11 +124,15 @@ from .unified_stats import ItemResult, contrasts, multiclass_contrasts, multicla
 
 HARNESS_VERSION = "unified-flywheel-1"
 UNIFIED_ARMS = ("0", "A", "B-local", "B", "A+B")     # the first study; still the default
-ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F")
+ARMS = UNIFIED_ARMS + ("F", "F-rand", "A-c", "A-c+F", "A-c-shuffled", "A-c-noisy", "CEIL")
+STAKEHOLDER_CONTROL_ARMS = frozenset({"A-c-shuffled", "A-c-noisy"})   # need the in-loop rubric stakeholder
+CEILING_ARM = "CEIL"   # the corpus's ceiling question (full guideline), its own hand head, never refit
+FROZEN_ARMS = BUNDLE_ARMS + ("A-c-shuffled", "A-c-noisy", CEILING_ARM)   # every arm frozen for --final
 FINAL_ONLY_ARMS = (D_ARM,)   # optional dynamic retrieval (unified_retrieval); never part of the rounds
 F_RAND_SEED_OFFSET = 1000   # F-rand draws independently of F's own random-control trial
-WORKSPACE_ARMS = frozenset({"A", "A+B", "A-c", "A-c+F"})
-COMMENT_ARMS = frozenset({"A-c", "A-c+F"})
+WORKSPACE_ARMS = frozenset({"A", "A+B", "A-c", "A-c+F"}) | STAKEHOLDER_CONTROL_ARMS
+COMMENT_ARMS = frozenset({"A-c", "A-c+F"}) | STAKEHOLDER_CONTROL_ARMS
+SERVED_WORKSPACE_ARMS = frozenset({"A", "A-c"}) | STAKEHOLDER_CONTROL_ARMS   # serve the workspace head itself
 LIST_ARMS = frozenset({"F", "F-rand", "A-c+F"})
 FEWSHOT_ARMS = frozenset({"B", "A+B"})
 KNN_ARMS = frozenset({"B-local"})
@@ -197,6 +209,9 @@ class RunConfig:
     list_dev_max: Optional[int] = None             # None: every label outside the trial lists
     retriever: Optional[str] = None                # arm D only: one of unified_retrieval.RETRIEVERS
     embedding_cache: Optional[Path] = None         # arm D embedding: default run_dir/embeddings.jsonl
+    # The rubric stakeholder (``unified_labeler.RubricStakeholder``): explains each comment arm's own errors
+    # on the round's new labels, inside the loop. None: comments come from ``comments`` (or none at all).
+    stakeholder: Optional[Any] = None
 
     def validate(self) -> None:
         self.corpus.require_ready("a flywheel run")
@@ -220,8 +235,14 @@ class RunConfig:
             raise HarnessError("live mode needs a durable --spend-ledger for the cumulative ceiling")
         if self.replay and self.live:
             raise HarnessError("replay is offline: it may not be combined with live mode")
-        if self.final and set(self.arms) - set(BUNDLE_ARMS) - {D_ARM}:
-            raise HarnessError(f"the final run scores frozen bundles; choose arms from {BUNDLE_ARMS}")
+        if set(self.arms) & STAKEHOLDER_CONTROL_ARMS and self.stakeholder is None and not self.final:
+            raise HarnessError("the shuffled and noisy explanation arms need the in-loop rubric stakeholder")
+        if self.stakeholder is not None and self.comments:
+            raise HarnessError("comments come either from the in-loop stakeholder or from a comments file, not both")
+        if CEILING_ARM in self.arms and self.corpus.ceiling_score is None:
+            raise HarnessError(f"corpus {self.corpus.name!r} defines no ceiling question for arm {CEILING_ARM}")
+        if self.final and set(self.arms) - set(FROZEN_ARMS) - {D_ARM}:
+            raise HarnessError(f"the final run scores frozen bundles; choose arms from {FROZEN_ARMS}")
 
 
 @dataclass
@@ -478,6 +499,7 @@ class UnifiedFlywheel:
         self.fewshot_diagnostics: Dict[int, Dict[str, Any]] = {}
         self.bundles: Dict[str, Dict[str, Any]] = {}
         self._labeled_so_far: set = set()
+        self.arm_comments: Dict[str, Dict[str, str]] = {}   # stakeholder runs: each arm's forwarded comments
 
     # ---- setup ---------------------------------------------------------------------------
 
@@ -721,22 +743,45 @@ class UnifiedFlywheel:
 
     # ---- lever A -------------------------------------------------------------------------
 
+    def _comment_source(self, arm: str) -> Mapping[str, str]:
+        """The comments an arm's feedback draws on: the supplied file, or the stakeholder's for this arm."""
+        if self.cfg.stakeholder is None:
+            return self.cfg.comments or {}
+        return self.arm_comments.get(arm, {})
+
+    def _ask_stakeholder(self, arm: str, round_number: int, batch: Sequence[str],
+                         verdicts: Mapping[str, Tuple[Any, Any]]) -> None:
+        """This round's errors on the new POOL labels, most confident first, explained by the stakeholder."""
+        from .unified_labeler import StakeholderCase
+
+        wrong = sorted((i for i in batch if not agrees(verdicts[i][0], self.labels[i])),
+                       key=lambda i: (-float(verdicts[i][1] or 0.0), i))
+        assert_labels_from_pool(wrong, self.splits)
+        cases = [StakeholderCase(i, self.splits.items[i].text, str(verdicts[i][0]), self.labels[i]) for i in wrong]
+        self.arm_comments.setdefault(arm, {}).update(self.cfg.stakeholder.comments_for(arm, round_number, cases))
+
     def _record_feedback(self, workspace: Workspace, batch: Sequence[str], round_number: int, *,
                          predictions: Optional[Mapping[str, Tuple[str, float]]] = None,
-                         with_comments: bool = False) -> int:
+                         with_comments: bool = False, arm: str = "") -> int:
         """Feedback for the new labels; returns how many carried a labeler comment."""
         card = workspace.scorecard()
         score = card.score(self.corpus.score_name)
         questions = card.questions()
-        commented = 0
+        verdicts = {}
         for item_id in batch:
             if predictions is not None:
-                value, confidence = predictions[item_id]
+                verdicts[item_id] = predictions[item_id]
             else:
                 result = predict(score, self.cache.partial_answers_for(item_id, questions))
-                value, confidence = result.value, result.confidence
+                verdicts[item_id] = (result.value, result.confidence)
+        if with_comments and self.cfg.stakeholder is not None:
+            self._ask_stakeholder(arm, round_number, batch, verdicts)
+        source = self._comment_source(arm)
+        commented = 0
+        for item_id in batch:
+            value, confidence = verdicts[item_id]
             label = self.labels[item_id]
-            comment = (self.cfg.comments or {}).get(item_id) if with_comments else None
+            comment = source.get(item_id) if with_comments else None
             commented += int(bool(comment))
             workspace.add_feedback(FeedbackItem(
                 id=f"fb-{item_id}-s{self.cfg.seed}-r{round_number}", item_id=item_id, score_name=self.corpus.score_name,
@@ -803,8 +848,9 @@ class UnifiedFlywheel:
                                          "provider": self.cfg.analyst_provider, "model": self.cfg.analyst_model,
                                          "reply": raw}) + "\n")
         after = workspace.scorecard().score(self.corpus.score_name)
-        comments = [c for i, c in sorted((self.cfg.comments or {}).items())
-                    if arm in COMMENT_ARMS and i in self._labeled_so_far] if self.cfg.comments else []
+        supplied = self._comment_source(arm)
+        comments = [c for i, c in sorted(supplied.items())
+                    if arm in COMMENT_ARMS and i in self._labeled_so_far] if supplied else []
         cited = sorted({hashlib.sha256(c.encode()).hexdigest() for c in comments
                         if len(c) >= 12 and c in (raw or "")})
         record = {"round": round_number, "comments_in_feedback": len(comments), "reply_cites_comments": cited}
@@ -892,7 +938,8 @@ class UnifiedFlywheel:
         v1_score = self.v1.score(self.corpus.score_name)
         for arm in arms:
             workspace = self._workspace(arm) if arm in WORKSPACE_ARMS else None
-            states[arm] = ArmState(arm, Score.from_config(v1_score.to_config()), workspace)
+            seed = self.corpus.ceiling_scorecard().score(self.corpus.score_name) if arm == CEILING_ARM else v1_score
+            states[arm] = ArmState(arm, Score.from_config(seed.to_config()), workspace)
         labeled: List[str] = []
         rounds_out = []
         for round_number, batch in enumerate(self.batches, start=1):
@@ -920,7 +967,7 @@ class UnifiedFlywheel:
         if self.cfg.replay and self.ledger.new_attempts:
             raise HarnessError(f"replay needed {self.ledger.new_attempts} uncached answers; it is not a pure replay")
         self.bundles = {arm: text_free(self._freeze(arm, states[arm], labeled).manifest())
-                        for arm in arms if arm in BUNDLE_ARMS}
+                        for arm in arms if arm in FROZEN_ARMS}
         return self._finish(rounds_out)
 
     def _run_arm(self, arm: str, state: ArmState, round_number: int, batch: Sequence[str],
@@ -928,13 +975,21 @@ class UnifiedFlywheel:
         if arm in LIST_ARMS:
             return self._run_list_arm(arm, state, round_number, batch, labeled)
         out: Dict[str, Any] = {}
+        if arm in ("0", CEILING_ARM) and self.corpus.fill_seed_answers:
+            # No fixtures ship this corpus's seed answers: arm 0 asks the seed question of the new labels and
+            # the evaluation slice (shared with every arm); the ceiling asks its own question of the slice only.
+            ids = list(self.eval_ids) if arm == CEILING_ARM else list(batch) + list(self.eval_ids)
+            self._step(arm, round_number, "zero-shot", "fill-seed-question",
+                       lambda: self._fill_zero_shot(ids, state.head.questions()))
         if arm in WORKSPACE_ARMS:
             workspace = state.workspace
             existing = workspace.scorecard().questions()
             self._step(arm, round_number, "zero-shot", "top-up-new-labels",
                        lambda: self._fill_zero_shot(batch, existing))
             out["comments"] = self._record_feedback(workspace, batch, round_number,
-                                                    with_comments=arm in COMMENT_ARMS)
+                                                    with_comments=arm in COMMENT_ARMS, arm=arm)
+            if self.cfg.stakeholder is not None and arm in COMMENT_ARMS:
+                out["stakeholder"] = self.cfg.stakeholder.records[-1]
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
             self._cap_to_budget(arm, state, labeled, out)
@@ -948,7 +1003,7 @@ class UnifiedFlywheel:
             ws_score = workspace.scorecard().score(self.corpus.score_name)
             self._step(arm, round_number, "zero-shot", "fill-evaluation-slice",
                        lambda: self._fill_zero_shot(self.eval_ids, workspace.scorecard().questions()))
-            if arm in ("A", "A-c"):
+            if arm in SERVED_WORKSPACE_ARMS:
                 state.head = ws_score
         if arm in FEWSHOT_ARMS:
             out["fewshot_requests"] = self._step(
@@ -956,7 +1011,9 @@ class UnifiedFlywheel:
                 lambda: self._ensure_fewshot(list(labeled) + list(self.eval_ids), labeled))
             if round_number not in self.fewshot_diagnostics:
                 self.fewshot_diagnostics[round_number] = self._fewshot_diagnostic(labeled)
-        if arm not in ("A", "A-c"):
+        if arm == CEILING_ARM:
+            out["gate"] = {"arm": arm, "round": round_number, "decision": "fixed reference (not refit)"}
+        elif arm not in SERVED_WORKSPACE_ARMS:
             base = state.workspace.scorecard().score(self.corpus.score_name) if state.workspace else self.v1.score(self.corpus.score_name)
             template = candidate_template(base, fewshot=arm in FEWSHOT_ARMS, knn=arm in KNN_ARMS, corpus=self.corpus)
             state.head, gate, _ = self._gate(arm, round_number, template, state.head, labeled)
@@ -1039,7 +1096,9 @@ class UnifiedFlywheel:
             self._step(arm, round_number, "zero-shot", "top-up-new-labels",
                        lambda: self._fill_zero_shot(batch, existing))
             out["comments"] = self._record_feedback(workspace, batch, round_number, predictions=predictions,
-                                                    with_comments=arm in COMMENT_ARMS)
+                                                    with_comments=arm in COMMENT_ARMS, arm=arm)
+            if self.cfg.stakeholder is not None and arm in COMMENT_ARMS:
+                out["stakeholder"] = self.cfg.stakeholder.records[-1]
             out["steering"] = self._step(arm, round_number, "zero-shot", "steer",
                                          lambda: self._steer(arm, state, round_number))
             self._cap_to_budget(arm, state, labeled, out)
@@ -1144,7 +1203,7 @@ class UnifiedFlywheel:
                   "fit_id": provenance.get("fit_id"), "calibration": (decision.calibration or {}).get("method"),
                   "n_labels": len(labeled), "labels_fingerprint": fingerprint_ids(labeled)},
             provenance={"analyst_provider": self.cfg.analyst_provider, "analyst_model": self.cfg.analyst_model,
-                        "comments_supplied": arm in COMMENT_ARMS and bool(self.cfg.comments),
+                        "comments_supplied": arm in COMMENT_ARMS and bool(self._comment_source(arm)),
                         "steering": state.steering} if state.workspace is not None else {},
             fewshot_audit=state.list_record or {},
             lineage={"harness": HARNESS_VERSION, "arm": arm, "seed": self.cfg.seed, "round": len(self.batches),
@@ -1270,6 +1329,12 @@ class UnifiedFlywheel:
             "bundles": self.bundles,
             "requests": self.ledger.summary(),
         }
+        if self.cfg.stakeholder is not None:     # planted summaries gain no key
+            summary["policies"]["comments"] = {
+                "supplied": sum(len(c) for c in self.arm_comments.values()),
+                "source": "rubric stakeholder: each comment arm's own errors on the round's new pool labels",
+                "model": self.cfg.stakeholder.model}
+            summary["stakeholder"] = self.cfg.stakeholder.records
         if self.zero_shot_import is not None:    # planted summaries gain no key
             summary["zero_shot_import"] = self.zero_shot_import
         if self.corpus.reword_steering_prompt:   # planted summaries gain no key

@@ -259,7 +259,8 @@ class CountingSyncClient(_Counting):
             self.slots.release()
 
 
-def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Dict[str, int]:
+def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int,
+                        seed_answers_cached: bool = True) -> Dict[str, int]:
     """The most requests a fresh run could make, per arm, before anything is cached.
 
     * A / A+B / A-c (zero-shot), round r: top up existing elements for the new labels (none in
@@ -273,6 +274,10 @@ def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Di
     * F-rand: its list over every label and the evaluation slice. A-c+F: A-c's steering
       top-ups plus F's requests for its own question set.
     * 0 and B-local: nothing.
+    * A-c-shuffled and A-c-noisy: as A-c. CEIL: its own question of the evaluation slice, once.
+    * ``seed_answers_cached=False`` (FOMC: no fixtures ship the seed answers): one more line,
+      ``seed-question``, for the seed question over every label and the evaluation slice. Whichever arm
+      asks it first pays; every other arm reads the shared cache.
     """
     arms = set(arms)
     out: Dict[str, int] = {}
@@ -281,7 +286,7 @@ def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Di
         for r in range(1, rounds + 1):
             labeled = r * per_round
             new_labels = per_round if r > 1 else 0
-            if arm in ("A", "A+B", "A-c", "A-c+F"):
+            if arm in ("A", "A+B", "A-c", "A-c+F", "A-c-shuffled", "A-c-noisy"):
                 total += new_labels + labeled + eval_n
             if arm == "B" or (arm == "A+B" and "B" not in arms):
                 total += labeled + eval_n
@@ -289,7 +294,11 @@ def request_upper_bound(arms, *, rounds: int, per_round: int, eval_n: int) -> Di
                 total += new_labels + 3 * labeled + labeled + eval_n
             if arm == "F-rand":
                 total += labeled + eval_n
+            if arm == "CEIL" and r == 1:
+                total += eval_n
         out[arm] = total
+    if not seed_answers_cached:
+        out["seed-question"] = rounds * per_round + eval_n
     out["total"] = sum(out.values())
     return out
 
