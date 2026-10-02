@@ -3,7 +3,7 @@
   "title": "L1: Live round 1, labels-only arms 0/A/F/F-rand/A+F on dev-100 (bound ~2,450) -> STOP 1",
   "description": "## Purpose\n\nFirst live reading of the labels-only arms 0, A, F, F-rand and A+F on Emotion (A and A+F = harness A-c and A-c+F with an EMPTY comments input; no comment generation). Tests labels-only learning from disagreements; no stakeholder explanations exist in this dataset.\n\n## Scope\n\nRound 1 (150 labels), all arms scored on dev-100.\n\n## Request bound and cost cap\n\nBound ~2,450 Jev requests (use the printed bound). Cap: ~$2.50 (no labeler calls; analyst only). Fresh ledger for this stage; gate needs `--max-new-requests` >= printed bound and <= ceiling; circuit breaker on; failures tallied by error class. Counts toward the hard cumulative cap of $10.\n\n## Stop-point checks\n\n**STOP 1** (owner looks): are A's elements (from disagreements only) sensible; did the feature cap fire. No L2 until the owner says go.\n\n## Definition of done\n\nDev-100 table per arm (macro-F1, acc, per-class recall); elements and dropped elements listed; actual spend.\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "b921f739-95f2-4cba-80a2-bb935c3cb24f",
+      "author": "home",
+      "text": "Done 2026-10-02 (STOP 1 reached): live round 1 labels-only, 150 labels, scored on dev-100 (noisy: ~2 'surprise' items), 1,660 Jev requests, 0 failures, free cached zero-shot baseline imported (700 items, 0 wire mismatches), feature cap did not fire. Accuracy / macro-F1: 0 baseline 0.56/0.413; A 0.48/0.365 (promoted relational_care); F 0.51/0.415; F-rand 0.50/0.397; A+F 0.50/0.406. All differences within dev-100 noise except A accuracy -8 pts. Waiting on owner to look before L2 (rounds 2-3).",
+      "created_at": "2026-10-02T02:19:20.477387Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.836495Z",
-  "updated_at": "2026-10-02T01:16:56.918728Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T02:19:20.495654Z",
+  "closed_at": "2026-10-02T02:19:20.495624Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

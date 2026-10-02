@@ -3,7 +3,7 @@
   "title": "S8: Main-session offline dry run, planted replays, tests and push",
   "description": "## Purpose\n\nReview the offline build and make it the base for live stages.\n\n## Scope\n\nMain session: offline dry run on Emotion with fakes (all arms, 3 rounds x 150); both planted replays; review diffs of S1-S7; `make test` and `make unified-flywheel-test UF_PYTHON=/Users/home/Projects/Jev-Flywheel/.venv312/bin/python`; push.\n\n## Specs (first, beside the module)\n\nnone new (runs the S1-S7 specs and replays).\n\n## Reuse\n\neverything from S1-S7.\n\n## Definition of done\n\nDry run passes; replays byte-identical; both test targets green; pushed; printed request bounds per stage recorded here.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "124cf43e-3553-40f0-8071-041717f64779",
+      "author": "home",
+      "text": "Done 2026-10-02: offline Emotion dry run on the fake Jev completes for arms 0, A-c, F, F-rand, A-c+F, 3 rounds x 150 labels (about 6,000 fake requests, 0 failures, gate upper bound 12,600); planted replays byte-identical after S1, S3, S4, S6, S7 (agents) ; harness 231 specs and repo 439 specs pass; S7 found and fixed workspace contamination (planted items in Emotion workspaces); pushed 9e160f7.",
+      "created_at": "2026-10-02T02:19:20.440040Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.745894Z",
-  "updated_at": "2026-10-02T00:39:25.191617Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T02:19:20.461175Z",
+  "closed_at": "2026-10-02T02:19:20.461139Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
