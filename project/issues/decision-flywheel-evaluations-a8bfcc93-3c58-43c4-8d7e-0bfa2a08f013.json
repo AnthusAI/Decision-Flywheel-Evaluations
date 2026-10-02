@@ -3,7 +3,7 @@
   "title": "S2: Emotion loader, dev-100 and final slices, stratified label order",
   "description": "## Purpose\n\nLoad Emotion from the committed manifest and local HF cache and lay out leakage-free slices.\n\n## Scope\n\nLoader from `studies/manifests/emotion.json` + `.data/huggingface/dair-ai___emotion` (ids `train-N` / `test-N`); dev-100 and a disjoint final slice from test via `seeded_slices`; pool from train; stratified `label_order` (seeded shuffle within label, round-robin across labels) so every 150-label round has >= 25 per class; leakage asserts (pool/dev/final disjoint by id and text hash).\n\n## Specs (first, beside the module)\n\nids follow `train-N` / `test-N`; slices disjoint and seed-stable; each round >= 25 per class; leakage assert fires on an injected overlap.\n\n## Reuse\n\n`seeded_slices`, `round_batches`.\n\n## Definition of done\n\nSpecs pass offline with a fixture; manifest revision and slice ids recorded; no dataset text committed.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "45a84163-ee8d-4aa0-83e5-65f4106a8d80",
+      "author": "home",
+      "text": "S2 done in ec17709 (local, not pushed). New unified_emotion.py + spec; Corpus gained label_order_fn and unsupported_reason (planted unchanged); emotion registered, runs/comments refuse it until S3-S5. Real data: pool 1536 (256/label); dev-100 {sadness 28, joy 36, anger 14, fear 13, love 7, surprise 2}; FINAL-600 {sadness 173, joy 199, anger 96, fear 68, love 40, surprise 24}; duplicates dropped 0; 150-label rounds exactly 25 per class. unified specs 147 passed; make test 396 passed 5 skipped. Seeds: unified-flywheel-emotion-dev100-v1 / -final600-v1 / -label-order-v1. Task wording lives in study_setup._TASKS and studies/selected/emotion.protocol.json (task.instructions).",
+      "created_at": "2026-10-02T01:06:50.991463Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.466997Z",
-  "updated_at": "2026-10-02T00:39:25.063376Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T01:06:51.009916Z",
+  "closed_at": "2026-10-02T01:06:51.009881Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
