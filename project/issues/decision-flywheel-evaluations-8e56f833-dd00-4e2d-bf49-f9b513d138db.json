@@ -3,7 +3,7 @@
   "title": "Step 3: REVIEWS corpus in unified_corpus.py and reviews loader in rubric_screen.py",
   "description": "## Purpose\n\nStep 3: `REVIEWS` corpus in `unified_corpus.py` and a reviews loader in `scripts/rubric_screen.py`.\n\n## Scope\n\n- Labels (precedence order abusive > promotional > seller_shipping > price_availability > approve; merge abusive into \"remove_other\" if < 20 pool cases), S one-liner, F path (under `var/`), ceiling, `final_size=300`, multiclass metrics.\n- Splits: SME labels 1,500; stream 600 + held-out 300 drawn stratified by SME label (each minority class >= ~10%); natural-mix random 300 reported too. Disjoint partitions; nothing tuned on held-out.\n- Reviews loader in `scripts/rubric_screen.py` for the Stage 0 S-vs-F screen.\n\n## Definition of done\n\nSpecs pass offline with fixtures; `make test` and `make unified-flywheel-test` green; existing corpora replays byte-identical.\n\n## Caps\n\n$0 (offline).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -20,10 +20,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1c81b3fc-c1b8-4fca-a66f-22452060277d",
+      "author": "home",
+      "text": "Done in 4233620 (local, not pushed). unified_reviews.py + spec (15 specs, offline, synthetic pool/cache + fake SME); corpora 'reviews' and 'reviews-merged' registered in unified_corpus.py (labels approve, abusive, promotional, seller_shipping, price_availability; S = studies/amazon_reviews/S.txt; F = var/policy/amazon_reviews_F.txt read only for ceiling/stakeholder; final_size 300; multiclass). Merge abusive+promotional -> remove_other decided from data (abusive < 20 SME-labeled); each corpus refuses the other's data. Splits: held-out 300 + stream 600 stratified by SME label (>=10% per class where available, 1:2 cut), dev-100 from the rest, seed reviews-splits-v1; ambiguous/rejected/unlabeled excluded and counted; natural-mix SME labels reported separately. SME cache read via mode=ro (live cache never written). rubric_screen: --datasets reviews --split heldout --conditions S,F (+ --dry-run); scripts/reviews_splits.py prints the report. Not run on real data (SME run in progress). Screen = 600 Jev requests upper bound; max request ~1,500 tokens (F 1,387 + review <=117, words x1.3). make test 534 passed/11 skipped; unified-flywheel-test 319 passed; phase2-live-seed1 copies replayed (rounds and --final): predictions.jsonl and final-predictions.jsonl byte-identical, 0 requests.",
+      "created_at": "2026-10-02T19:35:26.685792Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T18:52:55.061058Z",
-  "updated_at": "2026-10-02T18:53:04.354901Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T19:35:26.704114Z",
+  "closed_at": "2026-10-02T19:35:26.704076Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
