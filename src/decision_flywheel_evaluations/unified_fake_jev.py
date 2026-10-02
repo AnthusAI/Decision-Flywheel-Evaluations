@@ -15,7 +15,14 @@ Answers are pure functions of (text, question, examples), so two runs are identi
 the offline loop exercise promotion as well as rejection, the fake can be handed a *planted
 signal*: a map from a text's SHA-256 to its reference label. Element answers then lean toward
 that label, and the few-shot answer blends a similarity-weighted vote of the shown examples
-with it. This is a test double -- its numbers mean nothing about Jev.
+with it.
+
+For a corpus with more than two labels, ``cues`` maps each label to a few keywords. The cued label
+of a text is the label with most keyword hits (ties go to the earlier label); a ``choice`` answer
+leans toward it, and a few-shot answer blends that with a similarity-weighted vote of the shown
+examples' labels, so it changes with the examples exactly as the planted fake does. ``noul`` and
+``score`` answers carry no lean in this mode. With no ``cues`` (the planted binary corpus) nothing
+changes. This is a test double -- its numbers mean nothing about Jev.
 """
 from __future__ import annotations
 
@@ -52,8 +59,21 @@ class FakeJevCore:
     positive_label: str = "positive"
     strength: float = 0.3
     calls: int = 0
+    cues: Mapping[str, Any] = field(default_factory=dict)   # label -> keywords; non-empty selects the N-label mode
+
+    def cued_label(self, text: str) -> Optional[str]:
+        """The label with the most keyword hits in ``text`` (ties: earlier label); None if no keyword hits."""
+        tokens = _tokens(text)
+        best, best_hits = None, 0
+        for label, words in self.cues.items():
+            hits = sum(1 for word in words if word in tokens)
+            if hits > best_hits:
+                best, best_hits = label, hits
+        return best
 
     def _lean(self, text: str) -> float:
+        if self.cues:
+            return 0.0
         label = self.planted.get(text_key(text))
         if label is None:
             return 0.0
@@ -87,6 +107,8 @@ class FakeJevCore:
             level = max(range(levels), key=lambda i: weights[i])
             return {"type": "score", "score": float(level), "confidence": probabilities[str(level)],
                     "probabilities": probabilities, "legend": {str(i): o for i, o in enumerate(options)}}
+        if self.cues:
+            return self._multi_choice(name, question, text, examples, options)
         # choice: lean toward the first option for the planted positive label
         first = 0.5 + lean + 0.5 * noise
         if examples and self.positive_label in options:
@@ -108,6 +130,28 @@ class FakeJevCore:
             ordered = options
         probabilities = {o: round(first if i == 0 else rest, 4) for i, o in enumerate(ordered)}
         choice = max(probabilities, key=probabilities.get)
+        return {"type": "choice", "choice": choice, "confidence": probabilities[choice],
+                "probabilities": probabilities}
+
+    def _multi_choice(self, name: str, question: Mapping[str, Any], text: str, examples,
+                      options) -> Dict[str, Any]:
+        cued = self.cued_label(text)
+        prior = {o: 1.0 + 0.5 * (_unit("noise", name, question, text, o) - 0.5) + (10.0 * self.strength if o == cued else 0.0)
+                 for o in options}
+        total = sum(prior.values())
+        weights = {o: prior[o] / total for o in options}
+        if examples:
+            target = _tokens(text)
+            votes = {o: 0.0 for o in options}
+            for example in examples:
+                other = _tokens(example["text"])
+                sim = len(target & other) / math.sqrt(max(1, len(target)) * max(1, len(other)))
+                if example["label"] in votes:
+                    votes[example["label"]] += sim + 1e-3
+            vote_total = sum(votes.values()) or 1.0
+            weights = {o: 0.5 * votes[o] / vote_total + 0.5 * weights[o] for o in options}
+        probabilities = {o: round(weights[o] / sum(weights.values()), 4) for o in options}
+        choice = max(options, key=lambda o: (probabilities[o], -options.index(o)))
         return {"type": "choice", "choice": choice, "confidence": probabilities[choice],
                 "probabilities": probabilities}
 

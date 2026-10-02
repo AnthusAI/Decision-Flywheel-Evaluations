@@ -4,9 +4,10 @@ For each item, the k=8 nearest labeled neighbours by the *same* lexical overlap 
 Decision-Flywheel's ``PerLabelLexicalRetrieval`` ranks with (cosine-normalized overlap of
 lowercase alphabetic token sets), **without** balancing by label. The head then gets:
 
-* ``knn.share.positive`` -- the similarity-weighted share of positive labels among the k.
-  ``knn.share.negative`` is ``1 - share.positive`` for two labels, so it is omitted: it would
-  be exactly collinear and only split the regularized weight.
+* ``knn.share.<label>`` -- the similarity-weighted share of that label among the k, for every
+  label but the last (``Corpus.knn_share_features``). The last share is ``1 - sum`` of the
+  others (for two labels: ``knn.share.negative = 1 - share.positive``), so it is omitted: it
+  would be exactly collinear and only split the regularized weight.
 * ``knn.top4.<label>`` -- the mean similarity of the 4 most similar labeled items carrying
   each label, searched over the whole labeled pool (not only the k).
 
@@ -93,11 +94,12 @@ def knn_features(target_id: str, target_text: str, pool: Sequence[PoolEntry], *,
     nearest = ranked[:k]
     assert_target_excluded(target_id, [entry.id for _, entry in nearest])
     total = sum(sim for sim, _ in nearest)
-    if total > 0:
-        share = sum(sim for sim, entry in nearest if entry.label == corpus.labels[0]) / total
-    else:  # no lexical overlap at all: fall back to the unweighted vote of the k
-        share = sum(1 for _, entry in nearest if entry.label == corpus.labels[0]) / k
-    features = {corpus.knn_share_feature: share}
+    features = {}
+    for label, name in zip(corpus.labels, corpus.knn_share_features):
+        if total > 0:
+            features[name] = sum(sim for sim, entry in nearest if entry.label == label) / total
+        else:  # no lexical overlap at all: fall back to the unweighted vote of the k
+            features[name] = sum(1 for _, entry in nearest if entry.label == label) / k
     for label, name in zip(corpus.labels, corpus.knn_top_features):
         sims = [sim for sim, entry in ranked if entry.label == label][:top]
         features[name] = sum(sims) / len(sims) if sims else 0.0

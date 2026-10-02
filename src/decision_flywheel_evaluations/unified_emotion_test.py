@@ -136,13 +136,13 @@ def test_the_planted_corpus_keeps_the_original_label_order_function():
     assert PLANTED.unsupported_reason is None
 
 
-def test_the_emotion_corpus_refuses_runs_that_need_the_multi_class_features_not_built_yet():
+def test_the_emotion_corpus_names_its_n_minus_one_features_but_still_refuses_runs_until_the_labeler_and_steering_exist():
     corpus = get_corpus("emotion")
-    assert corpus.unsupported_reason
+    assert corpus.unsupported_reason and "S4-S5" in corpus.unsupported_reason
     with pytest.raises(NotImplementedError, match="emotion"):
-        corpus.fewshot_feature
-    with pytest.raises(NotImplementedError, match="emotion"):
-        corpus.knn_features
+        corpus.require_ready("a flywheel run")
+    assert corpus.fewshot_features == tuple(f"fewshot.clr.{label}" for label in EMOTION_LABELS[:-1])
+    assert len(corpus.knn_features) == 5 + 6
 
 
 def test_the_task_wording_is_the_one_the_static_emotion_study_froze():

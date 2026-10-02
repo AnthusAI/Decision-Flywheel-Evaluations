@@ -32,6 +32,22 @@ def _as_dict(value: Any) -> dict:
     return value.model_dump() if hasattr(value, "model_dump") else dict(value)
 
 
+def _class_probabilities(raw: Optional[Mapping[str, float]], top: str, confidence: float, others) -> Dict[str, float]:
+    """The head's per-class probabilities with the top class at the (possibly calibrated) confidence.
+
+    Without calibration the top probability already equals ``confidence`` and nothing is rescaled;
+    with it, the other classes keep their relative proportions and share ``1 - confidence``. If the
+    head reports no probabilities (or none for the others) they share it evenly, as for two classes.
+    """
+    rest = {c: max(float(raw.get(c, 0.0)), 0.0) for c in others} if raw else {}
+    mass = sum(rest.values())
+    if mass <= 0.0:
+        return {top: confidence, **{c: (1.0 - confidence) / len(others) for c in others}}
+    scale = (1.0 - confidence) / mass
+    probabilities = {top: confidence, **{c: rest[c] * scale for c in others}}
+    return {c: probabilities[c] for c in (top, *others)}
+
+
 class ScoreRubric:
     def __init__(self, score: Score):
         self.score = score
@@ -52,7 +68,11 @@ class ScoreRubric:
         result = predict(self.score, {}, features=self.score.feature_vector(normalized))
         confidence = min(max(float(result.confidence or 0.0), 0.0), 1.0)
         others = [c for c in self.score.decision.classes if c != result.value]
-        probabilities = {result.value: confidence, **{c: (1.0 - confidence) / len(others) for c in others}}
+        if len(others) == 1:   # two classes: the exact legacy numbers
+            probabilities = {result.value: confidence, **{c: (1.0 - confidence) / len(others) for c in others}}
+        else:                  # N > 2: the head's own probabilities, rescaled only if calibration moved the top
+            raw = (result.metadata or {}).get("decision", {}).get("probabilities")
+            probabilities = _class_probabilities(raw, result.value, confidence, others)
         return DecisionResult(result.value, probabilities, confidence=confidence)
 
 

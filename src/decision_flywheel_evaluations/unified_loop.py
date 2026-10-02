@@ -233,7 +233,7 @@ def offline_engines(cfg: RunConfig, splits: Splits, ledger: SpendLedger,
     if core is None:
         planted = {text_key(item.text): item.reference_label for item in splits.items.values()}
         core = FakeJevCore(planted=planted, positive_label=cfg.corpus.fake_jev_positive_label,
-                           strength=cfg.fake_signal_strength)
+                           strength=cfg.fake_signal_strength, cues=dict(cfg.corpus.fake_jev_cues))
     slots = concurrency_slots(cfg.max_concurrency)
     adapter = JevAdapter(CountingSyncClient(lambda: FakeJevSync(core), ledger, slots),
                          configuration=JevConfiguration(model=FAKE_MODEL))
@@ -320,11 +320,11 @@ def candidate_template(base: Score, *, fewshot: bool, knn: bool, corpus: Corpus 
     """
     template = Score.from_config(base.to_config())
     features = [f for f in template.decision.features
-                if not f.startswith("knn.") and f != corpus.fewshot_feature]
+                if not f.startswith("knn.") and f not in corpus.fewshot_features]
     if fewshot:
         template.elements = [e for e in template.elements if e.key != corpus.fewshot_key] + [
             ElementSpec(corpus.fewshot_key, "choice", corpus.instructions, {label: None for label in corpus.labels})]
-        features.append(corpus.fewshot_feature)
+        features.extend(corpus.fewshot_features)
     if knn:
         features.extend(corpus.knn_features)
     decision = template.decision
@@ -393,6 +393,30 @@ def served_summary(score: Score, ids: Sequence[str], rows: Mapping[str, Mapping[
 
 
 # ---- the run --------------------------------------------------------------------------------
+
+def fewshot_diagnostic_summary(pairs: Sequence[Tuple[Mapping[str, Any], Mapping[str, Any]]],
+                               labels: Sequence[str]) -> Dict[str, Any]:
+    """Text-free rates comparing few-shot with zero-shot answers, ``pairs`` being ``(few, zero)`` answers.
+
+    Two labels keep the original keys (the top label differs; mean absolute difference of
+    P(first label)). More labels report top-label agreement and the mean total variation distance
+    between the two probability vectors.
+    """
+    n = len(pairs)
+    changed = sum(int(few.get("choice") != zero.get("choice")) for few, zero in pairs)
+    rate = round(changed / n, 4) if n else None
+    if len(labels) == 2:
+        gaps = [abs(float((few.get("probabilities") or {}).get(labels[0], 0.0))
+                    - float((zero.get("probabilities") or {}).get(labels[0], 0.0))) for few, zero in pairs]
+        return {"n": n, "choice_differs_rate": rate,
+                "mean_abs_p_positive_difference": round(sum(gaps) / n, 4) if n else None}
+    tv = [0.5 * sum(abs(float((few.get("probabilities") or {}).get(label, 0.0))
+                       - float((zero.get("probabilities") or {}).get(label, 0.0))) for label in labels)
+          for few, zero in pairs]
+    return {"n": n, "choice_differs_rate": rate,
+            "top_label_agreement_rate": round(1 - changed / n, 4) if n else None,
+            "mean_total_variation": round(sum(tv) / n, 4) if n else None}
+
 
 @dataclass
 class ArmState:
@@ -969,18 +993,13 @@ class UnifiedFlywheel:
         """D0's check that few-shot answers differ from zero-shot: text-free rates only."""
         key = self._fewshot_key(self._fewshot_context(labeled))
         holistic = self.v1.questions()[self.corpus.score_name]
-        changed, gaps, n = 0, [], 0
+        pairs = []
         for item_id in list(labeled) + list(self.eval_ids):
             few = self.fewshot_cache.get(item_id, self.corpus.fewshot_wire, key)
             zero = self.cache.get(item_id, self.corpus.score_name, holistic)
-            if few is None or zero is None:
-                continue
-            n += 1
-            changed += int(few.get("choice") != zero.get("choice"))
-            gaps.append(abs(float((few.get("probabilities") or {}).get(self.corpus.labels[0], 0.0))
-                            - float((zero.get("probabilities") or {}).get(self.corpus.labels[0], 0.0))))
-        return {"n": n, "choice_differs_rate": round(changed / n, 4) if n else None,
-                "mean_abs_p_positive_difference": round(sum(gaps) / n, 4) if n else None}
+            if few is not None and zero is not None:
+                pairs.append((few, zero))
+        return fewshot_diagnostic_summary(pairs, self.corpus.labels)
 
     # ---- bundles (design section 1.2) ----------------------------------------------------------
 

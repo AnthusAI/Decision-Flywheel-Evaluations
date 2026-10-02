@@ -31,7 +31,7 @@ from jev_flywheel.scorecard import Scorecard  # noqa: E402
 from .unified_fake_jev import FakeJevCore, text_key  # noqa: E402
 from .unified_loop import (  # noqa: E402
     FEWSHOT_FEATURE, FEWSHOT_WIRE, HarnessError, RunConfig, UnifiedFlywheel, candidate_template,
-    feature_row, training_set, uses_fewshot)
+    feature_row, fewshot_diagnostic_summary, training_set, uses_fewshot)
 from .unified_knn import KNN_FEATURES  # noqa: E402
 from .unified_splits import load_items  # noqa: E402
 from .unified_stats import ItemResult, summarize  # noqa: E402
@@ -234,3 +234,29 @@ def test_the_run_config_defaults_to_the_planted_corpus():
     from .unified_corpus import PLANTED
 
     assert RunConfig(clone=".", run_dir=".").corpus is PLANTED
+
+
+# ---- the few-shot diagnostic, generalized to N labels ----
+
+def _pair(top_few, top_zero, few, zero):
+    return ({"choice": top_few, "probabilities": few}, {"choice": top_zero, "probabilities": zero})
+
+
+def test_the_binary_diagnostic_keeps_its_original_keys_and_numbers():
+    pairs = [_pair("positive", "positive", {"positive": 0.9, "negative": 0.1}, {"positive": 0.6, "negative": 0.4}),
+             _pair("negative", "positive", {"positive": 0.2, "negative": 0.8}, {"positive": 0.7, "negative": 0.3})]
+    assert fewshot_diagnostic_summary(pairs, ("positive", "negative")) == {
+        "n": 2, "choice_differs_rate": 0.5, "mean_abs_p_positive_difference": 0.4}
+    assert fewshot_diagnostic_summary([], ("positive", "negative")) == {
+        "n": 0, "choice_differs_rate": None, "mean_abs_p_positive_difference": None}
+
+
+def test_the_six_label_diagnostic_reports_top_label_agreement_and_mean_total_variation():
+    labels = ("a", "b", "c", "d", "e", "f")
+    even = {label: 1 / 6 for label in labels}
+    peaked = {**{label: 0.0 for label in labels}, "c": 1.0}
+    pairs = [_pair("c", "c", peaked, peaked), _pair("c", "a", peaked, {**even})]
+    got = fewshot_diagnostic_summary(pairs, labels)
+    assert got["n"] == 2 and got["choice_differs_rate"] == 0.5 and got["top_label_agreement_rate"] == 0.5
+    assert got["mean_total_variation"] == pytest.approx((0.0 + (5 / 6)) / 2, abs=1e-4)
+    assert "mean_abs_p_positive_difference" not in got

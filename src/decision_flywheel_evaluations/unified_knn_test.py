@@ -1,7 +1,10 @@
+import dataclasses
+
 import pytest
 from decision_flywheel.context import PerLabelLexicalRetrieval
 from decision_flywheel.models import DecisionTask, Item, LabeledItem
 
+from .unified_corpus import PLANTED
 from .unified_knn import (
     KNN_FEATURES, PoolEntry, context_fingerprint, knn_features, ranked_neighbours,
     retrieval_policy_fingerprint, similarity)
@@ -67,3 +70,46 @@ def test_the_context_fingerprint_changes_with_the_labeled_set_but_not_its_order(
     policy = retrieval_policy_fingerprint()
     assert context_fingerprint(policy, ["a", "b"]) == context_fingerprint(policy, ["b", "a"])
     assert context_fingerprint(policy, ["a", "b"]) != context_fingerprint(policy, ["a", "b", "c"])
+
+
+SIX = ("anger", "fear", "joy", "love", "sadness", "surprise")
+SIX_CORPUS = dataclasses.replace(PLANTED, name="six", labels=SIX, knn_share_feature="knn.share.anger")
+
+
+def _six_pool():
+    words = {"anger": "furious", "fear": "terrified", "joy": "delighted", "love": "adore",
+             "sadness": "gloomy", "surprise": "astonished"}
+    return [PoolEntry(f"{label}-{n}", f"I feel {word} about thing {n} today", label)
+            for label, word in words.items() for n in range(3)]
+
+
+def test_six_labels_yield_five_knn_shares_and_a_top4_for_every_label():
+    features, ids = knn_features("t", "I feel furious about thing 1 today", _six_pool(), k=8, corpus=SIX_CORPUS)
+    assert set(features) == set(SIX_CORPUS.knn_features) and len(features) == 11
+    assert "knn.share.surprise" not in features   # the dropped reference label has no share
+    assert all(f"knn.top4.{label}" in features for label in SIX)
+    assert len(ids) == 8
+
+
+def test_the_five_shares_are_the_similarity_weighted_label_shares_and_leave_the_sixth_implied():
+    pool = _six_pool()
+    features, ids = knn_features("t", "I feel furious about thing 1 today", pool, k=8, corpus=SIX_CORPUS)
+    ranked = ranked_neighbours("t", "I feel furious about thing 1 today", pool)[:8]
+    total = sum(sim for sim, _ in ranked)
+    for label in SIX[:-1]:
+        assert features[f"knn.share.{label}"] == pytest.approx(
+            sum(sim for sim, entry in ranked if entry.label == label) / total)
+    shares = [features[f"knn.share.{label}"] for label in SIX[:-1]]
+    assert sum(shares) <= 1.0 + 1e-9   # the sixth share is implied: 1 - sum
+    assert features["knn.top4.anger"] >= features["knn.top4.surprise"]
+
+
+def test_with_no_lexical_overlap_each_share_is_the_unweighted_vote_of_the_k():
+    features, _ = knn_features("t", "zzz qqq", _six_pool(), k=6, corpus=SIX_CORPUS)
+    assert all(0.0 <= features[f"knn.share.{label}"] <= 1.0 for label in SIX[:-1])
+    assert sum(features[f"knn.share.{label}"] for label in SIX[:-1]) <= 1.0 + 1e-9
+
+
+def test_the_planted_features_are_unchanged_by_the_multi_label_generalization():
+    features, _ = knn_features("a", "great match today the team won", _pool(), k=8)
+    assert list(features) == ["knn.share.positive", "knn.top4.positive", "knn.top4.negative"]

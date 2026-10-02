@@ -6,6 +6,16 @@ question, the few-shot feature names, the fixtures loader, the labeler and fake-
 second corpus can be added without touching the loop. ``PLANTED`` holds exactly the values the
 harness used before this module existed; running it must change nothing.
 
+N-label conventions (two labels reproduce the old binary names exactly):
+
+* the few-shot head features are ``<fewshot_feature_prefix>.<label>`` for every label EXCEPT THE LAST
+  in ``labels`` (the *reference* label, ``fewshot_dropped_label``): centered-log-ratio features sum
+  to zero, so the last one is implied and would only split the regularized weight;
+* the kNN head features are ``knn.share.<label>`` for the same N-1 labels (the last share is
+  ``1 - sum``) plus ``knn.top4.<label>`` for every label;
+* the offline fake Jev can answer an N-option choice question from ``fake_jev_cues``, a per-label keyword
+  lexicon (a test double: its numbers mean nothing about Jev).
+
 ``CORPORA`` is the registry behind ``--corpus``. ``planted`` is the default; ``emotion`` is registered with its loader and stratified order but still
 refuses runs (see ``unsupported_reason``). Further corpora are added by registering them here.
 """
@@ -36,14 +46,20 @@ class Corpus:
     instructions: str               # the task wording: the zero-shot / few-shot question
     fewshot_key: Optional[str]      # the element key of the few-shot feature (None: not built for this corpus yet)
     fewshot_wire: Optional[str]     # that element's name on the wire (``<score>.<key>`` lower-cased)
-    fewshot_feature_prefix: Optional[str]   # the few-shot feature is ``<prefix>.<label>`` for the first label
-    knn_share_feature: Optional[str]        # the kNN share feature (label share of the first label)
+    fewshot_feature_prefix: Optional[str]   # the few-shot features are ``<prefix>.<label>`` for every label but the last
+    knn_share_feature: Optional[str]        # the first kNN share feature, ``knn.share.<labels[0]>`` (None: not built yet)
     load_splits: Callable[..., Splits]   # fixtures loader: ``load_splits(fixtures, dev_size=...)``
     labeler_style: Optional[str]    # which explanation-labeler prompt the corpus uses
     fake_labeler_hook: Optional[str]     # which offline labeler fake the corpus uses
     fake_jev_positive_label: Optional[str]   # the label the offline fake Jev leans toward
     label_order_fn: Callable[[Splits, int], Tuple[str, ...]] = planted_label_order   # the fixed labeling order
     unsupported_reason: Optional[str] = None   # set while the corpus lacks plumbing a run needs; runs refuse with it
+    fake_jev_cues: Tuple[Tuple[str, Tuple[str, ...]], ...] = ()   # (label, keywords) pairs the offline fake Jev leans on; () = binary planted fake
+
+    def __post_init__(self) -> None:
+        if self.knn_share_feature is not None and self.knn_share_feature != f"knn.share.{self.labels[0]}":
+            raise ValueError(f"knn_share_feature {self.knn_share_feature!r} must be 'knn.share.<first label>' "
+                             f"('knn.share.{self.labels[0]}')")
 
     def require_ready(self, what: str = "this command") -> None:
         if self.unsupported_reason:
@@ -56,8 +72,24 @@ class Corpus:
         return value
 
     @property
+    def fewshot_dropped_label(self) -> str:
+        """The reference label whose few-shot feature is dropped: always the last label (deterministic)."""
+        return self.labels[-1]
+
+    @property
+    def fewshot_features(self) -> Tuple[str, ...]:
+        prefix = self._need(self.fewshot_feature_prefix, "few-shot feature")
+        return tuple(f"{prefix}.{label}" for label in self.labels[:-1])
+
+    @property
     def fewshot_feature(self) -> str:
-        return f"{self._need(self.fewshot_feature_prefix, 'few-shot feature')}.{self.labels[0]}"
+        """The first few-shot feature (the only one for two labels)."""
+        return self.fewshot_features[0]
+
+    @property
+    def knn_share_features(self) -> Tuple[str, ...]:
+        self._need(self.knn_share_feature, "kNN features")
+        return tuple(f"knn.share.{label}" for label in self.labels[:-1])
 
     @property
     def knn_top_features(self) -> Tuple[str, ...]:
@@ -66,7 +98,7 @@ class Corpus:
 
     @property
     def knn_features(self) -> Tuple[str, ...]:
-        return (self._need(self.knn_share_feature, "kNN features"), *self.knn_top_features)
+        return (*self.knn_share_features, *self.knn_top_features)
 
     def task(self) -> Any:
         """The Decision-Flywheel task for this corpus (imported lazily: the core may not be on the path yet)."""
@@ -93,18 +125,29 @@ PLANTED = Corpus(
     fake_jev_positive_label="positive",
 )
 
-# The multi-class few-shot / kNN features, probabilities, fake Jev and labeler are not built for
-# Emotion yet (plan steps S3-S5); runs and comment generation refuse it with this reason.
+# The multi-class few-shot / kNN naming, probabilities and fake-Jev cues exist (plan step S3); the
+# labeler (S5) and the steering prompt / feature budget (S4) do not, so runs and comment generation
+# still refuse Emotion with this reason.
+EMOTION_FAKE_JEV_CUES = (
+    ("sadness", ("sad", "depressed", "miserable", "lonely", "grief", "heartbroken", "unhappy", "hopeless", "gloomy", "hurt")),
+    ("joy", ("happy", "glad", "delighted", "cheerful", "thrilled", "excited", "joyful", "pleased", "blessed", "proud")),
+    ("love", ("love", "adore", "loving", "affection", "caring", "sweet", "fond", "tender", "cherish", "devoted")),
+    ("anger", ("angry", "furious", "mad", "rage", "annoyed", "irritated", "hate", "outraged", "resentful", "bitter")),
+    ("fear", ("afraid", "scared", "terrified", "anxious", "worried", "nervous", "frightened", "panic", "dread", "threatened")),
+    ("surprise", ("surprised", "amazed", "astonished", "shocked", "stunned", "startled", "unexpected", "wow", "speechless", "unbelievable")),
+)
 EMOTION_CORPUS = Corpus(
     name="emotion",
     labels=EMOTION_LABELS,
     score_name="Emotion",
     instructions=EMOTION_INSTRUCTIONS,
-    fewshot_key=None, fewshot_wire=None, fewshot_feature_prefix=None, knn_share_feature=None,
+    fewshot_key="fewshot", fewshot_wire="emotion.fewshot", fewshot_feature_prefix="fewshot.clr",
+    knn_share_feature="knn.share.sadness",
     load_splits=load_emotion_corpus,
     labeler_style=None, fake_labeler_hook=None, fake_jev_positive_label=None,
     label_order_fn=emotion_label_order,
-    unsupported_reason="the multi-class few-shot/kNN features, probabilities, fake Jev and labeler are not built yet (plan steps S3-S5)",
+    unsupported_reason="the explanation labeler and the steering prompt / feature budget are not built yet (plan steps S4-S5)",
+    fake_jev_cues=EMOTION_FAKE_JEV_CUES,
 )
 
 CORPORA: Dict[str, Corpus] = {PLANTED.name: PLANTED, EMOTION_CORPUS.name: EMOTION_CORPUS}

@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 
 from . import unified_env
 
@@ -26,7 +27,7 @@ from decision_flywheel.models import Item as DFItem  # noqa: E402
 from jev_flywheel.host import FlywheelHost  # noqa: E402
 from jev_flywheel.workspace import Workspace  # noqa: E402
 
-from .unified_bundles import BUNDLE_ARMS, bundle_dir  # noqa: E402
+from .unified_bundles import BUNDLE_ARMS, ScoreRubric, bundle_dir  # noqa: E402
 from .unified_fake_jev import FakeJevAsync, FakeJevCore, text_key  # noqa: E402
 from .unified_labeler import (FAKE_MODEL, CommentCache, LabelerItem, fake_completion,  # noqa: E402
                               generate)
@@ -202,3 +203,61 @@ def test_a_rerun_that_changes_a_bundle_keeps_the_old_one_beside_it(frozen, tmp_p
         assert json.loads((path / MANIFEST_FILE).read_text())["bundle_hash"] == manifest["bundle_hash"]
     finally:
         shutil.rmtree(path.parent / "round-2.superseded-000000000000", ignore_errors=True)
+
+
+# ---- ScoreRubric.predict: real per-class probabilities for N > 2, the exact binary numbers for N = 2 ----
+
+SIX = ("anger", "fear", "joy", "love", "sadness", "surprise")
+
+
+def _rubric(labels, *, calibration=None):
+    """A frozen head over the few-shot ``fewshot.clr.<label>`` features of every label but the last."""
+    kept = labels[:-1]
+    weights = {label: {"intercept": 0.1 * i, **{f"fewshot.clr.{k}": (1.5 if k == label else -0.2) for k in kept}}
+               for i, label in enumerate(labels) if label != labels[-1]} if len(labels) > 2 else \
+        {labels[1]: {"intercept": 0.2, f"fewshot.clr.{labels[0]}": -1.0}}
+    decision = {"model": "multinomial_logistic", "classes": list(labels), "features": [f"fewshot.clr.{k}" for k in kept],
+                "parameters": {"weights": weights}}
+    if calibration:
+        decision["calibration"] = calibration
+    config = {"name": "Feeling", "elements": [{"key": "fewshot", "question_type": "choice", "instructions": "Which?",
+                                               "criteria": {label: None for label in labels}}], "decision": decision}
+    return ScoreRubric.parse(yaml.safe_dump(config))
+
+
+def _answer(labels, favoured, p=0.6):
+    rest = (1 - p) / (len(labels) - 1)
+    probabilities = {label: (p if label == favoured else rest) for label in labels}
+    return {"feeling.fewshot": {"type": "choice", "choice": favoured, "confidence": p, "probabilities": probabilities}}
+
+
+def test_for_six_labels_predict_returns_the_heads_real_probabilities_which_sum_to_one():
+    from jev_flywheel.scoring import predict as head_predict
+    rubric = _rubric(SIX)
+    answers = _answer(SIX, "joy")
+    result = rubric.predict(answers)
+    expected = head_predict(rubric.score, {}, features=rubric.score.feature_vector(answers))
+    assert result.label == expected.value
+    assert set(result.probabilities) == set(SIX)
+    assert sum(result.probabilities.values()) == pytest.approx(1.0)
+    assert result.probabilities == pytest.approx(expected.metadata["decision"]["probabilities"])
+    assert result.confidence == pytest.approx(result.probabilities[result.label])
+    assert len({round(v, 6) for k, v in result.probabilities.items() if k != result.label}) > 1, \
+        "the non-top classes are not spread evenly"
+
+
+def test_for_six_labels_a_calibrated_confidence_rescales_the_rest_so_the_total_stays_one():
+    calibration = {"method": "temperature", "raw_confidence": [0.0, 1.0], "calibrated_confidence": [0.0, 0.5]}
+    result = _rubric(SIX, calibration=calibration).predict(_answer(SIX, "fear"))
+    assert sum(result.probabilities.values()) == pytest.approx(1.0)
+    assert result.probabilities[result.label] == pytest.approx(result.confidence)
+    assert max(result.probabilities, key=result.probabilities.get) == result.label
+
+
+def test_for_two_labels_predict_keeps_the_exact_even_split_of_the_remaining_confidence():
+    labels = ("positive", "negative")
+    rubric = _rubric(labels)
+    result = rubric.predict(_answer(labels, "positive"))
+    confidence = min(max(float(result.confidence), 0.0), 1.0)
+    other = [c for c in labels if c != result.label][0]
+    assert result.probabilities == {result.label: confidence, other: (1.0 - confidence) / 1}

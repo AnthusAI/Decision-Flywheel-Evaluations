@@ -5,6 +5,11 @@ probability of the emitted value, Brier is top-label Brier, and ECE uses 10 equa
 weighted by mass. They are restated here, unweighted, so the bootstrap can recompute them on
 every resample without importing Jev-Flywheel; a spec checks parity with ``summarize``.
 
+Brier and ECE here are TOP-LABEL measures: each item contributes the confidence of the label the
+classifier predicted and whether that label was correct. That is valid for any number of classes
+(Emotion's six), but it is NOT the multiclass Brier score, which sums squared errors over every
+class's probability; do not compare these numbers with a multiclass Brier.
+
 Intervals are paired percentile bootstraps over items (plan section 4: 1,000 resamples), with
 the same index draw applied to both arms, using this repository's percentile convention
 (``effects[int(0.025 * (R - 1))]`` and ``effects[int(0.975 * (R - 1))]``). No significance
