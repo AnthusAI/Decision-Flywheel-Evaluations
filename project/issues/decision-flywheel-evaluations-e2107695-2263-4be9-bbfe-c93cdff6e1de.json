@@ -3,7 +3,7 @@
   "title": "S3: Multi-class plumbing (N-1 features, real probabilities, fake Jev)",
   "description": "## Purpose\n\nRemove the binary assumptions so all arms work for 6 classes.\n\n## Scope\n\nFew-shot and kNN features use N-1 values from the corpus labels (`unified_loop.py` TASK / FEWSHOT_FEATURE, `unified_knn.py`); `_fewshot_diagnostic` multi-class; `ScoreRubric.predict` in `unified_bundles.py` passes real probabilities; fake Jev with one cue per class.\n\n## Specs (first, beside the module)\n\nN-1 feature names for 6 labels; probabilities sum to 1 and match the head; fake Jev returns the cued class; planted path unchanged.\n\n## Reuse\n\n`knn_feature_names`, `unified_fake_jev`.\n\n## Definition of done\n\nPlanted behaviour unchanged (replays byte-identical); 6-class specs pass.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "68ea6d4d-2cbf-4593-8840-e852334aa483",
+      "author": "home",
+      "text": "S3 done offline in 17165c2: N-1 few-shot (fewshot.clr.<label>, last label dropped) and kNN share features, real probabilities in ScoreRubric.predict for N>2 (N=2 exact legacy numbers), generalized few-shot diagnostic, fake Jev cue lexicon (Corpus.fake_jev_cues), top-label Brier/ECE documented in unified_stats. Emotion corpus fields filled (labels order sadness..surprise, so dropped label is surprise); still refused by run/comments until S4-S5. unified specs 167 passed, make test 411 passed 5 skipped; replays of copies of phase2-live-seed1 (rounds and final) byte-identical, 0 requests.",
+      "created_at": "2026-10-02T01:20:58.443490Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.513481Z",
-  "updated_at": "2026-10-02T00:39:25.083546Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T01:21:05.600343Z",
+  "closed_at": "2026-10-02T01:21:05.600314Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
