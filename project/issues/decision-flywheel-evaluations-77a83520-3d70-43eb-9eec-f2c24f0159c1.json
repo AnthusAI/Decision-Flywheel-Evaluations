@@ -3,7 +3,7 @@
   "title": "S1: Add the Corpus config with PLANTED; planted replays stay byte-identical",
   "description": "## Purpose\n\nIntroduce a frozen `Corpus` config so the harness can run more than the planted corpus.\n\n## Scope\n\nNew `unified_corpus.py` with the `PLANTED` corpus (labels, task, few-shot feature names, rubric seed, prompts); `unified_splits` / `unified_loop` / `unified_cli` read from it; `--corpus {planted,emotion}` flag, planted default. Start from committed state (a4391f2); no bios code.\n\n## Specs (first, beside the module)\n\n`PLANTED` equals the current constants; CLI defaults to planted; unknown corpus rejected; replay byte-identity (cross-module, `tests/`).\n\n## Reuse\n\n`unified_splits.load_splits`, `TASK` in `unified_loop.py`.\n\n## Definition of done\n\nBoth planted replays (`var/unified-flywheel/phase2-live-seed1`, `seed2-live`) reproduce byte-identically; `make test` green.\n\n## Cost\n\n$0 (offline, no network).\n\n## Links\n\n[DECISION_FLYWHEEL_DESIGN.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/DECISION_FLYWHEEL_DESIGN.md); [UNIFIED_FLYWHEEL_RESULTS.md](https://github.com/AnthusAI/Decision-Flywheel-Evaluations/blob/main/studies/UNIFIED_FLYWHEEL_RESULTS.md)",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -14,10 +14,25 @@
     "offline"
   ],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "852bdda2-2890-4d09-927f-74909fa7754b",
+      "author": "home",
+      "text": "S1 done offline, $0, no network. Evaluations commit 8a539d7 (local, not pushed): new unified_corpus.py (frozen Corpus, PLANTED, registry with only 'planted'), --corpus {planted} on run and comments (default planted); splits/loop/knn/retrieval/cli read from it (old module constants kept as PLANTED-derived aliases for existing specs). Results: make unified-flywheel-test 130 passed (existing specs unchanged, 8 new); make test 379 passed 5 skipped. Replays of COPIES with --replay, 0 requests: phase2-live-seed1 rounds and final: predictions byte-identical to the original, summary per-round metrics/bundle hashes identical; seed2-live final byte-identical; seed2 rounds: pre-change code ALSO fails full-arm replay (2 failed live F round-3 requests never cached), so rounds were replayed without arm F (rows identical for 0,F-rand,A-c,A-c+F) and pre-change vs post-change replay outputs are byte-identical for every summary/predictions/run-log file.",
+      "created_at": "2026-10-02T00:54:53.633442Z",
+      "comment_type": "default"
+    },
+    {
+      "id": "4500480e-c162-475e-88fa-7303577eac21",
+      "author": "home",
+      "text": "Definition of done met: planted replays reproduce identically (seed2 rounds minus arm F, see comment) and make test is green.",
+      "created_at": "2026-10-02T00:54:53.676312Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T00:39:24.424287Z",
-  "updated_at": "2026-10-02T00:39:24.424311Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T00:54:53.702513Z",
+  "closed_at": "2026-10-02T00:54:53.702467Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
