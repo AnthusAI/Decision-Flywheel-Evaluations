@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "6ffe1307-4c49-4c4f-a816-3d19e518f5e0",
+  "issue_id": "decision-flywheel-evaluations-8e56f833-dd00-4e2d-bf49-f9b513d138db",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:55.061Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Step 3: REVIEWS corpus in unified_corpus.py and reviews loader in rubric_screen.py",
+    "description": "## Purpose\n\nStep 3: `REVIEWS` corpus in `unified_corpus.py` and a reviews loader in `scripts/rubric_screen.py`.\n\n## Scope\n\n- Labels (precedence order abusive > promotional > seller_shipping > price_availability > approve; merge abusive into \"remove_other\" if < 20 pool cases), S one-liner, F path (under `var/`), ceiling, `final_size=300`, multiclass metrics.\n- Splits: SME labels 1,500; stream 600 + held-out 300 drawn stratified by SME label (each minority class >= ~10%); natural-mix random 300 reported too. Disjoint partitions; nothing tuned on held-out.\n- Reviews loader in `scripts/rubric_screen.py` for the Stage 0 S-vs-F screen.\n\n## Definition of done\n\nSpecs pass offline with fixtures; `make test` and `make unified-flywheel-test` green; existing corpora replays byte-identical.\n\n## Caps\n\n$0 (offline).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

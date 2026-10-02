@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "9b9634cd-b7dc-4f46-b8d0-4f17adfbde79",
+  "issue_id": "decision-flywheel-evaluations-d5cc239f-a6fb-4772-a9f3-20f2026ce786",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:54.993Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Step 1: amazon_reviews.py loader, enriched pool builder and ID/hash manifest",
+    "description": "## Purpose\n\nStep 1: `amazon_reviews.py` loader + enriched pool builder + manifest of IDs/hashes.\n\n## Scope\n\n- Load McAuley Lab Amazon Reviews 2023 for Cell_Phones_and_Accessories, Home_and_Kitchen, Toys_and_Games; 2013-2016; 15-90 words.\n- Candidate pool 3,000 enriched toward 1-2 star and keyword hits (ship/seller/refund/return/package/$/price/http/\"in exchange\"/\"discount\"); seeded.\n- Manifest of review IDs, split/index identifiers, normalized-text hashes, dataset revision. Text stays under gitignored `var/`/`.data/`.\n- Spec beside the module with ~50 synthetic reviews; no network in specs.\n\n## Definition of done\n\n`amazon_reviews_test.py` passes offline; `make test` green; planted/Emotion/FOMC replays byte-identical; no review text committed. Code may be built before L0, but no real download until L0 is closed.\n\n## Caps\n\n$0 (offline). Opus sub-agent builds; main session reviews and pushes.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

@@ -3,7 +3,7 @@
   "title": "R7: Publish rubric-dataset simulation results with caveats",
   "description": "## Purpose\n\nPublish the rubric-dataset simulation results.\n\n## Content\n\nGap recovered over rounds per arm; explanations needed; shuffled and noisy controls; F ceiling and human ceiling; UNEXPLAINABLE rate; spend.\n\n## Caveats (must appear)\n\n- The stakeholder is SIMULATED: an LLM holding the guideline is a tidy compressor of it. Supports \"a rubric written for humans can be transmitted as a few explanations tied to errors\"; does NOT show real stakeholders explain this well, consistently or cheaply.\n- Dataset-specific: license limits, contamination risk (publication year), subsetting if any, human-ceiling noise.\n- One seed; development phase, exploratory.\n\n## Definition of done\n\nAddendum in `studies/UNIFIED_FLYWHEEL_RESULTS.md` (or a sibling results doc); decision recorded on whether to pilot the explanation channel with real reviewers; issues closed with evidence.\n\n## Cost\n\n$0.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -18,10 +18,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "043adf49-ac90-4929-8c8c-e3332bbc08a5",
+      "author": "home",
+      "text": "FOMC was run. Results: studies/FOMC_RUBRIC_RESULTS.md. The flywheel with simulated explanations (A-c) recovered ~92% of a small 2.8-point gap (S 0.656 -> 0.682 vs labels-only/shuffled ~40-47%); the full published rubric ceiling was only 0.684. The HateCheck/SwDA held-out re-screen failed (studies/rubric_screen/screen_results.json), so no further rubric dataset is run here. Follow-up filed: epic decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109 (streaming SME simulation on Amazon review moderation). Published in studies/FOMC_RUBRIC_RESULTS.md with caveats; definition of done met; closing.",
+      "created_at": "2026-10-02T18:53:15.637759Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.313274Z",
-  "updated_at": "2026-10-02T01:22:52.596822Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T18:53:15.696469Z",
+  "closed_at": "2026-10-02T18:53:15.696443Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

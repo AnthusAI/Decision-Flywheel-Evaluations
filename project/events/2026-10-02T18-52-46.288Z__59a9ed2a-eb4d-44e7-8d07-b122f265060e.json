@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "59a9ed2a-eb4d-44e7-8d07-b122f265060e",
+  "issue_id": "decision-flywheel-evaluations-63ca3589-7378-4971-99c9-4b966bc15791",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:46.288Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "L0: Owner confirms Amazon Reviews 2023 license/terms",
+    "description": "## Owner decision needed\n\n**Do you accept the McAuley Lab \"Amazon Reviews 2023\" (Hugging Face `McAuley-Lab/Amazon-Reviews-2023`) license/terms for this internal study, and approve the download?** The dataset card asks only for citation; license is UNVERIFIED. Also: may we store Amazon Community Guidelines / customer-review help pages under `var/policy/raw/` (not redistributed; commit only sha256 + own-words summary)?\n\n## Scope\n\nRead-only check of the dataset card / terms and the guideline pages; summarize for the owner. No download until the owner says yes.\n\n## Definition of done\n\nOwner's answer recorded verbatim as a comment; this issue closed; step 1 (loader) data work unblocked. If the owner says no: stop and pick another domain (epic \"What result changes what we build\").\n\n## Cost\n\n$0.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "decision"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

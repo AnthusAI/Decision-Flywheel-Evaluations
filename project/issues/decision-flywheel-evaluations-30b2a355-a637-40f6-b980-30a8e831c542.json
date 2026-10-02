@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
+  "title": "Stage 0: live screen gate (pool, SME labels, agreement, Jev S vs F) -> STOP: owner looks",
+  "description": "## Purpose\n\nStage 0 (live screen gate).\n\n## Scope\n\nBuild the pool (3,000) and SME labels (1,500) via OpenAI; agreement check (second SME pass/model on 100 items, target >= 0.85); Jev S vs F on held-out 300. Report natural mix (random 300) and enriched mix; count of `abusive` (merge if < 20).\n\n## Pass rule\n\nF >= 0.80 macro-F1 and S <= F - 0.10. If F < 0.80, merge classes once and re-score; if no gap, stop.\n\n## STOP\n\n**Owner looks** before Stage 1.\n\n## Definition of done\n\nText-free screen summary committed; one small table posted as a comment; owner's answer recorded.\n\n## Caps\n\nOwn ledger with hard ceiling: ~600 Jev requests (S + F on held-out 300) + SME labeling/agreement calls; well under ~$3 of the epic's ~$10 total.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-da36b123-f801-4e5b-b264-e46e5583aab6",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:55.162067Z",
+  "updated_at": "2026-10-02T18:53:04.415137Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

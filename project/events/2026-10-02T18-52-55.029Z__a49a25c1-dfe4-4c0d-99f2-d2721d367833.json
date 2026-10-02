@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "a49a25c1-dfe4-4c0d-99f2-d2721d367833",
+  "issue_id": "decision-flywheel-evaluations-a9bf52b0-347b-4dc1-b67a-030bea080256",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:55.029Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Step 2: unified_sme.py simulated SME (label, rule, reason, leak guards, cache, fake)",
+    "description": "## Purpose\n\nStep 2: `unified_sme.py`, the simulated SME.\n\n## Scope\n\n- Prompt holding the full policy F; one call per item, independent of the classifier's verdict; batched labeling.\n- Output: label, rule ID, one-sentence reason (<= 25 words, about the review, not reciting policy wording), optional verbatim quote FROM THE REVIEW, or UNEXPLAINABLE/ambiguous.\n- Leak guards: reuse `unified_labeler.validate_explanation`; reject any 8-gram overlap with F; keep `MAX_RULE_REPEATS`.\n- sqlite cache shared by all arms; text-free logs.\n- Per-arm feedback built from the cached record (\"should be X because ...\" when wrong; \"correct: ...\" when right).\n- Fake SME for specs. Model: gpt-6-sol if available (verify), else gpt-6-luna (noted); analyst stays gpt-6-luna. Agreement-check hook (second pass/model on 100 items).\n\n## Definition of done\n\nSpecs beside the module pass offline (validators, leak guard, cache, fake); `make test` green; existing replays byte-identical.\n\n## Caps\n\n$0 (offline).",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

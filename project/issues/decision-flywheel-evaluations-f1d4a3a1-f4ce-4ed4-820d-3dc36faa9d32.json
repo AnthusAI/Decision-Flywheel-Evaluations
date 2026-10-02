@@ -3,7 +3,7 @@
   "title": "R6: Live runs: labels-only, stakeholder, shuffled, noisy; S start, F ceiling (initiative cap ~$10)",
   "description": "## Purpose\n\nLive runs on the chosen dataset.\n\n## Arms\n\n- labels-only (analyst sees which items were wrong, no reasons);\n- simulated-stakeholder explanations (R4);\n- SHUFFLED explanations (attached to wrong items: shows content matters);\n- noisy stakeholder (~20% vague/wrong);\n- starting point S (one-line rubric) and F (excerpted full guideline) as ceiling.\n\nRounds of 10-20 explained errors from the pool; scored on dev each round; final slice only after an owner go.\n\n## Metric\n\nFraction of the S-to-F gap recovered (macro-F1) per arm per round, and number of explanations needed to reach it; paired bootstrap CIs; per-class recall; UNEXPLAINABLE rate (label-noise estimate).\n\n## Stops\n\nStage it (round 1 -> owner look -> remaining rounds -> owner go -> final slice). Fresh ledger per stage; `--max-new-requests` = printed bound; circuit breaker on.\n\n## Definition of done\n\nAll arms scored on the final slice; text-free results committed; comment with the table.\n\n## Cost\n\n**Cap ~$10 for the whole initiative** (R3 + R6 Jev, stakeholder and analyst calls).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1f3d7185-afe9-46dc-97d2-66174fa256a3",
+      "author": "home",
+      "text": "FOMC was run. Results: studies/FOMC_RUBRIC_RESULTS.md. The flywheel with simulated explanations (A-c) recovered ~92% of a small 2.8-point gap (S 0.656 -> 0.682 vs labels-only/shuffled ~40-47%); the full published rubric ceiling was only 0.684. The HateCheck/SwDA held-out re-screen failed (studies/rubric_screen/screen_results.json), so no further rubric dataset is run here. Follow-up filed: epic decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109 (streaming SME simulation on Amazon review moderation). Definition of done met for FOMC (all arms scored on the held-out slice, text-free results committed); closing.",
+      "created_at": "2026-10-02T18:53:15.619125Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.276417Z",
-  "updated_at": "2026-10-02T01:22:52.574533Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T18:53:15.679794Z",
+  "closed_at": "2026-10-02T18:53:15.679763Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

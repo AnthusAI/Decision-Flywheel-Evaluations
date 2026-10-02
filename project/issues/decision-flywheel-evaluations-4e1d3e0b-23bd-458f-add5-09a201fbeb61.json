@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-4e1d3e0b-23bd-458f-add5-09a201fbeb61",
+  "title": "Stage 2: live arms L and X (optional E at p=1.0); publish",
+  "description": "## Purpose\n\nStage 2 (live): arms L (labels only) and X (shuffled explanations); optional E at p = 1.0 if under budget. Then publish.\n\n## Scope\n\nSame stream, seeds and checkpoints as Stage 1. Publish one results page (prequential curves, checkpoint table, spend table, caveats) and record the decision per the epic's \"What result changes what we build\".\n\n## Definition of done\n\nAll arms scored; text-free results + results page committed and pushed; decision recorded; epic tasks closed with evidence.\n\n## Caps\n\nOwn ledger with hard ceiling: ~2,000 Jev requests per arm (~4,000 for L + X; optional E at p=1.0 only if the cumulative ledger leaves room); total epic hard cap ~$10.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-8ca97ab3-ce3c-47f3-a64e-67e0f13bf99f",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:55.226855Z",
+  "updated_at": "2026-10-02T18:53:04.462844Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

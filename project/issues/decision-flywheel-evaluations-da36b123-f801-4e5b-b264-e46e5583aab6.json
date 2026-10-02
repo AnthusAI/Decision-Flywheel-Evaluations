@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-da36b123-f801-4e5b-b264-e46e5583aab6",
+  "title": "Step 5: Report: prequential curves, checkpoints, spend table",
+  "description": "## Purpose\n\nStep 5: report generator.\n\n## Scope\n\nPrequential accuracy and macro-F1 curves (windowed 100 and cumulative) vs number of reviewed items per arm; held-out checkpoint table (after 300 stream items, at end) with floor Jev+S and ceiling Jev+F; bootstrap CIs via `unified_stats`; spend table; caveats block (LLM-SME gold, enriched mix, one stream order cannot resolve < ~5 F1 points, real SMEs vaguer).\n\n## Definition of done\n\nReport renders from fake-run outputs offline; spec passes; no review or policy text in output.\n\n## Caps\n\n$0 (offline).",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-8678cc15-cfc9-4e45-b151-09fb4f78eaf1",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:55.128313Z",
+  "updated_at": "2026-10-02T18:53:04.394298Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

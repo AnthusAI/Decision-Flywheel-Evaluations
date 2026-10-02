@@ -3,7 +3,7 @@
   "title": "Owner decision needed: which rubric dataset after R3?",
   "description": "## Owner decision needed\n\n**Which dataset do we use for the simulated-stakeholder experiment?** Asked after R3, with the screening table. Options: one of EDOS-B / ASAP-SAS / CAP subset / FOMC (or the fallback Gab Hate Corpus), or none (stop the initiative if no candidate passes (a)-(c)).\n\n## Definition of done\n\nOwner's answer recorded as a comment (verbatim), this issue closed, R5 unblocked.\n\n## Cost\n\n$0.",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -19,10 +19,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "21065517-8dfd-4f45-a4b5-d153a0374332",
+      "author": "home",
+      "text": "Decided: FOMC (run; see R6/R7). FOMC was run. Results: studies/FOMC_RUBRIC_RESULTS.md. The flywheel with simulated explanations (A-c) recovered ~92% of a small 2.8-point gap (S 0.656 -> 0.682 vs labels-only/shuffled ~40-47%); the full published rubric ceiling was only 0.684. The HateCheck/SwDA held-out re-screen failed (studies/rubric_screen/screen_results.json), so no further rubric dataset is run here. Follow-up filed: epic decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109 (streaming SME simulation on Amazon review moderation). Closing.",
+      "created_at": "2026-10-02T18:53:15.657784Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.190255Z",
-  "updated_at": "2026-10-02T01:22:52.478984Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T18:53:15.712526Z",
+  "closed_at": "2026-10-02T18:53:15.712499Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

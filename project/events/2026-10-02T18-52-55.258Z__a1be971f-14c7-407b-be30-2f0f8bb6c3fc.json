@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "a1be971f-14c7-407b-be30-2f0f8bb6c3fc",
+  "issue_id": "decision-flywheel-evaluations-542b83ef-5fa8-47b8-8c36-90514acc995c",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:55.258Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Experiment 2: drift (policy change mid-stream, changing review rate)",
+    "description": "## Note\n\nExperiment 2 (after experiment 1 is published, and only if E >> L and X): drift. A policy change mid-stream (the SME's written policy changes at a known point) and a changing review rate p over time. Measure how fast each arm recovers after the change and whether stale few-shot examples/questions are retired.\n\nNot planned in detail; no spend. Plan separately with the owner.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 3,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "note"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

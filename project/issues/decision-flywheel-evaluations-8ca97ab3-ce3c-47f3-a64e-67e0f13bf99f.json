@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-8ca97ab3-ce3c-47f3-a64e-67e0f13bf99f",
+  "title": "Stage 1: live arm E (+ B) on the stream -> STOP: owner looks",
+  "description": "## Purpose\n\nStage 1 (live): arm E (labels + explanations, all levers), and arm B (S only, free alongside).\n\n## Scope\n\n600-item stream at p = 0.3; held-out checkpoints after 300 stream items and at end; prequential scoring.\n\n## STOP\n\n**Owner looks** before Stage 2.\n\n## Definition of done\n\nText-free results committed; one small table (prequential + checkpoints + spend) posted as a comment; 0 unexplained failures; owner's answer recorded.\n\n## Caps\n\nOwn ledger with hard ceiling: ~2,000 Jev requests for E (+ shared S zero-shot); `--max-new-requests` = printed bound; circuit breaker on; cumulative epic spend stays under ~$10.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "live-spend"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:55.194983Z",
+  "updated_at": "2026-10-02T18:53:04.443890Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

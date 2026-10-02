@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "event_id": "1c2f4278-5c55-4ac3-bd38-f6c0a1072641",
+  "issue_id": "decision-flywheel-evaluations-4e1d3e0b-23bd-458f-add5-09a201fbeb61",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:55.226Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Stage 2: live arms L and X (optional E at p=1.0); publish",
+    "description": "## Purpose\n\nStage 2 (live): arms L (labels only) and X (shuffled explanations); optional E at p = 1.0 if under budget. Then publish.\n\n## Scope\n\nSame stream, seeds and checkpoints as Stage 1. Publish one results page (prequential curves, checkpoint table, spend table, caveats) and record the decision per the epic's \"What result changes what we build\".\n\n## Definition of done\n\nAll arms scored; text-free results + results page committed and pushed; decision recorded; epic tasks closed with evidence.\n\n## Caps\n\nOwn ledger with hard ceiling: ~2,000 Jev requests per arm (~4,000 for L + X; optional E at p=1.0 only if the cumulative ledger leaves room); total epic hard cap ~$10.",
+    "issue_type": "task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme",
+      "live-spend"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

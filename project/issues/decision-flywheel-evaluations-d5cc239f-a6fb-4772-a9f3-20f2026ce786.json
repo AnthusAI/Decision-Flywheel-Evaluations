@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-d5cc239f-a6fb-4772-a9f3-20f2026ce786",
+  "title": "Step 1: amazon_reviews.py loader, enriched pool builder and ID/hash manifest",
+  "description": "## Purpose\n\nStep 1: `amazon_reviews.py` loader + enriched pool builder + manifest of IDs/hashes.\n\n## Scope\n\n- Load McAuley Lab Amazon Reviews 2023 for Cell_Phones_and_Accessories, Home_and_Kitchen, Toys_and_Games; 2013-2016; 15-90 words.\n- Candidate pool 3,000 enriched toward 1-2 star and keyword hits (ship/seller/refund/return/package/$/price/http/\"in exchange\"/\"discount\"); seeded.\n- Manifest of review IDs, split/index identifiers, normalized-text hashes, dataset revision. Text stays under gitignored `var/`/`.data/`.\n- Spec beside the module with ~50 synthetic reviews; no network in specs.\n\n## Definition of done\n\n`amazon_reviews_test.py` passes offline; `make test` green; planted/Emotion/FOMC replays byte-identical; no review text committed. No real download until L0 is closed (blocked-by L0).\n\n## Caps\n\n$0 (offline). Opus sub-agent builds; main session reviews and pushes.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-63ca3589-7378-4971-99c9-4b966bc15791",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:54.993970Z",
+  "updated_at": "2026-10-02T18:53:04.504417Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

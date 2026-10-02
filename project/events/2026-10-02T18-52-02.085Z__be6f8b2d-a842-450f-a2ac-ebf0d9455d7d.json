@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "event_id": "be6f8b2d-a842-450f-a2ac-ebf0d9455d7d",
+  "issue_id": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-02T18:52:02.085Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Learn a document you weren't given: streaming SME simulation on Amazon review moderation",
+    "description": "## Purpose\n\n\"Learn a document you weren't given.\" Demonstrate the owner's target use case: a self-learning classifier with NO starting dataset, only a one-line description. Decisions arrive in a stream (batches as small as 1). A simulated SME reviews SOME fraction of decisions and gives the correct label plus a one-sentence explanation. The flywheel uses every lever: the fixed few-shot example list, the questions Jev is asked (feature discovery), and refitting the ML head over Jev's answers.\n\nSource of truth: approved plan `~/.claude/plans/i-put-you-in-sprightly-penguin.md` (owner-approved 2026-10-02).\n\n## Why this experiment\n\nAcross 5 real human-labeled datasets Jev either already knew the rubric (HateCheck one-liner 0.97, CAP) or could not apply it even when handed it (FOMC 0.656 -> 0.684, EDOS, SwDA). On FOMC the mechanism moved the needle (simulated explanations recovered ~92% of a tiny gap vs ~40-47% labels-only/shuffled; all gains in round 1). We need a domain with a large, learnable gap; we control that by having an LLM SME apply a detailed written policy to real texts.\n\n## Owner decisions\n\n- Classifier starts with a ONE-LINE description S: \"Moderate an Amazon product review: approve, or flag as abusive, promotional, seller_shipping, or price_availability.\"\n- The SME LLM holds the FULL written policy F (~900 words, precedence abusive > promotional > seller_shipping > price_availability > approve, rules R1..R12); the classifier never sees it.\n- Domain: Amazon review moderation on real Amazon reviews (McAuley Lab \"Amazon Reviews 2023\"; Cell_Phones_and_Accessories, Home_and_Kitchen, Toys_and_Games; 2013-2016; 15-90 words).\n- NO drift in experiment 1 (drift = experiment 2, separate note task).\n\n## Arms\n\n- **B**: S only, no learning (floor; free alongside E).\n- **L**: labels only, all levers (plain disagreements count toward the steering trigger).\n- **E**: labels + SME explanations, all levers.\n- **X**: explanations shuffled among reviewed items (shows content matters).\n- Optional **E at p = 1.0** if spend allows.\n\nReview rate p = 0.3 (uniform, propensity recorded); stream 600 items, held-out 300; floor Jev+S, ceiling Jev+F. Prequential accuracy and macro-F1 (windowed 100 and cumulative) vs reviewed items; held-out scored through frozen bundles after 300 stream items and at the end; bootstrap CIs via `unified_stats`.\n\n## Budget\n\n**Hard total ~$10** (Jev + OpenAI). Rough: ~7,500 Jev requests (~$4-7) + OpenAI ~$2-3. Per-stage ledgers with hard ceilings; Jev spend authorized within caps.\n\n## Stop points\n\n- After L0: owner confirms dataset license/terms before any download.\n- After Stage 0 (screen gate): **STOP, owner looks.**\n- After Stage 1 (arm E + B): **STOP, owner looks.**\n- Stage 2 (L, X, optional E at p=1.0) then publish.\n\n## What result changes what we build\n\n- Screen fails -> change the label set or the domain.\n- E ~ L -> explanations add nothing at this rate; try active sampling / higher review rate next.\n- E >> L and X -> the stakeholder channel teaches the unwritten document; proceed to drift (experiment 2).\n- Gains only at the first refit (as on FOMC) -> loosen the promotion gate / steering thresholds before experiment 2.\n\n## Honest caveats (must appear in results)\n\n- Gold labels come from an LLM SME: this measures \"learning this SME's policy\", not human truth.\n- The stream's class mix is enriched (natural mix also reported).\n- One stream order: cannot resolve differences below ~5 F1 points.\n- Real SMEs are vaguer and less consistent than an LLM.\n\n## Working rules (owner)\n\n- Opus sub-agents build offline in small steps (specs first, fakes, no network in specs; planted/Emotion/FOMC replays stay byte-identical; Jev-Flywheel checkout untouched). Main session reviews (tests, byte-identical replays on copies, push, confirm remote) and runs live stages.\n- Questions to the owner plainly at the top; results as one small table.\n- Record provenance, not text: review and policy text stay under gitignored `var/`/`.data/`; commit only IDs, hashes and text-free summaries.\n\n## Unverified (owner to confirm)\n\n- Amazon Reviews 2023 license/terms; redistribution of Amazon guideline pages.\n- gpt-6-sol availability/pricing (else gpt-6-luna, noted).\n- Whether `abusive` is frequent enough to keep as its own class (merge into \"remove_other\" if < 20 pool cases).\n\n## Definition of done\n\nStage 2 published: one results page with prequential curves, checkpoint table, spend table and caveats; decision recorded on the next build (per \"What result changes what we build\"); tasks closed with evidence.",
+    "issue_type": "epic",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-8baf2860-6f8b-469a-b3d3-541d395495b8",
+    "labels": [
+      "roadmap",
+      "rubric-dataset",
+      "streaming-sme"
+    ],
+    "agent": {
+      "platform": "claude_code",
+      "model": "Claude Opus 5.5",
+      "name": "Streaming SME Planning"
+    }
+  }
+}

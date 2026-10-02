@@ -1,0 +1,38 @@
+{
+  "id": "decision-flywheel-evaluations-8e56f833-dd00-4e2d-bf49-f9b513d138db",
+  "title": "Step 3: REVIEWS corpus in unified_corpus.py and reviews loader in rubric_screen.py",
+  "description": "## Purpose\n\nStep 3: `REVIEWS` corpus in `unified_corpus.py` and a reviews loader in `scripts/rubric_screen.py`.\n\n## Scope\n\n- Labels (precedence order abusive > promotional > seller_shipping > price_availability > approve; merge abusive into \"remove_other\" if < 20 pool cases), S one-liner, F path (under `var/`), ceiling, `final_size=300`, multiclass metrics.\n- Splits: SME labels 1,500; stream 600 + held-out 300 drawn stratified by SME label (each minority class >= ~10%); natural-mix random 300 reported too. Disjoint partitions; nothing tuned on held-out.\n- Reviews loader in `scripts/rubric_screen.py` for the Stage 0 S-vs-F screen.\n\n## Definition of done\n\nSpecs pass offline with fixtures; `make test` and `make unified-flywheel-test` green; existing corpora replays byte-identical.\n\n## Caps\n\n$0 (offline).",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "roadmap",
+    "rubric-dataset",
+    "streaming-sme",
+    "offline"
+  ],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-a9bf52b0-347b-4dc1-b67a-030bea080256",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-02T18:52:55.061058Z",
+  "updated_at": "2026-10-02T18:53:04.354901Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}
