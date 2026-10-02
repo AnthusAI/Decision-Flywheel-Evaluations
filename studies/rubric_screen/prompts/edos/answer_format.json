@@ -1,0 +1,20 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "1. threats, plans to harm and incitement",
+  "2. derogation",
+  "3. animosity",
+  "4. prejudiced discussions"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/edos/S.txt",
+ "instructions_S_sha256": "9bab72c1e4f3c441a45f52e25c8c7810b38f56c76819beee12bdf0f2b38cdb78",
+ "instructions_F_file": "studies/rubric_screen/prompts/edos/F.txt",
+ "instructions_F_sha256": "88b50d2332b5c3270a1b5570dafb4f6b8f6085dbd522d2058f1e959576a0a825",
+ "F_committed": true,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 49,
+ "F_words": 2315,
+ "F_tokens_est": 3010,
+ "dataset_label_to_option": "identical strings (label_category)"
+}

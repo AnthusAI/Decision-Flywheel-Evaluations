@@ -1,0 +1,12 @@
+# CAP NYT F: what was cut (F text NOT committed)
+
+Source: Boydstun, "NYT Front Page Policy Agendas Codebook Updated with new CAP Codes" (87 pages, 29,934 words, ~38,900 tokens by words x 1.3), https://minio.la.utexas.edu/compagendas/codebookfiles/NYT_Front_Page_Policy_Agendas_Codebook_Updated_with_new_CAP_Codes.pdf, sha256 76070be77dc2a24517efe36b36323d03364b299eb038af1f211abbee11519536. Text extracted with pypdf (page headers stripped).
+
+Why F is not committed: the codebook PDF carries no licence of its own; the project's Copyright/Legal page says datasets and codebooks are (c) Comparative Agendas Project and that topic codes and project-generated variables are CC BY-NC-SA 4.0. Redistributing the codebook text is therefore unclear, so F lives in `var/rubric-screen/cap_nyt/F.txt` (gitignored). Its sha256 is b5a710e29dfe2723708453ef239614ffc1f3613640e6cb32c9b7d9642b3b0ea0 (8,127 words, ~10,565 tokens est.; real tokenization of the numbered lists may be higher). It can be regenerated from the PDF with the line ranges below (line numbers of the pypdf text extraction).
+
+Kept: "Coding Instructions" opening (88-104); Step 2 headline rule (115-124); Step 5 "Assign a Code", multi-topic rules, international issues, institutions, -00 vs -99 (182-296); General Coding Guidelines 1-7 (367-449); full subtopic lists with examples and notes for the six answer topics: 1 Macroeconomics (483-551), 5 Labor (961-1073), 13 Social Welfare (1582-1648), 14 Community Development and Housing (1649-1740), 15 Banking, Finance, and Domestic Commerce (1742-1914), 18 Foreign Trade (2385-2448).
+Cut: variable list and overview (1-86); Steps 1, 3, 4, 6 (data-entry workflow, storyline identification across articles, issue boxes); the 2014 update change log (327-366); the major-topics list (450-482); and the 20 other major topics (~21,900 words), because screening restricts answers to six confusable topics.
+Added by us: a one-paragraph header naming the six allowed answers (major topics 1, 5, 13, 14, 15, 18). Items are the title column only; the coder-written summary column is excluded because it is a label-leaking topic summary.
+Residual mismatch: the retained general instructions mention storylines and subtopic codes; they stay because they contain the boundary rules ("breakfast table" test, driving issue, institution vs issue).
+
+Option order (fixed): Macroeconomics; Labor and Employment; Social Welfare; Community Development and Housing Issues; Banking, Finance, and Domestic Commerce; Foreign Trade (dataset majortopic 1, 5, 13, 14, 15, 18).

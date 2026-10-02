@@ -1,0 +1,29 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "Macroeconomics",
+  "Labor and Employment",
+  "Social Welfare",
+  "Community Development and Housing Issues",
+  "Banking, Finance, and Domestic Commerce",
+  "Foreign Trade"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/cap_nyt/S.txt",
+ "instructions_S_sha256": "30595d68fb2d5e54af94f53801cdae43bba1acc8c8cf588338afad0d27ee51de",
+ "instructions_F_file": "var/rubric-screen/cap_nyt/F.txt",
+ "instructions_F_sha256": "b5a710e29dfe2723708453ef239614ffc1f3613640e6cb32c9b7d9642b3b0ea0",
+ "F_committed": false,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 54,
+ "F_words": 8127,
+ "F_tokens_est": 10565,
+ "dataset_majortopic_to_option": {
+  "1": "Macroeconomics",
+  "5": "Labor and Employment",
+  "13": "Social Welfare",
+  "14": "Community Development and Housing Issues",
+  "15": "Banking, Finance, and Domestic Commerce",
+  "18": "Foreign Trade"
+ }
+}

@@ -1,0 +1,330 @@
+{
+ "checked": "2026-10-01",
+ "tokens_rule": "word count x 1.3",
+ "candidates": {
+  "edos": {
+   "verdict": "usable",
+   "license": {
+    "text": "repo LICENSE is 'CC0 1.0 Universal' (Creative Commons Legal Code); applies to the whole repo incl. data/ and guidelines/",
+    "url": "https://github.com/rewire-online/edos/blob/main/LICENSE",
+    "verified": true,
+    "scope_caveat": "README does not restate the licence; guidelines PDF has no separate notice (covered by repo LICENSE)"
+   },
+   "paper": {
+    "title": "SemEval-2023 Task 10: Explainable Detection of Online Sexism",
+    "url": "https://arxiv.org/abs/2303.04222",
+    "paper_license": "CC BY 4.0 (arXiv page)"
+   },
+   "dataset_url": "https://github.com/rewire-online/edos/tree/main/data",
+   "downloaded": [
+    {
+     "file": "edos/edos_labelled_aggregated.csv",
+     "bytes": 3846925,
+     "sha256": "607bdbb766e1803a28f0eb8fc21c14b6b9dfa20039f726ba6767438584b47f9b"
+    },
+    {
+     "file": "edos/edos_labelled_individual_annotations.csv",
+     "bytes": 11709448,
+     "sha256": "15d430d6756f620b2e83dddd7a3a68dc3e939df3a4c417d184e3c431cc0e20b2"
+    },
+    {
+     "file": "edos/EDOS_Guidelines.pdf",
+     "bytes": 140030,
+     "sha256": "c891ef18fab22ce7622fca82212f584805dcafdf6ef440dab8ed51c5845b75fa"
+    },
+    {
+     "file": "edos/LICENSE",
+     "bytes": 7048,
+     "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+    },
+    {
+     "file": "edos/README.md",
+     "bytes": 2284,
+     "sha256": "1c6135761e05cb841c220786cb2f6410bdd39bafe07a9a3ddcfe4dd93d028299"
+    }
+   ],
+   "not_downloaded": [
+    "gab_1M_unlabelled.csv (95.9 MB)",
+    "reddit_1M_unlabelled.csv (98.0 MB)"
+   ],
+   "text_field": "text",
+   "label_field": "label_category",
+   "labels": [
+    "1. threats, plans to harm and incitement",
+    "2. derogation",
+    "3. animosity",
+    "4. prejudiced discussions"
+   ],
+   "items_total_file": 20000,
+   "items_subtask_b": 4854,
+   "counts_subtask_b": {
+    "1. threats, plans to harm and incitement": 443,
+    "2. derogation": 2271,
+    "3. animosity": 1665,
+    "4. prejudiced discussions": 475
+   },
+   "counts_by_split": {
+    "train": {
+     "1": 310,
+     "2": 1590,
+     "3": 1165,
+     "4": 333
+    },
+    "dev": {
+     "1": 44,
+     "2": 227,
+     "3": 167,
+     "4": 48
+    },
+    "test": {
+     "1": 89,
+     "2": 454,
+     "3": 333,
+     "4": 94
+    }
+   },
+   "guideline": {
+    "url": "https://github.com/rewire-online/edos/blob/main/guidelines/EDOS%20Guidelines.pdf",
+    "pages": 8,
+    "words": 2927,
+    "tokens_est": 3805,
+    "given_to_annotators": true,
+    "evidence": "paper sec 3.4: 'we want the annotators to apply our comprehensive annotation guidelines'; guideline PDF is dated February 2022, headed 'Annotation Guidelines'",
+    "label_taxonomy": "4 categories / 11 vectors (subtask B uses the 4 categories)"
+   },
+   "annotation_process": {
+    "annotators": "19 trained women annotators passing a 200-entry screening task, pilot tasks; 3 annotators per entry; experts adjudicate when <2/3 agree in tasks B/C",
+    "source": "Kirk et al. 2023, sec 3.4 + abstract/intro",
+    "verified": true,
+    "note": "'trained annotators following the guideline' is VERIFIED by the paper text; expert panel = 2 paper authors + 2 senior annotators"
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": null,
+    "verified_not_published_in_paper": true,
+    "derived_from_data": {
+     "note": "computed by us from edos_labelled_individual_annotations.csv on the 4,854 sexist items; NOT a published figure; adjudicated items inflate or deflate unclear",
+     "mean_single_annotator_category_match_with_final_label": 0.642,
+     "items_with_3_of_3_identical_category_labels": 1291,
+     "share_unanimous": 0.266
+    },
+    "model_ceiling_reference": {
+     "best_baseline_subtask_B_macro_f1": 0.5926,
+     "best_participant_subtask_B_macro_f1": 0.7326,
+     "source": "paper Table 3",
+     "note": "model scores, not a human ceiling"
+    }
+   },
+   "contamination": "published 2023, public GitHub CC0; likely in pretraining for some models",
+   "flags_unverified": [
+    "no published human ceiling (kappa/alpha) for subtask B",
+    "derived agreement is our computation",
+    "item text contains explicit abusive content"
+   ]
+  },
+  "fomc": {
+   "verdict": "usable (small S-to-F gap expected; non-commercial licence)",
+   "license": {
+    "text": "CC BY-NC 4.0: HF dataset card metadata 'license: cc-by-nc-4.0'; paper abstract: 'publicly available on Huggingface and GitHub under CC BY-NC 4.0 license'; GitHub LICENSE.md 'Attribution-NonCommercial 4.0 International'",
+    "url": "https://huggingface.co/datasets/gtfintechlab/fomc_communication",
+    "other_urls": [
+     "https://github.com/gtfintechlab/fomc-hawkish-dovish/blob/main/LICENSE.md",
+     "https://aclanthology.org/2023.acl-long.368/"
+    ],
+    "verified": true,
+    "caveat": "non-commercial only; sentences are US Federal Reserve public text"
+   },
+   "downloaded": [
+    {
+     "file": "fomc/hf_train.csv",
+     "bytes": 422592,
+     "sha256": "3c9ec066b7bbdedc60d553b48e74ae6ca36715b5de2f9000a82e76e909bd76b7"
+    },
+    {
+     "file": "fomc/hf_test.csv",
+     "bytes": 103896,
+     "sha256": "c4b6a660a3cd67f940f59b1b77fc4d2f1b99e56c94eaf54b9298a37647ecfbac"
+    },
+    {
+     "file": "fomc/hf_README.md",
+     "bytes": 2003,
+     "sha256": "faedd87e0c161ecbdec31c0d3a979558c83fc5d43432c058fc560feaeaf3c7e5"
+    },
+    {
+     "file": "fomc/LICENSE.md",
+     "bytes": 17689,
+     "sha256": "176fdd712458a69435102791f06cf14bc66f86089351415c9df9c3c263798631"
+    }
+   ],
+   "not_downloaded": [
+    "lab-manual-split-combine-*.xlsx (alt copies on HF)"
+   ],
+   "text_field": "sentence",
+   "label_field": "label",
+   "label_mapping": {
+    "0": "dovish",
+    "1": "hawkish",
+    "2": "neutral"
+   },
+   "labels": [
+    "dovish",
+    "hawkish",
+    "neutral"
+   ],
+   "items_total": 2480,
+   "splits": {
+    "train": 1984,
+    "test": 496
+   },
+   "counts": {
+    "train": {
+     "dovish": 515,
+     "hawkish": 492,
+     "neutral": 977
+    },
+    "test": {
+     "dovish": 135,
+     "hawkish": 114,
+     "neutral": 247
+    }
+   },
+   "guideline": {
+    "url": "https://aclanthology.org/2023.acl-long.368.pdf",
+    "where": "Section 3 label definitions + Appendix C.2 Table 10 (paper pp. 6666, 6675-6676)",
+    "words": 577,
+    "tokens_est": 750,
+    "license": "paper CC BY 4.0 (ACL Anthology: 'Materials published in or after 2016 are licensed on a Creative Commons Attribution 4.0 International License')",
+    "given_to_annotators": true,
+    "evidence": "paper: 'The labeling was conducted according to a predefined annotation guide'"
+   },
+   "annotation_process": {
+    "annotators": "2 independent annotators, both male researchers with finance-related coursework; disagreements resolved with the guide / online resources and the guide extended",
+    "trained_annotators": false,
+    "verified": true,
+    "note": "researchers, not a trained annotation workforce"
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": {
+     "combined_after_sentence_split": 0.9068,
+     "minutes": 0.8904,
+     "press_conf": 0.9503,
+     "speeches": 0.9113
+    },
+    "metric": "raw percent agreement (paper Table 9, split datasets); not kappa",
+    "verified": true,
+    "model_reference": "paper Table 8 F1 0.43 combined-S (weak models)"
+   },
+   "contamination": "published 2023; public HF/GitHub; Fed text widely in pretraining",
+   "flags_unverified": [
+    "dataset sentences mix tone; paper says sentences were split and re-annotated, row-level provenance not checked",
+    "split in HF files is one seed of the paper's three"
+   ]
+  },
+  "cap_nyt": {
+   "verdict": "usable with caveats (licence NC-SA; headline text is NYT copyright; guideline F not committed)",
+   "license": {
+    "text": "'The Comparative Agendas Project topic code variables as well as other Project-generated variables ... are distributed under a Creative Commons \"Attribution Non-commerical ShareAlike 4.0 International License.\" ... When noted in dataset codebooks, the original copyright of primary source material also applies to any re-use.'",
+    "url": "https://www.comparativeagendas.net/pages/Copyright-and-Legal",
+    "cite": "Boydstun, Amber. 2013. Making the News: Politics, the Media, and Agenda Setting. University of Chicago Press.",
+    "verified": true,
+    "caveat": "headline text is NYT-owned primary material; use here is non-commercial research; codebook PDF carries no separate licence so F is NOT committed"
+   },
+   "dataset_url": "https://minio.la.utexas.edu/compagendas/datasetfiles/US-Media-NYTimes_front_page_19.3.csv",
+   "listing_url": "https://www.comparativeagendas.net/datasets_codebooks",
+   "downloaded": [
+    {
+     "file": "cap_nyt/US-Media-NYTimes_front_page_19.3.csv",
+     "bytes": 3535622,
+     "sha256": "56fa84517a5c6f370c270d05c31bdac2249f11e385c328e03176b1d2f496aa3e"
+    },
+    {
+     "file": "cap_nyt/NYT_codebook.pdf",
+     "bytes": 540963,
+     "sha256": "76070be77dc2a24517efe36b36323d03364b299eb038af1f211abbee11519536"
+    },
+    {
+     "file": "cap_nyt/copyright_legal.html",
+     "bytes": 24738,
+     "sha256": "557b913170be7fa5c1a28e6a3c56dbc443f4ffbf75b51a97c32ce2a7e12d87c5"
+    }
+   ],
+   "not_downloaded": [
+    "US-Legislative-congressional_bills_19.3_3_3 (1).csv (116.2 MB, 463,929 bills 1947-2016; skipped for size, same CC BY-NC-SA terms, codebook not fetched)"
+   ],
+   "text_field": "title (coder-written 'summary' column EXCLUDED: it is the coder's topic summary and leaks the label)",
+   "label_field": "majortopic",
+   "subset_labels": {
+    "1": "Macroeconomics",
+    "5": "Labor and Employment",
+    "13": "Social Welfare",
+    "14": "Community Development and Housing Issues",
+    "15": "Banking, Finance, and Domestic Commerce",
+    "18": "Foreign Trade"
+   },
+   "items_file": 31034,
+   "items_subset": 3447,
+   "counts_subset": {
+    "1": 964,
+    "5": 280,
+    "13": 283,
+    "14": 413,
+    "15": 1253,
+    "18": 254
+   },
+   "subset_rationale": "economy-adjacent confusable majors picked by us from the codebook list; not tuned on any model output",
+   "guideline": {
+    "url": "https://minio.la.utexas.edu/compagendas/codebookfiles/NYT_Front_Page_Policy_Agendas_Codebook_Updated_with_new_CAP_Codes.pdf",
+    "pages": 87,
+    "words_full": 29934,
+    "tokens_est_full": 38914,
+    "words_F_excerpt": 8127,
+    "tokens_est_F_excerpt": 10565,
+    "given_to_annotators": true,
+    "evidence": "codebook says its coding instructions are 'presented verbatim as the coders ... received them'"
+   },
+   "annotation_process": {
+    "annotators": "coders working with a project director (codebook text); training and reliability not verified",
+    "verified": false
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": null,
+    "verified": false,
+    "note": "no reliability figure in the codebook; Boydstun 2013 book reportedly has one: NOT retrieved"
+   },
+   "contamination": "1996-2006 NYT headlines; dataset public for years; likely seen",
+   "flags_unverified": [
+    "intercoder reliability",
+    "coder training details",
+    "legal status of redistributing headlines/codebook text",
+    "headline text duplicates: 3386 unique of 3447"
+   ]
+  },
+  "asap_sas": {
+   "verdict": "skip (account/terms-gated; no legitimate open mirror)",
+   "license": {
+    "text": "Kaggle competition terms (rules/data pages are JS-rendered and were not retrievable without a login; terms text NOT read)",
+    "url": "https://www.kaggle.com/c/asap-sas/data",
+    "verified": false
+   },
+   "mirror_checked": {
+    "url": "https://huggingface.co/datasets/nlpatunt/D_ASAP-SAS",
+    "result": "third-party S-GRADES copy with ground-truth labels REMOVED and no licence field: unusable"
+   },
+   "downloaded": [],
+   "guideline": {
+    "where": "Kaggle Data_Set_Descriptions (per-prompt key-element rubrics, behind the Kaggle data page)",
+    "retrieved": false
+   },
+   "agreement": {
+    "published_inter_annotator_agreement": null,
+    "verified": false,
+    "note": "human-rater QWK reported in Shermis-era ASAP reports; NOT retrieved"
+   },
+   "flags_unverified": [
+    "everything: licence, rubric text, agreement, counts"
+   ]
+  }
+ },
+ "not_researched": [
+  "Gab Hate Corpus fallback (outside the four assigned candidates)"
+ ]
+}

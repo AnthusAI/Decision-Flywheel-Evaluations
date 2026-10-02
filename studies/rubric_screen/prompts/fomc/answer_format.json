@@ -1,0 +1,23 @@
+{
+ "question_name": "label",
+ "question_type": "choice",
+ "options_in_fixed_order": [
+  "dovish",
+  "hawkish",
+  "neutral"
+ ],
+ "instructions_S_file": "studies/rubric_screen/prompts/fomc/S.txt",
+ "instructions_S_sha256": "65258b6799229d6142650e950b6cea0ccc61799163f286e3ca87a5fcb98a128f",
+ "instructions_F_file": "studies/rubric_screen/prompts/fomc/F.txt",
+ "instructions_F_sha256": "c8f954d1702a75605ec07984c8c01f8d6543b349b47f71888020c756894d2467",
+ "F_committed": true,
+ "F_begins_with_S_text_then_two_newlines": true,
+ "S_words": 47,
+ "F_words": 577,
+ "F_tokens_est": 750,
+ "dataset_label_to_option": {
+  "0": "dovish",
+  "1": "hawkish",
+  "2": "neutral"
+ }
+}

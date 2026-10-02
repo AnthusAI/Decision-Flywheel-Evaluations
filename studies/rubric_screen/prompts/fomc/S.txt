@@ -1,0 +1,1 @@
+Classify the monetary policy stance of this sentence from US Federal Reserve (FOMC) communication: hawkish (points toward tighter policy, such as higher rates or fighting inflation), dovish (points toward easier policy, such as lower rates or supporting growth), or neutral (mixed, no change, or not about policy).

@@ -1,0 +1,92 @@
+Each text is a social media post already judged sexist; choose the single category of sexism it shows: threats (threatening or inciting harm to women), derogation (insulting or demeaning women), animosity (casual slurs, stereotypes, or backhanded remarks about women), or prejudiced discussion (defending mistreatment of or discrimination against women).
+
+ANNOTATION GUIDELINES (excerpt): Explainable Detection of Online Sexism (EDOS), Taxonomy Guidelines, February 2022. Published at github.com/rewire-online/edos (guidelines/EDOS Guidelines.pdf), CC0. The posts you will see have already been labelled Sexist; your job is the secondary label.
+
+SEXISM
+This task defines sexism as: "Any abuse or negative sentiment that is directed towards women based on their gender, or on the combination of their gender with one or more other identity attributes (e.g. Black women, Muslim women, Trans women)".
+An entry is Sexist if (1) it refers to a woman, a group of women, women in general, or to supporters of feminism (explicitly threatening or inciting harm against individual women must also be included), and (2) it expresses negative sentiment against its target on the basis of gender: for instance, it is derogatory, demonising, insulting, threatening, violent or prejudicial.
+Label the entry rather than the speaker. Entries which make a quote (indicated by "") without any further comments should be taken at face value. If an entry contains a joke, carefully consider its intention. If a joke meets the above criteria, it should be labelled as Sexist and put into the corresponding secondary category, even in cases where the tone is light-hearted or positive.
+
+TASK 2: SECONDARY LABEL (Sexist entries only)
+For each entry, select ONLY ONE Secondary Label. In cases where several Secondary Labels could be applied, please select the most appropriate label. If you are unsure which is most appropriate then select the label based on their ranked order below. For instance, if an entry meets the criteria for "1.1" then it should be assigned to that label, even if it also meets the criteria for other secondary labels.
+Secondary labels are grouped into four general categories: 1. Threats, plans to harm and incitement; 2. Derogation; 3. Animosity; 4. Prejudiced discussions. Each is given with a definition, examples, and sometimes notes on edge case inclusion, edge case exclusion, or distinction from a similar category. Your answer is the top-level category (1 to 4) that contains the matching subcategory.
+
+CATEGORY 1. THREATS, PLANS TO HARM AND INCITEMENT
+
+1.1 Threats of harm
+Definition: The entry expresses intent, willingness or desire to harm a woman, group of women or individual women. This could include, but is not limited to: physical, sexual, emotional or privacy-based forms of harm. In some cases, the entry will describe how the speaker plans on manipulating a woman into thinking less of herself, which is a form of emotional abuse.
+Inclusion note: 1.1 and 1.2 include threats and incitement/encouragement against women as individuals, as well as groups. This is different to all the other 9 categories which are only focused on sexism as negativity against women as a group.
+Exemplars: "I'll kill any bitch that talks back to me" / "Ima just lie to that skank, she wont know what ive been up to" / "Raping you would put you in your place" / "I know where she lives, I will hunt her down"
+Edge cases: (N/A)
+
+1.2 Incitement and encouragement of harm
+Definition: The entry incites or encourages an individual, group, or general audience to harm a woman or group of women. This subcategory includes language where the author seeks to rationalise and/or justify harming women to another person. In some cases, the entry will encourage another person to threaten a woman or group of women with harm or wishing harm upon a woman or group without an explicit call to action.
+Inclusion note: Entries which explicitly encourage other men to disregard women's consent (such as by telling men to ignore women who reject sexual advances) should be included. Entries which explicitly wish harm upon women without a direct call to action should be also included in 1.2.
+Exemplars: "Raping her would put her in her place" / "You should punch her right now" / "Go smash that twat's face in bro" / "Tell her you know where she lives, that'll show her who's in charge" / "Women deserve to be choked when they step out of line"
+Edge cases: "Asking kills the mood, just touch her and you'll see where you stand" / "If your woman is causing you problems, just lie to her. That'll keep her off your back." / "Too bad she didn't break her fcking neck"
+
+CATEGORY 2. DEROGATION
+
+2.1 Descriptive attacks
+Definition: The entry characterises or describes women in a derogatory manner. This could include, but not limited to: negative generalisations about women's abilities, appearance, sexual behaviour, intellect, character, or morals. Derogation is often expressed through adjectives, analogies, and comparison with men.
+Exclusion note: Criticism or attacks of individual women without any gender-based attack, e.g. "She is so dumb", should be labelled as Not Sexist.
+Inclusion note: Irrelevant, explicit mentioning of gender (where gender is being brought up in a way which makes the sentence less linguistically feasible) is a sign of gender-based attacks and such cases should be included. Entries which compare groups of women in a derogatory way should be included.
+Exemplars: "Women are only good in the kitchen" / "Typical stupid girl - talking about things she doesn't understand" / "Women are shit at football, they're so slow and clumsy" / "Women are devious, that's just how it is unfortunately" / "My dog is smarter than any woman could ever be" / "Women are just worse than men"
+Edge cases: "This FEMALE is so dumb" / "Regular party girls have way more STDs than hookers."
+
+2.2 Aggressive and emotive attacks
+Definition: The entry expresses strong negative sentiment against women, such as dislike, disgust, or hatred. This can be through direct description of the speaker's subjective emotions, baseless accusations, or the use of gendered slurs, gender-based profanities and gender-based insults.
+Distinction note: In contrast to 2.1, entries in Subcategory 2.2 primarily express first-person emotional feelings rather than make descriptive claims about women's characteristics.
+Exemplars: "I hate women" / "Shut the fuck up you whore" / "I am tired of all of the girls at my work, they are such bitchy twat faces" / "That woman is such a mad cunt"
+Edge cases: "These libtard women probably drunk or overdosed on day after pills on election night."
+
+2.3 Dehumanising attacks & overt sexual objectification
+Definition: The entry derogates women by comparing them to non-human entities such as vermin, disease or refuse, or overtly reduces them to sexual objects.
+Exemplars: "Women are pigs" / "Women are a cancer"
+Edge cases: "Got my wife home and used her like the filthy little blow-up sex doll she is"
+
+CATEGORY 3. ANIMOSITY
+
+3.1 Casual use of gendered slurs, profanities, and insults
+Definition: The entry contains gendered slurs, gender-based profanities and insults which are not being used to intentionally attack women. Only terms that traditionally describe women are in scope (see the list of slurs below).
+Inclusion note: This label should be applied even in cases where the use of the slur or profanity has humourous or light-hearted intent. Entries which carry out a gender-based attack against a female relative (e.g. the real target's mother) should be included.
+Exclusion note: Reclaimed uses of slurs by women should be labelled as Not Sexist.
+Exemplars: "Stop being such a little bitch" / "Man u such a cunt" / "Hahaha this guy is such a sluttttt"
+Edge cases: "you can be such a lil whiny bitch sometimes but i still love you" / "Your mother smoked crack and shot up heroin before she shat you out."
+
+3.2 Immutable gender differences and gender stereotypes
+Definition: The entry asserts immutable, natural or otherwise essential differences between men and women. In some cases, this could be in the form of using women's traits to attack men. Most sexist jokes will fall into this category.
+Inclusion note: Entries referring to anecdote, pseudoscience, or similar and entries that use well-evidenced empirical differences between men and women to support a sexist argument should be included.
+Exclusion note: Entries which make reference to well-evidenced empirical differences between men and women without leading to a sexist argument (e.g., "Men are far more likely to suffer heart disease than women, that's just how it is.") should be labelled Not Sexist.
+Distinction note: Entries will fall under 2.1 Descriptive attacks if the gender differences are portrayed negatively, e.g. "Men be men and women be sluts, you get me?"
+Exemplars: "Men and women's brains are wired different bro, that's just how it is" / "Men are from mars, women are from venus" / "I think the whole equality thing is getting out of hand. Women and men are just not the same!" / "Women have different natural skills, they should stay at home and look after the kids"
+Edge cases: "Women's suicide success rates are much lower anyway so don't worry about her lmao" / "Bro your legs are so skinny they look like a girl's legs" / "Studies show that a lot of women turn into good drivers... so if you're a good driver, look out for women turning"
+
+3.3 Backhanded gendered compliments
+Definition: The entry is ostensibly complimentary, but belittles or implies inferiority on the part of women. This could include, but is not limited to: reduction of women's value to their attractiveness or sexual desirability, implication that women are innately frail, helpless or weak, or emphasising traditionally "masculine" virtues in a woman as unusual or exceptional.
+Exclusion note: Entries which only express a desire to protect women, but do not implicitly belittle them (e.g., "We must do more to protect women on campus") should be labelled as Not Sexist.
+Distinction note: Sexual objectification crosses into Dehumanisation (Derogation, 2.3) if the woman's sexual appeal is presented as her only value. E.g. "Got her home and used her so hard because sex is all she's good for"
+Exemplars: "Women are delicate flowers who need to be cherished" / "Karen is such a good manager, she always takes it like a man!" / "I love it when I get a female copper they always take pity on me and let me off"
+Edge cases: (N/A)
+
+3.4 Condescending explanations or unwelcome advice
+Definition: The entry offers unsolicited or patronising advice to women on topics and issues they know more about (known as "mansplaining").
+Exemplars: "My gf always complains about period pains but she just doesn't understand the medical science for eliminating them!" / "A bit of financial wisdom for all the ladies out there - stop spending all your money on shoes!" / "Listen honey, you may have a PhD in astrophysics but believe me, I know my way around a telescope and am telling you you're holding it the wrong way round"
+Edge cases: "Don't let your wife drink it. Her fallopian tubes will scar shut."
+
+CATEGORY 4. PREJUDICED DISCUSSIONS
+
+4.1 Supporting mistreatment of individual women
+Definition: The entry expresses support for mistreatment of women as individuals. Support can be shown by denying, understating, or seeking to justify such mistreatment. For instance, the entry may present female victims of gendered abuse as having invited it by their actions, dress or similar (known as "victim-blaming"). Mistreatment includes, but is not limited to, physical abuse, sexual abuse, emotional abuse, privacy invasion, and any form of social control.
+Exclusion note: An instance is Not Sexist if it only mentions actions as risk factors rather than drawing a direct causal link to mistreatment, e.g. "In that part of the country, jogging alone at night is dangerous for women".
+Exemplars: "Women shouldnt show that much skin, it's their own fault if they get raped"
+Edge cases: "What a tragedy, she was so young... If only she had stayed home that night instead of going to the bar :(" / "She should have just left the guy then this wouldn't have happened"
+
+4.2 Supporting systemic discrimination against women as a group
+Definition: The entry expresses support for systemic discrimination of women as a group. Support can be shown by denying, understating, or seeking to justify such discrimination. This could include, but is not limited to, discrimination against women in the workplace, in legal or educational institutions, and in the economy or in society at large. It includes pro-men statements. The entry may seek support by establishing the idea that men are more oppressed than women.
+Exclusion note: Entries which only refer to debates about the progress of womens' rights in good faith (e.g., "I dont know if society is still patriarchal in the same way it was historically. Many women are now world leaders and business people, I think its more complicated" and "progress has been made, women are no longer disenfranchised. That's a huge difference from the rest of history") should be labelled as Not Sexist. However, please carefully assess the likely context and implications of entries such as this before coming to a decision.
+Exemplars: "The leadership of men in boardrooms is a necessary evil - corporations need to be efficiently run" / "Govt cant tell me what to do, if i dont want to hire a girl then i bloody well wont"
+Edge cases: "Women always campaign for special treatment, like hiring policies and maternity rights, but women are not discriminated against anymore so it's all just bullshit." / "Men have no rights anymore, they are the truly disadvantaged ones in modern society" / "I think its unfair that women still get promoted after they spend a ton of time out of the workforce having babies."
+
+LIST OF SLURS (non-exhaustive, commonly used to target women)
+bitch, bitches, cock tease, cunt, cunter, cunts, dyke, dykes, feminazi, feminazis, gash, gasher, gashes, ho, hoe, hoes, hos, kunt, pussies, pussy, scag, scags, skag, skags, skank, slut, sluts, twat, twats, whore, whores, thot, roasties, tranny, harpy

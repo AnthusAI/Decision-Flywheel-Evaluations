@@ -1,0 +1,1 @@
+Each text is a social media post already judged sexist; choose the single category of sexism it shows: threats (threatening or inciting harm to women), derogation (insulting or demeaning women), animosity (casual slurs, stereotypes, or backhanded remarks about women), or prejudiced discussion (defending mistreatment of or discrimination against women).
