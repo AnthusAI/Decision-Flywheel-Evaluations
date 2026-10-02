@@ -3,7 +3,7 @@
   "title": "R4: Simulated-stakeholder design and offline fake (quote-validated, UNEXPLAINABLE, noisy/shuffled)",
   "description": "## Purpose\n\nDesign the simulated stakeholder and build its offline fake. Dataset-agnostic; can proceed after R0 in parallel with screening.\n\n## Design\n\n- **Sees:** the item text, Jev's verdict, the gold label, and the full guideline (not the excerpt limit of F if it fits the stakeholder model's context).\n- **Outputs:** one sentence \"should be G because [rule]\" + rule ID (section/rule identifier in the guideline) + a verbatim guideline quote <= 30 words, validated by exact string match against the guideline text (after whitespace normalization); reject on mismatch.\n- **Rejects:** explanations that only restate the label, and text-specific claims that are not a rule (validator + prompt instruction).\n- **May answer UNEXPLAINABLE:** logged as a label-noise estimate, NOT fed forward to the analyst.\n- **Model:** a different model family from Jev and from the analyst (owner to confirm the model before R6).\n- **Per round:** 10-20 errors, from the pool only; cap repeats per rule ID (e.g. <= 3 per round) so one rule cannot dominate.\n- **Noisy variant:** ~20% of explanations replaced by vague (\"seems off\") or wrong-rule explanations, seeded and logged.\n- **Shuffled variant:** explanations permuted across items (each attached to a wrong item), seeded.\n\n## Specs (first, beside the module)\n\nprompt contains item, verdict, gold, guideline; quote validator accepts verbatim and rejects paraphrase; restated-label and text-specific outputs rejected; UNEXPLAINABLE logged and not forwarded; per-rule repeat cap enforced; noisy and shuffled variants deterministic for a seed; offline fake produces valid outputs from a tiny fixture guideline.\n\n## Reuse\n\n`unified_labeler.py` (`labeler_prompt`, `wants_comment`) and the Emotion S5 design (decision-flywheel-evaluations-5e9ab3cf-fecc-4fda-9ea4-d3dfe2f003c1).\n\n## Definition of done\n\nSpecs pass offline under `make test`; design note committed; Sonnet agent builds, main session reviews.\n\n## Cost\n\n$0 (offline, no network).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -23,10 +23,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c78dd9bb-fb2a-4eb9-b28c-ce116a9d87ab",
+      "author": "home",
+      "text": "Built in 9a4fde8 (offline, $0). unified_labeler.py rubric-stakeholder style (the section header is the design note): sees item, verdict, gold, full F.txt; JSON {explanation: 'should be <gold> because <rule>', quote <=30 words}; validator rejects non-verbatim quotes (whitespace-normalized substring of F), restated labels (<3 content words), rules sharing no content word with the quote, wrong label, malformed; UNEXPLAINABLE counted (label-noise estimate) and never forwarded. At most 15 errors per round per arm (most confident first, pool only), at most 3 forwarded per quoted rule. Shuffled = seeded derangement; noisy = exactly round(20%) vague or wrong-rule, seeded. Offline fake picks the gold label's best keyword-matching F line; live = gpt-6-luna via the existing litellm shim, only with --live --confirm --stakeholder-ledger --stakeholder-max-calls. Cache keyed by item id + verdict + gold + prompt version + model (no item text). Specs: unified_labeler_test.py. Note: the stakeholder and the default analyst are both gpt-6-luna (same family) - owner decision 3 still open.",
+      "created_at": "2026-10-02T03:05:11.939511Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.216768Z",
-  "updated_at": "2026-10-02T01:22:52.504728Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T03:05:11.963020Z",
+  "closed_at": "2026-10-02T03:05:11.962937Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",

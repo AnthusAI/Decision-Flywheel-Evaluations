@@ -3,7 +3,7 @@
   "title": "R5: Corpus + harness build for the chosen dataset (reuse Emotion Corpus/multi-class plumbing)",
   "description": "## Purpose\n\nCorpus + harness build for the dataset the owner picks after R3.\n\n## Scope\n\n- Add a corpus entry to the frozen `Corpus` config (Emotion S1) with the chosen dataset's labels and the S starting rubric from R1.\n- Loader from the manifest/cache with pool / dev / final slices (`seeded_slices`), stratified label order, leakage asserts (Emotion S2 pattern).\n- Multi-class plumbing (N-1 few-shot/kNN features, real probabilities) and macro-F1 metrics/paired bootstrap from Emotion S3/S4/S6/S7; reuse, do not fork.\n- Wire the R4 stakeholder (and its noisy / shuffled variants) as the comments source for the explanation arms; UNEXPLAINABLE excluded from feedback.\n- Offline dry run of all R6 arms with fakes; planted replays stay byte-identical.\n\n## Specs\n\nloader splits disjoint and stable for a seed; corpus labels flow through every binary-constant site; explanation arms receive stakeholder comments, labels-only arm receives none; shuffled arm comments never attach to their source item; dry run completes all arms.\n\n## Definition of done\n\n`make test` and the unified target pass; offline dry run artifacts produced; Sonnet agents build in small steps, main session reviews diffs. Request upper bounds printed for each R6 stage.\n\n## Cost\n\n$0 (offline).",
   "type": "task",
-  "status": "open",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -27,10 +27,18 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "c6a8dde4-2b73-4ef4-977c-8a11bebe271a",
+      "author": "home",
+      "text": "Built in 9a4fde8. --corpus fomc: pool = train rows minus 43 repeated texts (1,941), dev-100 class-stratified (50/27/23) and FINAL-377 from test only (19 test rows duplicating pool text dropped), ids fomc-train-<row>/fomc-test-<row> because the CSV index column is not unique (745 repeats in train; the R3 screen's fomc-<index> ids collided on 4 of its 120 FOMC items). Seed question = exactly S.txt; arms 0, A, A-c, A-c-shuffled, A-c-noisy, F, A-c+F, CEIL (F.txt question, never refit). Offline dry run (3 rounds, all arms, fake Jev + fake stakeholder) and --final completed; Jev requests by arm (rounds): 0 400, A 600, F 1396, A-c+F 1394, CEIL 100 (A-c variants shared cached answers); final 1,885. Planted phase2-live-seed1 replays byte-identical (only workspace timestamps differ), 0 requests. Bounds: rounds all arms 11,800 Jev (> 9,500 plan ceiling, so L-R1 is split: 0,A,A-c,A-c-shuffled,A-c-noisy,CEIL = 4,900; F,A-c+F = 7,300), stakeholder <=180 calls; final 3,016. make test 479 passed; unified-flywheel-test 280 passed.",
+      "created_at": "2026-10-02T03:05:11.980471Z",
+      "comment_type": "default"
+    }
+  ],
   "created_at": "2026-10-02T01:22:33.247837Z",
-  "updated_at": "2026-10-02T01:23:12.188119Z",
-  "closed_at": null,
+  "updated_at": "2026-10-02T03:05:11.995953Z",
+  "closed_at": "2026-10-02T03:05:11.995898Z",
   "agent": {
     "platform": "claude_code",
     "model": "Claude Opus 5.5",
