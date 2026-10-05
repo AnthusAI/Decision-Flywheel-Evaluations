@@ -254,9 +254,16 @@ def build_reviews_splits(pool_rows: Sequence[Mapping[str, object]], records: Map
     natural = None
     if natural_records is not None:
         labeled = [r.label for r in natural_records.values() if r.label is not None]
+        statuses = _count(r.status for r in natural_records.values())
+        uncached = natural_size - len(natural_records)
+        if uncached < 0:
+            raise ValueError("natural SME records exceed the declared natural sample size")
         natural = {"n": natural_size, "sme_labeled": len(labeled),
                    "by_label": _count(gold_label(l, merged) for l in labeled),
-                   "no_label": len(natural_records) - len(labeled)}
+                   # ``natural_records`` holds only cache hits: absent rows must
+                   # remain visible rather than looking like a fully labeled mix.
+                   "no_label": natural_size - len(labeled), "uncached": uncached,
+                   "ambiguous": statuses.get("ambiguous", 0), "rejected": statuses.get("rejected", 0)}
     report = {
         "seed": seed, "labels": list(labels), "merged": merged, "merge_rule": f"abusive < {MERGE_MIN_ABUSIVE}",
         "pool_items": len(texts), "sme_status": status,

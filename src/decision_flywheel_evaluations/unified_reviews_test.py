@@ -101,8 +101,19 @@ def test_the_natural_mix_is_reported_separately_from_the_enriched_mix():
     natural = {"n1": sme.SmeRecord("n1", "approve", "R11", "x", None, "accepted"),
                "n2": sme.SmeRecord("n2", None, None, None, None, "ambiguous")}
     _, report = reviews.build_reviews_splits(rows, records, natural_records=natural, natural_size=300)
-    assert report["natural_mix"] == {"n": 300, "sme_labeled": 1, "by_label": {"approve": 1}, "no_label": 1}
+    assert report["natural_mix"] == {"n": 300, "sme_labeled": 1, "by_label": {"approve": 1},
+                                      "no_label": 299, "uncached": 298,
+                                      "ambiguous": 1, "rejected": 0}
     assert reviews.build_reviews_splits(rows, records)[1]["natural_mix"] is None
+
+
+def test_an_empty_natural_sme_cache_counts_every_absent_record_as_no_label():
+    rows, records = synthetic_pool(COUNTS)
+    _, report = reviews.build_reviews_splits(rows, records, natural_records={}, natural_size=300)
+
+    assert report["natural_mix"] == {"n": 300, "sme_labeled": 0, "by_label": {},
+                                      "no_label": 300, "uncached": 300,
+                                      "ambiguous": 0, "rejected": 0}
 
 
 def write_cache(path, records, *, model=MODEL, policy=POLICY):
