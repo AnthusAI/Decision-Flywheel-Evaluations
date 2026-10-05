@@ -1,0 +1,7 @@
+{
+  "dataset_manifest_sha256": "aa252a9c617291dfe92ac7a7f2f30b580e2172940a062d4f45b20e7a728b96c3",
+  "jev_model": "jev-1.13.0",
+  "policy_sha256": "9fa66176206b4fead64a324e8c3ab79b6d78dc7659804c78c9cc0e495148fc2d",
+  "sme_model": "gpt-6-sol",
+  "split_sha256": "b8602888261c716eba8887d827b563e30659ba14c5038bac6d5c66b6e3aa7f57"
+}
