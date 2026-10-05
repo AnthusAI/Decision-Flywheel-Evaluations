@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "c42b1028-2979-46eb-9306-91cef3ce5470",
+  "issue_id": "decision-flywheel-evaluations-3608745a-6efe-4578-a455-50e1f7df619f",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T15:34:24.287Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Keep provider error bodies out of spend-ledger diagnostics",
+    "description": "SpendLedger.failed prints raw exception message to stderr; provider errors can echo credentials/private texts. CountingSyncClient invokes it before Stage0 can sanitize. Print safe exception class/status only, preserve failure/circuit/attempt counts. Regression spec injects secret/private body and asserts neither appears in stderr or summary. Narrow unified_spend.py/test fix only; no paid calls or broad logging framework. Required for Stage0 runner54743202.",
+    "issue_type": "bug",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Implementation"
+    }
+  }
+}
