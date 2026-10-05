@@ -221,7 +221,7 @@ def frozen_role_ids(manifest: Mapping[str, object], role: str) -> tuple[str, ...
     checked = _validate(manifest)
     if role not in _ROLES:
         raise ValueError("unknown frozen reviews role")
-    return tuple(entry["id"] for entry in checked["universe"]["records"] if entry["role"] == role)
+    return tuple(sorted(entry["id"] for entry in checked["universe"]["records"] if entry["role"] == role))
 
 
 def load_frozen_reviews_splits(path: Path, *, pool_rows: Sequence[Mapping[str, object]] | None = None,

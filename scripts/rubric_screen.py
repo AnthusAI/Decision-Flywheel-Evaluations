@@ -235,8 +235,8 @@ def dry_run(a):
         if name == "contractnli": extra = f" dropped_over_12k: train={_contractnli('train')[1]} test={_contractnli('test')[1]}"
         if name == REVIEWS:
             rep = _reviews()[1]
-            extra = (f" labels={rep['labels']} merged={rep['merged']} excluded_from_gold={rep['excluded_from_gold']}"
-                     f" floor_met={rep['floor_met']} natural_mix={rep['natural_mix']} sme_model={rep['sme_model']}")
+            extra = (f" labels={rep['labels']} merged={rep['merged']} sme_model={rep['sme_model']}"
+                     f" frozen_manifest_sha256={rep['manifest_sha256']} frozen_counts={rep['counts']}")
         print(f"{name} split={a.split} pool={len(pool)} pool_labels={dict(sorted(collections.Counter(l for _, _, l in pool).items()))}{extra}")
         print(f"{name} screen n={len(screen)} labels={dict(sorted(collections.Counter(l for _, _, l in screen).items()))}")
         longest = max(screen, key=lambda r: len(r[1]))

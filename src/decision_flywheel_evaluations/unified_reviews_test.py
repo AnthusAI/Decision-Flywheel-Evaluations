@@ -201,11 +201,13 @@ def load_screen():
 def test_the_screen_dry_run_counts_the_held_out_reviews_and_their_requests_without_calling_jev(tmp_path, monkeypatch, capsys):
     rows, records = synthetic_pool(COUNTS, NO_GOLD)
     built = reviews.build_reviews_splits(rows, records)
-    built[1].update({"sme_model": MODEL, "policy_sha256": SHA})
+    frozen_report = {"labels": list(reviews.REVIEWS_LABELS), "merged": False, "sme_model": MODEL,
+                     "policy_sha256": SHA, "manifest_sha256": "f" * 64,
+                     "counts": {"heldout": 300, "stream": 600, "dev": 100}}
     (tmp_path / "F.txt").write_text(POLICY, encoding="utf-8")
     monkeypatch.setattr(reviews, "POLICY_PATH", tmp_path / "F.txt")
     screen = load_screen()
-    monkeypatch.setattr(screen, "_reviews", lambda: built)
+    monkeypatch.setattr(screen, "_reviews", lambda: (built[0], frozen_report))
     assert screen.instructions("reviews", "S") == get_corpus("reviews").instructions
     assert screen.instructions("reviews", "F") == POLICY.strip()
     assert [r[0] for r in screen.heldout("reviews")] == list(built[0].paper600)
@@ -214,4 +216,5 @@ def test_the_screen_dry_run_counts_the_held_out_reviews_and_their_requests_witho
     screen.dry_run(args)
     out = capsys.readouterr().out
     assert "reviews screen n=300" in out and "jev_requests_upper_bound=600" in out
-    assert "'ambiguous': 30" in out and "synthetic review" not in out
+    assert "frozen_manifest_sha256=" + "f" * 64 in out and "frozen_counts={'heldout': 300, 'stream': 600, 'dev': 100}" in out
+    assert "excluded_from_gold" not in out and "natural_mix" not in out and "synthetic review" not in out

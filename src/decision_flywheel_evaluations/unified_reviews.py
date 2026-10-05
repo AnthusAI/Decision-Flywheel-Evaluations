@@ -318,7 +318,7 @@ def load_frozen_reviews_splits(*, manifest_path=None, pool_path=None, cache_path
                        source_manifest_path=Path(source_manifest_path or SOURCE_MANIFEST_PATH))
     return splits, {"merged": manifest["split"]["merged"], "labels": manifest["split"]["labels"],
                     "manifest_sha256": manifest["manifest_sha256"], "policy_sha256": manifest["sme"]["policy_sha256"],
-                    "sme_model": manifest["sme"]["sme_model"]}
+                    "sme_model": manifest["sme"]["sme_model"], "counts": manifest["split"]["counts"]}
 
 
 def load_reviews_corpus(fixtures: Path, *, dev_size: int = REVIEWS_DEV_SIZE, merged: bool = False) -> Splits:

@@ -47,6 +47,9 @@ def test_a_frozen_manifest_keeps_roles_stable_when_the_cache_grows(tmp_path):
     manifest.write_reviews_manifest(path, frozen)
     before = manifest.load_frozen_reviews_splits(path, pool_rows=rows, cache_path=cache_path,
                                                  source_manifest_path=source_path)
+    assert manifest.frozen_role_ids(frozen, "stream") == before.pool
+    assert manifest.frozen_role_ids(frozen, "heldout") == before.paper600
+    assert manifest.frozen_role_ids(frozen, "dev") == before.dev100
 
     _cache(cache_path, _records(rows[1500:]))
     after = manifest.load_frozen_reviews_splits(path, pool_rows=rows, cache_path=cache_path,
