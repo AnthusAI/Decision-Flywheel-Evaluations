@@ -180,6 +180,24 @@ def test_failures_are_tallied_by_error_class_and_status_without_message_text():
     assert "secret" not in repr(ledger.summary())
 
 
+def test_failure_diagnostics_never_echo_a_provider_body_to_stderr_or_summary(capsys):
+    class ProviderFailure(Exception):
+        status_code = 503
+
+    private_body = '{"api_key":"secret-token","customer":"private-record"}'
+    ledger = SpendLedger(None, ceiling=100, max_consecutive_failures=50)
+    ledger.reserve()
+    ledger.failed(ProviderFailure(private_body))
+
+    captured = capsys.readouterr()
+    rendered = captured.err + repr(ledger.summary())
+    assert private_body not in rendered
+    assert "secret-token" not in rendered
+    assert "private-record" not in rendered
+    assert "ProviderFailure[503]" in captured.err
+    assert ledger.summary()["error_classes"] == {"ProviderFailure[503]": 1}
+
+
 def test_arm_d_needs_one_request_per_labeled_item_and_per_evaluation_item():
     assert final_d_upper_bound(n_labeled=300, eval_n=600) == {"D": 900, "total": 900}
     assert final_d_upper_bound(n_labeled=80, eval_n=600)["total"] == 680

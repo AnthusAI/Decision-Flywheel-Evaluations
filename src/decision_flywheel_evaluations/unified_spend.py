@@ -147,7 +147,7 @@ class SpendLedger:
             self.error_classes[label] = self.error_classes.get(label, 0) + 1
             if self.error_classes[label] <= 2:  # local stderr only (run logs are gitignored), never the summary
                 import sys
-                print(f"[failure sample] {label}: {str(error)[:200]!r}", file=sys.stderr)
+                print(f"[failure sample] {label}", file=sys.stderr)
             if status in SYSTEMIC_STATUSES:
                 self.tripped = f"provider rejected the account (HTTP {status})"
             elif self.consecutive_failures >= self.max_consecutive_failures:
