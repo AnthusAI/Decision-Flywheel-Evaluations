@@ -63,6 +63,17 @@ def test_agreement_requires_all_100_expected_pairs_even_when_the_available_pairs
     assert artifact["agreement"]["completed"] == 90
 
 
+def test_an_absent_second_sme_answer_is_retained_as_incomplete_evidence_not_invented_as_a_label():
+    rows = _agreement()
+    rows[-1] = {"item_id": AGREEMENT_IDS[-1], "primary_label": LABELS[-1 % 2],
+                "second_label": None, "status": "missing"}
+
+    artifact = _artifact(agreement_rows=rows)
+
+    assert artifact["decision"] == {"status": "incomplete", "reason": "agreement_incomplete"}
+    assert artifact["agreement"] == {"expected": 100, "completed": 99, "agreement": 1.0}
+
+
 def test_incomplete_paired_screen_rows_never_compute_a_pass_or_authorize_live_work():
     artifact = _artifact(f_rows=_rows(lambda index: LABELS[index % 2])[:-1])
 

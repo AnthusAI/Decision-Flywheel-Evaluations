@@ -100,10 +100,12 @@ def _agreement(rows: Sequence[Mapping[str, Any]], expected_ids: tuple[str, ...],
             raise ValueError("agreement IDs must be safe strings")
         if item_id not in expected_ids or item_id in found:
             raise ValueError("agreement IDs must be unique expected IDs")
-        if (not isinstance(row["primary_label"], str) or not isinstance(row["second_label"], str)
-                or not isinstance(row["status"], str) or row["primary_label"] not in labels
-                or row["second_label"] not in labels or row["status"] not in {"completed", "failed", "missing", "malformed"}):
+        if (not isinstance(row["status"], str) or row["status"] not in {"completed", "failed", "missing", "malformed"}
+                or any(value is not None and (not isinstance(value, str) or value not in labels)
+                       for value in (row["primary_label"], row["second_label"]))):
             raise ValueError("agreement row has invalid label or status")
+        if row["status"] == "completed" and (row["primary_label"] is None or row["second_label"] is None):
+            raise ValueError("completed agreement row requires both canonical labels")
         found[item_id] = row
     completed = [found[item_id] for item_id in expected_ids if item_id in found and found[item_id]["status"] == "completed"]
     complete = len(completed) == len(expected_ids)
