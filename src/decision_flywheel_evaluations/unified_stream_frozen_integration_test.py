@@ -21,15 +21,17 @@ from .unified_fake_jev import FakeJevCore, FakeResponse  # noqa: E402
 from .unified_loop import RunConfig, UnifiedFlywheel  # noqa: E402
 from .unified_spend import CircuitOpen  # noqa: E402
 from .unified_stream import StreamConfig, StreamDriver, UnifiedFlywheelStreamArm  # noqa: E402
+from .unified_stream_feedback import CachedSmeFeedback  # noqa: E402
+from .unified_sme import SmeRecord  # noqa: E402
 
 
-def _engine(tmp_path, *, core=None, max_new=1):
+def _engine(tmp_path, *, core=None, max_new=1, feedback_provider=None):
     core = core or FakeJevCore()
     flywheel = UnifiedFlywheel(RunConfig(clone=CLONE.path, run_dir=tmp_path / "run", rounds=1,
                                          per_round=1, dev_size=5, bootstrap_resamples=1,
                                          max_new_requests=max_new), fake_core=core)
     flywheel.cache = AnswerCache(tmp_path / "stream-cache.jsonl")
-    engine = UnifiedFlywheelStreamArm.create(flywheel, "L")
+    engine = UnifiedFlywheelStreamArm.create(flywheel, "L", feedback_provider=feedback_provider)
     return engine, flywheel.splits.pool[0], core
 
 
@@ -163,6 +165,25 @@ def test_zero_shot_refit_keeps_the_head_when_nominal_fill_leaves_cached_answers_
     monkeypatch.setattr(engine.flywheel, "_gate", lambda *_args: pytest.fail("partial answers must not reach _gate"))
     engine.refit((item_id,))
     assert engine.state.head is original
+
+
+def test_provider_feedback_is_pool_guarded_and_cannot_bypass_prepared_trusted_label(tmp_path):
+    item_id = "placeholder"
+    provider = CachedSmeFeedback({})
+    engine, item_id, _core = _engine(tmp_path, feedback_provider=provider)
+    provider.records[item_id] = SmeRecord(item_id, engine.flywheel.labels[item_id], "R11", "Current review reason.", None, "accepted")
+    with pytest.raises(ValueError, match="prediction before reveal"):
+        engine.prepare_review(item_id, engine.flywheel.labels[item_id], None, "explanation")
+    assert provider._revealed == set()
+    with pytest.raises(ValueError, match="prepared exactly once"):
+        engine.record_label(item_id, engine.flywheel.labels[item_id], propensity=1.0, explanation_mode="labels")
+    with pytest.raises(ValueError, match="pool-only"):
+        engine.prepare_review(engine.flywheel.splits.paper600[0], "approve", "approve", "explanation")
+    label, _probabilities, _status = engine.predict(item_id)
+    reveal = engine.prepare_review(item_id, engine.flywheel.labels[item_id], label, "explanation")
+    with pytest.raises(ValueError, match="does not match"):
+        engine.record_label(item_id, "not-the-prepared-label", propensity=1.0, explanation_mode="labels")
+    engine.record_label(item_id, reveal.label, propensity=1.0, explanation_mode="labels")
 
 
 def test_cap_exhaustion_is_unavailable_but_a_tripped_circuit_propagates(tmp_path):

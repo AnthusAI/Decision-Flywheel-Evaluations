@@ -226,6 +226,10 @@ class StreamDriver:
         batches = self.batch_indices(len(items))
         for index, ((item_id, truth), (_, selected, propensity)) in enumerate(zip(items, plan), start=1):
             batch = batches[index - 1]
+            if index == 1 or batches[index - 2] != batch:
+                starter = getattr(engine, "begin_batch", None)
+                if starter:
+                    starter(batch)
             label, probabilities, status = self._prediction(engine, item_id)
             digest = getattr(engine, "served_bundle_hash", None)
             digest = (digest if isinstance(digest, str) and len(digest) == 64
@@ -235,11 +239,15 @@ class StreamDriver:
                                                    selected, propensity, len(reviewed), digest))
             if selected:
                 mode = {"B": "none", "L": "labels", "E": "explanation", "X": "shuffled_explanation"}[arm]
-                digest = self._review_digest(engine, item_id, mode)
-                review = ReviewRecord(item_id, truth, mode, True, propensity, reason_sha256=digest)
+                prepared = getattr(engine, "prepare_review", lambda *_args, **_kwargs: None)(item_id, truth, label, mode)
+                review_label = None if prepared is False else getattr(prepared, "label", truth)
+                review_status = "unavailable" if prepared is False else getattr(prepared, "status", "accepted")
+                digest = (self._review_digest(engine, item_id, mode) if prepared is None
+                          else getattr(prepared, "reason_sha256", None))
+                review = ReviewRecord(item_id, review_label, mode, True, propensity, status=review_status, reason_sha256=digest)
                 result.reviews.append(review)
-                if arm in LEARNING_ARMS:
-                    engine.record_label(item_id, truth, propensity=propensity, explanation_mode=mode)
+                if arm in LEARNING_ARMS and prepared is not False and review_status in ("accepted", "label_only"):
+                    engine.record_label(item_id, review_label, propensity=propensity, explanation_mode=mode)
                     reviewed.append(item_id)
             end_of_batch = index == len(items) or batches[index] != batch
             if end_of_batch and arm in LEARNING_ARMS and len(reviewed) >= next_refit and result.counters["refit_rounds"] < self.config.max_refits:
@@ -363,7 +371,7 @@ class UnifiedFlywheelStreamArm:
     harness's existing `_gate`, and steering through `_steer`/`_cap_to_budget`.
     """
     def __init__(self, flywheel: Any, state: Any, arm: str, *, comments: Optional[Mapping[str, str]] = None,
-                 list_per_label: int = 4):
+                 list_per_label: int = 4, feedback_provider: Any = None):
         self.flywheel, self.state, self.arm = flywheel, state, arm
         self.labels = tuple(flywheel.corpus.labels)
         self.comments = dict(comments or {})
@@ -379,10 +387,12 @@ class UnifiedFlywheelStreamArm:
         self._steering_round = 0
         self._frozen_service = None
         self._frozen_semantic_key: Optional[tuple[str, Optional[str], Optional[str]]] = None
+        self.feedback_provider = feedback_provider
+        self._prepared_feedback: dict[str, Any] = {}
 
     @classmethod
     def create(cls, flywheel: Any, arm: str, *, comments: Optional[Mapping[str, str]] = None,
-               list_per_label: int = 4):
+               list_per_label: int = 4, feedback_provider: Any = None):
         """Build an arm state from the existing harness's seed scorecard.
 
         The caller must have installed the network guard before constructing the
@@ -396,7 +406,26 @@ class UnifiedFlywheelStreamArm:
         seed = flywheel.v1.score(flywheel.corpus.score_name)
         workspace = flywheel._workspace(arm) if arm in LEARNING_ARMS else None
         return cls(flywheel, ArmState(arm, Score.from_config(seed.to_config()), workspace), arm, comments=comments,
-                   list_per_label=list_per_label)
+                   list_per_label=list_per_label, feedback_provider=feedback_provider)
+
+    def begin_batch(self, batch_index: int) -> None:
+        if self.feedback_provider is not None:
+            self.feedback_provider.begin_batch(self.arm, batch_index)
+
+    def prepare_review(self, item_id, gold, predicted, mode):
+        item_id = self._require_pool_item(item_id)
+        if self.arm not in LEARNING_ARMS:
+            return None  # B has an audit-only review selection, never learner feedback
+        if item_id not in self._questions:
+            raise ValueError("stream feedback requires a recorded prediction before reveal")
+        if self.feedback_provider is None:
+            return None  # static comments remain the fake-runtime compatibility seam
+        reveal = self.feedback_provider.reveal(arm=self.arm, item_id=item_id, predicted=predicted,
+                                               reviewed_prefix=tuple(self.reviewed))
+        if reveal is None or reveal.label != gold:
+            return False
+        self._prepared_feedback[item_id] = reveal
+        return reveal
 
     def _require_pool_item(self, item_id: str) -> str:
         """Reject any dev/held-out ID before a stream operation can mutate state."""
@@ -467,12 +496,17 @@ class UnifiedFlywheelStreamArm:
     def record_label(self, item_id, label, *, propensity, explanation_mode):
         item_id = self._require_pool_item(item_id)
         from jev_flywheel.loop import AGREE, DISAGREE, record_label
+        if self.feedback_provider is not None and item_id not in self._prepared_feedback:
+            raise ValueError("provider-backed feedback must be prepared exactly once before recording")
+        if self.feedback_provider is not None and self._prepared_feedback[item_id].label != label:
+            raise ValueError("provider-backed feedback label does not match its prepared trusted label")
         question = self._questions[item_id]
         question.selection.propensity = propensity
         question.selection.policy = "stream-uniform-v1"
         # Comments are retained only in the workspace feedback record; the stream
         # result publishes mode/hash/counts, never SME prose.
-        comment = self.comment_for(item_id, explanation_mode)
+        prepared = self._prepared_feedback.pop(item_id, None)
+        comment = prepared.comment if prepared is not None else self.comment_for(item_id, explanation_mode)
         if question.result.value is None:
             from jev_flywheel.items import FeedbackItem, LABEL_SOURCE_FINAL
             self.state.workspace.add_feedback(FeedbackItem(
