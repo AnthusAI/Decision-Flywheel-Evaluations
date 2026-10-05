@@ -23,9 +23,24 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "6902b075-53a4-48be-af51-2b93499f634d",
+      "author": "home",
+      "text": "2026-10-05 live Stage 0 attempt: the first S cell was rejected by Jev with HTTP 402 before any classification was returned. The durable Jev ledger records used=1 of 600; the text-free cache records that cell as failed with no label, model, or usage. The provider circuit stopped the run immediately. Agreement remains 99/100; no Stage 1 or Stage 2 work was started. Resume requires restored Jev account access and an explicit owner decision to retry the remaining matrix.",
+      "created_at": "2026-10-05T16:11:39.799965Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-05T15:29:44.295851Z",
-  "updated_at": "2026-10-05T15:34:46.885204Z",
+  "updated_at": "2026-10-05T16:11:39.800050Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
