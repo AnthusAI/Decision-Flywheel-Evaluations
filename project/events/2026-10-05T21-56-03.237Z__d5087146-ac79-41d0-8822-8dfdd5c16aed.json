@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "d5087146-ac79-41d0-8822-8dfdd5c16aed",
+  "issue_id": "decision-flywheel-evaluations-43d6b980-4a7c-45d9-808e-3c3dc9038676",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T21:56:03.237Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Report alignment, human effort and actual optimization over time",
+    "description": "## Scope and acceptance\nReport learning curves by label count and time, Include/Exclude counts, comments, review fraction/propensity, prequential agreement, independently random-audit metrics/intervals, and final sealed holdout score only after freeze. Distinguish model recommendation from fitted-head prediction and training fit from unbiased evaluation. Record rubric/task/example changes, feature counts, refits, proposals accepted/rejected and version changes, latency and returned usage. State selection/anchoring/rubric-drift limitations. Repeated evaluation of permanent holdout may not guide optimization; do not guarantee alignment or no-review operation.",
+    "issue_type": "story",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b",
+    "labels": [],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Board Reconciliation"
+    }
+  }
+}

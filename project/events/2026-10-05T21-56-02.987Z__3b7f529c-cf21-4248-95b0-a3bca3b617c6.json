@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "event_id": "3b7f529c-cf21-4248-95b0-a3bca3b617c6",
+  "issue_id": "decision-flywheel-evaluations-837831de-f5d6-476e-bf33-a645ae22aab7",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T21:56:02.987Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Freeze the human-label arXiv study protocol and source manifest",
+    "description": "## Scope and acceptance\nPin dataset revision and stable ID/hash manifest; show title, abstract, date, categories, authors and publication reference if available. Verify actual total request budget, not assume all abstracts fit alongside examples/tasks. Keep article text/local human comments private. Declare splits before labels; audit for monitoring only, not candidate selection, and permanent holdout unseen by optimizer/fitter. Predict before vote; timestamp labels and versions; rubric drift/corrections reported. Define warm-up/class coverage, development promotion rule, random audit sampling/propensities, intervals and review-rate floor before live collection.",
+    "issue_type": "story",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b",
+    "labels": [],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Board Reconciliation"
+    }
+  }
+}
