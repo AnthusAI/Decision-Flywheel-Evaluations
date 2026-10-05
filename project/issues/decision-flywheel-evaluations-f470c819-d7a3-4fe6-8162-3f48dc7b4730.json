@@ -1,0 +1,47 @@
+{
+  "id": "decision-flywheel-evaluations-f470c819-d7a3-4fe6-8162-3f48dc7b4730",
+  "title": "Declare PyYAML for clean-runner offline tests",
+  "description": "GitHub Actions run37325144808 failed before specs ran: unified_bundles_test.py imports yaml but dev install lacks PyYAML. Specs-first declare the actual test dependency; validate clean temporary install with dev extras and offline make test, then GitHub CI. Do not skip away working runtime specs or add credentials/network calls to tests. Terra implementation, root review/publication.",
+  "type": "bug",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "ci"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "d1ae3bc3-f355-4384-aa14-5e474ee70a57",
+      "author": "home",
+      "text": "Verified clean GitHub runner CI succeeded: run 37326248287, commit 259b60d. PyYAML is now a declared runtime dependency with an adjacent packaging spec; Semantic Release produced v0.16.0. No paid calls.",
+      "created_at": "2026-10-05T14:45:08.035900Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
+  "created_at": "2026-10-05T14:32:44.147236Z",
+  "updated_at": "2026-10-05T14:46:07.290447Z",
+  "closed_at": "2026-10-05T14:45:08.445012Z",
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Implementation",
+    "settings": {}
+  },
+  "agent_assignment": null
+}
