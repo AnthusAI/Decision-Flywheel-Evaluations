@@ -90,10 +90,38 @@
         "name": "Flywheel Implementation",
         "settings": {}
       }
+    },
+    {
+      "id": "1da59da8-0304-4e34-8ade-0688fa912be9",
+      "author": "home",
+      "text": "Implemented offline integration in afb5d2e (Terra implementation, root review): seeded variable batches1-10; bounded latest150 steering view with redacted event history, frozen feedback snapshot and sequential analyst rounds; saved/reloaded calibrated per-item serving with per-row bundle hashes; pool-only prediction/feedback guards; hard-cap and circuit propagation; native full-answer/feature guards before zero-shot and fixed-list fits; atomic context/head promotion and fixed-list steering consistency. Separate runtime --synthetic command exercises actual learning helpers through fake clients only, shares one ledger and requires a fresh workspace. Standard suite595 passed/18 optional-runtime skips; final pinned suite is still running. Manual actual-learning run B/L/E/X32 arrivals each used289 fake requests; separate cap7 run used exactly7 globally and left later predictions unavailable. JSON and Markdown reports generated. No paid calls, dataset downloads, DSPy, or changes to core/original Jev-Flywheel. Step4 remains in_progress: original byte-identical historical replay DoD is still not established, and no paid collection has begun.",
+      "created_at": "2026-10-05T15:02:59.106500Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "e71183fa-dbbd-4886-a03c-3d14b771b9bb",
+      "author": "home",
+      "text": "FINAL verification for afb5d2e: make test595 passed/18 expected optional-runtime skips (113.35s); RUN_STREAM_WORKSPACE_INTEGRATION=1 make unified-flywheel-test with pinned rich interpreter/core override402 passed (309.52s), including actual late-history scripted steering, zero-shot missing-cache refit refusal, immutable serving, atomic list/head safety, circuit stops and full legacy specs. CLI/runtime focused20 passed after Make path fix; documented Make runtime command and JSON/Markdown reporting executed successfully. Original Jev-Flywheel, pinned clone cd4a4886028d518c4dc20c88608bb05cbc6bf370 and core b35cb2d63947bba28ba9b63538fda4468f1f6ccf clean/untouched. Kanbus validate and diff check green. Keep in_progress for outstanding historical full-byte replay evidence and live-stage authorization/collection path; no empirical Amazon results claimed.",
+      "created_at": "2026-10-05T15:05:04.583916Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-10-02T18:52:55.094689Z",
-  "updated_at": "2026-10-05T14:32:44.652559Z",
+  "updated_at": "2026-10-05T15:05:04.584010Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
