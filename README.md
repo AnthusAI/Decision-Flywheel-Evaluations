@@ -86,10 +86,15 @@ only together with a matching fitted head. The offline specs separately exercise
 late-history steering; a synthetic run need not trigger every optional action.
 
 This remains an offline prototype, not the completed streaming study.
-Copied historical replays preserve Emotion and FOMC predictions, but full
-byte-identical replay has not been established (the planted source includes
-accumulated prediction rows). Those remaining integration checks stay open in
-Kanbus before the streaming collection milestone can be called complete.
+Paired cached replays before and after the streaming changes preserve the
+Planted, Emotion and FOMC predictions, summaries, logs, manifests and frozen
+bundles byte-for-byte, with zero requests. Workspace event/lineage files differ
+only in their wall-clock timestamps; this is not whole-directory byte equality.
+Separately, Emotion's historical live baseline arm is not fully reproduced by
+its cached replay (13 of 100 baseline predictions differ). That unresolved
+historical discrepancy is not evidence of a regression caused by streaming.
+Cached SME feedback integration and the live-stage approval gates remain under
+test before any new collection can start.
 
 ## Native command-line workflow
 
