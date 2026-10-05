@@ -3,7 +3,7 @@
   "title": "Step 4: unified_stream.py stream driver and scripts/reviews_stream.py (all arms on fakes)",
   "description": "## Purpose\n\nStep 4: `unified_stream.py` + `scripts/reviews_stream.py`, the streaming driver composed from existing `UnifiedFlywheel` helpers.\n\n## Scope\n\n- Seeded batch sizes 1-10. Per item: predict with the current frozen bundle, log for prequential scoring; with probability p (default 0.3, uniform, propensity recorded) the SME reviews and `record_label` stores label + comment.\n- Cold start: Jev+S zero-shot until 30 reviewed labels.\n- Few-shot list: once each class has `per_label+1` reviewed items, `plan_example_list_round`/`improve_example_list`; re-optimize every 30 new reviews (max 4).\n- Triggers via `SteeringPolicy('steering-v1').evaluate` after each batch: refit through `_gate`; steering through `_steer` + `_cap_to_budget` (max 3 rounds per arm). Labels-only arm counts plain disagreements toward the steering trigger.\n- Jev answers all of an item's questions plus the example list in ONE request; on a promoted question/list, top up only the last 150 reviewed items plus future items.\n- Arms B, L, E, X (+ optional E at p=1.0); held-out checkpoints after 300 stream items and at end; spend bounds (`--max-new-requests`, circuit breaker).\n\n## Definition of done\n\nFakes run all 4 arms end to end offline; outputs text-free; specs pass; `make test` and `make unified-flywheel-test UF_PYTHON=/Users/home/Projects/Jev-Flywheel/.venv312/bin/python UF_CORE=/Users/home/Projects/Decision-Flywheel/src` green; planted/Emotion/FOMC replays byte-identical on copies; clone clean.\n\n## Caps\n\n$0 (offline).",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -20,19 +20,78 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "7bff8622-1e1e-4327-be87-cd11cb0b3c95",
+      "author": "home",
+      "text": "Resumed 2026-10-05 at owner's request after quota pause. Reconciled checkout: prior ordering gate is fixed/published; static study completed; ordering/cross-model work deferred by recorded redirect. Continuing unfinished streaming-SME OFFLINE build with explicitly requested Terra subagents. Specs-first fake driver and pure text-free reports, shared uniform review sampling, prediction before feedback, protected checkpoint set. Root handles CLI/Make/docs/integration; no new live approval inferred or paid calls. Work remains incomplete until fake end-to-end arms, runtime checks and replay safety pass.",
+      "created_at": "2026-10-05T13:45:01.698628Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "6bbb102d-eae2-49de-99d7-1e78da48a41f",
+      "author": "home",
+      "text": "Offline integration audit: scheduler/fixture CLI and text-free JSON/Markdown reporting are implemented; frozen checkpoints must reload the exact immutable artifact and missing responses must remain unavailable. No new paid/model calls. Existing replay verification on copied directories (Terra): planted/emotion/fomc all exit 0 with --replay --provider-model jev-1.13.0. Emotion predictions 500/500 identical as mappings; FOMC predictions 600/600 and predictions.jsonl byte-identical. Planted source contains 9000 rows, replay 1500; overlapping predictions unchanged, but accumulated historical source prevents equivalence. summary.json/run-log.json and per-round decision metadata differ across replays, so the task's byte-identical replay DoD is NOT met. Source runs and Jev-Flywheel checkout untouched. Further bounded-window and all-arm runtime safeguards under review; do not close Step4 based on a scripted four-item fixture.",
+      "created_at": "2026-10-05T14:12:03.035293Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "58f0eccc-9d46-4eed-8d12-0b86b2abafa3",
+      "author": "home",
+      "text": "Reviewed implementation milestone (Terra code, root audit): offline stream scheduler, fake B/L/E/X CLI, immutable checkpoint path/hash reload, all heldout IDs retained, per-arm physical ledger counts, strict native answer and feature coverage, trusted labels for unavailable predictions, rolling150 fits, reviewed-prefix shuffled explanations with no self/future donors. Real fake-runtime integration exercises all four arms through 31 reviews and asserts refit/list rounds for learning arms and complete frozen checkpoint coverage. Steering refuses safely above150 before legacy host calls, and refused rounds are not counted. Final default make test: 571 passed/14 expected optional-runtime skips. Step4 remains IN_PROGRESS: bounded-workspace steering above150 is not implemented; per-item serving still uses the in-memory served head rather than a frozen deployment bundle (and raw head probability metadata rather than bundle-calibrated distribution); strict new-request/circuit integration coverage and a runnable real-stream collection path remain future work. Historical byte-identical replay DoD remains unmet as recorded. No new paid calls, dataset downloads, DSPy, or edits to original Jev-Flywheel/core.",
+      "created_at": "2026-10-05T14:26:43.279936Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "f238bda4-5e7a-4f52-ace8-e5336a92aa2a",
+      "author": "home",
+      "text": "Implementation committed as 32ce227. FINAL verification after all safety edits: make test = 571 passed/14 expected optional-runtime skips; make unified-flywheel-test UF_PYTHON=/Users/home/Projects/Jev-Flywheel/.venv312/bin/python UF_CORE=/Users/home/Projects/Decision-Flywheel/src = 359 passed (184.18s). Environment check confirmed clean pinned Jev-Flywheel cd4a4886028d518c4dc20c88608bb05cbc6bf370 and clean Decision-Flywheel b35cb2d63947bba28ba9b63538fda4468f1f6ccf. Kanbus validate and git diff --check green. Remains in_progress for previously recorded integration/replay gaps, not a completed live experiment.",
+      "created_at": "2026-10-05T14:28:59.616020Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-02T18:52:55.094689Z",
-  "updated_at": "2026-10-02T18:53:04.374716Z",
+  "updated_at": "2026-10-05T14:28:59.616115Z",
   "closed_at": null,
-  "agent": {
-    "platform": "claude_code",
-    "model": "Claude Opus 5.5",
-    "name": "Streaming SME Planning"
-  },
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {
     "project_label": "decision-flywheel-evaluations",
     "source": "shared"
-  }
+  },
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
 }

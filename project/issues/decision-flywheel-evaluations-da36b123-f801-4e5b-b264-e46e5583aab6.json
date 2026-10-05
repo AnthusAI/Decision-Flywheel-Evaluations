@@ -3,7 +3,7 @@
   "title": "Step 5: Report: prequential curves, checkpoints, spend table",
   "description": "## Purpose\n\nStep 5: report generator.\n\n## Scope\n\nPrequential accuracy and macro-F1 curves (windowed 100 and cumulative) vs number of reviewed items per arm; held-out checkpoint table (after 300 stream items, at end) with floor Jev+S and ceiling Jev+F; bootstrap CIs via `unified_stats`; spend table; caveats block (LLM-SME gold, enriched mix, one stream order cannot resolve < ~5 F1 points, real SMEs vaguer).\n\n## Definition of done\n\nReport renders from fake-run outputs offline; spec passes; no review or policy text in output.\n\n## Caps\n\n$0 (offline).",
   "type": "task",
-  "status": "open",
+  "status": "in_progress",
   "priority": 1,
   "assignee": null,
   "creator": null,
@@ -20,19 +20,78 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "23794062-6300-49f6-aed9-da147aa47684",
+      "author": "home",
+      "text": "Resumed 2026-10-05 at owner's request after quota pause. Reconciled checkout: prior ordering gate is fixed/published; static study completed; ordering/cross-model work deferred by recorded redirect. Continuing unfinished streaming-SME OFFLINE build with explicitly requested Terra subagents. Specs-first fake driver and pure text-free reports, shared uniform review sampling, prediction before feedback, protected checkpoint set. Root handles CLI/Make/docs/integration; no new live approval inferred or paid calls. Work remains incomplete until fake end-to-end arms, runtime checks and replay safety pass.",
+      "created_at": "2026-10-05T13:45:04.464086Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "b175528a-518a-4385-ab05-499028435dc3",
+      "author": "home",
+      "text": "Implemented pure stream/v1 reporting and JSON/Markdown CLI. Synthetic run-to-report composes offline with the network guard and zero requests. Reports include cumulative/window-100 accuracy and macro-F1 vs reviewed count, heldout stream-300/end tables, optional floor/ceiling references, paired descriptive bootstrap intervals, physical attempt/failure/refit/list/steering counters and allowlisted recorded token totals. Missing/malformed/duplicate/unpaired checkpoint rows suppress contrasts rather than cherry-pick complete cases; label-only predictions stay scoreable with explicit missing-confidence coverage. Raw private prose/provider strings are excluded; renderer includes LLM-SME gold/enriched-mix/single-order/real-SME caveats and no invented prices. Latest focused driver/report/CLI specs: 34 passed, one expected pinned-runtime skip. Full default suite passed 564/12 skipped before final safeguard edits; final suites still pending. This is implementation/test evidence only, NOT a new empirical result; no new live calls.",
+      "created_at": "2026-10-05T14:13:35.074491Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "8b6b698f-3066-4078-8eda-78347b0f82dc",
+      "author": "home",
+      "text": "Report implementation and README workflow are ready and final default suite is green (571 passed/14 expected optional-runtime skips). Offline synthetic run + JSON/Markdown report manually regenerated under ignored var/ with max-new=0. Privacy error specs now cover ValueError/TypeError/KeyError/IndexError without echoing provider/private messages. No live results added. Task remains in_progress for integrated streaming milestone: Step4 dependency is intentionally not closed; Do not infer Stage0/Stage1 collection approval or completed study from these synthetic artifacts.",
+      "created_at": "2026-10-05T14:26:43.727395Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "b698677d-3e5a-4fea-9a13-1770318c1067",
+      "author": "home",
+      "text": "Report/CLI code committed in 32ce227. Final full verification: 571 passed/14 optional-runtime skips default; 359 passed in the pinned full unified runtime. No private texts, explanations, policy or credentials committed; generated demonstration outputs stay gitignored. Remaining integrated Step4 dependency/gates are open, not represented as empirical results or permission to collect.",
+      "created_at": "2026-10-05T14:29:00.162167Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-02T18:52:55.128313Z",
-  "updated_at": "2026-10-02T18:53:04.394298Z",
+  "updated_at": "2026-10-05T14:29:00.162261Z",
   "closed_at": null,
-  "agent": {
-    "platform": "claude_code",
-    "model": "Claude Opus 5.5",
-    "name": "Streaming SME Planning"
-  },
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {
     "project_label": "decision-flywheel-evaluations",
     "source": "shared"
-  }
+  },
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
 }
