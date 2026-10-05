@@ -1,0 +1,48 @@
+{
+  "id": "decision-flywheel-evaluations-c9615bf9-d58b-4b8a-b8f6-231915d80140",
+  "title": "Count unlabeled natural-sample items as missing coverage",
+  "description": "Current read-only reviews split report says natural_mix n300,sme_labeled0,no_label0 when none of the300 natural IDs have cached labels. This wrongly hides missing coverage. As an evaluator I need no_label to include every expected natural-sample item without a valid label, including absent cache records, not just ambiguous returned records. Adjacent regression must fail first on empty/partial cache, then pass with natural_size-minus-valid-label coverage and explicit missing/ambiguous counts. No private texts or paid calls; preserve existing labeled mix and heldout partitions.",
+  "type": "bug",
+  "status": "closed",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+  "labels": [
+    "streaming-sme",
+    "offline"
+  ],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "ea8736a2-012f-45e7-8e98-68566f16fd77",
+      "author": "home",
+      "text": "Verified regression: empty natural SME cache now reports 300 missing labels, rather than zero. Partial coverage separates uncached, ambiguous, rejected. Adjacent specs: 15 passed. No private inputs or split membership changed.",
+      "created_at": "2026-10-05T15:21:06.618674Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
+  "created_at": "2026-10-05T15:13:47.018816Z",
+  "updated_at": "2026-10-05T15:21:23.504340Z",
+  "closed_at": "2026-10-05T15:21:23.504250Z",
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Implementation",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

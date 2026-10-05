@@ -20,19 +20,36 @@
       "type": "blocked-by"
     }
   ],
-  "comments": [],
+  "comments": [
+    {
+      "id": "d42f7a2b-ef6d-4356-a2b3-e055d46fc169",
+      "author": "home",
+      "text": "Current-state audit2026-10-05: license issue63ca3589 closed with recorded owner approval2026-10-02; approved private review sample already present, no need to download anew. Existing aggregate primary report says1500 items,1499 accepted,1 missing; READ-ONLY SQLite metadata currently has1819 primary and90 second records for gpt-6-sol. These are cache counts, NOT complete Stage0 screen evidence: expected100 paired agreement coverage still must be established. Existing SME durable ledger shows193 used/400 bound. Implementing offline complete-coverage screen/prerequisite gate84241dcf; paid collection remains disabled pending prerequisite/replay safeguards, no Stage0/1 success claimed. CI37329917263 succeeded and Semantic Releasev0.17.0 is now published.",
+      "created_at": "2026-10-05T15:12:10.700648Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-02T18:52:55.162067Z",
-  "updated_at": "2026-10-02T18:53:04.415137Z",
+  "updated_at": "2026-10-05T15:12:10.700735Z",
   "closed_at": null,
-  "agent": {
-    "platform": "claude_code",
-    "model": "Claude Opus 5.5",
-    "name": "Streaming SME Planning"
-  },
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {
     "project_label": "decision-flywheel-evaluations",
     "source": "shared"
-  }
+  },
+  "agent": {
+    "platform": "claude_code",
+    "model": "Claude Opus 5.5",
+    "name": "Streaming SME Planning",
+    "settings": {}
+  },
+  "agent_assignment": null
 }

@@ -118,10 +118,38 @@
         "name": "Flywheel Implementation",
         "settings": {}
       }
+    },
+    {
+      "id": "97f4b800-d284-4541-966f-44df67f0f1fe",
+      "author": "home",
+      "text": "Goal continuation after pushed afb5d2e is verified progress, not completion. Current audit: Terra read-only causal replay investigation on copied planted/Emotion/FOMC run artifacts; cached-SME feedback/real reviews stream integration audit; Stage0 readiness and recorded owner-license gate audit. Root checks new CI run37329917263 confirmed currently live. No production changes or paid/model/download operations yet this continuation; subsequent changes remain specs-first and native, no DSPy. Full original stream/live-stage stop-point scope retained.",
+      "created_at": "2026-10-05T15:07:42.644234Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    },
+    {
+      "id": "a1202cc2-fec3-4e45-bdd1-5e3b6c9850fb",
+      "author": "home",
+      "text": "Paired cached regression verified baseline e536622 versus stream milestone e5720c5, same current core b35cb2d and pinned Jev-Flywheel cd4a4886, identical restored caches and explicit original arm configurations. Planted, Emotion and FOMC predictions, summaries, run logs, manifests and frozen bundles are byte-identical; FOMC finals also identical. All report zero requests. Whole workspace directory bytes differ only in pre-existing wall-clock event/lineage timestamps; no normalization applied. Separate historical Emotion live-versus-replay discrepancy is arm 0 only (100 confidence rows, 13 predictions, 11 correctness flags) and remains unresolved, not caused by these edits.",
+      "created_at": "2026-10-05T15:21:23.916118Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-10-02T18:52:55.094689Z",
-  "updated_at": "2026-10-05T15:05:04.584010Z",
+  "updated_at": "2026-10-05T15:21:23.916198Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
