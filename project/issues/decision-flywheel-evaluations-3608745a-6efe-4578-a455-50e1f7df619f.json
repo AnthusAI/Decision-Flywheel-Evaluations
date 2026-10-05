@@ -3,17 +3,32 @@
   "title": "Keep provider error bodies out of spend-ledger diagnostics",
   "description": "SpendLedger.failed prints raw exception message to stderr; provider errors can echo credentials/private texts. CountingSyncClient invokes it before Stage0 can sanitize. Print safe exception class/status only, preserve failure/circuit/attempt counts. Regression spec injects secret/private body and asserts neither appears in stderr or summary. Narrow unified_spend.py/test fix only; no paid calls or broad logging framework. Required for Stage0 runner54743202.",
   "type": "bug",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "1de4253d-eeea-4a6e-a237-6e413f138355",
+      "author": "home",
+      "text": "Fixed db8937a. Spec first proved raw secret/private body leaked to stderr, then diagnostic retains only class/status. Main independently ran full adjacent spend18 specs passed; count/circuit semantics unchanged.",
+      "created_at": "2026-10-05T15:49:20.710628Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-05T15:34:24.287189Z",
-  "updated_at": "2026-10-05T15:34:46.239507Z",
-  "closed_at": null,
+  "updated_at": "2026-10-05T15:49:20.710710Z",
+  "closed_at": "2026-10-05T15:49:20.287611Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {

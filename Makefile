@@ -1,4 +1,4 @@
-.PHONY: reviews-stream-runtime reviews-stream-fixture reviews-stream-report unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
+.PHONY: reviews-stream-runtime reviews-stream-fixture reviews-stream-report reviews-stage0-preflight reviews-stage0-run unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
@@ -93,6 +93,41 @@ release:
 # UF_CORE is the Decision-Flywheel source tree the harness imports (default: the sibling working
 # tree); its commit and cleanliness are recorded in every run summary. UF_CORE= uses the pinned copy.
 UF_CORE ?= $(abspath ../Decision-Flywheel/src)
+
+# Stage 0 is a separate, frozen Amazon-reviews screen.  These paths are local/ignored except
+# for the text-free manifest and identity; neither alias selects a new split or labels an item.
+STAGE0_MANIFEST ?= studies/amazon_reviews/splits.json
+STAGE0_IDENTITY ?= studies/amazon_reviews/stage0_identity.json
+STAGE0_SCREEN_CACHE ?= var/amazon-reviews/stage0-screen-cache.json
+STAGE0_SME_CACHE ?= var/amazon-reviews/sme-cache.sqlite
+STAGE0_REPORT ?= var/amazon-reviews/stage0-report.json
+STAGE0_JEV_LEDGER ?= var/amazon-reviews/stage0-jev-ledger.json
+STAGE0_POOL ?= var/amazon-reviews/pool.jsonl
+STAGE0_SOURCE_MANIFEST ?= studies/amazon_reviews/manifest.json
+STAGE0_S_PATH ?= studies/amazon_reviews/S.txt
+STAGE0_F_PATH ?= var/policy/amazon_reviews_F.txt
+STAGE0_JEV_MODEL ?= jev-1.13.0
+STAGE0_JEV_CEILING ?= 600
+STAGE0_SME_CEILING ?= 100
+STAGE0_SME_MAX_NEW ?= 0
+STAGE1_CEILING ?= 0
+STAGE1_MAX_NEW ?= 0
+STAGE2_CEILING ?= 0
+STAGE2_MAX_NEW ?= 0
+
+# This does not construct a provider.  It reads only the frozen identity/manifest and existing
+# text-free screen cache plus the existing SME cache's agreement records.
+reviews-stage0-preflight:
+	$(PYTHON) scripts/reviews_stage0.py --manifest "$(STAGE0_MANIFEST)" --identity "$(STAGE0_IDENTITY)" --screen-cache "$(STAGE0_SCREEN_CACHE)" --sme-cache "$(STAGE0_SME_CACHE)" --report "$(STAGE0_REPORT)" --jev-ceiling "$(STAGE0_JEV_CEILING)" --jev-max-new "0" --sme-ceiling "$(STAGE0_SME_CEILING)" --sme-max-new "$(STAGE0_SME_MAX_NEW)" --stage1-ceiling "$(STAGE1_CEILING)" --stage1-max-new "$(STAGE1_MAX_NEW)" --stage2-ceiling "$(STAGE2_CEILING)" --stage2-max-new "$(STAGE2_MAX_NEW)"
+
+# Live collection is opt-in only.  The Stage 0 CLI still refuses incomplete agreement/cache
+# evidence; this target neither approves Stage 1 nor changes the frozen first-1,500 universe.
+reviews-stage0-run:
+	@if test "$(CONFIRM)" != "--confirm"; then echo "Usage: make reviews-stage0-run STAGE0_MAX_NEW=0..600 CONFIRM=--confirm"; exit 2; fi
+	@if test -z "$(STAGE0_MAX_NEW)"; then echo "Usage: make reviews-stage0-run STAGE0_MAX_NEW=0..600 CONFIRM=--confirm"; exit 2; fi
+	@case "$(STAGE0_MAX_NEW)" in *[!0-9]* ) echo "STAGE0_MAX_NEW must be an integer from 0 through 600"; exit 2;; esac
+	@if test "$(STAGE0_MAX_NEW)" -gt 600; then echo "STAGE0_MAX_NEW must be at most 600"; exit 2; fi
+	$(PYTHON) scripts/reviews_stage0.py --live "$(CONFIRM)" --manifest "$(STAGE0_MANIFEST)" --identity "$(STAGE0_IDENTITY)" --screen-cache "$(STAGE0_SCREEN_CACHE)" --sme-cache "$(STAGE0_SME_CACHE)" --report "$(STAGE0_REPORT)" --jev-ceiling "$(STAGE0_JEV_CEILING)" --jev-max-new "$(STAGE0_MAX_NEW)" --sme-ceiling "$(STAGE0_SME_CEILING)" --sme-max-new "$(STAGE0_SME_MAX_NEW)" --stage1-ceiling "$(STAGE1_CEILING)" --stage1-max-new "$(STAGE1_MAX_NEW)" --stage2-ceiling "$(STAGE2_CEILING)" --stage2-max-new "$(STAGE2_MAX_NEW)" --jev-ledger "$(STAGE0_JEV_LEDGER)" --pool "$(STAGE0_POOL)" --source-manifest "$(STAGE0_SOURCE_MANIFEST)" --s-path "$(STAGE0_S_PATH)" --f-path "$(STAGE0_F_PATH)" --jev-model "$(STAGE0_JEV_MODEL)"
 
 unified-flywheel-test:
 	@if test -z "$(UF_PYTHON)"; then echo "Usage: make unified-flywheel-test UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus"; exit 2; fi

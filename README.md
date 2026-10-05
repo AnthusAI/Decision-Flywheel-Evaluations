@@ -26,6 +26,39 @@ feedback, review a seeded fraction of the stream, then update the classifier
 from reviewed labels and optional explanations. Ordering sensitivity and
 cross-model comparisons remain deferred work.
 
+## Amazon Reviews Stage 0 workflow
+
+Stage 0 is a pending, paid, opt-in screen—not a reported learning result. It
+uses the committed text-free freeze of the first 1,500 pool-order review IDs,
+their hashes and their fixed stream/held-out roles. The 300 held-out items are
+screened under S and F for at most 600 Jev attempts in total; the durable cache
+and ledger make an interrupted screen resumable. A failed attempt remains an
+attempt, and provider retries are disabled.
+
+The consistency gate compares 100 fixed IDs using the primary and second
+simulated-SME cache records. It is complete: 99 of 100 labels agree. This is
+an agreement check for a simulated policy application, not a claim of human
+ground truth.
+
+The cache-only preflight does not construct a client or read the private policy:
+
+```bash
+make PYTHON=/path/to/python reviews-stage0-preflight
+```
+
+Collection remains explicit and requires a bounded per-invocation cap and the
+exact confirmation token:
+
+```bash
+make PYTHON=/path/to/python reviews-stage0-run \
+  STAGE0_MAX_NEW=600 CONFIRM=--confirm
+```
+
+The command does not authorize Stage 1 or Stage 2; their caps default to zero.
+It also does not select a new split, retune the task, or publish a result.
+Repository code is MIT-licensed, but Amazon review text and the private policy
+remain local inputs and are not redistributed.
+
 ## Offline streaming fixtures and reports
 
 The streaming command has **no live mode**. It requires an explicitly synthetic

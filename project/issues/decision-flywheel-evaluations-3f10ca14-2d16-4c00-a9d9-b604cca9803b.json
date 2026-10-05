@@ -3,17 +3,32 @@
   "title": "Freeze the original 1500-item reviews selection and immutable role manifest",
   "description": "Before any S/F screen, preserve approved first1500 pool-order labeling universe rather than dynamically using all1819 cached labels. Add a dedicated text-free self-hashed split manifest with ordered heldout300/stream600/dev100 IDs, normalized text hashes and frozen canonical gold, exact primary SME model/policy/prompt identity, source manifest digest, selection universe digest and algorithm config. Rehydrate only manifest IDs, validate private text/cache hashes/labels/identity and disjointness; unrelated cache growth must not change roles. Existing dynamic loader remains preview only; corpus and review screen require explicit frozen input with no recomputation fallback. One-shot freeze CLI uses predeclared first1500 rule, explicit model/policy/universe digest, refuses overwrite. This is normal implementation of approved plan, not a new tuning/selection search. Specs first with synthetic data; no paid calls, no downloads, no policy/review prose in artifacts. Main freezes actual existing inputs only after review, before screen; do not use heldout errors for selection.",
   "type": "sub-task",
-  "status": "in_progress",
+  "status": "closed",
   "priority": 1,
   "assignee": null,
   "creator": null,
   "parent": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
   "labels": [],
   "dependencies": [],
-  "comments": [],
+  "comments": [
+    {
+      "id": "15ca275b-6e7e-4387-b233-918815e0fe7d",
+      "author": "home",
+      "text": "Implemented24290c7 + routing/order fix8f66f98,23 focused specs passed. Root performed approved one-shot freeze against exact original first1500 universe/policy/model; actual manifest b8602888261c716eba8887d827b563e30659ba14c5038bac6d5c66b6e3aa7f57 committed. Rehydration verified heldout300,stream600,dev100; cache growth ignored, selected input changes rejected. Production corpus/screen require frozen file; dryrun actualreviews works and enumerates600 S/F cells with no call. Actual identities pinned stagedataset aa252a.. policy9fa661.. gpt6sol/jev1.13.0. No repartition after model results; no article/policy text published.",
+      "created_at": "2026-10-05T15:49:21.588653Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
+    }
+  ],
   "created_at": "2026-10-05T15:26:38.064244Z",
-  "updated_at": "2026-10-05T15:27:05.778063Z",
-  "closed_at": null,
+  "updated_at": "2026-10-05T15:49:21.588743Z",
+  "closed_at": "2026-10-05T15:49:21.124296Z",
   "right_now_summary": null,
   "right_now_updated_at": null,
   "custom": {
