@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "event_id": "b9f8f5ae-e95d-44b5-8f76-87071afea037",
+  "issue_id": "decision-flywheel-evaluations-f470c819-d7a3-4fe6-8162-3f48dc7b4730",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T14:32:44.147Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Declare PyYAML for clean-runner offline tests",
+    "description": "GitHub Actions run37325144808 failed before specs ran: unified_bundles_test.py imports yaml but dev install lacks PyYAML. Specs-first declare the actual test dependency; validate clean temporary install with dev extras and offline make test, then GitHub CI. Do not skip away working runtime specs or add credentials/network calls to tests. Terra implementation, root review/publication.",
+    "issue_type": "bug",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "ci"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Implementation"
+    }
+  }
+}
