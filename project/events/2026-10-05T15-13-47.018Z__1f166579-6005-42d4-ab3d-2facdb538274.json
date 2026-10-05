@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "1f166579-6005-42d4-ab3d-2facdb538274",
+  "issue_id": "decision-flywheel-evaluations-c9615bf9-d58b-4b8a-b8f6-231915d80140",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T15:13:47.018Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Count unlabeled natural-sample items as missing coverage",
+    "description": "Current read-only reviews split report says natural_mix n300,sme_labeled0,no_label0 when none of the300 natural IDs have cached labels. This wrongly hides missing coverage. As an evaluator I need no_label to include every expected natural-sample item without a valid label, including absent cache records, not just ambiguous returned records. Adjacent regression must fail first on empty/partial cache, then pass with natural_size-minus-valid-label coverage and explicit missing/ambiguous counts. No private texts or paid calls; preserve existing labeled mix and heldout partitions.",
+    "issue_type": "bug",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-4a326be6-af63-44fa-b6ec-39e296713109",
+    "labels": [
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Implementation"
+    }
+  }
+}

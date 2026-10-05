@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "e218a097-ffe6-4470-ac3f-ff9d1a1db87c",
+  "issue_id": "decision-flywheel-evaluations-84241dcf-410f-4ee2-bc32-ede25286dd21",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T15:10:59.614Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Freeze Stage 0 decisions with complete coverage and owner-stop prerequisites",
+    "description": "As an evaluator, I need a reproducible text-free Stage0 decision artifact bound to policy, dataset/split, SME identity and complete S/F/agreement results, so incomplete collections cannot pass and Stage1 cannot start before the owner looks. Scenario: full300 heldout predictions for both S/F and full100 paired SME agreement are required; F macroF1>=.80 and S<=F-.10; agreement>=.85; malformed/missing cells refuse a pass; synthetic output never authorizes live collection. Record merge-once/stop/fail/incomplete status explicitly, hash immutable evidence and record actual usage without invented pricing. Stage1 prerequisites require a successful non-synthetic screen plus explicit content-bound owner approval. Build/spec pure gate and safe cached-data orchestration seams; no model/download calls or mutating original caches. DoD: fake complete/incomplete fixtures, deterministic hashes, strict identity/cap/owner gates, text-free output, no DSPy.",
+    "issue_type": "sub-task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
+    "labels": [
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Implementation"
+    }
+  }
+}

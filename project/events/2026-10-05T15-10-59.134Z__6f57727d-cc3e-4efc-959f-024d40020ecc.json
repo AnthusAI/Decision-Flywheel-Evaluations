@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "event_id": "6f57727d-cc3e-4efc-959f-024d40020ecc",
+  "issue_id": "decision-flywheel-evaluations-4cfb5e5e-4023-4de8-a4ad-ea24bb4d648f",
+  "event_type": "issue_created",
+  "occurred_at": "2026-10-05T15:10:59.134Z",
+  "actor_id": "home",
+  "payload": {
+    "title": "Wire validated cached SME feedback into streaming arms",
+    "description": "As an evaluator, I need selected stream reviews to reveal validated cached SME labels and bounded explanations only after their prediction, so B/L/E/X compare the intended feedback channels. Scenario: a prediction is recorded before selected cached feedback is revealed; L receives only a label; E receives correct/wrong wording; X shuffles reason content from already reviewed donors while retaining the target trusted label. Rule-repeat budgets are per arm and seeded batch; one reveal is computed once so digest and record agree; ambiguous/missing records cannot invent labels or explanations; merged labels stay canonical; no full policy or future/scoreboard data reaches the analyst. Implement a pure feedback adapter and optional driver/arm injection, specs first with fakes, no paid calls. DoD: adjacent specs and actual fake-runtime integration, text-free audit, no DSPy, protected scoreboard, clean pinned clone.",
+    "issue_type": "sub-task",
+    "status": "open",
+    "priority": 1,
+    "assignee": null,
+    "parent": "decision-flywheel-evaluations-8678cc15-cfc9-4e45-b151-09fb4f78eaf1",
+    "labels": [
+      "streaming-sme",
+      "offline"
+    ],
+    "agent": {
+      "platform": "codex",
+      "model": "GPT-5",
+      "name": "Flywheel Implementation"
+    }
+  }
+}
