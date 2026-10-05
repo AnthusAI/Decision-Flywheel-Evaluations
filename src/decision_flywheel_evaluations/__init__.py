@@ -1,6 +1,6 @@
 """Study-plan validation and model matrix metadata."""
 
-__version__ = "0.17.1"
+__version__ = "0.18.0"
 
 from .study import Engine, SplitManifest, StudyPlan
 
