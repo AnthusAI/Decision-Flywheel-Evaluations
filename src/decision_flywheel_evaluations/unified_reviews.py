@@ -53,6 +53,7 @@ POOL_PATH = ROOT / "var" / "amazon-reviews" / "pool.jsonl"
 NATURAL_PATH = ROOT / "var" / "amazon-reviews" / "natural.jsonl"
 SME_CACHE_PATH = ROOT / "var" / "amazon-reviews" / "sme-cache.sqlite"
 SPLITS_OUT = ROOT / "studies" / "amazon_reviews" / "splits.json"
+SOURCE_MANIFEST_PATH = ROOT / "studies" / "amazon_reviews" / "manifest.json"
 
 
 def _sha(text: str) -> str:
@@ -303,9 +304,28 @@ def load_reviews_splits(*, merge: Optional[bool] = None, pool_path=None, natural
     return splits, report
 
 
+def load_frozen_reviews_splits(*, manifest_path=None, pool_path=None, cache_path=None,
+                               source_manifest_path=None) -> Tuple[Splits, dict]:
+    """The production reviews partition: rehydrate one immutable text-free freeze, never the growing cache."""
+    from .unified_reviews_manifest import load_frozen_reviews_splits as rehydrate, read_reviews_manifest
+    manifest_path = Path(manifest_path or SPLITS_OUT)
+    if not manifest_path.is_file():
+        raise FileNotFoundError(f"no frozen reviews split manifest at {manifest_path}; run the approved one-shot freeze first")
+    manifest = read_reviews_manifest(manifest_path)
+    if check_policy_matches(manifest["sme"]["policy_sha256"]) is False:
+        raise ValueError("the frozen reviews SME policy differs from the current private policy")
+    splits = rehydrate(manifest_path, pool_path=Path(pool_path or POOL_PATH), cache_path=Path(cache_path or SME_CACHE_PATH),
+                       source_manifest_path=Path(source_manifest_path or SOURCE_MANIFEST_PATH))
+    return splits, {"merged": manifest["split"]["merged"], "labels": manifest["split"]["labels"],
+                    "manifest_sha256": manifest["manifest_sha256"], "policy_sha256": manifest["sme"]["policy_sha256"],
+                    "sme_model": manifest["sme"]["sme_model"]}
+
+
 def load_reviews_corpus(fixtures: Path, *, dev_size: int = REVIEWS_DEV_SIZE, merged: bool = False) -> Splits:
     """The ``Corpus.load_splits`` hook (``fixtures`` unused). The data's merge decision must match the corpus."""
-    splits, report = load_reviews_splits(dev_size=dev_size)
+    if dev_size != REVIEWS_DEV_SIZE:
+        raise ValueError("the frozen reviews manifest fixes the dev slice at 100 items")
+    splits, report = load_frozen_reviews_splits()
     if report["merged"] != merged:
         want = "reviews-merged" if report["merged"] else "reviews"
         raise ValueError(f"the SME labels decide merged={report['merged']} ({report['merge_rule']}); use --corpus {want}")

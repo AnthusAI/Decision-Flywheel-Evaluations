@@ -185,7 +185,7 @@ def test_the_private_policy_is_read_only_when_the_ceiling_or_stakeholder_asks_fo
 
 def test_the_corpus_refuses_data_whose_merge_decision_is_the_other_one(monkeypatch):
     rows, records = synthetic_pool({**COUNTS, "abusive": 5})
-    monkeypatch.setattr(reviews, "load_reviews_splits", lambda **_: reviews.build_reviews_splits(rows, records))
+    monkeypatch.setattr(reviews, "load_frozen_reviews_splits", lambda **_: reviews.build_reviews_splits(rows, records))
     with pytest.raises(ValueError, match="use --corpus reviews-merged"):
         get_corpus("reviews").load(Path("."), dev_size=100)
     assert len(get_corpus("reviews-merged").load(Path("."), dev_size=100).paper600) == 300

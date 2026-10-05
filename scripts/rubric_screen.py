@@ -5,7 +5,7 @@ Items: a seeded sample of the dataset's TRAIN split outside the 1,500 items the 
 `--split heldout` (hatecheck, contractnli, swda only) screens a fixed-seed 300-item slice from each dataset's test side instead; results go under "<name>@heldout". `--dry-run` loads and prints counts and request sizes without calling Jev.
 
 `reviews` (Amazon review moderation, streaming SME plan) is heldout-only: the held-out 300 and the stream 600 come from
-`unified_reviews` (private pool text + the SME cache, read-only); gold = the SME's labels; S = studies/amazon_reviews/S.txt,
+`unified_reviews` through its frozen text-free split manifest (private pool text + the SME cache, read-only); gold = the SME's labels; S = studies/amazon_reviews/S.txt,
 F = the private var/policy/amazon_reviews_F.txt. The label set (merged or not) is the one the SME data decides.
 """
 import argparse, collections, concurrent.futures as cf, csv, functools, glob, hashlib, json, random, re, sys, threading
@@ -24,7 +24,7 @@ def _reviews():
     """(splits, report) for the reviews corpus; nothing here writes to var/amazon-reviews/."""
     if str(ROOT/"src") not in sys.path: sys.path.insert(0, str(ROOT/"src"))
     from decision_flywheel_evaluations import unified_reviews
-    return unified_reviews.load_reviews_splits()
+    return unified_reviews.load_frozen_reviews_splits()
 
 def _reviews_rows(ids):
     items = _reviews()[0].items
