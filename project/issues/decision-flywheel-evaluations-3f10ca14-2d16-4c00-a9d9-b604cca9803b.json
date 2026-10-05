@@ -1,0 +1,30 @@
+{
+  "id": "decision-flywheel-evaluations-3f10ca14-2d16-4c00-a9d9-b604cca9803b",
+  "title": "Freeze the original 1500-item reviews selection and immutable role manifest",
+  "description": "Before any S/F screen, preserve approved first1500 pool-order labeling universe rather than dynamically using all1819 cached labels. Add a dedicated text-free self-hashed split manifest with ordered heldout300/stream600/dev100 IDs, normalized text hashes and frozen canonical gold, exact primary SME model/policy/prompt identity, source manifest digest, selection universe digest and algorithm config. Rehydrate only manifest IDs, validate private text/cache hashes/labels/identity and disjointness; unrelated cache growth must not change roles. Existing dynamic loader remains preview only; corpus and review screen require explicit frozen input with no recomputation fallback. One-shot freeze CLI uses predeclared first1500 rule, explicit model/policy/universe digest, refuses overwrite. This is normal implementation of approved plan, not a new tuning/selection search. Specs first with synthetic data; no paid calls, no downloads, no policy/review prose in artifacts. Main freezes actual existing inputs only after review, before screen; do not use heldout errors for selection.",
+  "type": "sub-task",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-05T15:26:38.064244Z",
+  "updated_at": "2026-10-05T15:27:05.778063Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Implementation",
+    "settings": {}
+  },
+  "agent_assignment": null
+}

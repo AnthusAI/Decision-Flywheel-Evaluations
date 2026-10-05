@@ -1,0 +1,43 @@
+{
+  "id": "decision-flywheel-evaluations-54743202-71da-4419-97cf-496e3fe58f3a",
+  "title": "Implement cached-first Stage 0 screen execution with durable separate ledgers",
+  "description": "Compose frozen first1500 reviews manifest, deterministic agreement100 and 300heldout x S/F600 one-call native Jev decisions, read-only SME cache, durable separate SME/Jev ledger caps and new Stage0 evidence contract. Replay/preflight must never construct live clients or read env. Live misses require explicit model, confirm and max-new ceiling validated before client creation; record every missing/failed/malformed cell without successful-only metrics. Private resume answer cache contains sanitized structured results not review/policy prose; public artifact text-free hashes/counts/metrics/decision. Bind S/F question fingerprints and models, source split/policy hashes. No Stage1 authorization emitted; STOP for owner after real Stage0 screen. Existing rubric_screen utility does not satisfy durable spend or complete matrix and is not the runner. Specs first fake clients; no paid calls while implementing. Coordinate pending frozen manifest API, no dynamic repartition fallback. No dollar price invention; existing approved total budget and stage-specific ceilings remain binding.",
+  "type": "sub-task",
+  "status": "in_progress",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-30b2a355-a637-40f6-b980-30a8e831c542",
+  "labels": [],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-3f10ca14-2d16-4c00-a9d9-b604cca9803b",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-84241dcf-410f-4ee2-bc32-ede25286dd21",
+      "type": "blocked-by"
+    },
+    {
+      "target": "decision-flywheel-evaluations-3608745a-6efe-4578-a455-50e1f7df619f",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-05T15:29:44.295851Z",
+  "updated_at": "2026-10-05T15:34:46.885204Z",
+  "closed_at": null,
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "source": "shared",
+    "project_label": "decision-flywheel-evaluations"
+  },
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Implementation",
+    "settings": {}
+  },
+  "agent_assignment": null
+}
