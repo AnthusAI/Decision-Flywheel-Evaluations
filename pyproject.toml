@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
     "decision-flywheel @ git+https://github.com/AnthusAI/Decision-Flywheel.git@6137fa185a1a98afa84b5e6d5948d1780df5d56d",
+    "PyYAML>=6,<7",
 ]
 
 [project.optional-dependencies]
