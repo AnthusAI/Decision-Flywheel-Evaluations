@@ -1,0 +1,41 @@
+{
+  "id": "decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b",
+  "title": "Evaluate the real-human arXiv demo of the reusable flywheel",
+  "description": "## Scope\nCompanion to core milestone decision-flywheel-e1e92986-a121-410a-b8c2-fb467d6b3d88. Real human labels and explanations, not a simulated labeler; dataset preparation, application integration and study measurement belong here. Core orchestration belongs in Decision-Flywheel. Prior completed simulated studies remain historical evidence, not proof this application is connected.\n\n## Acceptance\nPinned source manifest; predeclared training/development/random-audit/permanent-scoreboard roles; functional reviewer consuming public core APIs; reproducible alignment-versus-label-effort report with actual optimizer/fit events and model usage. Start at full review; lower review rate only under a declared random-audit confidence rule. No live calls merely because a key exists. New study caps require explicit approval; do not reuse historical approval as blanket authorization.",
+  "type": "epic",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [
+    {
+      "id": "e8217a8a-6042-49c0-a44e-f7cf75486c64",
+      "author": "home",
+      "text": "Core milestone: decision-flywheel-e1e92986-a121-410a-b8c2-fb467d6b3d88. Study and reviewer are clients of its reusable APIs. First work: protocol/source manifest and core optimizer briefing; no new live spend is authorized by this board reconciliation.",
+      "created_at": "2026-10-05T21:56:56.018600Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Board Reconciliation"
+      }
+    }
+  ],
+  "created_at": "2026-10-05T21:56:02.866211Z",
+  "updated_at": "2026-10-05T21:56:56.018627Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Board Reconciliation"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}

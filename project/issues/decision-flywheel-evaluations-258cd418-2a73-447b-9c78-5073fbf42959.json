@@ -31,10 +31,22 @@
       "text": "Complete 2026-10-01 for this stage. Delivered and measured on Jev (planted-bias corpus, one seed): feature discovery with explanations, an optimized fixed example list, saved ClassifierBundles scored on paper-600, and the optional dynamic retrieval (embedding/BM25) measured. Results: studies/UNIFIED_FLYWHEEL_RESULTS.md. Not done / next: second seed, real-world datasets, Kev/Laya generalization, S3 Vectors/DynamoDB implementations (design-only stubs), larger or smarter list optimizer.",
       "created_at": "2026-10-01T23:04:15.709398Z",
       "comment_type": "default"
+    },
+    {
+      "id": "f4d88686-52fb-43ef-a6bc-ef28ac6858d5",
+      "author": "home",
+      "text": "Historical simulated-study completion retained. It does not certify live real-human arXiv integration. Current milestone decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b, paired with core decision-flywheel-e1e92986-a121-410a-b8c2-fb467d6b3d88, supersedes retrieval-first sequencing for the next delivery.",
+      "created_at": "2026-10-05T21:56:56.134036Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Board Reconciliation"
+      }
     }
   ],
   "created_at": "2026-10-01T19:59:45.315160Z",
-  "updated_at": "2026-10-01T23:04:15.724151Z",
+  "updated_at": "2026-10-05T21:56:56.134062Z",
   "closed_at": "2026-10-01T23:04:15.724111Z",
   "agent": {
     "platform": "claude_code",

@@ -1,0 +1,25 @@
+{
+  "id": "decision-flywheel-evaluations-837831de-f5d6-476e-bf33-a645ae22aab7",
+  "title": "Freeze the human-label arXiv study protocol and source manifest",
+  "description": "## Scope and acceptance\nPin dataset revision and stable ID/hash manifest; show title, abstract, date, categories, authors and publication reference if available. Verify actual total request budget, not assume all abstracts fit alongside examples/tasks. Keep article text/local human comments private. Declare splits before labels; audit for monitoring only, not candidate selection, and permanent holdout unseen by optimizer/fitter. Predict before vote; timestamp labels and versions; rubric drift/corrections reported. Define warm-up/class coverage, development promotion rule, random audit sampling/propensities, intervals and review-rate floor before live collection.",
+  "type": "story",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b",
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-05T21:56:02.987415Z",
+  "updated_at": "2026-10-05T21:56:02.987442Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Board Reconciliation"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}

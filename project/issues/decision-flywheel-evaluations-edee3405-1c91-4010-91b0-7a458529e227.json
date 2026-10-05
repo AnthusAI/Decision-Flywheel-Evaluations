@@ -1,0 +1,33 @@
+{
+  "id": "decision-flywheel-evaluations-edee3405-1c91-4010-91b0-7a458529e227",
+  "title": "Connect the Rich reviewer to the complete core flywheel",
+  "description": "## Scope and acceptance\nConsume public core prediction, feedback, optimization and event APIs; no application-owned second optimizer/head. Include/Exclude/Skip, optional explanation, undo, resume and predictions visible as requested. Clearly mark recommendation-visible labels as potentially anchored. Display running pre-vote agreement, audit estimates with counts/uncertainty, active version/features, recent optimizer prompts/replies/tools, proposed edits, fitting and promotions/failures. Do not stop at ten samples; show warm-up/insufficient-positive-label state. Cross-repo prerequisite: decision-flywheel-e1e92986-a121-410a-b8c2-fb467d6b3d88. Offline integration tests first; bounded live demo only after protocol approval.",
+  "type": "story",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": "decision-flywheel-evaluations-9f4e5e77-958d-4c64-a60d-d9e2f41a255b",
+  "labels": [],
+  "dependencies": [
+    {
+      "target": "decision-flywheel-evaluations-837831de-f5d6-476e-bf33-a645ae22aab7",
+      "type": "blocked-by"
+    }
+  ],
+  "comments": [],
+  "created_at": "2026-10-05T21:56:03.103159Z",
+  "updated_at": "2026-10-05T21:56:03.365586Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Board Reconciliation"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {
+    "project_label": "decision-flywheel-evaluations",
+    "source": "shared"
+  }
+}
