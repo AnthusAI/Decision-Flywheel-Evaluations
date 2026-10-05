@@ -28,7 +28,9 @@ cross-model comparisons remain deferred work.
 
 ## Amazon Reviews Stage 0 workflow
 
-Stage 0 is a pending, paid, opt-in screen—not a reported learning result. It
+Stage 0 is a completed paid screen—not a learning result. Its concise lab notes
+and text-free aggregate live in [`studies/amazon_reviews/`](studies/amazon_reviews/).
+It
 uses the committed text-free freeze of the first 1,500 pool-order review IDs,
 their hashes and their fixed stream/held-out roles. The 300 held-out items are
 screened under S and F for at most 600 Jev attempts in total; the durable cache

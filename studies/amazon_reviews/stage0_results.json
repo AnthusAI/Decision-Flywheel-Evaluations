@@ -1,0 +1,69 @@
+{
+  "agreement": {
+    "agreement": 0.99,
+    "completed": 100,
+    "expected": 100,
+    "interpretation": "simulated-SME consistency, not human ground truth"
+  },
+  "artifact_sha256": "9ca2c8629e5d88b38848cecf13eb5d6a37b9bffb78d09ec1d9d4b48518dd471f",
+  "attempts": {
+    "ceiling_history": [600, 601],
+    "continuation_reason": "One HTTP 402 rejection before credits were restored was counted; the owner authorized one replacement attempt.",
+    "physical_attempts": 601,
+    "usage_reported_by_provider": false
+  },
+  "bootstrap": {
+    "method": "paired percentile bootstrap over the same 300 held-out items; 10,000 resamples; seed 20261005",
+    "macro_f1_F_minus_S": {
+      "effect": 0.300141,
+      "lower_95": 0.18421,
+      "upper_95": 0.421099
+    },
+    "accuracy_F_minus_S": {
+      "effect": 0.08,
+      "lower_95": 0.043333,
+      "upper_95": 0.116667
+    }
+  },
+  "conditions": {
+    "F": {
+      "accuracy": 0.936667,
+      "macro_f1": 0.838125,
+      "n": 300,
+      "per_class": {
+        "abusive": {"f1": 0.952381, "recall": 0.909091, "support": 11},
+        "approve": {"f1": 0.966942, "recall": 0.987342, "support": 237},
+        "price_availability": {"f1": 0.75, "recall": 0.692308, "support": 13},
+        "promotional": {"f1": 0.714286, "recall": 0.555556, "support": 9},
+        "seller_shipping": {"f1": 0.807018, "recall": 0.766667, "support": 30}
+      }
+    },
+    "S": {
+      "accuracy": 0.856667,
+      "macro_f1": 0.537984,
+      "n": 300,
+      "per_class": {
+        "abusive": {"f1": 0.285714, "recall": 0.181818, "support": 11},
+        "approve": {"f1": 0.920319, "recall": 0.974684, "support": 237},
+        "price_availability": {"f1": 0.695652, "recall": 0.615385, "support": 13},
+        "promotional": {"f1": 0.2, "recall": 0.111111, "support": 9},
+        "seller_shipping": {"f1": 0.588235, "recall": 0.5, "support": 30}
+      }
+    }
+  },
+  "design": {
+    "heldout_items": 300,
+    "model": "jev-1.13.0",
+    "S": "one-sentence starting policy",
+    "F": "full private policy",
+    "stage": "0",
+    "status": "passed"
+  },
+  "limitations": [
+    "The gold labels and full policy come from a simulated SME, not humans.",
+    "This is one frozen held-out split and one fixed request ordering.",
+    "Promotional has only nine held-out examples, so its per-class estimate is unstable.",
+    "This screen establishes a learnable policy gap; it does not test whether selected examples close that gap."
+  ],
+  "schema": "decision-flywheel-evaluations/reviews-stage0-results/v1"
+}

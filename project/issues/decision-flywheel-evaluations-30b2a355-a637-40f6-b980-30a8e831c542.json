@@ -48,10 +48,24 @@
         "name": "Flywheel Implementation",
         "settings": {}
       }
+    },
+    {
+      "id": "5e83e923-d7a9-4bde-ac3a-863d8c38e012",
+      "author": "home",
+      "text": "Stage 0 completed 2026-10-05. Agreement: 99/100 simulated-SME labels. Heldout screen: 300 S and 300 F cells completed with Jev jev-1.13.0. Macro-F1 S=0.537984, F=0.838125; accuracy S=0.856667, F=0.936667. Paired F-S effect: macro-F1 +0.300141 (95% bootstrap +0.184210 to +0.421099), accuracy +0.080000 (+0.043333 to +0.116667). The preregistered Stage 0 screen passed. One initial HTTP 402 rejection was retained in the ledger; owner authorized exactly one replacement attempt, yielding 601 physical attempts for 600 completed cells. Text-free result bundle: studies/amazon_reviews/stage0_results.json. STOP: Stage 1/2 remain unstarted pending owner decision.",
+      "created_at": "2026-10-05T16:56:40.264733Z",
+      "comment_type": "default",
+      "data": {},
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation",
+        "settings": {}
+      }
     }
   ],
   "created_at": "2026-10-02T18:52:55.162067Z",
-  "updated_at": "2026-10-05T15:45:31.981591Z",
+  "updated_at": "2026-10-05T16:56:40.264809Z",
   "closed_at": null,
   "right_now_summary": null,
   "right_now_updated_at": null,
