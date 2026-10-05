@@ -38,6 +38,7 @@ def main(argv=None) -> int:
     parser.add_argument("--merge-attempt", type=int, choices=(0, 1), default=0)
     parser.add_argument("--jev-ceiling", type=int, required=True)
     parser.add_argument("--jev-max-new", type=int, required=True)
+    parser.add_argument("--rejected-attempt-retry-allowance", type=int, choices=(0, 1), default=0)
     parser.add_argument("--sme-ceiling", type=int, required=True)
     parser.add_argument("--sme-max-new", type=int, required=True)
     parser.add_argument("--stage1-ceiling", type=int, required=True)
@@ -64,7 +65,8 @@ def main(argv=None) -> int:
     agreement_rows = (_records(args.agreement_cache) if args.agreement_cache else
                       cached_agreement_from_sqlite(manifest, identity, cache_path=args.sme_cache,
                                                    second_model=args.second_sme_model))
-    caps = Stage0Caps(args.jev_ceiling, args.jev_max_new, args.sme_ceiling, args.sme_max_new)
+    caps = Stage0Caps(args.jev_ceiling, args.jev_max_new, args.sme_ceiling, args.sme_max_new,
+                      args.rejected_attempt_retry_allowance)
     future = FutureStageCaps(args.stage1_ceiling, args.stage1_max_new, args.stage2_ceiling, args.stage2_max_new)
     if not args.live:
         outcome = cached_stage0(manifest=manifest, identity=identity, screen_cache=screen_rows,

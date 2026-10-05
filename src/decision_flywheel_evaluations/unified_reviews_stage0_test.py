@@ -77,6 +77,14 @@ def test_a_frozen_stage_zero_plan_has_the_exact_600_cells_and_first_universe_agr
     assert plan.agreement_ids == tuple(agreement_subset([f"review-{number}" for number in range(1500)], 100, seed=1))
 
 
+def test_only_an_explicit_single_rejected_attempt_allowance_can_raise_the_stage_zero_ceiling():
+    with pytest.raises(ValueError, match="hard-capped"):
+        Stage0Caps(jev_ceiling=601, jev_max_new=600, sme_ceiling=100, sme_max_new=0)
+    allowance = Stage0Caps(jev_ceiling=601, jev_max_new=600, sme_ceiling=100, sme_max_new=0,
+                           rejected_attempt_retry_allowance=1)
+    assert allowance.rejected_attempt_retry_allowance == 1
+
+
 def test_a_cached_run_retains_every_missing_screen_cell_and_never_constructs_a_live_factory():
     manifest = _manifest()
     screen, agreement = _complete_cache(manifest)

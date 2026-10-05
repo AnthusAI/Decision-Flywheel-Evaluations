@@ -46,6 +46,22 @@ def test_a_ledger_cannot_be_reopened_with_a_different_ceiling(tmp_path):
         SpendLedger(tmp_path / "ledger.json", ceiling=20000)
 
 
+def test_an_explicit_one_request_amendment_preserves_the_original_ceiling_history(tmp_path):
+    path = tmp_path / "ledger.json"
+    SpendLedger(path, ceiling=600)
+
+    amended = SpendLedger(path, ceiling=601, approved_ceiling_increase=1,
+                          ceiling_increase_reason="replace rejected pre-credit request")
+
+    assert amended.ceiling == 601
+    stored = json.loads(path.read_text())
+    assert stored["ceiling_history"] == [600, 601]
+    assert stored["ceiling_increase_reason"] == "replace_rejected_pre-credit_request"
+    with pytest.raises(ValueError):
+        SpendLedger(path, ceiling=602, approved_ceiling_increase=1,
+                    ceiling_increase_reason="replace rejected pre-credit request")
+
+
 def test_the_per_invocation_cap_stops_a_run_below_the_cumulative_ceiling(tmp_path):
     ledger = SpendLedger(tmp_path / "ledger.json", ceiling=100, max_new=1)
     client = CountingSyncClient(FakeJevSync, ledger, concurrency_slots(1))

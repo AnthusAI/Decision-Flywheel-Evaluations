@@ -31,16 +31,22 @@ class Stage0Caps:
     jev_max_new: int
     sme_ceiling: int
     sme_max_new: int
+    rejected_attempt_retry_allowance: int = 0
 
     def __post_init__(self) -> None:
-        for name in ("jev_ceiling", "jev_max_new", "sme_ceiling", "sme_max_new"):
+        for name in ("jev_ceiling", "jev_max_new", "sme_ceiling", "sme_max_new",
+                     "rejected_attempt_retry_allowance"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 0:
                 raise ValueError("Stage 0 request caps must be non-negative integers")
         if self.jev_max_new > self.jev_ceiling or self.sme_max_new > self.sme_ceiling:
             raise ValueError("Stage 0 per-run cap cannot exceed its durable ceiling")
-        if self.jev_ceiling > 600 or self.jev_max_new > 600:
+        if self.rejected_attempt_retry_allowance not in (0, 1):
+            raise ValueError("Stage 0 permits at most one explicitly approved rejected-attempt retry")
+        if self.jev_ceiling > 600 + self.rejected_attempt_retry_allowance or self.jev_max_new > 600:
             raise ValueError("Stage 0 Jev ceiling is hard-capped at 600 requests")
+        if self.rejected_attempt_retry_allowance and self.jev_ceiling != 601:
+            raise ValueError("the rejected-attempt retry allowance requires the 601-request ceiling")
 
 
 @dataclass(frozen=True)
@@ -430,7 +436,12 @@ def run_live_stage0(*, manifest: Mapping[str, Any], identity: Mapping[str, str],
         raise ValueError("live Jev model must match the bound Stage 0 identity")
     # Imports and durable reservation are intentionally delayed until every pre-client gate above.
     from .unified_spend import CeilingExhausted, CircuitOpen, SpendLedger
-    jev_ledger = SpendLedger(Path(jev_ledger_path), caps.jev_ceiling, caps.jev_max_new, run_label="reviews-stage0")
+    jev_ledger = SpendLedger(
+        Path(jev_ledger_path), caps.jev_ceiling, caps.jev_max_new, run_label="reviews-stage0",
+        approved_ceiling_increase=caps.rejected_attempt_retry_allowance,
+        ceiling_increase_reason=("replace rejected pre-credit request"
+                                 if caps.rejected_attempt_retry_allowance else None),
+    )
     live = live_factory(jev_ledger)
     if isinstance(live, tuple) and len(live) == 2:
         call, actual_questions = live

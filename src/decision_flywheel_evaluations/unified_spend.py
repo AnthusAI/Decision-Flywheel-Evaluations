@@ -71,6 +71,8 @@ class SpendLedger:
     max_new: Optional[int] = None
     max_consecutive_failures: int = 25
     run_label: str = "run"
+    approved_ceiling_increase: int = 0
+    ceiling_increase_reason: Optional[str] = None
     _lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def __post_init__(self) -> None:
@@ -80,12 +82,35 @@ class SpendLedger:
             raise ValueError("max_new must be a non-negative integer")
         if self.max_consecutive_failures < 1:
             raise ValueError("max_consecutive_failures must be positive")
+        if (isinstance(self.approved_ceiling_increase, bool)
+                or not isinstance(self.approved_ceiling_increase, int)
+                or self.approved_ceiling_increase < 0):
+            raise ValueError("approved ceiling increase must be a non-negative integer")
+        if self.approved_ceiling_increase and not self.ceiling_increase_reason:
+            raise ValueError("an approved ceiling increase requires a reason")
         self.path = Path(self.path) if self.path else None
         self.used_before = 0
         self.cumulative_scopes: Dict[str, int] = {}
+        self.ceiling_history = [self.ceiling]
+        self._ceiling_increase_reason: Optional[str] = None
         if self.path and self.path.exists():
             stored = json.loads(self.path.read_text())
-            if stored.get("format") != LEDGER_FORMAT or stored.get("ceiling") != self.ceiling:
+            if stored.get("format") != LEDGER_FORMAT:
+                raise ValueError("the spend ledger format is invalid")
+            stored_ceiling = stored.get("ceiling")
+            if stored_ceiling != self.ceiling:
+                stored_history = list(stored.get("ceiling_history", [stored_ceiling]))
+                permitted = (isinstance(stored_ceiling, int) and self.ceiling > stored_ceiling
+                             and self.ceiling - stored_ceiling == self.approved_ceiling_increase
+                             and bool(self.ceiling_increase_reason) and len(stored_history) == 1)
+                if not permitted:
+                    raise ValueError("the spend ledger was created with a different ceiling; "
+                                     "the cumulative ceiling cannot be changed mid-study")
+                self.ceiling_history = stored_history + [self.ceiling]
+                self._ceiling_increase_reason = _safe(self.ceiling_increase_reason, limit=160)
+            else:
+                self.ceiling_history = list(stored.get("ceiling_history", [self.ceiling]))
+            if not self.ceiling_history or self.ceiling_history[-1] != self.ceiling:
                 raise ValueError("the spend ledger was created with a different ceiling; "
                                  "the cumulative ceiling cannot be changed mid-study")
             self.used_before = int(stored.get("used", 0))
@@ -187,7 +212,10 @@ class SpendLedger:
         if not self.path:
             return
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        payload = {"format": LEDGER_FORMAT, "ceiling": self.ceiling, "used": self.used,
+        payload = {"format": LEDGER_FORMAT, "ceiling": self.ceiling,
+                   "ceiling_history": self.ceiling_history,
+                   "ceiling_increase_reason": self._ceiling_increase_reason,
+                   "used": self.used,
                    "by_scope": dict(sorted(self.cumulative_scopes.items()))}
         handle, temporary = tempfile.mkstemp(dir=self.path.parent, prefix=".ledger-")
         with os.fdopen(handle, "w") as stream:
