@@ -1,4 +1,4 @@
-.PHONY: unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
+.PHONY: reviews-stream-fixture reviews-stream-report unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
@@ -102,3 +102,16 @@ unified-flywheel-test:
 unified-flywheel-dry-run:
 	@if test -z "$(UF_PYTHON)"; then echo "Usage: make unified-flywheel-dry-run UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus"; exit 2; fi
 	UNIFIED_FLYWHEEL_CORE=$(UF_CORE) $(UF_PYTHON) scripts/unified_flywheel.py run --run-dir var/unified-flywheel/dry-run $(UF_ARGS)
+
+# These commands cannot collect live results or read the private SME policy.
+reviews-stream-fixture:
+	@if test -z "$(STREAM_FIXTURE)" || test -z "$(STREAM_RUN_DIR)" || test -z "$(STREAM_OUTPUT)" || test -z "$(STREAM_MAX_NEW)"; then \
+		echo "Usage: make reviews-stream-fixture STREAM_FIXTURE=synthetic.json STREAM_RUN_DIR=var/fixture STREAM_OUTPUT=var/fixture.run.json STREAM_MAX_NEW=... [OVERWRITE=--overwrite]"; exit 2; \
+	fi
+	$(PYTHON) scripts/reviews_stream.py run --fixture "$(STREAM_FIXTURE)" --run-dir "$(STREAM_RUN_DIR)" --output "$(STREAM_OUTPUT)" --max-new-requests "$(STREAM_MAX_NEW)" $(OVERWRITE)
+
+reviews-stream-report:
+	@if test -z "$(STREAM_INPUT)" || test -z "$(STREAM_OUTPUT)"; then \
+		echo "Usage: make reviews-stream-report STREAM_INPUT=var/fixture.run.json STREAM_OUTPUT=var/fixture.report.json [OVERWRITE=--overwrite]"; exit 2; \
+	fi
+	$(PYTHON) scripts/reviews_stream.py report --input "$(STREAM_INPUT)" --output "$(STREAM_OUTPUT)" $(OVERWRITE)

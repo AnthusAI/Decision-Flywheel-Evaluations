@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "labels": ["approve", "flag"],
+  "stream": [
+    {"id": "toy-stream-1", "label": "approve"},
+    {"id": "toy-stream-2", "label": "flag"},
+    {"id": "toy-stream-3", "label": "approve"},
+    {"id": "toy-stream-4", "label": "flag"}
+  ],
+  "heldout": [
+    {"id": "toy-heldout-1", "label": "approve"},
+    {"id": "toy-heldout-2", "label": "flag"}
+  ],
+  "predictions": {
+    "B": {"toy-stream-1": "approve", "toy-stream-2": "approve", "toy-stream-3": "approve", "toy-stream-4": "flag", "toy-heldout-1": "approve", "toy-heldout-2": "approve"},
+    "L": {"toy-stream-1": "approve", "toy-stream-2": "approve", "toy-stream-3": "approve", "toy-stream-4": "flag", "toy-heldout-1": "approve", "toy-heldout-2": "flag"},
+    "E": {"toy-stream-1": "approve", "toy-stream-2": "approve", "toy-stream-3": "approve", "toy-stream-4": "flag", "toy-heldout-1": "approve", "toy-heldout-2": "flag"},
+    "X": {"toy-stream-1": "approve", "toy-stream-2": "approve", "toy-stream-3": "approve", "toy-stream-4": "flag", "toy-heldout-1": "approve", "toy-heldout-2": "approve"}
+  }
+}

@@ -17,11 +17,54 @@ designs, split manifests, response-cache metadata, and aggregate findings.
 
 ## Current status
 
-The repository currently provides frozen protocol and split-manifest contracts,
-offline preflight checks, gated Jev collection, text-free observation/metric/reporting
-utilities, and synthetic tests. No new live results have been collected with
-this harness before the initial Jev study (see the results document above).
-Ordering sensitivity and cross-model comparisons remain planned work.
+The initial Jev study is complete. Later experimental notes cover the
+[unified flywheel](studies/UNIFIED_FLYWHEEL_RESULTS.md) and
+[FOMC rubric teaching](studies/FOMC_RUBRIC_RESULTS.md). These are separate
+investigations, not cross-model or demonstration-order results.
+The current offline build is a streaming-SME evaluation: classify before
+feedback, review a seeded fraction of the stream, then update the classifier
+from reviewed labels and optional explanations. Ordering sensitivity and
+cross-model comparisons remain deferred work.
+
+## Offline streaming fixtures and reports
+
+The streaming command has **no live mode**. It requires an explicitly synthetic
+fixture, installs the network guard, and never reads the private SME policy or
+credentials. This tiny fixture tests scheduling and reporting with scripted
+predictions; its numbers are not evidence of learning or a benchmark result:
+
+```bash
+make PYTHON=.venv/bin/python reviews-stream-fixture \
+  STREAM_FIXTURE=fixtures/stream.synthetic.json \
+  STREAM_RUN_DIR=var/stream-fixture STREAM_OUTPUT=var/stream-fixture.run.json \
+  STREAM_MAX_NEW=0
+make PYTHON=.venv/bin/python reviews-stream-report \
+  STREAM_INPUT=var/stream-fixture.run.json STREAM_OUTPUT=var/stream-fixture.report.json
+.venv/bin/python scripts/reviews_stream.py report \
+  --input var/stream-fixture.run.json --output var/stream-fixture.report.md --format markdown
+```
+
+Outputs keep labels, identifiers, hashes, counters and measurements, not review
+text, SME explanations or policy prose. Reports provide window-100 and cumulative
+prequential curves, checkpoint summaries, descriptive paired intervals, actual
+recorded attempts/token fields, and coverage/problems. Missing checkpoints stay
+missing; a four-item fixture does not invent a 300-item result. Missing probability
+distributions do not invalidate label-based accuracy or macro-F1, and are not
+invented for calibration. Existing outputs require `OVERWRITE=--overwrite` or
+the matching CLI flag.
+
+The learning-runtime integration is checked separately with the pinned clean
+Jev-Flywheel clone and fake Jev/analyst clients. The streaming Kanbus tasks track
+its completion and the subsequent live-stage approval gates; this fixture command
+does not authorize a live SME, classifier, or analyst run.
+
+The bridge is still an offline prototype, not the completed streaming study.
+Fitting uses at most the last 150 reviewed items; steering currently refuses
+above that history size until a bounded-workspace integration is available.
+Copied historical replays preserve Emotion and FOMC predictions, but full
+byte-identical replay has not been established (the planted source includes
+accumulated prediction rows). Those remaining integration checks stay open in
+Kanbus before the streaming collection milestone can be called complete.
 
 ## Native command-line workflow
 
@@ -251,7 +294,8 @@ authorize the development optimization, ordering, or cross-model studies.
 
 The [ordering preregistration template](protocols/ORDER_SENSITIVITY.md) records
 the next investigation, before other model comparisons. This is not an actual
-ordering preregistration: the initial live scoreboard has not yet been collected.
+ordering preregistration. The initial scoreboard is now complete, but the actual
+ordering plan and separate collection approval have not been frozen.
 
 The offline planner requires complete initial single-Jev canonical scoreboard
 observations and an exact regenerated initial preflight. It preserves the task,
