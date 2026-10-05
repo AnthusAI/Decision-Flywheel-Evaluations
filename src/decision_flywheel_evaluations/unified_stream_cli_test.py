@@ -18,6 +18,30 @@ def test_a_live_flag_is_rejected_before_any_stream_engine_is_loaded(tmp_path, mo
     assert not (tmp_path / "run").exists()
 
 
+def test_the_actual_learning_runtime_requires_an_explicit_synthetic_flag_before_loading_it(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli, "_run_runtime", lambda *_args, **_kwargs: pytest.fail("loaded runtime"), raising=False)
+    with pytest.raises(SystemExit) as error:
+        cli.main(["runtime", "--run-dir", str(tmp_path / "run"), "--output", str(tmp_path / "out.json"),
+                  "--max-new-requests", "10"])
+    assert error.value.code == 2
+    assert not (tmp_path / "run").exists()
+
+
+def test_the_synthetic_runtime_passes_its_actual_learning_cap_and_shape_explicitly(tmp_path, monkeypatch):
+    seen = []
+    def run(run_dir, **options):
+        seen.append((run_dir, options))
+        return {"schema": "decision-flywheel-evaluations/stream/v1", "is_synthetic": True, "arms": {}}
+    monkeypatch.setattr(cli, "_run_runtime", run, raising=False)
+    output = tmp_path / "out.json"
+    assert cli.main(["runtime", "--synthetic", "--run-dir", str(tmp_path / "run"), "--output", str(output),
+                     "--max-new-requests", "7", "--seed", "4", "--review-probability", "1",
+                     "--stream-size", "32", "--heldout-size", "8"]) == 0
+    assert seen == [(tmp_path / "run", {"seed": 4, "review_probability": 1.0, "max_new_requests": 7,
+                                         "stream_size": 32, "heldout_size": 8})]
+    assert json.loads(output.read_text())["is_synthetic"] is True
+
+
 def test_an_existing_artifact_is_not_replaced_or_followed_by_engine_work(tmp_path, monkeypatch):
     output = tmp_path / "out.json"
     output.write_text("old evidence")
@@ -128,6 +152,18 @@ def test_make_stream_targets_are_explicit_offline_fixture_and_local_report_comma
                              "STREAM_OUTPUT=var/toy.report.json"], cwd=root, text=True, capture_output=True)
     assert report.returncode == 0
     assert '--input "var/toy.run.json"' in report.stdout
+
+
+def test_the_make_runtime_target_requires_the_pinned_interpreter_and_explicit_synthetic_mode():
+    root = Path(__file__).parents[2]
+    result = subprocess.run(["make", "-n", "reviews-stream-runtime", "UF_PYTHON=/fake/python",
+                             "STREAM_RUN_DIR=var/runtime", "STREAM_OUTPUT=var/runtime.json",
+                             "STREAM_MAX_NEW=400"], cwd=root, text=True, capture_output=True)
+    assert result.returncode == 0
+    assert 'runtime --synthetic' in result.stdout
+    assert '--max-new-requests "400"' in result.stdout
+    assert "/fake/python" in result.stdout and "--live" not in result.stdout
+    assert "PYTHONPATH=src:" in result.stdout
 
 
 def test_a_synthetic_run_and_report_compose_without_private_text_or_model_calls(tmp_path):

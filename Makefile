@@ -1,4 +1,4 @@
-.PHONY: reviews-stream-fixture reviews-stream-report unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
+.PHONY: reviews-stream-runtime reviews-stream-fixture reviews-stream-report unified-flywheel-test unified-flywheel-dry-run test download preflight select run report pilot-preflight pilot pilot-report ordering-preflight ordering-run ordering-report install-tools release
 
 PYTHON ?= python
 STAGE ?= scoreboard
@@ -115,3 +115,10 @@ reviews-stream-report:
 		echo "Usage: make reviews-stream-report STREAM_INPUT=var/fixture.run.json STREAM_OUTPUT=var/fixture.report.json [OVERWRITE=--overwrite]"; exit 2; \
 	fi
 	$(PYTHON) scripts/reviews_stream.py report --input "$(STREAM_INPUT)" --output "$(STREAM_OUTPUT)" $(OVERWRITE)
+
+# Actual fits and immutable serving, but synthetic data and fake clients only.
+reviews-stream-runtime:
+	@if test -z "$(UF_PYTHON)" || test -z "$(STREAM_RUN_DIR)" || test -z "$(STREAM_OUTPUT)" || test -z "$(STREAM_MAX_NEW)"; then \
+		echo "Usage: make reviews-stream-runtime UF_PYTHON=/path/to/pinned-runtime-python STREAM_RUN_DIR=var/fresh-runtime STREAM_OUTPUT=var/runtime.json STREAM_MAX_NEW=..."; exit 2; \
+	fi
+	UNIFIED_FLYWHEEL_CORE=$(UF_CORE) PYTHONPATH=src:$(if $(UF_CORE),$(UF_CORE),var/unified-flywheel/pyshim) $(UF_PYTHON) scripts/reviews_stream.py runtime --synthetic --run-dir "$(STREAM_RUN_DIR)" --output "$(STREAM_OUTPUT)" --max-new-requests "$(STREAM_MAX_NEW)" $(OVERWRITE)

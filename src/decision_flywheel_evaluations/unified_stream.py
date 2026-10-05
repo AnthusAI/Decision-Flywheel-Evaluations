@@ -85,7 +85,7 @@ def _feature_row_complete(features: Sequence[str], row: Mapping[str, Any]) -> bo
 class StreamConfig:
     seed: int = 1
     review_probability: float = .3
-    batch_size: int = 10
+    batch_size: Optional[int] = None
     cold_start_reviews: int = 30
     refit_every_reviews: int = 30
     max_refits: int = 4
@@ -96,7 +96,9 @@ class StreamConfig:
     def __post_init__(self) -> None:
         if not 0 <= self.review_probability <= 1:
             raise ValueError("review_probability must be in [0, 1]")
-        if self.batch_size not in range(1, 11):
+        if self.batch_size is not None and (isinstance(self.batch_size, bool)
+                                          or not isinstance(self.batch_size, int)
+                                          or self.batch_size not in range(1, 11)):
             raise ValueError("batch_size must be from 1 through 10")
         if self.cold_start_reviews < 1 or self.refit_every_reviews < 1 or self.list_per_label < 1:
             raise ValueError("review thresholds must be positive")
@@ -115,6 +117,7 @@ class ServedPrediction:
     review_selected: bool
     review_propensity: float
     reviewed_count_at_prediction: int
+    bundle_hash: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -187,6 +190,17 @@ class StreamDriver:
         p = self.config.review_probability
         return [(item_id, rng.random() < p, p) for item_id, _ in items]
 
+    def batch_indices(self, n: int) -> list[int]:
+        """Independent seeded batches, or the explicitly requested fixed size."""
+        rng = random.Random(f"stream-batches-v1:{self.config.seed}")
+        out: list[int] = []
+        batch = 0
+        while len(out) < n:
+            batch += 1
+            size = self.config.batch_size or rng.randint(1, 10)
+            out.extend([batch] * min(size, n - len(out)))
+        return out
+
     def run(self, arm: str, engine: Any, stream: Sequence[tuple[str, str]], *,
             selection_plan: Optional[Sequence[tuple[str, bool, float]]] = None,
             is_synthetic: bool = True) -> StreamResult:
@@ -209,12 +223,16 @@ class StreamDriver:
         next_refit = self.config.cold_start_reviews
         next_list = self.config.cold_start_reviews
         checkpoint_done = False
+        batches = self.batch_indices(len(items))
         for index, ((item_id, truth), (_, selected, propensity)) in enumerate(zip(items, plan), start=1):
-            batch = (index - 1) // self.config.batch_size + 1
+            batch = batches[index - 1]
             label, probabilities, status = self._prediction(engine, item_id)
+            digest = getattr(engine, "served_bundle_hash", None)
+            digest = (digest if isinstance(digest, str) and len(digest) == 64
+                      and all(char in "0123456789abcdef" for char in digest) else None)
             # This append must precede feedback: its count makes leakage auditable.
             result.served.append(ServedPrediction(index, batch, item_id, truth, label, probabilities, status,
-                                                   selected, propensity, len(reviewed)))
+                                                   selected, propensity, len(reviewed), digest))
             if selected:
                 mode = {"B": "none", "L": "labels", "E": "explanation", "X": "shuffled_explanation"}[arm]
                 digest = self._review_digest(engine, item_id, mode)
@@ -223,7 +241,7 @@ class StreamDriver:
                 if arm in LEARNING_ARMS:
                     engine.record_label(item_id, truth, propensity=propensity, explanation_mode=mode)
                     reviewed.append(item_id)
-            end_of_batch = index % self.config.batch_size == 0 or index == len(items)
+            end_of_batch = index == len(items) or batches[index] != batch
             if end_of_batch and arm in LEARNING_ARMS and len(reviewed) >= next_refit and result.counters["refit_rounds"] < self.config.max_refits:
                 engine.refit(tuple(reviewed))
                 result.counters["refit_rounds"] += 1
@@ -358,6 +376,9 @@ class UnifiedFlywheelStreamArm:
         self._plain_mismatches = 0
         self.fit_window_ids: tuple[str, ...] = ()
         self._checkpoint_paths: dict[str, Path] = {}
+        self._steering_round = 0
+        self._frozen_service = None
+        self._frozen_semantic_key: Optional[tuple[str, Optional[str], Optional[str]]] = None
 
     @classmethod
     def create(cls, flywheel: Any, arm: str, *, comments: Optional[Mapping[str, str]] = None,
@@ -377,43 +398,55 @@ class UnifiedFlywheelStreamArm:
         return cls(flywheel, ArmState(arm, Score.from_config(seed.to_config()), workspace), arm, comments=comments,
                    list_per_label=list_per_label)
 
+    def _require_pool_item(self, item_id: str) -> str:
+        """Reject any dev/held-out ID before a stream operation can mutate state."""
+        item_id = str(item_id)
+        if item_id not in set(self.flywheel.splits.pool):
+            raise ValueError("stream prediction and feedback are pool-only")
+        return item_id
+
+    def _serving_key(self) -> tuple[str, Optional[str], Optional[str]]:
+        """Only a served score/context/card change earns a new publication."""
+        from .unified_bundles import ScoreRubric
+
+        list_fingerprint = getattr(self.state.example_list, "fingerprint", None)
+        card_fingerprint = None
+        if self.state.workspace is not None:
+            card = self.state.workspace.scorecard().score(self.flywheel.corpus.score_name)
+            card_fingerprint = ScoreRubric.dump(card)
+        return ScoreRubric.dump(self.state.head), list_fingerprint, card_fingerprint
+
+    def _serving(self):
+        """Return the current immutable snapshot, publishing lazily when needed."""
+        key = self._serving_key()
+        if self._frozen_service is None or self._frozen_semantic_key != key:
+            from .unified_stream_serving import FrozenStreamClassifier
+
+            service = FrozenStreamClassifier(self.flywheel, self.arm, self.state, tuple(self.reviewed))
+            service.publish()
+            self._frozen_service, self._frozen_semantic_key = service, key
+        return self._frozen_service
+
+    @property
+    def bundle_hash(self) -> Optional[str]:
+        """Hash of the immutable classifier that served the latest prediction."""
+        publication = getattr(self._frozen_service, "publication", None)
+        return publication.bundle_hash if publication is not None else None
+
+    @property
+    def served_bundle_hash(self) -> Optional[str]:
+        """Text-free provenance exposed to ``StreamDriver`` for this prediction."""
+        digest = self.bundle_hash
+        return digest if (isinstance(digest, str) and len(digest) == 64
+                          and all(char in "0123456789abcdef" for char in digest)) else None
+
     def predict(self, item_id: str):
-        from jev_flywheel.scoring import predict
+        item_id = self._require_pool_item(item_id)
         self._round += 1
-        self.flywheel.ledger.set_scope(self.arm, self._round, "stream-predict")
-        if self.state.example_list is None:
-            filled = self.flywheel._fill_zero_shot([item_id], self.state.head.questions())
-            if filled.get("failures"):
-                if self.state.workspace is not None:
-                    self._questions[item_id] = self._question(item_id, None, 0.0)
-                return None, {}, "unavailable"
-            answers = self.flywheel.cache.bulk_partial_answers([item_id], self.state.head.questions())[item_id]
-            if not _answers_complete(self.state.head.questions(), answers):
-                if self.state.workspace is not None:
-                    self._questions[item_id] = self._question(item_id, None, 0.0)
-                return None, {}, "unavailable"
-            row = self.flywheel._rows(self.state.head, [item_id], self.reviewed)[item_id]
-        else:
-            # ListAnswers.fill sends exactly one request for this item containing
-            # all cache-missing questions and this list's context.
-            filled = self.flywheel._list_fill(self.state.example_list, [item_id], self.state.head.questions())
-            if filled.get("failures"):
-                if self.state.workspace is not None:
-                    self._questions[item_id] = self._question(item_id, None, 0.0)
-                return None, {}, "unavailable"
-            answers = self.flywheel.list_answers.answers([item_id], self.state.head.questions(), self.state.example_list)[item_id]
-            if not _answers_complete(self.state.head.questions(), answers):
-                if self.state.workspace is not None:
-                    self._questions[item_id] = self._question(item_id, None, 0.0)
-                return None, {}, "unavailable"
-            row = self.flywheel._list_rows(self.state.head, [item_id], self.state.example_list)[item_id]
-        if not _feature_row_complete(self.state.head.decision.features, row):
-            if self.state.workspace is not None:
-                self._questions[item_id] = self._question(item_id, None, 0.0)
-            return None, {}, "unavailable"
-        result = predict(self.state.head, {}, features=row)
-        label, confidence = result.value, float(result.confidence or 0.0)
-        probabilities = dict((result.metadata or {}).get("decision", {}).get("probabilities") or {})
+        result = self._serving().classify(item_id)
+        label = None if result is None else result.label
+        confidence = 0.0 if result is None else float(result.confidence or 0.0)
+        probabilities = {} if result is None else dict(result.probabilities or {})
         if self.state.workspace is not None:
             self._questions[item_id] = self._question(item_id, label, confidence)
         return label, probabilities, "ok" if label in probabilities else "unavailable"
@@ -432,6 +465,7 @@ class UnifiedFlywheelStreamArm:
                         classes=list(self.state.head.decision.classes))
 
     def record_label(self, item_id, label, *, propensity, explanation_mode):
+        item_id = self._require_pool_item(item_id)
         from jev_flywheel.loop import AGREE, DISAGREE, record_label
         question = self._questions[item_id]
         question.selection.propensity = propensity
@@ -484,6 +518,16 @@ class UnifiedFlywheelStreamArm:
         # never silently become missing-feature rows in an all-history fit.
         fit_ids = tuple(reviewed[-150:])
         self.fit_window_ids = fit_ids
+        self.flywheel.ledger.set_scope(self.arm, self._round, "stream-zero-window-coverage")
+        filled = self.flywheel._fill_zero_shot(fit_ids, template.questions())
+        if filled.get("failures"):
+            return
+        answers = self.flywheel.cache.bulk_partial_answers(fit_ids, template.questions())
+        if any(not _answers_complete(template.questions(), answers.get(item_id, {})) for item_id in fit_ids):
+            return
+        rows = self.flywheel._rows(template, fit_ids, fit_ids)
+        if any(not _feature_row_complete(template.decision.features, rows.get(item_id, {})) for item_id in fit_ids):
+            return
         self.state.head, _gate, fit = self.flywheel._gate(self.arm, self._round, template, self.state.head, fit_ids)
         if fit is not None:
             self.state.workspace.commit_scorecard(with_fit(self.state.workspace.scorecard(),
@@ -500,26 +544,71 @@ class UnifiedFlywheelStreamArm:
         return all(count >= self.list_per_label + 1 for count in counts.values())
 
     def optimize_list(self, reviewed: Sequence[str]) -> bool:
-        """Run core planning/search; state changes only on a promoted/list winner.
+        """Atomically promote a context together with its fitted/calibrated head.
 
         The optimizer reads the context-keyed ``ListAnswers`` cache and makes one
-        request per target/list trial through its existing fill path.
+        request per target/list trial through its existing fill path.  The
+        driver refits before calling this method, so assigning a new list here
+        without fitting it would serve an old head against a new context.
         """
         if not self.list_ready(reviewed):
             return False
+        from jev_flywheel.fit import compare, fit_head
+        from jev_flywheel.ladder import LadderRefusal
+        from .unified_loop import candidate_template, head_from_fit, served_summary, training_set
+
         base = self.state.workspace.scorecard().score(self.flywheel.corpus.score_name)
-        from .unified_loop import candidate_template
         template = candidate_template(base, fewshot=False, knn=False, corpus=self.flywheel.corpus)
         self.flywheel.ledger.set_scope(self.arm, self._round, "stream-list-optimize")
         hard_demos = [item_id for _, item_id in sorted(self._hard_demos, key=lambda x: (-x[0], x[1]))]
         chosen, record = self.flywheel._improve_list(self.state, reviewed, hard_demos, template.questions(), self._round)
-        self.state.example_list = chosen
         self._last_list_record = record
-        # A newly promoted context is only proactively topped up for the recent
-        # horizon; _refit_fixed_list below insists on full feature coverage before
-        # it can include any older trusted label in a fit.
-        self.flywheel._list_fill(chosen, list(reviewed)[-150:], template.questions())
-        return bool(record.get("promoted") or self.state.example_list is not None)
+        incumbent = self.state.example_list
+        if incumbent is not None and chosen.fingerprint == incumbent.fingerprint:
+            # Search completed but retained the already coherent classifier.
+            self.state.list_record = dict(record)
+            return True
+
+        # The context and head must cross the same full-feature fit boundary.
+        # Labels outside this declared horizon remain trusted audit provenance,
+        # but cannot become partial rows in a fit merely because a list changed.
+        fit_ids = tuple(reviewed[-150:])
+        self.fit_window_ids = fit_ids
+        filled = self.flywheel._list_fill(chosen, fit_ids, template.questions())
+        if filled.get("failures"):
+            return False
+        answers = self.flywheel.list_answers.answers(fit_ids, template.questions(), chosen)
+        if any(not _answers_complete(template.questions(), answers.get(item_id, {})) for item_id in fit_ids):
+            return False
+        rows = self.flywheel._list_rows(template, fit_ids, chosen)
+        if any(not _feature_row_complete(template.decision.features, rows.get(item_id, {})) for item_id in fit_ids):
+            return False
+        training = training_set(template, fit_ids, self.flywheel.labels, rows,
+                                f"example-list:{chosen.fingerprint}")
+        if training.needs_answers:
+            return False
+        try:
+            fitted = fit_head(training, template, folds=self.flywheel.cfg.folds, seed=self.flywheel.cfg.fit_seed)
+        except LadderRefusal:
+            return False
+        if not fitted.fitted:
+            return False
+        # Even with no incumbent list, the current zero-shot head is measured
+        # on this candidate context; no calibration or fit is fabricated.
+        incumbent_rows = self.flywheel._list_rows(self.state.head, training.item_ids, chosen)
+        incumbent_score = served_summary(self.state.head, training.item_ids, incumbent_rows,
+                                         self.flywheel.labels, training.weights)
+        if not compare(fitted, incumbent_score, min_brier_gain=self.flywheel.cfg.min_brier_gain).promote:
+            # A fully evaluated attempt is still consumed by the scheduler;
+            # keeping the incumbent avoids retrying the identical list every
+            # batch while preserving its matching head.
+            self._last_list_record = {**record, "served": "rejected-head-gate"}
+            return True
+        self.state.example_list = chosen
+        self.state.head = head_from_fit(template, fitted)
+        self.state.list_record = {**record, "head_fit_id": fitted.provenance.get("fit_id"),
+                                  "fit_window_n": len(training.item_ids)}
+        return True
 
     def _refit_fixed_list(self, reviewed: Sequence[str]) -> None:
         """Fit only after every trusted label has the chosen list's full features."""
@@ -538,7 +627,12 @@ class UnifiedFlywheelStreamArm:
         filled = self.flywheel._list_fill(self.state.example_list, fit_ids, template.questions())
         if filled.get("failures"):
             return  # no partial-label fit after a failed top-up
+        answers = self.flywheel.list_answers.answers(fit_ids, template.questions(), self.state.example_list)
+        if any(not _answers_complete(template.questions(), answers.get(item_id, {})) for item_id in fit_ids):
+            return
         rows = self.flywheel._list_rows(template, fit_ids, self.state.example_list)
+        if any(not _feature_row_complete(template.decision.features, rows.get(item_id, {})) for item_id in fit_ids):
+            return
         training = training_set(template, fit_ids, self.flywheel.labels, rows,
                                 f"example-list:{self.state.example_list.fingerprint}")
         if training.needs_answers:
@@ -572,6 +666,7 @@ class UnifiedFlywheelStreamArm:
                 return None
             self._checkpoint_paths[artifact_id] = target
         except Exception:  # artifact remains unavailable rather than reporting a fake hash
+            self.flywheel.ledger.raise_if_tripped()
             return None
         manifest = bundle.manifest()
         return {"checkpoint": checkpoint_name, "artifact_id": artifact_id, **text_free(manifest)}
@@ -602,6 +697,7 @@ class UnifiedFlywheelStreamArm:
                 return ()
             done = self.flywheel.classify_with_bundle(bundle, self.flywheel.splits.paper600)
         except Exception:
+            self.flywheel.ledger.raise_if_tripped()
             return ()
         rows = []
         for item_id in self.flywheel.splits.paper600:
@@ -626,15 +722,30 @@ class UnifiedFlywheelStreamArm:
         return counts
 
     def steer(self):
-        if len(self.reviewed) > 150:
-            # Legacy UnifiedFlywheel._steer constructs its host from every main
-            # workspace feedback row.  Calling it here would violate the stream
-            # cap; an overlay workspace is required before this can be enabled.
-            self._last_list_record = {"steering": "unavailable: legacy host exceeds rolling-150 window"}
-            return False
-        out = {"steering": self.flywheel._steer(self.arm, self.state, self._round)}
-        self.flywheel._cap_to_budget(self.arm, self.state, self.reviewed, out)
-        self.state.head = self.state.workspace.scorecard().score(self.flywheel.corpus.score_name)
+        from .unified_stream_workspace import bounded_steering_workspace
+
+        authoritative = self.state.workspace
+        window = tuple(self.reviewed[-150:])
+        view = bounded_steering_workspace(authoritative, window,
+                                          score_name=self.flywheel.corpus.score_name)
+        # Stream arrival numbers are deliberately unrelated to analyst rounds:
+        # recorded steering replies are numbered 1, 2, 3 regardless of how many
+        # requests preceded the review trigger.
+        steering_round = getattr(self, "_steering_round", 0) + 1
+        try:
+            self.state.workspace = view
+            out = {"steering": self.flywheel._steer(self.arm, self.state, steering_round)}
+        finally:
+            self.state.workspace = authoritative
+        self._steering_round = steering_round
+        self.flywheel._cap_to_budget(self.arm, self.state, window, out)
+        if self.state.example_list is None:
+            self.state.head = self.state.workspace.scorecard().score(self.flywheel.corpus.score_name)
+        else:
+            # The workspace candidate was fit from zero-shot answers.  A fixed
+            # example list is a different serving context, so keep its current
+            # head until its own latest-window coverage/refit/gate promotes one.
+            self._refit_fixed_list(window)
         if self.arm == "L":
             self._plain_mismatches = 0
         return True

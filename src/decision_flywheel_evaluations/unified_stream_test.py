@@ -84,6 +84,16 @@ def test_a_prediction_is_recorded_before_its_sampled_feedback():
     assert arm.last_label == ("i1", "b", 1.0, "explanation")
 
 
+def test_each_served_row_records_only_a_valid_frozen_bundle_hash():
+    arm = FakeArm()
+    arm.served_bundle_hash = "a" * 64
+    result = StreamDriver(StreamConfig(review_probability=0)).run("B", arm, [("i1", "a")])
+    assert result.to_dict()["served"][0]["bundle_hash"] == "a" * 64
+    arm.served_bundle_hash = "private policy or secret"
+    result = StreamDriver(StreamConfig(review_probability=0)).run("B", arm, [("i1", "a")])
+    assert result.to_dict()["served"][0]["bundle_hash"] is None
+
+
 def test_uniform_sampling_is_seeded_and_shared_without_using_predictions():
     items = [(f"i{i}", "a") for i in range(20)]
     config = StreamConfig(seed=7, review_probability=.3, batch_size=10)
@@ -91,6 +101,31 @@ def test_uniform_sampling_is_seeded_and_shared_without_using_predictions():
     two = StreamDriver(config).sample_plan(items)
     assert one == two
     assert {propensity for _, selected, propensity in one} == {.3}
+
+
+def test_default_batches_mix_one_through_ten_items_reproducibly_without_changing_review_sampling():
+    items = [(f"i{i}", "a") for i in range(80)]
+
+    def batches(seed):
+        result = StreamDriver(StreamConfig(seed=seed, review_probability=0)).run("B", FakeArm(), items)
+        return [row.batch_index for row in result.served]
+
+    one = batches(4)
+    assert one == batches(4)
+    assert one != batches(5)
+    sizes = [one.count(batch) for batch in sorted(set(one))]
+    assert all(1 <= size <= 10 for size in sizes)
+    assert len(set(sizes)) > 1
+    random_driver = StreamDriver(StreamConfig(seed=4))
+    fixed_driver = StreamDriver(StreamConfig(seed=4, batch_size=10))
+    assert random_driver.sample_plan(items) == fixed_driver.sample_plan(items)
+
+
+def test_a_fixed_batch_size_is_a_positive_integer_not_a_boolean_or_float():
+    import pytest
+    for value in (True, False, 1.0, 0, -1, 11):
+        with pytest.raises(ValueError):
+            StreamConfig(batch_size=value)
 
 
 def test_cold_start_does_not_refit_before_thirty_reviews():
@@ -170,13 +205,14 @@ def test_concrete_fake_runtime_keeps_heldout_out_of_feedback(tmp_path):
         import pytest
         pytest.skip("needs the pinned Jev-Flywheel interpreter")
     try:
-        clone = unified_env.put_clone_first()
         unified_env.install_network_guard()
-        from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
-        from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
-    except Exception as error:  # the local fast interpreter intentionally lacks these extras
+        unified_env.ensure_decision_flywheel()
+        clone = unified_env.put_clone_first()
+    except unified_env.EnvironmentProblem as error:
         import pytest
         pytest.skip(f"pinned fake runtime unavailable: {type(error).__name__}")
+    from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
+    from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
     flywheel = UnifiedFlywheel(RunConfig(clone=clone.path, run_dir=tmp_path / "run", rounds=1,
                                            per_round=1, dev_size=5, bootstrap_resamples=1))
     item_id = flywheel.splits.pool[0]
@@ -189,32 +225,45 @@ def test_concrete_fake_runtime_keeps_heldout_out_of_feedback(tmp_path):
     assert not set(flywheel.splits.paper600) & {row.item_id for row in feedback}
 
 
-def test_concrete_partial_answers_are_unavailable_but_trusted_feedback_is_kept(tmp_path, monkeypatch):
+def test_concrete_partial_answers_are_unavailable_but_trusted_feedback_is_kept(tmp_path):
     """A cache hole is never converted to zero-valued features or a guessed class."""
     from decision_flywheel_evaluations import unified_env
     if not unified_env.jev_dependencies_available():
         import pytest
         pytest.skip("needs the pinned Jev-Flywheel interpreter")
     try:
-        clone = unified_env.put_clone_first()
         unified_env.install_network_guard()
-        from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
-        from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
-    except Exception as error:
+        unified_env.ensure_decision_flywheel()
+        clone = unified_env.put_clone_first()
+    except unified_env.EnvironmentProblem as error:
         import pytest
         pytest.skip(f"pinned fake runtime unavailable: {type(error).__name__}")
+    from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
+    from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
+    from .unified_fake_jev import FakeJevCore, FakeResponse
+    from decision_flywheel.context import FixedExampleList
+    from jev_flywheel.answers import AnswerCache
+
+    class MissingAnswers(FakeJevCore):
+        def answer(self, state, questions):
+            self.calls += 1
+            return FakeResponse({})
+
     for with_list in (False, True):
         flywheel = UnifiedFlywheel(RunConfig(clone=clone.path, run_dir=tmp_path / str(with_list), rounds=1,
-                                               per_round=1, dev_size=5, bootstrap_resamples=1))
+                                               per_round=1, dev_size=5, bootstrap_resamples=1),
+                                   fake_core=MissingAnswers())
+        flywheel.cache = AnswerCache(tmp_path / f"empty-cache-{with_list}.jsonl")
         item_id, gold = flywheel.splits.pool[0], flywheel.labels[flywheel.splits.pool[0]]
         engine = UnifiedFlywheelStreamArm.create(flywheel, "L")
         if with_list:
-            engine.state.example_list = object()
-            monkeypatch.setattr(flywheel, "_list_fill", lambda *_args, **_kwargs: {"requests": 0, "failures": 0})
-            monkeypatch.setattr(flywheel.list_answers, "answers", lambda *_args, **_kwargs: {item_id: {}})
-        else:
-            monkeypatch.setattr(flywheel, "_fill_zero_shot", lambda *_args, **_kwargs: {"requests": 0, "failures": 0})
-            monkeypatch.setattr(flywheel.cache, "bulk_partial_answers", lambda *_args, **_kwargs: {item_id: {}})
+            by_label = {label: [i for i in flywheel.splits.pool
+                                if i != item_id and flywheel.labels[i] == label]
+                        for label in flywheel.corpus.labels}
+            examples = [ids[0] for ids in by_label.values()]
+            reserves = [ids[1] for ids in by_label.values()]
+            engine.state.example_list = FixedExampleList.from_items(
+                flywheel.task, flywheel._labeled_rows(examples), flywheel._labeled_rows(reserves))
         assert engine.predict(item_id) == (None, {}, "unavailable")
         engine.record_label(item_id, gold, propensity=.3, explanation_mode="labels")
         feedback = engine.state.workspace.feedback()[-1]
@@ -229,13 +278,14 @@ def test_concrete_fake_runtime_all_arms_freeze_and_account(tmp_path):
         import pytest
         pytest.skip("needs the pinned Jev-Flywheel interpreter")
     try:
-        clone = unified_env.put_clone_first()
         unified_env.install_network_guard()
-        from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
-        from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
-    except Exception as error:
+        unified_env.ensure_decision_flywheel()
+        clone = unified_env.put_clone_first()
+    except unified_env.EnvironmentProblem as error:
         import pytest
         pytest.skip(f"pinned fake runtime unavailable: {type(error).__name__}")
+    from decision_flywheel_evaluations.unified_loop import RunConfig, UnifiedFlywheel
+    from decision_flywheel_evaluations.unified_stream import UnifiedFlywheelStreamArm
     seed_cfg = dict(clone=clone.path, rounds=1, per_round=1, dev_size=5, bootstrap_resamples=1)
     probe = UnifiedFlywheel(RunConfig(run_dir=tmp_path / "probe", **seed_cfg))
     by_label = {label: [i for i in probe.splits.pool if probe.labels[i] == label]
@@ -263,3 +313,147 @@ def test_concrete_fake_runtime_all_arms_freeze_and_account(tmp_path):
         if arm == "X":
             for item_id in engine.reviewed[1:]:
                 assert engine.comment_for(item_id, "shuffled_explanation") != comments[item_id]
+
+
+def test_stream_steering_uses_a_rolling_view_and_a_sequential_round_number(monkeypatch):
+    """A late stream steering round never passes its full history to legacy `_steer`."""
+    from types import SimpleNamespace
+    from . import unified_stream_workspace
+    from .unified_stream import UnifiedFlywheelStreamArm
+
+    class Workspace:
+        def scorecard(self):
+            return SimpleNamespace(score=lambda _name: "authoritative-head")
+
+    authoritative = Workspace()
+    state = SimpleNamespace(workspace=authoritative, head=None, example_list=None)
+    seen = {"rounds": [], "windows": [], "cap_workspace": []}
+    view = object()
+    flywheel = SimpleNamespace(
+        corpus=SimpleNamespace(labels=("positive", "negative"), score_name="Sentiment"),
+        _steer=lambda arm, received_state, round_number: (
+            seen["rounds"].append((arm, received_state.workspace, round_number)) or {"ok": True}),
+        _cap_to_budget=lambda arm, received_state, labeled, out: (
+            seen["cap_workspace"].append(received_state.workspace), seen["windows"].append(tuple(labeled))),
+    )
+    monkeypatch.setattr(unified_stream_workspace, "bounded_steering_workspace",
+                        lambda workspace, reviewed, *, score_name: view)
+    engine = UnifiedFlywheelStreamArm(flywheel, state, "L")
+    engine.reviewed = [f"i{index}" for index in range(200)]
+    engine._round = 900  # arrival count must not become an analyst steering round.
+
+    assert engine.steer() is True
+    assert seen["rounds"] == [("L", view, 1)]
+    assert seen["windows"] == [tuple(f"i{index}" for index in range(50, 200))]
+    assert seen["cap_workspace"] == [authoritative]
+    assert state.workspace is authoritative and state.head == "authoritative-head"
+
+
+def test_a_failed_stream_steering_round_restores_the_authoritative_workspace(monkeypatch):
+    from types import SimpleNamespace
+    import pytest
+    from . import unified_stream_workspace
+    from .unified_stream import UnifiedFlywheelStreamArm
+
+    authoritative = SimpleNamespace(scorecard=lambda: None)
+    state = SimpleNamespace(workspace=authoritative, head=None)
+    flywheel = SimpleNamespace(
+        corpus=SimpleNamespace(labels=("positive",), score_name="Sentiment"),
+        _steer=lambda *_args: (_ for _ in ()).throw(RuntimeError("expected steering failure")),
+    )
+    monkeypatch.setattr(unified_stream_workspace, "bounded_steering_workspace",
+                        lambda *_args, **_kwargs: object())
+    engine = UnifiedFlywheelStreamArm(flywheel, state, "L")
+    engine.reviewed = ["i1"]
+
+    with pytest.raises(RuntimeError, match="expected steering failure"):
+        engine.steer()
+    assert state.workspace is authoritative
+
+
+def test_fixed_list_steering_keeps_the_served_head_when_its_refit_does_not_promote(monkeypatch):
+    """A zero-shot workspace fit cannot silently replace a fixed-list served head."""
+    from types import SimpleNamespace
+    from . import unified_stream_workspace
+    from .unified_stream import UnifiedFlywheelStreamArm
+
+    authoritative = SimpleNamespace(scorecard=lambda: SimpleNamespace(score=lambda _name: "zero-shot-head"))
+    state = SimpleNamespace(workspace=authoritative, head="fixed-list-head", example_list=object())
+    flywheel = SimpleNamespace(
+        corpus=SimpleNamespace(labels=("positive",), score_name="Sentiment"),
+        _steer=lambda *_args: {"promoted": True},
+        _cap_to_budget=lambda *_args: None,
+    )
+    monkeypatch.setattr(unified_stream_workspace, "bounded_steering_workspace",
+                        lambda *_args, **_kwargs: object())
+    engine = UnifiedFlywheelStreamArm(flywheel, state, "L")
+    engine.reviewed = [f"i{index}" for index in range(151)]
+    calls = []
+    monkeypatch.setattr(engine, "_refit_fixed_list", lambda ids: calls.append(tuple(ids)))
+
+    assert engine.steer() is True
+    assert state.head == "fixed-list-head"
+    assert calls == [tuple(f"i{index}" for index in range(1, 151))]
+
+
+def test_fixed_list_steering_serves_the_head_only_when_its_refit_promotes(monkeypatch):
+    from types import SimpleNamespace
+    from . import unified_stream_workspace
+    from .unified_stream import UnifiedFlywheelStreamArm
+
+    authoritative = SimpleNamespace(scorecard=lambda: SimpleNamespace(score=lambda _name: "zero-shot-head"))
+    state = SimpleNamespace(workspace=authoritative, head="fixed-list-head", example_list=object())
+    flywheel = SimpleNamespace(
+        corpus=SimpleNamespace(labels=("positive",), score_name="Sentiment"),
+        _steer=lambda *_args: {"promoted": True},
+        _cap_to_budget=lambda *_args: None,
+    )
+    monkeypatch.setattr(unified_stream_workspace, "bounded_steering_workspace",
+                        lambda *_args, **_kwargs: object())
+    engine = UnifiedFlywheelStreamArm(flywheel, state, "L")
+    engine.reviewed = ["i1"]
+    monkeypatch.setattr(engine, "_refit_fixed_list", lambda _ids: setattr(state, "head", "promoted-list-head"))
+
+    assert engine.steer() is True
+    assert state.head == "promoted-list-head"
+
+
+def test_real_stream_steering_after_160_reviews_uses_the_bounded_workspace(tmp_path):
+    """The real offline scripted procedure receives 150 records after a long stream."""
+    from decision_flywheel_evaluations import unified_env
+    if not unified_env.jev_dependencies_available():
+        import pytest
+        pytest.skip("needs the pinned Jev-Flywheel interpreter")
+    try:
+        unified_env.ensure_decision_flywheel()
+        clone = unified_env.put_clone_first()
+        unified_env.install_network_guard()
+    except unified_env.EnvironmentProblem as error:
+        import pytest
+        pytest.skip(f"pinned fake runtime unavailable: {error}")
+    from jev_flywheel.items import FeedbackItem, LABEL_SOURCE_FINAL
+    from .unified_loop import RunConfig, UnifiedFlywheel
+    from .unified_stream import UnifiedFlywheelStreamArm
+    flywheel = UnifiedFlywheel(RunConfig(clone=clone.path, run_dir=tmp_path / "late-steer", rounds=1,
+                                           per_round=1, dev_size=5, bootstrap_resamples=1))
+    engine = UnifiedFlywheelStreamArm.create(flywheel, "L")
+    reviewed = list(flywheel.splits.pool[:160])
+    for index, item_id in enumerate(reviewed):
+        engine.state.workspace.add_feedback(FeedbackItem(
+            id=f"stream-review-{index}", item_id=item_id, score_name=flywheel.corpus.score_name,
+            initial_answer_value="positive", final_answer_value=flywheel.labels[item_id],
+            label_source=LABEL_SOURCE_FINAL,
+            metadata={"propensity": .3, "selection_policy": "stream-uniform-v1"}))
+    engine.reviewed = reviewed
+    actual_steer, seen = flywheel._steer, []
+
+    def observe(arm, state, steering_round):
+        seen.append((len(state.workspace.items), len(state.workspace.feedback()), steering_round,
+                     {record.metadata["propensity"] for record in state.workspace.feedback()}))
+        return actual_steer(arm, state, steering_round)
+
+    flywheel._steer = observe
+    assert engine.steer() is True
+    assert seen == [(150, 150, 1, {.3})]
+    assert engine.state.workspace.feedback()[-1].item_id == reviewed[-1]
+    assert engine._steering_round == 1

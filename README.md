@@ -58,9 +58,34 @@ Jev-Flywheel clone and fake Jev/analyst clients. The streaming Kanbus tasks trac
 its completion and the subsequent live-stage approval gates; this fixture command
 does not authorize a live SME, classifier, or analyst run.
 
-The bridge is still an offline prototype, not the completed streaming study.
-Fitting uses at most the last 150 reviewed items; steering currently refuses
-above that history size until a bounded-workspace integration is available.
+To exercise actual fitting, native list optimization and immutable serving rather
+than scripted predictions, use the separate **synthetic runtime** command. It
+requires the interpreter with the pinned Jev-Flywheel dependencies, a fresh empty
+run directory, and an explicit shared request ceiling (these are fake requests,
+not paid API calls):
+
+```bash
+make reviews-stream-runtime \
+  UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus \
+  STREAM_RUN_DIR=var/fresh-stream-runtime STREAM_OUTPUT=var/runtime.run.json \
+  STREAM_MAX_NEW=400
+```
+
+The default exercise uses 32 synthetic arrivals, full review and eight scoreboard
+items, with disjoint development items. All arms share seeded batches of 1–10
+arrivals and the same review plan. A ledger counts every physical fake request
+across all arms; reaching the cap leaves missing predictions unavailable. The
+runtime cannot resume an old workspace: even `--overwrite` does not permit
+reuse of previous feedback. Use a new directory for another exercise.
+
+Per-item predictions use a saved, verified classifier and calibrated bundle
+probabilities, with its hash recorded before feedback. Fitting and steering use
+at most the latest 150 reviewed items; the steering view excludes older/future
+feedback and raw historical analyst replies. A new example context is published
+only together with a matching fitted head. The offline specs separately exercise
+late-history steering; a synthetic run need not trigger every optional action.
+
+This remains an offline prototype, not the completed streaming study.
 Copied historical replays preserve Emotion and FOMC predictions, but full
 byte-identical replay has not been established (the planted source includes
 accumulated prediction rows). Those remaining integration checks stay open in

@@ -17,6 +17,13 @@ def _run_fixture(document, run_dir, **options):
     return run_fake_fixture(document, run_dir, **options)
 
 
+def _run_runtime(run_dir, **options):
+    """Load the pinned fake-only learning runtime only for the explicit command."""
+    from .unified_stream_runtime import run_synthetic_runtime
+
+    return run_synthetic_runtime(run_dir, **options)
+
+
 def _report_payload(document, **options):
     from .unified_stream_reporting import report_stream
 
@@ -51,6 +58,23 @@ def _run(args):
     return 0
 
 
+def _runtime(args):
+    _output_guard(args)
+    if not args.synthetic:
+        raise ValueError("the actual-learning runtime requires --synthetic")
+    if (Path(args.run_dir) / "stream-results.json").exists() and not args.overwrite:
+        raise ValueError("run evidence exists; explicit --overwrite is required")
+    if (args.seed < 0 or args.max_new_requests < 0 or not 0 <= args.review_probability <= 1
+            or args.stream_size < 31 or args.heldout_size < 1):
+        raise ValueError("runtime bounds must be valid")
+    payload = _run_runtime(Path(args.run_dir), seed=args.seed, review_probability=args.review_probability,
+                           max_new_requests=args.max_new_requests, stream_size=args.stream_size,
+                           heldout_size=args.heldout_size)
+    _write(args.output, payload)
+    print("wrote synthetic offline actual-learning stream outcomes; no live results")
+    return 0
+
+
 def _report(args):
     _output_guard(args)
     document = json.loads(Path(args.input).read_text(encoding="utf-8"))
@@ -70,6 +94,7 @@ def parser():
     result = argparse.ArgumentParser(description=__doc__)
     commands = result.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run", help="exercise an explicit synthetic fixture without network")
+    runtime = commands.add_parser("runtime", help="exercise the fake-only actual-learning stream on synthetic data")
     report = commands.add_parser("report", help="compute curves and checkpoints from local metadata")
     for command in (run, report):
         command.add_argument("--output", required=True)
@@ -79,11 +104,21 @@ def parser():
     run.add_argument("--run-dir", required=True)
     run.add_argument("--review-probability", type=float, default=0.3)
     run.add_argument("--max-new-requests", type=int, required=True)
+    runtime.add_argument("--run-dir", required=True)
+    runtime.add_argument("--synthetic", action="store_true")
+    runtime.add_argument("--review-probability", type=float, default=1.0)
+    runtime.add_argument("--max-new-requests", type=int, required=True)
+    runtime.add_argument("--stream-size", type=int, default=32)
+    runtime.add_argument("--heldout-size", type=int, default=8)
+    runtime.add_argument("--output", required=True)
+    runtime.add_argument("--overwrite", action="store_true")
+    runtime.add_argument("--seed", type=int, default=0)
     report.add_argument("--input", required=True)
     report.add_argument("--window-size", type=int, default=100)
     report.add_argument("--resamples", type=int, default=1000)
     report.add_argument("--format", choices=("json", "markdown"), default="json")
     run.set_defaults(handler=_run)
+    runtime.set_defaults(handler=_runtime)
     report.set_defaults(handler=_report)
     return result
 
