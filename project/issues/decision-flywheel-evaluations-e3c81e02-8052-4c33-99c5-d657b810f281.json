@@ -46,10 +46,22 @@
         "model": "GPT-5",
         "name": "Flywheel Implementation"
       }
+    },
+    {
+      "id": "ecbfab6e-05cc-4d30-a8b2-df7ab9b71fc5",
+      "author": "home",
+      "text": "First staged current-context backfill complete; appended lab notes. Frozen copy of actual reviewer, current rubric8examplesexisting inclusion question, 60 eligible training labels6Include54Exclude; defaultcap200, other roles unchanged. Luna proposed contribution-interest-area8options and contribution-scope3options. All scored together on matched full requests. OOF mapping fold isolates numeric answer-to-final-label relationship only: contextual/example/feature discovery history is reused, so not independent pipeline validation. Existing inclusion56/60 balanced96.3%; scope47/60 balanced73.1%; interest48/60 balanced59.3%; majority54/60 raw50% balanced. Neither new factor beats existing question; candidates retained, no deployment. Exact60 Jev/1 Luna calls. Redundant input_field metadata mismatch stopped initial stage before Jev calls; reused recorded reply after canonicalization, no extra optimizer call. Returned Jev input233749/output14041 tokens; Luna prompt20559/completion1842 total22401. Private artifacts var/arxiv-staged-backfill-v2 in core. Original reviewer and head unchanged. Six positive labels remain limited; no broad accuracy claim. Staged interfaces/offline safety verified by444 core tests. Feature-set deployment/combinations/ablations still pending.",
+      "created_at": "2026-10-06T01:07:21.002672Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation"
+      }
     }
   ],
   "created_at": "2026-10-06T00:07:10.549907Z",
-  "updated_at": "2026-10-06T00:37:35.352746Z",
+  "updated_at": "2026-10-06T01:07:21.002697Z",
   "closed_at": null,
   "agent": {
     "platform": "codex",
