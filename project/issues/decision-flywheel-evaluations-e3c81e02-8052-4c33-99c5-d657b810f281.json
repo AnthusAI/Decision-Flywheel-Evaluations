@@ -58,10 +58,22 @@
         "model": "GPT-5",
         "name": "Flywheel Implementation"
       }
+    },
+    {
+      "id": "bd06f3c1-d03c-4018-84ba-e535e04de672",
+      "author": "home",
+      "text": "2026-10-06: recorded complete-classifier retraining development experiment in arXiv lab notes. Existing labels only: training60 (6 Include), development27 (2 Include); no audit scoring/optimizer access. Four fixed-context candidates compare current/retained questions and natural/equal-class fitting. Best dev26/27,75%balanced,Include1/2 Exclude25/25,balancedBrier0.4461 vs old50%balanced/0.7755. 27 actual new Jev requests,zero Luna,106765 input6308 output tokens. Private candidate public predict API confirmed26/27 with cached answers only; original reviewer unchanged. Not final accuracy and not a reliable positive-recall claim: only2 positive development labels and selection on this set. New untouched final assessment remains required; prior inspected final audit must not steer further tuning.",
+      "created_at": "2026-10-06T10:24:23.118015Z",
+      "comment_type": "default",
+      "agent": {
+        "platform": "codex",
+        "model": "GPT-5",
+        "name": "Flywheel Implementation"
+      }
     }
   ],
   "created_at": "2026-10-06T00:07:10.549907Z",
-  "updated_at": "2026-10-06T01:07:21.002697Z",
+  "updated_at": "2026-10-06T10:24:23.118049Z",
   "closed_at": null,
   "agent": {
     "platform": "codex",
