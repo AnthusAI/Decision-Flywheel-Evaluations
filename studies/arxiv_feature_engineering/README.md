@@ -126,3 +126,78 @@ decisions. Retrospective association is discovery evidence, not a fresh accuracy
 estimate; a 200-item maximum does not imply sufficient minority labels. Retain
 questions and revisions as evidence grows. This replacement is recorded, not yet
 implemented or run. No additional paid collection is authorized by these notes.
+
+## 2026-10-05: First staged backfill under the current reviewer context
+
+The replacement measurement path is now implemented and was run on a frozen copy
+of the actual reviewer's databases, not the empty incumbent from the earlier
+experiment. Its rubric and eight-example list stayed fixed. The current supporting
+`knowledge_base_inclusion` question stayed present. Luna proposed two additional
+classifications, and all questions were scored together on the same 60 eligible
+training items: **6 Include and 54 Exclude**. The limit was 200, but only 60 items
+were eligible under the existing roles. Development, rolling-audit and sealed
+labels were not moved into the measurement pool to inflate its size.
+
+The new classifications were:
+
+- **Central contribution interest area:** classify the area the paper directly
+  advances, not merely its terminology or tools. Options covered interactive
+  clarification, multiagent learning/reasoning, knowledge extraction/organization/
+  entity alignment, memory/storage, longitudinal wearable-data research, multiple
+  listed areas, other, and unclear.
+- **Central contribution scope:** classify whether the main contribution advances
+  a broadly relevant research area, is mainly a specialized application or
+  domain-specific result, or is mixed/unclear.
+
+These were inferred from the eligible feedback, not hard-coded into the library.
+Their options differ from Include/Exclude, so raw option equality is meaningless.
+We used a fixed soft-contingency answer-to-final-label mapping with stratified
+five-fold prediction, equal-class fit weighting, and Laplace smoothing of one
+per option/class. Review propensities were 1.0 because every displayed item was
+reviewed. The implementation also supports inverse-propensity fit weighting.
+Every mapping prediction excludes its target's fold from the numerical fit.
+
+| Question | Mapping agreement | Class-balanced alignment | Include correct | Exclude correct |
+| --- | ---: | ---: | ---: | ---: |
+| Existing inclusion question | 56/60 (93.3%) | 96.3% | 6/6 | 50/54 |
+| New contribution-scope question | 47/60 (78.3%) | 73.1% | 4/6 | 43/54 |
+| New contribution-interest-area question | 48/60 (80.0%) | 59.3% | 2/6 | 46/54 |
+
+Always predicting Exclude gives 54/60 (90%) raw agreement but only 50% balanced
+alignment. This is why ranks use balanced alignment rather than raw agreement
+alone. The scope question ranks above the interest-area question even though
+its raw agreement is lower. Neither new factor outperformed the existing
+inclusion question in this conditional mapping comparison. Definitions and
+rankings are retained; no factor or classifier was automatically deployed.
+
+The existing inclusion question's direct label agreement was also 56/60. Do not
+interpret any of these values as the deployed learned head's prospective accuracy.
+**The folds isolate only the numerical mapping.** Question discovery and the
+frozen rubric/examples already reflect historical feedback; other fold items can
+also appear among the fixed demonstrations. Excluding the target's own example
+does not turn the entire discovery process into independent cross-validation.
+These are retrospective, conditional feature-engineering diagnostics. The six
+positive items remain a substantial limitation; descriptive Wilson recall
+intervals are wide and not adjusted for feature selection.
+
+Collection used **60 Jev requests and one GPT-6 Luna call**. The initial attempt
+stopped before Jev collection because the reply copied `input_field` metadata
+from existing task definitions. The stage now canonicalizes that redundant field
+only when it matches the predefined main input field; attempts to change it are
+rejected. Explicit recovery reused the recorded reply and added no optimizer
+call. Actual returned usage: Jev 233,749 input and 14,041 output tokens; Luna
+20,559 prompt and 1,842 completion tokens, 22,401 total. No pricing is inferred.
+
+The run used Jev `jev-1.13.0` and `gpt-6-luna`. Exact requests, responses, context
+versions, window IDs, feedback fingerprints and fold evidence remain in the
+ignored `var/arxiv-staged-backfill-v2` directory of the core repository. Public
+notes do not redistribute article text, private feedback or credentials. The
+original reviewer and its active ML head were unchanged.
+
+The Rich reviewer now runs one configured stage at a time: rubric by default
+on its feedback cadence, `N` for question discovery/backfill, and `X` for example
+selection. Rubric/example proposals can be recorded before a promotion test;
+their staged promotion coverage floor defaults to 20 development items per
+class and is configurable, not a statistical guarantee. Question measurement
+does not wait for that gate. Feature-set deployment, combinations and ablations
+remain separate future work.
