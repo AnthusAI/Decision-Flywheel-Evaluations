@@ -201,3 +201,55 @@ their staged promotion coverage floor defaults to 20 development items per
 class and is configurable, not a statistical guarantee. Question measurement
 does not wait for that gate. Feature-set deployment, combinations and ablations
 remain separate future work.
+
+## 2026-10-06: train the complete classifier from retained questions
+
+Question measurement alone did not retrain the final ML head. We added a
+separate numerical training phase after question discovery, and a standalone
+classifier stage. This phase freezes the current rubric and eight examples,
+compares current questions against current-plus-retained questions, and fits
+each feature set with natural and equal-class weights. Only trusted training
+labels fit the head; calibration uses out-of-fold training predictions.
+
+The frozen data contained 60 training labels (6 Include, 54 Exclude) and 27
+development labels (2 Include, 25 Exclude). Rolling and final audit items were
+not scored, fitted or sent to the optimizer in this experiment. No new optimizer
+call was needed: the retained questions came from the preceding discovery run.
+
+| Complete classifier | Ordinary accuracy | Balanced accuracy | Include recall | Exclude recall | Balanced Brier |
+|---|---:|---:|---:|---:|---:|
+| Existing deployed head | 25/27 (92.6%) | 50% | 0/2 | 25/25 | 0.7755 |
+| Current questions, natural fit | 25/27 (92.6%) | 50% | 0/2 | 25/25 | 0.7827 |
+| Current questions, equal-class fit | 25/27 (92.6%) | 73% | 1/2 | 24/25 | 0.5409 |
+| Current plus retained questions, natural fit | 26/27 (96.3%) | 75% | 1/2 | 25/25 | 0.5256 |
+| Current plus retained questions, equal-class fit | 26/27 (96.3%) | 75% | 1/2 | 25/25 | 0.4461 |
+
+The best candidate improved balanced accuracy by 25 percentage points and
+balanced Brier by about 42.5%. These are **development selection results**, not
+final accuracy. Both improvements in recall rely on correctly predicting one
+of only two positive development items. This does not establish reliable
+Include recognition or generalization to new reviewer preferences.
+
+The exploratory script explicitly used a development floor of two per class
+and disabled deployment. The normal reviewer retains its default promotion
+coverage floor of 20 per class. Selection also requires non-decreasing balanced
+accuracy and no per-class recall regression. The existing live head and source
+review database were unchanged. Retained questions are not discarded after an
+unsuccessful trial; new labels permit new fits and evaluations.
+
+The run required **27 new Jev requests**, not the preflight ceiling of 174;
+training responses and current-context development responses were cached.
+Returned usage for new requests was 106,765 input and 6,308 output tokens.
+No dollar estimate is inferred. Private records, fitted candidates, complete
+requests and results remain in core `var/arxiv-classifier-training-v1`.
+
+After collection, we activated the selected artifact only inside that private
+copy and exercised the public prediction interface on the 27 development
+targets. It reproduced 26/27 agreement, including 1/2 Includes, using its 11
+probability features and no additional requests. This verified the persisted
+Jev-to-features-to-head-to-prediction path, not independent final accuracy.
+
+The reusable `train_classifier` API and reviewer `M` action expose this phase.
+Question discovery now hands its measurements to numerical training, which
+either evaluates candidates or clearly reports insufficient development
+coverage. Cached trials and fitted-artifact provenance survive restarts.
