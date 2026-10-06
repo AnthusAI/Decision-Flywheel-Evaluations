@@ -95,3 +95,34 @@ leave-one-question-out ablations with more positive labels and adequate
 development coverage. Freeze each protocol first; do not choose experiments
 from audit errors. Continue retaining questions and wording revisions as new
 feedback arrives. No combination or ablation result is claimed here.
+
+## 2026-10-05: Replace the next-step protocol after sample-size review
+
+The user challenged the four-item development sample. We do not treat the
+preceding comparisons as reliable improvement evidence. They establish an
+execution path and hypotheses, not a validated alignment gain.
+
+The replacement plan separates example-list experimentation, continuous rubric
+refinement, and question discovery into independent stages. A new question is
+measured alongside the **current** rubric, example list, and existing questions.
+Freeze those versions and retroactively re-score eligible reviewed items,
+with a configurable maximum of **200 items by default**. Keep the protected
+audit and sealed scoreboard separate. Record the actual window, counts by final
+label, feedback revisions, context fingerprints, coverage, usage, and progress.
+Existing questions' longer histories can be shown, but candidate ranks must use
+a common matched window rather than incomparable sample sizes or contexts.
+
+The human's final Include/Exclude label is the ranking target. Supporting
+question answers are model-generated features, not human ground truth for those
+questions. Direct agreement applies only when answer semantics match the final
+classification. Otherwise measure class-conditional probability separation and
+out-of-fold learned alignment to the final label, including inverse relationships
+and different multiclass options. Show majority-baseline performance, natural and
+class-balanced metrics, denominators and uncertainty. Agreement with Jev's own
+main answer is a distinct secondary diagnostic.
+
+Feature admission/ranking, head fitting, and classifier deployment are different
+decisions. Retrospective association is discovery evidence, not a fresh accuracy
+estimate; a 200-item maximum does not imply sufficient minority labels. Retain
+questions and revisions as evidence grows. This replacement is recorded, not yet
+implemented or run. No additional paid collection is authorized by these notes.
