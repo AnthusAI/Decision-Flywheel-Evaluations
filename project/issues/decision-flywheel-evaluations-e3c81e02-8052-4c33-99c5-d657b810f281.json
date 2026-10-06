@@ -1,0 +1,25 @@
+{
+  "id": "decision-flywheel-evaluations-e3c81e02-8052-4c33-99c5-d657b810f281",
+  "title": "Evaluate individual feature additions, combinations and ablations on human feedback",
+  "description": "Agreed 2026-10-05 feature-engineering evaluation plan. Depends on core feature-bank/single-feature API tracked by Decision-Flywheel issue 1baadb68-9f35-432c-a900-8e2d9f8e7d44. Before live collection freeze a text-free protocol: training/development/audit roles, feedback cutoff, per-class counts, frozen incumbent rubric and examples, provider/model, question versions, weighting, fitting procedure, primary development metric and explicit request/trial ceilings. Start by comparing one additional question at a time against the same incumbent; later run budgeted pairs/groups and removal ablations. Report training probability separation as descriptive evidence, not generalization. Measure incremental development improvement, coverage, redundancy and interactions; retain unsuccessful concepts and wording variants for later feedback cutoffs. Distinguish feature exploration from classifier deployment; a losing bundled classifier does not invalidate each factor. Keep optimizer blind to development/audit labels and errors. Do not tune or choose experiments using sealed scoreboard results. Publish counts, trial ledger, usage, uncertainty and retrospective limitations without private article text, feedback comments or secrets. First milestone is a reproducible single-feature experiment using the reusable core, not a second flywheel implementation. No live calls authorized by creating this issue. No DSPy.",
+  "type": "story",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-06T00:07:10.549907Z",
+  "updated_at": "2026-10-06T00:07:10.549943Z",
+  "closed_at": null,
+  "agent": {
+    "platform": "codex",
+    "model": "GPT-5",
+    "name": "Flywheel Implementation"
+  },
+  "right_now_summary": null,
+  "right_now_updated_at": null,
+  "custom": {}
+}
