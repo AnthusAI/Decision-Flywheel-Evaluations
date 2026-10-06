@@ -21,6 +21,8 @@ The initial Jev study is complete. Later experimental notes cover the
 [unified flywheel](studies/UNIFIED_FLYWHEEL_RESULTS.md) and
 [FOMC rubric teaching](studies/FOMC_RUBRIC_RESULTS.md). These are separate
 investigations, not cross-model or demonstration-order results.
+The [arXiv feature-engineering lab notes](studies/arxiv_feature_engineering/README.md)
+record the real single-question comparisons and their small-sample limitations.
 The current offline build is a streaming-SME evaluation: classify before
 feedback, review a seeded fraction of the stream, then update the classifier
 from reviewed labels and optional explanations. Ordering sensitivity and
