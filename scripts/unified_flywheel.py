@@ -13,7 +13,7 @@ answers, the simulated-labeler recording) are read from the clone.
 
 The interpreter needs scikit-learn and Tactus (Jev-Flywheel's own environment has both);
 Decision-Flywheel comes from UNIFIED_FLYWHEEL_CORE (a source tree such as
-/Users/home/Projects/Decision-Flywheel/src; the Makefile sets it) or else from this
+/Users/home/Projects/Cyclotron/src; the Makefile sets it) or else from this
 repository's pinned install.
 
 $0 replay of a copied live run directory (fails if anything is uncached):

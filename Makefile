@@ -90,9 +90,9 @@ release:
 # Unified flywheel harness (studies/UNIFIED_FLYWHEEL_PLAN.md). Offline only: a fake Jev and fixed
 # analyst replies, with every non-local socket blocked. UF_PYTHON must have scikit-learn and Tactus
 # (Jev-Flywheel's interpreter does); the pinned Jev-Flywheel clone lives in var/ (see prepare-clone).
-# UF_CORE is the Decision-Flywheel source tree the harness imports (default: the sibling working
+# UF_CORE is the Cyclotron (formerly Decision-Flywheel) source tree the harness imports (default: the sibling working
 # tree); its commit and cleanliness are recorded in every run summary. UF_CORE= uses the pinned copy.
-UF_CORE ?= $(abspath ../Decision-Flywheel/src)
+UF_CORE ?= $(abspath ../Cyclotron/src)
 
 unified-flywheel-test:
 	@if test -z "$(UF_PYTHON)"; then echo "Usage: make unified-flywheel-test UF_PYTHON=/path/to/python-with-scikit-learn-and-tactus"; exit 2; fi
