@@ -168,3 +168,4 @@ standup:
   lookback: 24h
   skip_weekends: false
 github_security: null
+project_id: 7abbd24b-f227-4882-8c14-8bfef1330b9a
